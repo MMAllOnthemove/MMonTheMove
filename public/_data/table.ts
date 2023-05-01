@@ -1,17 +1,11 @@
-function getRandomDate() {
-  const maxDate = Date.now();
-  const timestamp = Math.floor(Math.random() * maxDate);
-  return new Date(timestamp);
-}
-
-const tableData = [
+const tableRowData = [
   {
     id: 1,
-    serviceOrder: 4262039201,
-    tickeNo: 620597,
+    serviceOrder: "4251684289",
+    ticketNo: "6205971",
     model: "XBC837",
-    problem: "Screen cracked",
-    warranty: "IN",
+    problem: "Slow Phone",
+    warranty: "OUT",
     category: "Mobile",
     bookingDate: "06 April 2023",
     assessDate: "08 April 2023",
@@ -26,10 +20,10 @@ const tableData = [
   },
   {
     id: 2,
-    serviceOrder: 4262039201,
-    tickeNo: 620597,
+    serviceOrder: "4262039201",
+    ticketNo: "6205972",
     model: "XBC837",
-    problem: "Screen cracked",
+    problem: "Bad Battery Life",
     warranty: "IN",
     category: "Mobile",
     bookingDate: "06 April 2023",
@@ -45,11 +39,11 @@ const tableData = [
   },
   {
     id: 3,
-    serviceOrder: 4262039201,
-    tickeNo: 620597,
+    serviceOrder: "4262054287",
+    ticketNo: "6205973",
     model: "XBC837",
-    problem: "Screen cracked",
-    warranty: "IN",
+    problem: "Overheating Phone",
+    warranty: "OUT",
     category: "Mobile",
     bookingDate: "06 April 2023",
     assessDate: "08 April 2023",
@@ -64,10 +58,10 @@ const tableData = [
   },
   {
     id: 4,
-    serviceOrder: 4262039201,
-    tickeNo: 620597,
+    serviceOrder: "4262054364",
+    ticketNo: "6205974",
     model: "XBC837",
-    problem: "Screen cracked",
+    problem: "Full Storage Space",
     warranty: "IN",
     category: "Mobile",
     bookingDate: "06 April 2023",
@@ -83,11 +77,11 @@ const tableData = [
   },
   {
     id: 5,
-    serviceOrder: 4262039201,
-    tickeNo: 620597,
+    serviceOrder: "4262053834",
+    ticketNo: "6205975",
     model: "XBC837",
-    problem: "Screen cracked",
-    warranty: "IN",
+    problem: "App Crashes/Freezes",
+    warranty: "OUT",
     category: "Mobile",
     bookingDate: "06 April 2023",
     assessDate: "08 April 2023",
@@ -102,10 +96,10 @@ const tableData = [
   },
   {
     id: 6,
-    serviceOrder: 4262039201,
-    tickeNo: 620597,
+    serviceOrder: "4262053431",
+    ticketNo: "6205976",
     model: "XBC837",
-    problem: "Screen cracked",
+    problem: "Phone Freezes",
     warranty: "IN",
     category: "Mobile",
     bookingDate: "06 April 2023",
@@ -121,11 +115,11 @@ const tableData = [
   },
   {
     id: 7,
-    serviceOrder: 4262039201,
-    tickeNo: 620597,
+    serviceOrder: "4261728900",
+    ticketNo: "6205977",
     model: "XBC837",
-    problem: "Screen cracked",
-    warranty: "IN",
+    problem: "Apps Not Downloading",
+    warranty: "OUT",
     category: "Mobile",
     bookingDate: "06 April 2023",
     assessDate: "08 April 2023",
@@ -140,10 +134,10 @@ const tableData = [
   },
   {
     id: 8,
-    serviceOrder: 4262039201,
-    tickeNo: 620597,
+    serviceOrder: "4262039857",
+    ticketNo: "6205978",
     model: "XBC837",
-    problem: "Screen cracked",
+    problem: "MicroSD card does not work",
     warranty: "IN",
     category: "Mobile",
     bookingDate: "06 April 2023",
@@ -159,11 +153,11 @@ const tableData = [
   },
   {
     id: 9,
-    serviceOrder: 4262039201,
-    tickeNo: 620597,
+    serviceOrder: "4262061234",
+    ticketNo: "6205979",
     model: "XBC837",
-    problem: "Screen cracked",
-    warranty: "IN",
+    problem: "Wet Cell Phone",
+    warranty: "OUT",
     category: "Mobile",
     bookingDate: "06 April 2023",
     assessDate: "08 April 2023",
@@ -178,10 +172,10 @@ const tableData = [
   },
   {
     id: 10,
-    serviceOrder: 4262039201,
-    tickeNo: 620597,
+    serviceOrder: "4262058638",
+    ticketNo: "6205910",
     model: "XBC837",
-    problem: "Screen cracked",
+    problem: "Damaged Charging Port",
     warranty: "IN",
     category: "Mobile",
     bookingDate: "06 April 2023",
@@ -196,4 +190,4 @@ const tableData = [
     status: "Complete",
   },
 ];
-export { tableData, getRandomDate };
+export { tableRowData };

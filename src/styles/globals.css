@@ -113,27 +113,24 @@ img {
   width: 100%;
   height: auto;
 }
+
+/* Table styles */
 table {
+  border-collapse: collapse;
   width: 100%;
-  font-family: inherit;
-  position: relative;
 }
-
-td,
-th {
-  border: 1px solid #eee;
+th,
+td {
   padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
 }
-
+tr:hover {
+  background-color: #d6eeee;
+}
 th {
-  padding: 1rem;
-  font-family: inherit;
-  font-weight: 500;
-  /* background-color: #eee; */
-  background: white;
-  position: sticky;
-  top: 0; /* Don't forget this, required for the stickiness */
-  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+  padding: 12px;
+  text-align: left;
 }
 
 .input {
@@ -149,4 +146,20 @@ th {
   font-family: inherit;
   font-weight: 500;
   color: #eee;
+}
+
+/* Analytics card */
+.analytics_cards {
+  display: grid;
+  gap: 1em;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: masonry;
+}
+@media (max-width: 800px) {
+  .analytics_cards {
+    display: grid;
+    gap: 1em;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: masonry;
+  }
 }
