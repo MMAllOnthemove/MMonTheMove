@@ -9,7 +9,9 @@
 *::after {
   box-sizing: border-box;
 }
-
+html:focus-within {
+  scroll-behavior: smooth;
+}
 html,
 body {
   padding: 0;
@@ -18,21 +20,21 @@ body {
     "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
     sans-serif;
   height: 100vh;
-  /* overflow: scroll; */
-  margin: 0 auto;
+  --scrollbarBG: #dee2da;
+    --thumbBG: #6c757d;
 }
 body::-webkit-scrollbar {
   width: 12px;               /* width of the entire scrollbar */
 }
 
 body::-webkit-scrollbar-track {
-  background: orange;        /* color of the tracking area */
+  background: #dee2da;        /* color of the tracking area */
 }
 
 body::-webkit-scrollbar-thumb {
-  background-color: blue;    /* color of the scroll thumb */
+  background-color: #6c757d;    /* color of the scroll thumb */
   border-radius: 20px;       /* roundness of the scroll thumb */
-  border: 3px solid orange;  /* creates padding around scroll thumb */
+  border: 3px solid #dee2da;  /* creates padding around scroll thumb */
 }
 .navbar {
   display: flex;
