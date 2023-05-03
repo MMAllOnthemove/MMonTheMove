@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import InputField from "../../../components/InputField";
-import axios from "axios";
 import Navbar from "../../../components/Navbar";
 
 function Parts() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<null | any>(null);
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -25,9 +24,9 @@ function Parts() {
         body: JSON.stringify(data), // body data type must match "Content-Type" header
       })
         .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          console.log(data.EtAltm.results);
+        .then((data:any) => {
+          // console.log(data);
+          // console.log(data.EtAltm.results);
           setData(data);
           setLoading(false);
         });
@@ -47,41 +46,6 @@ function Parts() {
   if (isLoading) return <p>Loading...</p>;
   if (!data) return <p>No profile data</p>;
 
-  // useEffect(() => {
-  //   async function postData(url = "", data = {}) {
-  //     // Default options are marked with *
-  //     const response = await fetch(url, {
-  //       method: "POST", // *GET, POST, PUT, DELETE, etc.
-  //       mode: "cors", // no-cors, *cors, same-origin
-  //       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-  //       credentials: "same-origin", // include, *same-origin, omit
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         "Authorization": "Bearer 1c5914b1-9eaf-3aa7-a0d9-cf11c0a72e10"
-  //         // 'Content-Type': 'application/x-www-form-urlencoded',
-  //       },
-  //       redirect: "follow", // manual, *follow, error
-  //       referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-  //       body: JSON.stringify(data), // body data type must match "Content-Type" header
-  //     });
-  //     return response.json(); // parses JSON response into native JavaScript objects
-  //   }
-
-  //   postData("https://eu.ipaas.samsung.com/eu/gcic/GetPartsInfo/1.0/ImportSet", {
-
-  //   "IsCommonHeader": {
-  //       "Company": "C720",
-  //       "AscCode": "1730640",
-  //       "Lang": "EN",
-  //       "Country": "ZA",
-  //       "Pac": "999999920180502152320"
-  //   },
-  //   "IvPartsNo": "DA32-00011E"
-
-  // }).then((data) => {
-  //     // console.log(data); // JSON data parsed by `data.json()` call
-  //   });
-  // }, [])
 
   return (
     <>
@@ -99,18 +63,56 @@ function Parts() {
           </section>
 
           <section>
-            <h5>
-              Color <span></span>
-            </h5>
-            <h5>
-              Description <span></span>
-            </h5>
+            {data.EtAltm.results.map((item: any, index:any) => (
+              <>
+                <section className="partsDetailCardRows" key={index}>
+                  <article  className='bg-white border-t-4 border-sky-600 p-8 shadow-md rounded grid text-center'>
+                    <h5>
+                      Color
+                    </h5>
+                    <p>{item.Color}</p>
+             
 
-            <h5>PartCode</h5>
-            <h5>Prime</h5>
-            <h5>SalesStatus</h5>
-            <h5>StockAvalability</h5>
-            <h5>UnitPrice</h5>
+                  </article>
+                  <article  className='bg-white border-t-4 border-sky-600 p-8 shadow-md rounded grid text-center'>
+                    <h5>
+                      Description 
+                    </h5>
+                    <p>{item.Description}</p>
+                  </article>
+                  <article  className='bg-white border-t-4 border-sky-600 p-8 shadow-md rounded grid text-center'>
+                    <h5>
+                      PartCode 
+                    </h5>
+                    <p>{item.PartCode}</p>
+                  </article>
+                  <article className='bg-white border-t-4 border-sky-600 p-8 shadow-md rounded grid text-center'>
+                    <h5>
+                      Prime 
+                    </h5>
+                    <p>{item.Prime}</p>
+                  </article>
+                  <article className='bg-white border-t-4 border-sky-600 p-8 shadow-md rounded grid text-center'>
+                    <h5>
+                      SalesStatus 
+                    </h5>
+                    <p>{item.SalesStatus}</p>
+                  </article>
+                  <article  className='bg-white border-t-4 border-sky-600 p-8 shadow-md rounded grid text-center'>
+                    <h5>
+                      StockAvalability
+                    </h5>
+                    <p>{item.StockAvalability}</p>
+                  </article>
+                  <article  className='bg-white border-t-4 border-sky-600 p-8 shadow-md rounded grid text-center'>
+                    <h5>
+                      UnitPrice 
+                    </h5>
+                    <p>{item.UnitPrice}</p>
+                  </article>
+                </section>
+              </>
+            ))}
           </section>
         </div>
       </main>

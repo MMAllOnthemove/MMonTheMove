@@ -8,7 +8,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { EditInactiveIcon, EditActiveIcon, DuplicateInactiveIcon, DuplicateActiveIcon, ArchiveInactiveIcon, ArchiveActiveIcon, MoveInactiveIcon, MoveActiveIcon, DeleteInactiveIcon, DeleteActiveIcon } from '../../../components/Functions'
 import SortableTable from '../../../components/SortableTable'
 
-function classNames(...classes) {
+function classNames(...classes:any[]) {
   return classes.filter(Boolean).join(' ')
 }
 export default function Projects() {
@@ -21,7 +21,7 @@ export default function Projects() {
           <section className="flex justify-between items-center my-5">
             <h1 className="text-2xl lg:text-4xl font-semibold text-gray-700">Projects</h1>
             <span className="dropdowns flex gap-2 items-center ">
-              <Menu as="div" className="relative inline-block text-left z-10">
+              {/* <Menu as="div" className="relative inline-block text-left z-10">
                 <div>
                   <Menu.Button className="inline-flex w-full justify-center rounded-md bg-gray-800 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                     Table View
@@ -288,7 +288,7 @@ export default function Projects() {
                     </div>
                   </Menu.Items>
                 </Transition>
-              </Menu>
+              </Menu> */}
             </span>
           </section>
           <section className="my-4">
