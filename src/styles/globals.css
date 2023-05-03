@@ -154,7 +154,7 @@ th {
   width: 100%;
   padding: 1rem;
   box-sizing: border-box;
-  border: 1px solid #eee;
+  border: 1px solid #ddd;
   outline: 0;
   border-radius: 4px;
   font-family: inherit;
@@ -162,7 +162,7 @@ th {
 ::placeholder {
   font-family: inherit;
   font-weight: 500;
-  color: #eee;
+  /* color: #eee; */
 }
 
 /* Analytics card */
