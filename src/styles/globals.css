@@ -175,14 +175,9 @@ th {
 
 
 /* partsDetailCardRows */
-.partsDetailCardRows{
-  display: grid;
- gap: 1em;
- grid-template-columns: repeat(4, 1fr);
- grid-template-rows: masonry;
-}
+
 @media (max-width: 800px) {
-  .analytics_cards, .partsDetailCardRows {
+  .analytics_cards, {
     display: grid;
     gap: 1em;
     grid-template-columns: repeat(2, 1fr);

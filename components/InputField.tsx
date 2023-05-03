@@ -7,7 +7,7 @@ interface Props {
     checked?: boolean;
     value?: string;
     className: string;
-
+onChange:()=> void | any;
 }
 
 function InputField(props: Props) {
