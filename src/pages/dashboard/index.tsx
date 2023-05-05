@@ -1,11 +1,7 @@
-import React from 'react'
-import Navbar from '../../../components/Navbar'
-import AnalyticCard from '../../../components/AnalyticCard'
-import { Menu, Transition } from '@headlessui/react'
-import { Fragment, useEffect, useRef, useState } from 'react'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { Tab } from '@headlessui/react'
-import { EditInactiveIcon, EditActiveIcon, DuplicateInactiveIcon, DuplicateActiveIcon, ArchiveInactiveIcon, ArchiveActiveIcon, MoveInactiveIcon, MoveActiveIcon, DeleteInactiveIcon, DeleteActiveIcon } from '../../../components/Functions'
+import { useState } from 'react'
+import AnalyticCard from '../../../components/AnalyticCard'
+import Navbar from '../../../components/Navbar'
 
 interface Props {
     props: any;
