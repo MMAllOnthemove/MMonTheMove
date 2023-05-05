@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
 
 function Parts() {
-  // const [data, setData] = useState([]);
-  const [Description, setDescription] = useState("");
+  const [data, setData] = useState<null | any>(null);
+  const [Description, setDescription] = useState<string>("");
   const [isLoading, setLoading] = useState(false);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
     async function getData(url = "", data = {}) {
@@ -25,13 +25,11 @@ function Parts() {
         body: JSON.stringify(data), // body data type must match "Content-Type" header
       })
         .then((res) => res.json())
-        .then((data) => {
-          // console.log(data.Return.EsPartsInfo);
-          // let obj = data.Return.EsPartsInfo;
-          // let arr = (Object.values(obj))
-          // console.log(arr);
-         
-          // setData(data);
+        .then((data: any) => {
+          // console.log(data.Return.EsPartsInfo.PartsDescription);
+          // console.log(Object.values(data.Return.EsPartsInfo));
+          console.log(Object.values(data.Return.EsPartsInfo));
+          setData(data);
           setLoading(false);
         });
     }
@@ -44,15 +42,15 @@ function Parts() {
         Country: "ZA",
         Pac: "999999920180502152320",
       },
-      IvPartsNo: "DC66-00010A",
+      IvPartsNo: search,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [search]);
   // if (isLoading) return <p>Loading...</p>;
   // if (!data) return <p>No profile data</p>;
 
-  const PartInfoList = (props) =>
-    props.list.map((part, index) => {
+  const PartInfoList = (props: any) =>
+    props.list.map((part: any, index: any) => {
       const {
         PartsNo,
         Division,
@@ -89,36 +87,38 @@ function Parts() {
         </tr>
       );
     });
-    const handleSubmit = (e)=>{
+    const handleSubmit = (e:any)=>{
       e.preventDefault(); 
       setSearch(search);
+      console.log("It works", search);
       
     }
-    const handleSearch = (event) => {
+    const handleSearch = (event: any) => {
       setSearch(event.target.value);
     };
- 
+  
+    const filterPartInfo:any[] = Object.values(data?.EsPartsInfo).filter((course:any) => {
+      return (
+        course.PartsNo.toLowerCase().includes(search.toLowerCase())
+      );
+    });
+  
   return (
    <>
     <Navbar />
       <main>
         <div className="container mx-auto p-4">
           <section className="my-4 flex justify-center items-center gap-2">
-            <h2>Search Part</h2>
-           
+            <h2></h2>
+            <form>
               <input
                 className="searchInput input placeholder-sky-900 outline-none text-gray-950"
                 placeholder="Search here"
                 type="text"
                 value={search}
                 onChange={handleSearch}
-                onKeyDown={event => {
-                  if(event.key === "Enter"){
-                    console.log("Pressed")
-                  }
-                }}
               />
-        
+            </form>
 
             <input type="submit" value="Search" onClick={handleSubmit}
               className="bg-sky-700 py-3 px-4 rounded text-white border border-sky-700 font-sans font-medium hover:bg-sky-950"
@@ -127,7 +127,7 @@ function Parts() {
           </section>
 
         <section>
-        {/* <PartInfoList list={filterPartInfo} /> */}
+        <PartInfoList list={filterPartInfo} />
         </section>
         </div>
       </main>

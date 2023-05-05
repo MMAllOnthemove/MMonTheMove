@@ -8,7 +8,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { EditInactiveIcon, EditActiveIcon, DuplicateInactiveIcon, DuplicateActiveIcon, ArchiveInactiveIcon, ArchiveActiveIcon, MoveInactiveIcon, MoveActiveIcon, DeleteInactiveIcon, DeleteActiveIcon } from '../../../components/Functions'
 import SortableTable from '../../../components/SortableTable'
 
-function classNames(...classes) {
+function classNames(...classes:any[]) {
   return classes.filter(Boolean).join(' ')
 }
 export default function Projects() {
@@ -292,7 +292,8 @@ export default function Projects() {
             </span>
           </section>
           <section className="my-4">
-            <InputField className="searchInput input" name="search" type="search" placeholder="Search here" />
+            <label htmlFor="search" className="sr-only">Search here</label>
+            <input className='input' type="text" name="search" id="search" />
           </section>
           <section className="w-full overflow-auto">
             <SortableTable tableRowData={tableRowData}/>
