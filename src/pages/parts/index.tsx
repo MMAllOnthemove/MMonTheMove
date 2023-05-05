@@ -46,8 +46,7 @@ function Parts() {
       "IvPartsNo": "DA47-00095E",
     });
   }, []);
-  if (isLoading) return <p>Loading...</p>;
-  if (!data) return <p>No profile data</p>;
+ 
 
   return (
     <>
