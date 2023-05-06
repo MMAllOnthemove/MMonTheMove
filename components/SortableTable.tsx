@@ -59,7 +59,7 @@ function SortButton({
                 : "sort-button"
                 }`}
         >
-           {children}
+            {children}
         </button>
 
     );
@@ -75,7 +75,7 @@ function SortableTable({ tableRowData }: { tableRowData: Data }) {
         { label: "Model", key: "model" },
         { label: "Problem", key: "problem" },
         { label: "Warranty", key: "warranty" },
-        { label: "Category", key: "category" },
+        { label: "Department", key: "department" },
         { label: "Booking", key: "bookingDate" },
         { label: "Assessed", key: "assessDate" },
         { label: "Assessment Completion", key: "assessComplete" },
@@ -118,7 +118,7 @@ function SortableTable({ tableRowData }: { tableRowData: Data }) {
                                             sortKey,
                                         }}
                                     >
-                                 {row.label}
+                                        {row.label}
                                     </SortButton>
 
                                 </td>
