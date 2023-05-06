@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
 
-function Parts() {
+export default function Parts() {
   const [data, setData] = useState<null | any>(null);
   const [Description, setDescription] = useState<string>("");
   const [isLoading, setLoading] = useState(false);
@@ -26,9 +26,9 @@ function Parts() {
       })
         .then((res) => res.json())
         .then((data: any) => {
-          // console.log(data.Return.EsPartsInfo.PartsDescription);
-          // console.log(Object.values(data.Return.EsPartsInfo));
-          console.log(Object.values(data.Return.EsPartsInfo));
+          console.log(data.Return.EsPartsInfo);
+          //   console.log(Object.values(data.Return.EsPartsInfo));
+          //   console.log(Object.values(data.Return.EsPartsInfo));
           setData(data);
           setLoading(false);
         });
@@ -87,25 +87,18 @@ function Parts() {
         </tr>
       );
     });
-    const handleSubmit = (e:any)=>{
-      e.preventDefault(); 
-      setSearch(search);
-      console.log("It works", search);
-      
-    }
-    const handleSearch = (event: any) => {
-      setSearch(event.target.value);
-    };
-  
-    const filterPartInfo:any[] = Object.values(data?.EsPartsInfo).filter((course:any) => {
-      return (
-        course.PartsNo.toLowerCase().includes(search.toLowerCase())
-      );
-    });
-  
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    setSearch(search);
+    console.log("It works", search);
+  };
+  const handleSearch = (event: any) => {
+    setSearch(event.target.value);
+  };
+
   return (
-   <>
-    <Navbar />
+    <>
+      <Navbar />
       <main>
         <div className="container mx-auto p-4">
           <section className="my-4 flex justify-center items-center gap-2">
@@ -120,19 +113,59 @@ function Parts() {
               />
             </form>
 
-            <input type="submit" value="Search" onClick={handleSubmit}
+            <input
+              type="submit"
+              value="Search"
+              onClick={handleSubmit}
               className="bg-sky-700 py-3 px-4 rounded text-white border border-sky-700 font-sans font-medium hover:bg-sky-950"
             />
-            
           </section>
 
-        <section>
-        <PartInfoList list={filterPartInfo} />
-        </section>
+          {/* {Object.values(data.Return.EsPartsInfo)} */}
+          <div className="w-100 overflow-auto">
+            <table className="table table-hoverable border-collapse font-weight-normal">
+              <thead>
+                <tr>
+                  <th>PartsNo</th>
+                  <th>PartsDescription</th>
+                  <th>Division</th>
+                  <th>DivisionDesc</th>
+                  <th>SalesStatus</th>
+                  <th>StockAvalability</th>
+                  <th>UnitPrice</th>
+                  <th>Currency</th>
+                  <th>Color</th>
+                  <th>DivisionName</th>
+                  <th>RetailPrice</th>
+                  <th>ASCPrice</th>
+                  <th>CoreAPrice</th>
+                  <th>CoreBPrice</th>
+                </tr>
+              </thead>
+              <tbody className="tableBody" id="myTable">
+                <td>{data.Return.EsPartsInfo.PartsNo}</td>
+                <td>{data.Return.EsPartsInfo.PartsDescription}</td>
+                <td>{data.Return.EsPartsInfo.Division}</td>
+                <td>
+                  {data.Return.EsPartsInfo.DivisionDesc}</td>
+                <td>{data.Return.EsPartsInfo.SalesStatus}</td>
+                <td>
+                  {data.Return.EsPartsInfo.StockAvalability}
+                </td>
+                <td>{data.Return.EsPartsInfo.UnitPrice}</td>
+                <td>{data.Return.EsPartsInfo.Currency}</td>
+                <td>{data.Return.EsPartsInfo.Color}</td>
+                <td>{data.Return.EsPartsInfo.DivisionName}</td>
+                <td>{data.Return.EsPartsInfo.RetailPrice}</td>
+                <td>{data.Return.EsPartsInfo.ASCPrice}</td>
+                <td>{data.Return.EsPartsInfo.CoreAPrice}</td>
+                <td>{data.Return.EsPartsInfo.CoreBPrice}</td>
+                {/* data.EsPartsInfo)} */}
+              </tbody>
+            </table>
+          </div>
         </div>
       </main>
-   </>
+    </>
   );
 }
-
-export default Parts;
