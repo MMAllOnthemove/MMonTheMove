@@ -133,7 +133,10 @@ img {
   width: 100%;
   height: auto;
 }
+main {
+ padding-top: 6rem;
 
+}
 /* Table styles */
 table {
   border-collapse: collapse;
