@@ -75,7 +75,7 @@ function SortableTable({ tableRowData }: { tableRowData: Data }) {
         { label: "Model", key: "model" },
         { label: "Problem", key: "problem" },
         { label: "Warranty", key: "warranty" },
-       // { label: "Category", key: "category" },
+        { label: "Category", key: "category" },
         { label: "Booking", key: "bookingDate" },
         { label: "Assessed", key: "assessDate" },
         { label: "Assessment Completion", key: "assessComplete" },
@@ -135,7 +135,7 @@ function SortableTable({ tableRowData }: { tableRowData: Data }) {
                                 <td>{item.model}</td>
                                 <td>{item.problem}</td>
                                 <td>{item.warranty}</td>
-                              //  <td>{item.category}</td>
+                                <td>{item.category}</td>
                                 <td>{item.bookingDate}</td>
                                 <td>{item.assessDate}</td>
                                 <td>{item.assessComplete}</td>
