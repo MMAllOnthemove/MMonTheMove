@@ -37,11 +37,14 @@ body::-webkit-scrollbar-thumb {
   border: 3px solid #dee2da;  /* creates padding around scroll thumb */
 }
 .navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   padding: 1rem;
   height: 6rem;
+  position: fixed ;
+  top: 0;
+  overflow: hidden;
+  width: 100%;
+  background-color: white;
+  border-bottom: 1px solid #eee;
 }
 .nav_links {
   display: none;

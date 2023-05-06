@@ -9,7 +9,7 @@ export default function Navbar() {
     return (
         <>
             <nav
-                className="flex items-center justify-between shadow-sm p-6 lg:px-8"
+                className="flex navbar items-center justify-between shadow-sm p-6 lg:px-8"
                 aria-label="Global"
             >
                 <div className="flex lg:flex-1">
