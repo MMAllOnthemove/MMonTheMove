@@ -135,7 +135,7 @@ function SortableTable({ tableRowData }: { tableRowData: Data }) {
                                 <td>{item.model}</td>
                                 <td>{item.problem}</td>
                                 <td>{item.warranty}</td>
-                                <td>{item.category}</td>
+                              //  <td>{item.category}</td>
                                 <td>{item.bookingDate}</td>
                                 <td>{item.assessDate}</td>
                                 <td>{item.assessComplete}</td>
