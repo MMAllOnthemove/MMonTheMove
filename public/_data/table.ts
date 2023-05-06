@@ -6,7 +6,7 @@ const tableRowData = [
     model: "XBC837",
     problem: "Slow Phone",
     warranty: "OUT",
-    category: "Mobile",
+    
     bookingDate: "06 April 2023",
     assessDate: "08 April 2023",
     assessComplete: "08 April 2023",
@@ -16,7 +16,7 @@ const tableRowData = [
     repairDate: "09 April 2023",
     repairComplete: "10 April 2023",
     repairPeriod: "1 day",
-    status: "Complete",
+    _status: "Complete",
   },
   {
     id: 2,
@@ -25,7 +25,7 @@ const tableRowData = [
     model: "XBC837",
     problem: "Bad Battery Life",
     warranty: "IN",
-    category: "Mobile",
+    
     bookingDate: "06 April 2023",
     assessDate: "08 April 2023",
     assessComplete: "08 April 2023",
@@ -35,7 +35,7 @@ const tableRowData = [
     repairDate: "09 April 2023",
     repairComplete: "10 April 2023",
     repairPeriod: "1 day",
-    status: "Complete",
+    _status: "Complete",
   },
   {
     id: 3,
@@ -44,7 +44,7 @@ const tableRowData = [
     model: "XBC837",
     problem: "Overheating Phone",
     warranty: "OUT",
-    category: "Mobile",
+    
     bookingDate: "06 April 2023",
     assessDate: "08 April 2023",
     assessComplete: "08 April 2023",
@@ -54,7 +54,7 @@ const tableRowData = [
     repairDate: "09 April 2023",
     repairComplete: "10 April 2023",
     repairPeriod: "1 day",
-    status: "Complete",
+    _status: "Complete",
   },
   {
     id: 4,
@@ -63,7 +63,7 @@ const tableRowData = [
     model: "XBC837",
     problem: "Full Storage Space",
     warranty: "IN",
-    category: "Mobile",
+    
     bookingDate: "06 April 2023",
     assessDate: "08 April 2023",
     assessComplete: "08 April 2023",
@@ -73,7 +73,7 @@ const tableRowData = [
     repairDate: "09 April 2023",
     repairComplete: "10 April 2023",
     repairPeriod: "1 day",
-    status: "Complete",
+    _status: "Complete",
   },
   {
     id: 5,
@@ -82,7 +82,7 @@ const tableRowData = [
     model: "XBC837",
     problem: "App Crashes/Freezes",
     warranty: "OUT",
-    category: "Mobile",
+    
     bookingDate: "06 April 2023",
     assessDate: "08 April 2023",
     assessComplete: "08 April 2023",
@@ -92,7 +92,7 @@ const tableRowData = [
     repairDate: "09 April 2023",
     repairComplete: "10 April 2023",
     repairPeriod: "1 day",
-    status: "Complete",
+    _status: "Complete",
   },
   {
     id: 6,
@@ -101,7 +101,7 @@ const tableRowData = [
     model: "XBC837",
     problem: "Phone Freezes",
     warranty: "IN",
-    category: "Mobile",
+    
     bookingDate: "06 April 2023",
     assessDate: "08 April 2023",
     assessComplete: "08 April 2023",
@@ -111,7 +111,7 @@ const tableRowData = [
     repairDate: "09 April 2023",
     repairComplete: "10 April 2023",
     repairPeriod: "1 day",
-    status: "Complete",
+    _status: "Complete",
   },
   {
     id: 7,
@@ -120,7 +120,7 @@ const tableRowData = [
     model: "XBC837",
     problem: "Apps Not Downloading",
     warranty: "OUT",
-    category: "Mobile",
+    
     bookingDate: "06 April 2023",
     assessDate: "08 April 2023",
     assessComplete: "08 April 2023",
@@ -130,7 +130,7 @@ const tableRowData = [
     repairDate: "09 April 2023",
     repairComplete: "10 April 2023",
     repairPeriod: "1 day",
-    status: "Complete",
+    _status: "Complete",
   },
   {
     id: 8,
@@ -139,7 +139,7 @@ const tableRowData = [
     model: "XBC837",
     problem: "MicroSD card does not work",
     warranty: "IN",
-    category: "Mobile",
+    
     bookingDate: "06 April 2023",
     assessDate: "08 April 2023",
     assessComplete: "08 April 2023",
@@ -149,7 +149,7 @@ const tableRowData = [
     repairDate: "09 April 2023",
     repairComplete: "10 April 2023",
     repairPeriod: "1 day",
-    status: "Complete",
+    _status: "Complete",
   },
   {
     id: 9,
@@ -158,7 +158,7 @@ const tableRowData = [
     model: "XBC837",
     problem: "Wet Cell Phone",
     warranty: "OUT",
-    category: "Mobile",
+    
     bookingDate: "06 April 2023",
     assessDate: "08 April 2023",
     assessComplete: "08 April 2023",
@@ -168,7 +168,7 @@ const tableRowData = [
     repairDate: "09 April 2023",
     repairComplete: "10 April 2023",
     repairPeriod: "1 day",
-    status: "Complete",
+    _status: "Complete",
   },
   {
     id: 10,
@@ -177,7 +177,7 @@ const tableRowData = [
     model: "XBC837",
     problem: "Damaged Charging Port",
     warranty: "IN",
-    category: "Mobile",
+    
     bookingDate: "06 April 2023",
     assessDate: "08 April 2023",
     assessComplete: "08 April 2023",
@@ -187,7 +187,7 @@ const tableRowData = [
     repairDate: "09 April 2023",
     repairComplete: "10 April 2023",
     repairPeriod: "1 day",
-    status: "Complete",
+    _status: "Complete",
   },
 ];
 export { tableRowData };
