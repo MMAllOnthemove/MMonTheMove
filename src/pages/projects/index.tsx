@@ -28,6 +28,7 @@ export default function Projects() {
         model,
         problem,
         warranty,
+        department,
         bookingDate,
         assessDate,
         tech,
@@ -45,6 +46,7 @@ export default function Projects() {
           <td>{model}</td>
           <td>{problem}</td>
           <td>{warranty}</td>
+          <td>{department}</td>
           <td>{bookingDate}</td>
           <td>{assessDate}</td>
           <td>{tech}</td>
@@ -96,6 +98,7 @@ export default function Projects() {
                     <th>Model</th>
                     <th>Problem</th>
                     <th>Warranty</th>
+                    <th>Department</th>
                     <th>Booking Date</th>
                     <th>Assessment Date</th>
                     <th>Tech</th>
