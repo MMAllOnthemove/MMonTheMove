@@ -75,7 +75,7 @@ function SortableTable({ tableRowData }: { tableRowData: Data }) {
         { label: "Model", key: "model" },
         { label: "Problem", key: "problem" },
         { label: "Warranty", key: "warranty" },
-        { label: "Category", key: "category" },
+       // { label: "Category", key: "category" },
         { label: "Booking", key: "bookingDate" },
         { label: "Assessed", key: "assessDate" },
         { label: "Assessment Completion", key: "assessComplete" },
