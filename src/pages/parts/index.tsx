@@ -57,8 +57,8 @@ function Parts() {
     setSearch(event.target.value);
   };
   return (
-    <div>
-      <Navbar/>
+    <>
+      <Navbar />
       <main>
         <div className="container mx-auto p-4">
           <section className="my-4 flex justify-center items-center gap-2">
@@ -80,51 +80,10 @@ function Parts() {
               className="bg-sky-700 py-3 px-4 rounded text-white border border-sky-700 font-sans font-medium hover:bg-sky-950"
             />
           </section>
-          {/* {Object.values(data.Return.EsPartsInfo)} */}
-          <div className="w-100 overflow-auto">
-            <table className="table table-hoverable border-collapse font-weight-normal">
-              <thead>
-                <tr>
-                  <th>PartsNo</th>
-                  <th>PartsDescription</th>
-                  <th>Division</th>
-                  <th>DivisionDesc</th>
-                  <th>SalesStatus</th>
-                  <th>StockAvalability</th>
-                  <th>UnitPrice</th>
-                  <th>Currency</th>
-                  <th>Color</th>
-                  <th>DivisionName</th>
-                  <th>RetailPrice</th>
-                  <th>ASCPrice</th>
-                  <th>CoreAPrice</th>
-                  <th>CoreBPrice</th>
-                </tr>
-              </thead>
-              <tbody className="tableBody" id="myTable">
-                <td>{data.Return.EsPartsInfo.PartsNo}</td>
-                <td>{data.Return.EsPartsInfo.PartsDescription}</td>
-                <td>{data.Return.EsPartsInfo.Division}</td>
-                <td>
-                  {data.Return.EsPartsInfo.DivisionDesc}</td>
-                <td>{data.Return.EsPartsInfo.SalesStatus}</td>
-                <td>
-                  {data.Return.EsPartsInfo.StockAvalability}
-                </td>
-                <td>{data.Return.EsPartsInfo.UnitPrice}</td>
-                <td>{data.Return.EsPartsInfo.Currency}</td>
-                <td>{data.Return.EsPartsInfo.Color}</td>
-                <td>{data.Return.EsPartsInfo.DivisionName}</td>
-                <td>{data.Return.EsPartsInfo.RetailPrice}</td>
-                <td>{data.Return.EsPartsInfo.ASCPrice}</td>
-                <td>{data.Return.EsPartsInfo.CoreAPrice}</td>
-                <td>{data.Return.EsPartsInfo.CoreBPrice}</td>
-                {/* data.EsPartsInfo)} */}
-              </tbody>
-            </table>
+         <span>{data?.Return.EsPartsInfo.PartsNo}</span>
         </div>
       </main>
-    </div>
+    </>
   )
 }
 
