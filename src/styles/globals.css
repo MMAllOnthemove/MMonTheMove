@@ -21,25 +21,25 @@ body {
     sans-serif;
   height: 100vh;
   --scrollbarBG: #dee2da;
-    --thumbBG: #6c757d;
+  --thumbBG: #6c757d;
 }
 body::-webkit-scrollbar {
-  width: 12px;               /* width of the entire scrollbar */
+  width: 12px; /* width of the entire scrollbar */
 }
 
 body::-webkit-scrollbar-track {
-  background: #dee2da;        /* color of the tracking area */
+  background: #dee2da; /* color of the tracking area */
 }
 
 body::-webkit-scrollbar-thumb {
-  background-color: #6c757d;    /* color of the scroll thumb */
-  border-radius: 20px;       /* roundness of the scroll thumb */
-  border: 3px solid #dee2da;  /* creates padding around scroll thumb */
+  background-color: #6c757d; /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+  border: 3px solid #dee2da; /* creates padding around scroll thumb */
 }
 .navbar {
   padding: 1rem;
   height: 6rem;
-  position: fixed ;
+  position: fixed;
   top: 0;
   overflow: hidden;
   width: 100%;
@@ -134,8 +134,7 @@ img {
   height: auto;
 }
 main {
- padding-top: 6rem;
-
+  padding-top: 6rem;
 }
 /* Table styles */
 table {
@@ -179,15 +178,38 @@ th {
   grid-template-rows: masonry;
 }
 
-
 /* partsDetailCardRows */
 
 @media (max-width: 800px) {
-  .analytics_cards, {
+  .analytics_cards {
     display: grid;
     gap: 1em;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: masonry;
   }
-  
+}
+
+.part_info_card {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  color: #44403c;
+  width: 100%;
+}
+.part_info_card p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-transform: capitalize;
+  font-family: inherit;
+  font-weight: 500;
+  border-bottom: 1px solid #eee;
+  padding: 1rem 0;
+}
+.part_info_card p > span {
+  font-weight: 600;
+  color: #0ea5e9;
+  font-family: inherit;
 }
