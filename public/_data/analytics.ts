@@ -9,9 +9,9 @@ export const analytic = [
     id: 2,
     title: "Assessed",
     stat: 30,
-    href: "/units_assessed"
+    href: "/assessed"
 
-  },
+  },  
   {
     id: 3,
     title: "Pending",
