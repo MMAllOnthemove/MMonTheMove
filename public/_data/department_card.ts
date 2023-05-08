@@ -29,7 +29,7 @@ const department_card_assessed = [
     id: 1,
     title: "HHP",
     typeOfCard: "ASSESSED",
-    href: "/dashboard/assesed/hhp",
+    href: "/dashboard/assessed/hhp",
   },
   {
     id: 2,
