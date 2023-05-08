@@ -1,9 +1,20 @@
-import React from 'react'
+import React, { Suspense } from "react";
+import Navbar from "../../../../components/Navbar";
+
 
 function hhp() {
   return (
-    <div>hhp</div>
-  )
+    <>
+      <Navbar />
+      <main>
+        <div className="container mx-auto p-2">
+          <h1>Units in - HHP</h1>
+    
+          
+        </div>
+      </main>
+    </>
+  );
 }
 
-export default hhp
+export default hhp;
