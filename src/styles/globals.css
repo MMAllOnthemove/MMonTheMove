@@ -223,3 +223,11 @@ th {
   color: #0ea5e9;
   font-family: inherit;
 }
+
+/* Dashboard */
+/* Dashboard cards */
+/* .dashboard_cards  {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1em;
+} */
