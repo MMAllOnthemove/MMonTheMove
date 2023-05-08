@@ -4,7 +4,7 @@ import SortableTable from "../../../components/SortableTable";
 import { tableRowData } from "../../../public/_data/table";
 import Link from "next/link";
 
-export default function Projects() {
+export default function Management() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = (event: any) => {
