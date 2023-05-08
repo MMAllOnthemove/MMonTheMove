@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "../../../../components/Navbar";
-import {DepartmentCardUnitsIn} from "../../../../components/DepartmentCard";
+import { DepartmentCardAssessed } from "../../../../components/DepartmentCard";
 
 export default function Units_in() {
   return (
@@ -9,7 +9,7 @@ export default function Units_in() {
       <main>
         <div className="container mx-auto p-2">
           <section className="department_cards">
-            <DepartmentCardUnitsIn />
+            <DepartmentCardAssessed />
           </section>
         </div>
       </main>
