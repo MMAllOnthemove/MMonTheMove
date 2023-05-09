@@ -6,4 +6,4 @@ function in_home() {
   )
 }
 
-export default in_home
+export default in_home;
