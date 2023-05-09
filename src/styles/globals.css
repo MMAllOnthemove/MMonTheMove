@@ -157,7 +157,7 @@ th {
 
 .input {
   width: 100%;
-  padding: 1rem;
+  /* padding: 1rem; */
   box-sizing: border-box;
   border: 1px solid #ddd;
   outline: 0;
@@ -169,6 +169,16 @@ th {
   font-weight: 500;
   /* color: #eee; */
 }
+/* If input has 'search in the classname */
+.search{
+  display: flex;
+  align-items: center;
+  background-image: url('../../public/icons/bx-search-alt.svg');
+background-position: 10px 10px;
+background-repeat: no-repeat;
+padding-left: 40px;
+}
+
 
 /* Analytics card */
 .analytics_cards {
