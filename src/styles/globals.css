@@ -231,3 +231,31 @@ th {
   grid-template-columns: repeat(2, 1fr);
   gap: 1em;
 } */
+
+
+/* Units assessed */
+.stats_cards_row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(300px, 1fr));
+  gap: 1rem;
+  justify-content: space-between;
+  padding-top: 2rem;
+}
+@media (max-width: 800px) {
+  .stats_cards_row{
+    display: flex;
+    flex: 100%;
+    flex-direction: column;
+  }
+}
+.stat_card {
+  display: flex;
+  justify-content: center;
+}
+.chart {
+  font-family: inherit;
+  font-weight: 400;
+  color: #0d0d0d;
+  font-size: 1rem;
+  margin: auto;
+}
