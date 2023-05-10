@@ -1,7 +1,11 @@
-import React from "react";
-import { department_card_units_in,department_card_assessed } from "../public/_data/department_card";
 import { useRouter } from "next/router";
-import Image from "next/image";
+import {
+  department_card_assessed,
+  department_card_units_in,
+} from "../public/_data/department_card";
+
+
+// Units in card in dashboard
 
 function DepartmentCardUnitsIn() {
   const router = useRouter();
@@ -26,6 +30,8 @@ function DepartmentCardUnitsIn() {
     </>
   );
 }
+
+// Units assessed card in dashboard
 function DepartmentCardAssessed() {
   const router = useRouter();
   return (
@@ -50,4 +56,5 @@ function DepartmentCardAssessed() {
   );
 }
 
-export {DepartmentCardUnitsIn, DepartmentCardAssessed};
+export { DepartmentCardAssessed, DepartmentCardUnitsIn };
+
