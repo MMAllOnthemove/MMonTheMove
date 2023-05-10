@@ -1,121 +1,86 @@
-import { useState } from "react";
 import Navbar from "../../../components/Navbar";
-import SortableTable from "../../../components/SortableTable";
-import { tableRowData } from "../../../public/_data/table";
-import Link from "next/link";
+import React, { useState, useEffect, useCallback } from "react";
+import axios from "axios";
+import LoadingSpinner from "../../../components/LoadingSpinner";
 
 export default function Management() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [data, setData] = useState<null | any>(null);
+  const [isLoading, setLoading] = useState(false);
+  const [search, setSearch] = useState<string>("");
 
-  const handleSearch = (event: any) => {
-    setSearchTerm(event.target.value);
-  };
 
-  const filterTable = tableRowData.filter((item) => {
-    return (
-      item.serviceOrder.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.ticketNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.problem.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  });
 
-  const TableInfo = (props: any) =>
-    props.list.map((item: any, index: any) => {
-      const {
-        serviceOrder,
-        ticketNo,
-        model,
-        problem,
-        warranty,
-        department,
-        bookingDate,
-        assessDate,
-        tech,
-        partsOrdered,
-        partsETA,
-        repairDate,
-        repairComplete,
-        repairPeriod,
-        _status,
-      } = item;
-      return (
-        <tr key={index}>
-          <td>{serviceOrder}</td>
-          <td>{ticketNo}</td>
-          <td>{model}</td>
-          <td>{problem}</td>
-          <td>{warranty}</td>
-          <td>{department}</td>
-          <td>{bookingDate}</td>
-          <td>{assessDate}</td>
-          <td>{tech}</td>
-          <td>{partsOrdered}</td>
-          <td>{partsETA}</td>
-          <td>{repairDate}</td>
-          <td>{repairComplete}</td>
-          <td>{repairPeriod}</td>
-          <td>{_status}</td>
-        </tr>
-      );
+  useEffect(() => {
+    async function getData(url = "", data = {}) {
+      setLoading(true);
+      await fetch(url, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer 1c5914b1-9eaf-3aa7-a0d9-cf11c0a72e10",
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(data), // body data type must match "Content-Type" header
+      })
+        .then((res) => res.json())
+        .then((data: string | any) => {
+          console.log(data);
+          setData(data);
+          setLoading(false);
+        });
+    }
+
+    getData("https://eu.ipaas.samsung.com/eu/gcic/GetSOPartsInfo/1.0/ImportSet", {
+      IvSvcOrderNo: search,
+      // IvAscJobNo: "4266443508",
+      IsCommonHeader: {
+        Company: "C720",
+        AscCode: "1730640",
+        Lang: "EN",
+        Country: "ZA",
+        Pac: "999999920180502152320",
+      },
     });
+  }, [search]);
 
+
+  if (isLoading) return <p>Loading...</p>;
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    setSearch(event.target.value);
+  };
   return (
     <>
       <Navbar />
 
       <main>
         <div className="container flex justify-center flex-col mx-auto p-2">
-          <section className="flex justify-center my-5">
-            <h1 className="text-2xl lg:text-4xl font-semibold text-gray-700">
-              Projects HHP - DTV - HA
-            </h1>
+          <section className="my-4 flex justify-center flex-col items-center gap-2">
+            <form onSubmit={handleSubmit} className="flex flex-row gap-2">
+              <label htmlFor="searchPart" className="sr-only">
+                Search here
+              </label>
+              <input
+                className="searchInput search input placeholder-sky-900 outline-none text-gray-950"
+                placeholder="Search Service Order No."
+                type="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <input
+                type="submit"
+                value="Search"
+                className="bg-sky-700 py-3 px-4 rounded text-white border-0 font-sans font-medium hover:bg-sky-950"
+              />
+            </form>
           </section>
-          <section className="my-4">
-            <label htmlFor="search" className="sr-only">
-              Search here
-            </label>
-            <input
-              className="input"
-              type="text"
-              name="search"
-              id="search"
-              value={searchTerm}
-              onChange={handleSearch}
-              placeholder="Search table"
-            />
-          </section>
-          <section className="">
-            {/* <SortableTable tableRowData={tableRowData} /> */}
-            {/* <div id="example-table"></div> */}
 
-            <div className="w-100 overflow-auto">
-              <table className="table table-hoverable border-collapse font-weight-normal">
-                <thead>
-                  <tr>
-                    <th>Service Order No</th>
-                    <th>Ticket No</th>
-                    <th>Model</th>
-                    <th>Problem</th>
-                    <th>Warranty</th>
-                    <th>Department</th>
-                    <th>Booking Date</th>
-                    <th>Assessment Date</th>
-                    <th>Tech</th>
-                    <th>Parts Ordered</th>
-                    <th>Parts ETA</th>
-                    <th>Repair Date</th>
-                    <th>Repair Complete</th>
-                    <th>Repair Period</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody className="tableBody" id="myTable">
-                  <TableInfo list={filterTable} />
-                </tbody>
-              </table>
-            </div>
-          </section>
+         
         </div>
       </main>
     </>
