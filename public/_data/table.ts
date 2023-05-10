@@ -1,3 +1,5 @@
+// dummy data for table in management
+
 const tableRowData = [
   {
     id: 1,

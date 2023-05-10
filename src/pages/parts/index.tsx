@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { memo, useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
 
 function Parts() {
   const [data, setData] = useState<null | any>(null);
-  const [Description, setDescription] = useState<string>("");
   const [isLoading, setLoading] = useState(false);
   const [search, setSearch] = useState<string>("");
 
@@ -26,9 +25,9 @@ function Parts() {
       })
         .then((res) => res.json())
         .then((data: string | any) => {
-          console.log(data.Return.EsPartsInfo.PartsDescription);
-          //   console.log(Object.values(data.Return.EsPartsInfo));
-          //   console.log(Object.values(data.Return.EsPartsInfo));
+          // console.log(data.Return.EsPartsInfo.PartsDescription);
+          // //   console.log(Object.values(data.Return.EsPartsInfo));
+          // //   console.log(Object.values(data.Return.EsPartsInfo));
           setData(data);
           setLoading(false);
         });
@@ -47,11 +46,6 @@ function Parts() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
-  // const handleSubmit = (e: any) => {
-  //   e.preventDefault();
-  //   setSearch(search);
-  //   // console.log("It works", search);
-  // };
   const handleSubmit = (event: any) => {
     event.preventDefault();
     setSearch(event.target.value);
@@ -81,61 +75,56 @@ function Parts() {
             </form>
           </section>
           <section className="flex justify-center mx-auto p-2">
-           
-              <article className="part_info_card">
-                <p>
-                  Part No: <span>{data?.Return.EsPartsInfo.PartsNo}</span>
-                </p>
-                <p>
-                  Part Name:{" "}
-                  <span>{data?.Return.EsPartsInfo.PartsDescription}</span>
-                </p>
-                <p>
-                  Part Division:{" "}
-                  <span>{data?.Return.EsPartsInfo.Division}</span>
-                </p>
-                <p>
-                  Division Name:{" "}
-                  <span>{data?.Return.EsPartsInfo.DivisionDesc}</span>
-                </p>
-                <p>
-                  Sales Status:{" "}
-                  <span>{data?.Return.EsPartsInfo.SalesStatus}</span>
-                </p>
-                <p>
-                  Stock Availability:{" "}
-                  <span>{data?.Return.EsPartsInfo.StockAvailability}</span>
-                </p>
-                <p>
-                  Unit Price: <span>{data?.Return.EsPartsInfo.UnitPrice}</span>
-                </p>
-                <p>
-                  Currency: <span>{data?.Return.EsPartsInfo.Currency}</span>
-                </p>
-                <p>
-                  Color: <span>{data?.Return.EsPartsInfo.Color}</span>
-                </p>
-                <p>
-                  Division Name:{" "}
-                  <span>{data?.Return.EsPartsInfo.DivisionName}</span>
-                </p>
-                <p>
-                  Retail Price:{" "}
-                  <span>{data?.Return.EsPartsInfo.RetailPrice}</span>
-                </p>
-                <p>
-                  ASC Price: <span>{data?.Return.EsPartsInfo.ASCPrice}</span>
-                </p>
-                <p>
-                  Core A Price:{" "}
-                  <span>{data?.Return.EsPartsInfo.CoreAPrice}</span>
-                </p>
-                <p>
-                  Core B Price:{" "}
-                  <span>{data?.Return.EsPartsInfo.CoreBPrice}</span>
-                </p>
-              </article>
-          
+            <article className="part_info_card">
+              <p>
+                Part No: <span>{data?.Return.EsPartsInfo.PartsNo}</span>
+              </p>
+              <p>
+                Part Name:{" "}
+                <span>{data?.Return.EsPartsInfo.PartsDescription}</span>
+              </p>
+              <p>
+                Part Division: <span>{data?.Return.EsPartsInfo.Division}</span>
+              </p>
+              <p>
+                Division Name:{" "}
+                <span>{data?.Return.EsPartsInfo.DivisionDesc}</span>
+              </p>
+              <p>
+                Sales Status:{" "}
+                <span>{data?.Return.EsPartsInfo.SalesStatus}</span>
+              </p>
+              <p>
+                Stock Availability:{" "}
+                <span>{data?.Return.EsPartsInfo.StockAvailability}</span>
+              </p>
+              <p>
+                Unit Price: <span>{data?.Return.EsPartsInfo.UnitPrice}</span>
+              </p>
+              <p>
+                Currency: <span>{data?.Return.EsPartsInfo.Currency}</span>
+              </p>
+              <p>
+                Color: <span>{data?.Return.EsPartsInfo.Color}</span>
+              </p>
+              <p>
+                Division Name:{" "}
+                <span>{data?.Return.EsPartsInfo.DivisionName}</span>
+              </p>
+              <p>
+                Retail Price:{" "}
+                <span>{data?.Return.EsPartsInfo.RetailPrice}</span>
+              </p>
+              <p>
+                ASC Price: <span>{data?.Return.EsPartsInfo.ASCPrice}</span>
+              </p>
+              <p>
+                Core A Price: <span>{data?.Return.EsPartsInfo.CoreAPrice}</span>
+              </p>
+              <p>
+                Core B Price: <span>{data?.Return.EsPartsInfo.CoreBPrice}</span>
+              </p>
+            </article>
           </section>
         </div>
       </main>
@@ -143,4 +132,4 @@ function Parts() {
   );
 }
 
-export default Parts;
+export default memo(Parts);
