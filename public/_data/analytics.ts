@@ -1,3 +1,5 @@
+// dummy data for analytics card in dashboard
+
 export const analytic = [
   {
     id: 1,
