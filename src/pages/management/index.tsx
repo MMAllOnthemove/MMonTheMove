@@ -112,7 +112,7 @@ export default function Management() {
             </thead>
             <tbody>
               {data &&
-                data?.EtPartsInfo?.results.map((item, index) => {
+                data?.EtPartsInfo?.results.map((item:any, index:any) => {
                   const {
                     GoodIssueDate,
                     InvoiceItemNo,
