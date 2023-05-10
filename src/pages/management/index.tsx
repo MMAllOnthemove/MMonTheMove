@@ -29,14 +29,14 @@ export default function Management() {
         .then((data: string | any) => {
           // console.log(data.EtPartsInfo.results);
           setData(data);
-          setLoading(false);
+          // setLoading(false);
         });
     }
 
     getData(
       "https://eu.ipaas.samsung.com/eu/gcic/GetSOPartsInfo/1.0/ImportSet",
       {
-        IvSvcOrderNo: "4263387560",
+        IvSvcOrderNo: search,
         // IvAscJobNo: "4266443508",
         IsCommonHeader: {
           Company: "C720",
@@ -49,7 +49,7 @@ export default function Management() {
     );
   }, [search]);
 
-  if (isLoading) return <p>Loading...</p>;
+  // if (isLoading) return <p>Loading...</p>;
   const handleSubmit = (event: any) => {
     event.preventDefault();
     setSearch(event.target.value);
@@ -112,7 +112,7 @@ export default function Management() {
             </thead>
             <tbody>
               {data &&
-                data.EtPartsInfo.results.map((item, index) => {
+                data?.EtPartsInfo?.results.map((item, index) => {
                   const {
                     GoodIssueDate,
                     InvoiceItemNo,
