@@ -1,9 +1,7 @@
+import { memo, useState, useEffect } from "react";
 import Navbar from "../../../components/Navbar";
-import React, { useState, useEffect, useCallback } from "react";
-import axios from "axios";
-import LoadingSpinner from "../../../components/LoadingSpinner";
 
-export default function Management() {
+const Management = () => {
   const [data, setData] = useState<null | any>(null);
   const [isLoading, setLoading] = useState(false);
   const [search, setSearch] = useState<string>("");
@@ -54,6 +52,7 @@ export default function Management() {
     event.preventDefault();
     setSearch(event.target.value);
   };
+
   return (
     <>
       <Navbar />
@@ -79,12 +78,9 @@ export default function Management() {
               />
             </form>
           </section>
-          {/* {data &&
-        data.EtPartsInfo.results.map((item, index) => {
-          return <p key={index}>{item.PartsNo}</p>;
-        })} */}
 
-          <table>
+      <section className="w-full overflow-auto">
+      <table>
             <thead>
               <tr>
                 <th>GoodIssueDate</th>
@@ -158,15 +154,18 @@ export default function Management() {
                       <td>{SamsungOrderNo}</td>
                       <td>{SeqNo}</td>
                       <td>{TrackingNo}</td>
-                      <td>{WtyType === "O" ? "OOW" : "IN"}</td>
+                      <td>{WtyType === "O" ? "OOW" : "IW"}</td>
                     </tr>
                   );
                 })}
             </tbody>
           </table>
+      </section>
+
           <section></section>
         </div>
       </main>
     </>
   );
-}
+};
+export default memo(Management);
