@@ -67,9 +67,9 @@ function Parts() {
                 Search Part
               </label>
               <input
-                className="searchInput input placeholder-sky-900 outline-none text-gray-950"
+                className="searchInput search input placeholder-sky-900 outline-none text-gray-950"
                 placeholder="Search Part"
-                type="text"
+                type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />

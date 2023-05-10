@@ -157,7 +157,7 @@ th {
 
 .input {
   width: 100%;
-  padding: 1rem;
+  /* padding: 1rem; */
   box-sizing: border-box;
   border: 1px solid #ddd;
   outline: 0;
@@ -169,6 +169,24 @@ th {
   font-weight: 500;
   /* color: #eee; */
 }
+/* If input has 'search in the classname */
+.search {
+  display: flex;
+  align-items: center;
+  background-image: url("../../public/icons/bx-search-alt.svg");
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  padding-left: 40px;
+  padding-right: 20px;
+}
+/* clears the ‘X’ from Internet Explorer */
+input[type=search]::-ms-clear { display: none; width : 0; height: 0; }
+input[type=search]::-ms-reveal { display: none; width : 0; height: 0; }
+/* clears the ‘X’ from Chrome */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration { display: none; }
 
 /* Analytics card */
 .analytics_cards {
@@ -231,3 +249,66 @@ th {
   grid-template-columns: repeat(2, 1fr);
   gap: 1em;
 } */
+
+/* Units assessed */
+.stats_cards_row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(300px, 1fr));
+  gap: 1rem;
+  justify-content: space-between;
+  padding-top: 2rem;
+}
+@media (max-width: 800px) {
+  .stats_cards_row {
+    display: flex;
+    flex: 100%;
+    flex-direction: column;
+  }
+}
+.stat_card {
+  display: flex;
+  justify-content: center;
+}
+.chart {
+  font-family: inherit;
+  font-weight: 400;
+  color: #0d0d0d;
+  font-size: 1rem;
+  margin: auto;
+}
+
+/* Spinner */
+.spinner {
+  animation: rotator 1.4s linear infinite;
+  margin-top: 7rem;
+}
+@keyframes rotator {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(270deg); }
+}
+.path {
+  stroke-dasharray: 187;
+  stroke-dashoffset: 0;
+  transform-origin: center;
+  animation:
+    dash 1.4s ease-in-out infinite, 
+    colors (1.4s*4) ease-in-out infinite;
+}
+@keyframes colors {
+	0% { stroke: #4285F4; }
+	25% { stroke: #DE3E35; }
+	50% { stroke: #F7C223; }
+	75% { stroke: #1B9A59; }
+  100% { stroke: #4285F4; }
+}
+@keyframes dash {
+  0% { stroke-dashoffset: 187; }
+  50% {
+    stroke-dashoffset: 187/4;
+    transform:rotate(135deg);
+  }
+  100% {
+    stroke-dashoffset: 187;
+    transform:rotate(450deg);
+  }
+ }
