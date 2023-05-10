@@ -8,11 +8,9 @@ export default function Management() {
   const [isLoading, setLoading] = useState(false);
   const [search, setSearch] = useState<string>("");
 
-
-
   useEffect(() => {
     async function getData(url = "", data = {}) {
-      setLoading(true);
+      // setLoading(true);
       await fetch(url, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
@@ -29,27 +27,29 @@ export default function Management() {
       })
         .then((res) => res.json())
         .then((data: string | any) => {
-          console.log(data);
+          // console.log(data.EtPartsInfo.results);
           setData(data);
-          setLoading(false);
+          // setLoading(false);
         });
     }
 
-    getData("https://eu.ipaas.samsung.com/eu/gcic/GetSOPartsInfo/1.0/ImportSet", {
-      IvSvcOrderNo: search,
-      // IvAscJobNo: "4266443508",
-      IsCommonHeader: {
-        Company: "C720",
-        AscCode: "1730640",
-        Lang: "EN",
-        Country: "ZA",
-        Pac: "999999920180502152320",
-      },
-    });
+    getData(
+      "https://eu.ipaas.samsung.com/eu/gcic/GetSOPartsInfo/1.0/ImportSet",
+      {
+        IvSvcOrderNo: search,
+        // IvAscJobNo: "4266443508",
+        IsCommonHeader: {
+          Company: "C720",
+          AscCode: "1730640",
+          Lang: "EN",
+          Country: "ZA",
+          Pac: "999999920180502152320",
+        },
+      }
+    );
   }, [search]);
 
-
-  if (isLoading) return <p>Loading...</p>;
+  // if (isLoading) return <p>Loading...</p>;
   const handleSubmit = (event: any) => {
     event.preventDefault();
     setSearch(event.target.value);
@@ -79,8 +79,92 @@ export default function Management() {
               />
             </form>
           </section>
+          {/* {data &&
+        data.EtPartsInfo.results.map((item, index) => {
+          return <p key={index}>{item.PartsNo}</p>;
+        })} */}
 
-         
+          <table>
+            <thead>
+              <tr>
+                <th>GoodIssueDate</th>
+                <th>InvoiceItemNo</th>
+                <th>InvoiceNo</th>
+                <th>MateralRequestNo</th>
+                <th>PODate</th>
+                <th>PONo</th>
+                <th>POStatus</th>
+                <th>PartStatus</th>
+                <th>PartsDesc</th>
+                <th>PartsNo</th>
+                <th>PartsQty</th>
+                <th>PartsRecvDate</th>
+                <th>PartsSerial</th>
+                <th>PartsSerialOld</th>
+                <th>RepairLocation</th>
+                <th>RequestDate</th>
+                <th>SamsungOrderDate</th>
+                <th>SamsungOrderNo</th>
+                <th>SeqNo</th>
+                <th>TrackingNo</th>
+                <th>WtyType</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data &&
+                data?.EtPartsInfo?.results.map((item:any, index:any) => {
+                  const {
+                    GoodIssueDate,
+                    InvoiceItemNo,
+                    InvoiceNo,
+                    MateralRequestNo,
+                    PODate,
+                    PONo,
+                    POStatus,
+                    PartStatus,
+                    PartsDesc,
+                    PartsNo,
+                    PartsQty,
+                    PartsRecvDate,
+                    PartsSerial,
+                    PartsSerialOld,
+                    RepairLocation,
+                    RequestDate,
+                    SamsungOrderDate,
+                    SamsungOrderNo,
+                    SeqNo,
+                    TrackingNo,
+                    WtyType,
+                  } = item;
+                  return (
+                    <tr key={index}>
+                      <td>{GoodIssueDate}</td>
+                      <td>{InvoiceItemNo}</td>
+                      <td>{InvoiceNo}</td>
+                      <td>{MateralRequestNo}</td>
+                      <td>{PODate}</td>
+                      <td>{PONo}</td>
+                      <td>{POStatus}</td>
+                      <td>{PartStatus}</td>
+                      <td>{PartsDesc}</td>
+                      <td>{PartsNo}</td>
+                      <td>{PartsQty}</td>
+                      <td>{PartsRecvDate}</td>
+                      <td>{PartsSerial}</td>
+                      <td>{PartsSerialOld}</td>
+                      <td>{RepairLocation}</td>
+                      <td>{RequestDate}</td>
+                      <td>{SamsungOrderDate}</td>
+                      <td>{SamsungOrderNo}</td>
+                      <td>{SeqNo}</td>
+                      <td>{TrackingNo}</td>
+                      <td>{WtyType === "O" ? "OOW" : "IN"}</td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+          <section></section>
         </div>
       </main>
     </>
