@@ -1,3 +1,5 @@
+// Navbar items, simpler this way than typing everything down in nav element
+
 export const navitems = [
   { id: 1, item: "Management", pageRoute: "/management" },
   { id: 2, item: "Dashboard", pageRoute: "/dashboard" },

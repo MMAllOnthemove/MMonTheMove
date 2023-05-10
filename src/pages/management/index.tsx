@@ -1,9 +1,7 @@
+import { memo, useState, useEffect } from "react";
 import Navbar from "../../../components/Navbar";
-import React, { useState, useEffect, useCallback } from "react";
-import axios from "axios";
-import LoadingSpinner from "../../../components/LoadingSpinner";
 
-export default function Management() {
+const Management = () => {
   const [data, setData] = useState<null | any>(null);
   const [isLoading, setLoading] = useState(false);
   const [search, setSearch] = useState<string>("");
@@ -27,26 +25,38 @@ export default function Management() {
       })
         .then((res) => res.json())
         .then((data: string | any) => {
+          // console.log(data);
           // console.log(data.EtPartsInfo.results);
           setData(data);
           // setLoading(false);
         });
     }
 
-    getData(
-      "https://eu.ipaas.samsung.com/eu/gcic/GetSOPartsInfo/1.0/ImportSet",
-      {
-        IvSvcOrderNo: search,
-        // IvAscJobNo: "4266443508",
-        IsCommonHeader: {
-          Company: "C720",
-          AscCode: "1730640",
-          Lang: "EN",
-          Country: "ZA",
-          Pac: "999999920180502152320",
-        },
-      }
-    );
+    // getData(
+    //   "https://eu.ipaas.samsung.com/eu/gcic/GetSOList/1.0/ImportSet",
+    //   {
+    //     IvSvcOrderNo: search,
+    //     // IvAscJobNo: "4266443508",
+    //     IsCommonHeader: {
+    //       Company: "C720",
+    //       AscCode: "1730640",
+    //       Lang: "EN",
+    //       Country: "ZA",
+    //       Pac: "999999920180502152320",
+    //     },
+    //   }
+    // );
+    getData("https://eu.ipaas.samsung.com/eu/gcic/GetSOInfoAll/1.0/ImportSet", {
+      IvSvcOrderNo: search,
+      // IvAscJobNo: "4266443508",
+      IsCommonHeader: {
+        Company: "C720",
+        AscCode: "1730640",
+        Lang: "EN",
+        Country: "ZA",
+        Pac: "999999920180502152320",
+      },
+    });
   }, [search]);
 
   // if (isLoading) return <p>Loading...</p>;
@@ -54,6 +64,7 @@ export default function Management() {
     event.preventDefault();
     setSearch(event.target.value);
   };
+
   return (
     <>
       <Navbar />
@@ -79,94 +90,168 @@ export default function Management() {
               />
             </form>
           </section>
-          {/* {data &&
-        data.EtPartsInfo.results.map((item, index) => {
-          return <p key={index}>{item.PartsNo}</p>;
-        })} */}
 
-          <table>
-            <thead>
-              <tr>
-                <th>GoodIssueDate</th>
-                <th>InvoiceItemNo</th>
-                <th>InvoiceNo</th>
-                <th>MateralRequestNo</th>
-                <th>PODate</th>
-                <th>PONo</th>
-                <th>POStatus</th>
-                <th>PartStatus</th>
-                <th>PartsDesc</th>
-                <th>PartsNo</th>
-                <th>PartsQty</th>
-                <th>PartsRecvDate</th>
-                <th>PartsSerial</th>
-                <th>PartsSerialOld</th>
-                <th>RepairLocation</th>
-                <th>RequestDate</th>
-                <th>SamsungOrderDate</th>
-                <th>SamsungOrderNo</th>
-                <th>SeqNo</th>
-                <th>TrackingNo</th>
-                <th>WtyType</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data &&
-                data?.EtPartsInfo?.results.map((item:any, index:any) => {
-                  const {
-                    GoodIssueDate,
-                    InvoiceItemNo,
-                    InvoiceNo,
-                    MateralRequestNo,
-                    PODate,
-                    PONo,
-                    POStatus,
-                    PartStatus,
-                    PartsDesc,
-                    PartsNo,
-                    PartsQty,
-                    PartsRecvDate,
-                    PartsSerial,
-                    PartsSerialOld,
-                    RepairLocation,
-                    RequestDate,
-                    SamsungOrderDate,
-                    SamsungOrderNo,
-                    SeqNo,
-                    TrackingNo,
-                    WtyType,
-                  } = item;
-                  return (
-                    <tr key={index}>
-                      <td>{GoodIssueDate}</td>
-                      <td>{InvoiceItemNo}</td>
-                      <td>{InvoiceNo}</td>
-                      <td>{MateralRequestNo}</td>
-                      <td>{PODate}</td>
-                      <td>{PONo}</td>
-                      <td>{POStatus}</td>
-                      <td>{PartStatus}</td>
-                      <td>{PartsDesc}</td>
-                      <td>{PartsNo}</td>
-                      <td>{PartsQty}</td>
-                      <td>{PartsRecvDate}</td>
-                      <td>{PartsSerial}</td>
-                      <td>{PartsSerialOld}</td>
-                      <td>{RepairLocation}</td>
-                      <td>{RequestDate}</td>
-                      <td>{SamsungOrderDate}</td>
-                      <td>{SamsungOrderNo}</td>
-                      <td>{SeqNo}</td>
-                      <td>{TrackingNo}</td>
-                      <td>{WtyType === "O" ? "OOW" : "IN"}</td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
+          <section className="w-full overflow-auto my-5">
+            <h2>EtFlowInfo</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Created By</th>
+                  <th>Created At</th>
+                  <th>CreatedTm</th>
+                  <th>Depth</th>
+                  <th>DetailType</th>
+                  <th>DetailTypeDesc</th>
+                  <th>ProcessName</th>
+                  <th>ProcessType</th>
+                  <th>RelationType</th>
+                  <th>Status</th>
+                  <th>StatusDesc</th>
+                  <th>SvcOrderNo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data &&
+                  data?.EtFlowInfo?.results.map((item: any, index: any) => {
+                    return (
+                      <tr key={index}>
+                        <td>{item.CreatedBy}</td>
+                        <td>{item.CreatedAt}</td>
+                        <td>{item.CreatedTm}</td>
+                        <td>{item.Depth}</td>
+                        <td>{item.DetailType}</td>
+                        <td>{item.DetailTypeDesc}</td>
+                        <td>{item.PrcoessTypeName}</td>
+                        <td>{item.ProcessType}</td>
+                        <td>{item.RelationType}</td>
+                        <td>{item.Status}</td>
+                        <td>{item.StatusDesc}</td>
+                        <td>{item.SvcOrderNo}</td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </section>
+          <section className="w-full overflow-auto my-5">
+            <h2>EtLogInfo</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>AscCode</th>
+                  <th>ChangedBy</th>
+                  <th>Channel</th>
+                  <th>StReason</th>
+                  <th>StReasonDesc</th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {data &&
+                  data?.EtLogInfo?.results.map((item: any, index: any) => {
+                    return (
+                      <tr key={index}>
+                        <td>{item.AscCode}</td>
+                        <td>{item.ChangedBy}</td>
+                        <td>{item.Channel}</td>
+                        <td>{item.StReason}</td>
+                        <td>{item.StReasonDesc}</td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </section>
+          <section className="w-full overflow-auto my-5">
+            <h2>EtPartsInfo</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>GoodIssueDate</th>
+                  <th>InvoiceItemNo</th>
+                  <th>InvoiceNo</th>
+                  <th>MateralRequestNo</th>
+                  <th>PODate</th>
+                  <th>PONo</th>
+                  <th>POStatus</th>
+                  <th>PartStatus</th>
+                  <th>PartsDesc</th>
+                  <th>PartsNo</th>
+                  <th>PartsQty</th>
+                  <th>PartsRecvDate</th>
+                  <th>PartsSerial</th>
+                  <th>PartsSerialOld</th>
+                  <th>RepairLocation</th>
+                  <th>RequestDate</th>
+                  <th>SamsungOrderDate</th>
+                  <th>SamsungOrderNo</th>
+                  <th>SeqNo</th>
+                  <th>TrackingNo</th>
+                  <th>WtyType</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data &&
+                  data?.EtPartsInfo?.results.map((item: any, index: any) => {
+                    const {
+                      GoodIssueDate,
+                      InvoiceItemNo,
+                      InvoiceNo,
+                      MateralRequestNo,
+                      PODate,
+                      PONo,
+                      POStatus,
+                      PartStatus,
+                      PartsDesc,
+                      PartsNo,
+                      PartsQty,
+                      PartsRecvDate,
+                      PartsSerial,
+                      PartsSerialOld,
+                      RepairLocation,
+                      RequestDate,
+                      SamsungOrderDate,
+                      SamsungOrderNo,
+                      SeqNo,
+                      TrackingNo,
+                      WtyType,
+                    } = item;
+                    return (
+                      <tr key={index}>
+                        <td>{GoodIssueDate}</td>
+                        <td>{InvoiceItemNo}</td>
+                        <td>{InvoiceNo}</td>
+                        <td>{MateralRequestNo}</td>
+                        <td>{PODate}</td>
+                        <td>{PONo}</td>
+                        <td>{POStatus}</td>
+                        <td>{PartStatus}</td>
+                        <td>{PartsDesc}</td>
+                        <td>{PartsNo}</td>
+                        <td>{PartsQty}</td>
+                        <td>{PartsRecvDate}</td>
+                        <td>{PartsSerial}</td>
+                        <td>{PartsSerialOld}</td>
+                        <td>{RepairLocation}</td>
+                        <td>{RequestDate}</td>
+                        <td>{SamsungOrderDate}</td>
+                        <td>{SamsungOrderNo}</td>
+                        <td>{SeqNo}</td>
+                        <td>{TrackingNo}</td>
+                        <td>{WtyType === "O" ? "OOW" : "IW"}</td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </section>
+
           <section></section>
         </div>
       </main>
     </>
   );
-}
+};
+export default memo(Management);
