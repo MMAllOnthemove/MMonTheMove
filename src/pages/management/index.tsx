@@ -1,5 +1,6 @@
 import { memo, useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
+import Board from 'react-trello'
 
 const Management = () => {
   const [data, setData] = useState<null | any>(null);
@@ -234,7 +235,6 @@ const Management = () => {
             </table>
           </section> */}
       <section>
-        <KanbanHeader/>
       </section>
         </div>
       </main>
