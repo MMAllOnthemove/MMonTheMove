@@ -1,11 +1,12 @@
-import { memo, useState, useEffect } from "react";
+import { memo, useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
-
 
 const Management = () => {
   const [data, setData] = useState<null | any>(null);
   const [isLoading, setLoading] = useState(false);
   const [search, setSearch] = useState<string>("");
+
+
 
   useEffect(() => {
     async function getData(url = "", data = {}) {
@@ -58,7 +59,7 @@ const Management = () => {
 
       <main>
         <div className="container flex justify-center flex-col mx-auto p-2">
-          <section className="my-4 flex justify-center flex-col items-center gap-2">
+          {/* <section className="my-4 flex justify-center flex-col items-center gap-2">
             <form onSubmit={handleSubmit} className="flex flex-row gap-2">
               <label htmlFor="searchPart" className="sr-only">
                 Search here
@@ -77,7 +78,7 @@ const Management = () => {
                 className="bg-sky-700 py-3 px-4 rounded text-white border-0 font-sans font-medium hover:bg-sky-950 cursor-pointer"
               />
             </form>
-          </section>
+          </section> */}
 
           {/* <section className="w-full overflow-auto my-5">
             <h2>EtFlowInfo</h2>
@@ -232,10 +233,9 @@ const Management = () => {
               </tbody>
             </table>
           </section> */}
-          <section>
-
-            
-          </section>
+      <section>
+        <KanbanHeader/>
+      </section>
         </div>
       </main>
     </>
