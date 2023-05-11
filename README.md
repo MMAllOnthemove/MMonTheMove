@@ -6,11 +6,11 @@ Features
 ### Every list item marked with an tick, is completed
 
 
-- [ x ] Part search
-- [ x ] Project management
+- [x] Part search
+- [x] Project management
 - [  ] Kanboard
 - [ ] Graphs
-- [ x ] Navbar
+- [x] Navbar
 - [ ] Signup 
 - [ ] Login
 - [ ] Admin profile

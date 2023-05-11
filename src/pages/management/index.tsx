@@ -143,9 +143,6 @@ const Management = () => {
                   <th>Channel</th>
                   <th>StReason</th>
                   <th>StReasonDesc</th>
-                  <th></th>
-                  <th></th>
-                  <th></th>
                 </tr>
               </thead>
               <tbody>
