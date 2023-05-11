@@ -79,7 +79,7 @@ const Management = () => {
             </form>
           </section>
 
-          <section className="w-full overflow-auto my-5">
+          {/* <section className="w-full overflow-auto my-5">
             <h2>EtFlowInfo</h2>
             <table>
               <thead>
@@ -231,9 +231,8 @@ const Management = () => {
                   })}
               </tbody>
             </table>
-          </section>
+          </section> */}
 
-          <section></section>
         </div>
       </main>
     </>
