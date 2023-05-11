@@ -70,7 +70,7 @@ function Parts() {
               <input
                 type="submit"
                 value="Search"
-                className="bg-sky-700 py-3 px-4 rounded text-white border-0 font-sans font-medium hover:bg-sky-950"
+                className="bg-sky-700 py-3 px-4 rounded text-white border-0 font-sans font-medium hover:bg-sky-950 cursor-pointer"
               />
             </form>
           </section>

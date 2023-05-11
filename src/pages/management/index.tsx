@@ -1,5 +1,6 @@
 import { memo, useState, useEffect } from "react";
 import Navbar from "../../../components/Navbar";
+import { Formik } from "formik";
 
 const Management = () => {
   const [data, setData] = useState<null | any>(null);
@@ -32,20 +33,6 @@ const Management = () => {
         });
     }
 
-    // getData(
-    //   "https://eu.ipaas.samsung.com/eu/gcic/GetSOList/1.0/ImportSet",
-    //   {
-    //     IvSvcOrderNo: search,
-    //     // IvAscJobNo: "4266443508",
-    //     IsCommonHeader: {
-    //       Company: "C720",
-    //       AscCode: "1730640",
-    //       Lang: "EN",
-    //       Country: "ZA",
-    //       Pac: "999999920180502152320",
-    //     },
-    //   }
-    // );
     getData("https://eu.ipaas.samsung.com/eu/gcic/GetSOInfoAll/1.0/ImportSet", {
       IvSvcOrderNo: search,
       // IvAscJobNo: "4266443508",
@@ -80,13 +67,14 @@ const Management = () => {
                 className="searchInput search input placeholder-sky-900 outline-none text-gray-950"
                 placeholder="Search Service Order No."
                 type="search"
+                name="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
               <input
                 type="submit"
                 value="Search"
-                className="bg-sky-700 py-3 px-4 rounded text-white border-0 font-sans font-medium hover:bg-sky-950"
+                className="bg-sky-700 py-3 px-4 rounded text-white border-0 font-sans font-medium hover:bg-sky-950 cursor-pointer"
               />
             </form>
           </section>
