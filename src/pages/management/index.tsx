@@ -1,6 +1,9 @@
 import { memo, useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
-
+import { AppContainer } from "@/styles/style";
+import { AddNewItem } from "../../../components/AddNewItem";
+import { Column } from "../../../components/Column";
+import { Card } from "../../../components/Card";
 
 const Management = () => {
   const [data, setData] = useState<null | any>(null);
@@ -233,7 +236,21 @@ const Management = () => {
             </table>
           </section> */}
           <section>
-    
+            <AppContainer>
+              <Column text="To Do">
+                <Card text="Generate app scaffold" />
+              </Column>
+              <Column text="In Progress">
+                <Card text="Learn Typescript" />
+              </Column>
+              <Column text="Done">
+                <Card text="Begin to use static typing" />
+              </Column>
+              <AddNewItem
+                toggleButtonText="+ Add another list"
+                onAdd={console.log}
+              />
+            </AppContainer>
           </section>
         </div>
       </main>
