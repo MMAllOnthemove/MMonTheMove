@@ -1,13 +1,11 @@
 import { memo, useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
-import Board from 'react-trello'
+
 
 const Management = () => {
   const [data, setData] = useState<null | any>(null);
   const [isLoading, setLoading] = useState(false);
   const [search, setSearch] = useState<string>("");
-
-
 
   useEffect(() => {
     async function getData(url = "", data = {}) {
@@ -234,8 +232,9 @@ const Management = () => {
               </tbody>
             </table>
           </section> */}
-      <section>
-      </section>
+          <section>
+    
+          </section>
         </div>
       </main>
     </>
