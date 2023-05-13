@@ -48,8 +48,8 @@ function Column({ colIndex }) {
       onDragOver={handleOnDragOver}
       className="border rounded p-1"
     >
-      <p className="flex items-center place-self-start gap-1">
-        <div className={`rounded-full w-4 h-4 ${color} `} />
+      <p className="flex items-center place-self-start gap-1 py-2 font-semibold text-gray-900">
+        {/* <div className={`rounded-full w-4 h-4 ${color} `} /> */}
         {col.name} ({col.tasks.length})
       </p>
 
