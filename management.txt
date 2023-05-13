@@ -266,7 +266,7 @@ const Management = () => {
                       )
                     }
                   >
-                    Kanboard View
+                    Tab 1
                   </Tab>
                   <Tab
                     className={({ selected }) =>
@@ -301,26 +301,7 @@ const Management = () => {
                       "rounded-xl bg-white p-3",
                       "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2"
                     )}
-                  >
-                    <div className=" overflow-hidden  overflow-x-scroll">
-                      {boards.length > 0 ? (
-                        <>
-                          <ManagementTabOneHeader
-                            setIsBoardModalOpen={setIsBoardModalOpen}
-                            isBoardModalOpen={isBoardModalOpen}
-                          />
-                          <ManagementTabOne
-                            setIsBoardModalOpen={setIsBoardModalOpen}
-                            isBoardModalOpen={isBoardModalOpen}
-                          />
-                        </>
-                      ) : (
-                        <>
-                          <EmptyBoard type="add" />
-                        </>
-                      )}
-                    </div>
-                  </Tab.Panel>
+                  ></Tab.Panel>
                   <Tab.Panel
                     className={classNames(
                       "rounded-xl bg-white p-3",
