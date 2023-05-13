@@ -1,6 +1,7 @@
 import { memo, useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
 import { Tab } from "@headlessui/react";
+import ManagementTabOne from "../../../components/ManagementTabOne";
 
 // Classes
 
@@ -253,7 +254,7 @@ const Management = () => {
                       )
                     }
                   >
-                    Tab 1
+                    <ManagementTabOne />
                   </Tab>
                   <Tab
                     className={({ selected }) =>
