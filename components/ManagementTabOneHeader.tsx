@@ -45,51 +45,16 @@ function ManagementTabOneHeader({ setIsBoardModalOpen, isBoardModalOpen }) {
   };
 
   return (
-    <div className="h-24 border w-full flex items-center justify-between">
-      <header className=" flex items-center justify-between">
+    <div className="w-full flex items-center">
+      <header className="w-full flex items-center justify-between mb-3">
         {/* Left Side  */}
-        <div className=" ">
-          <h3 className="truncate max-w-[200px] md:text-2xl text-xl font-bold md:ml-20 font-sans  ">
-            {board.name}
-          </h3>
-          <div className="">
-            {openDropdown ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
-                />
-              </svg>
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 4.5v15m0 0l6.75-6.75M12 19.5l-6.75-6.75"
-                />
-              </svg>
-            )}
-          </div>
-        </div>
+        <h3 className="truncate md:text-2xl text-xl font-bold font-sans">
+          {board.name}
+        </h3>
 
         {/* Right Side */}
 
-        <div className=" flex space-x-4 items-center md:space-x-6 ">
+        <div className="flex place-content-end items-center gap-2">
           <button
             className="border rounded"
             onClick={() => {
@@ -99,12 +64,12 @@ function ManagementTabOneHeader({ setIsBoardModalOpen, isBoardModalOpen }) {
             Add new column
           </button>
           <button
-            className=" button hidden md:block "
+            className="border"
             onClick={() => {
               setIsTaskModalOpen((prevState) => !prevState);
             }}
           >
-            + Add New Task
+            Add New Task
           </button>
           <button
             onClick={() => {

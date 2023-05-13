@@ -43,8 +43,12 @@ function Column({ colIndex }) {
   };
 
   return (
-    <div onDrop={handleOnDrop} onDragOver={handleOnDragOver} className="border">
-      <p className="">
+    <div
+      onDrop={handleOnDrop}
+      onDragOver={handleOnDragOver}
+      className="border rounded p-1"
+    >
+      <p className="flex items-center place-self-start gap-1">
         <div className={`rounded-full w-4 h-4 ${color} `} />
         {col.name} ({col.tasks.length})
       </p>
