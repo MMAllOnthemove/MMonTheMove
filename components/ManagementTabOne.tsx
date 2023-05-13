@@ -32,7 +32,7 @@ function ManagementTabOne() {
   // const [isSideBarOpen, setIsSideBarOpen] = useState(true);
 
   return (
-    <div className="flex items-start flex-row gap-5 h-full w-full p-5">
+    <div className="flex items-start flex-row gap-5 h-full w-full py-2">
       {/* {windowSize[0] >= 768 && (
         <Sidebar
           setIsBoardModalOpen={setIsBoardModalOpen}
