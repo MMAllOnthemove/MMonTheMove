@@ -1,79 +1,79 @@
-import { Tab } from '@headlessui/react'
-import { useState } from 'react'
-import AnalyticCard from '../../../components/AnalyticCard'
-import Navbar from '../../../components/Navbar'
+import { Tab } from "@headlessui/react";
+import { useState } from "react";
+import AnalyticCard from "../../../components/AnalyticCard";
+import Navbar from "../../../components/Navbar";
 
 interface Props {
-    props: any;
+  props: any;
 }
 function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 function Dashboard() {
-    let [categories] = useState({
-        Graph_View: [
-            {
-                id: 1,
-                title: 'Does drinking coffee make you smarter?',
-                date: '5h ago',
-                commentCount: 5,
-                shareCount: 2,
-            },
-            {
-                id: 2,
-                title: "So you've bought coffee... now what?",
-                date: '2h ago',
-                commentCount: 3,
-                shareCount: 2,
-            },
-        ],
-        Table_View: [
-            {
-                id: 1,
-                title: 'Is tech making coffee better or worse?',
-                date: 'Jan 7',
-                commentCount: 29,
-                shareCount: 16,
-            },
-            {
-                id: 2,
-                title: 'The most innovative things happening in coffee',
-                date: 'Mar 19',
-                commentCount: 24,
-                shareCount: 12,
-            },
-        ],
-        Board_View: [
-            {
-                id: 1,
-                title: 'Ask Me Anything: 10 answers to your questions about coffee',
-                date: '2d ago',
-                commentCount: 9,
-                shareCount: 5,
-            },
-            {
-                id: 2,
-                title: "The worst advice we've ever heard about coffee",
-                date: '4d ago',
-                commentCount: 1,
-                shareCount: 2,
-            },
-        ],
-    })
-    return (
-        <>
-            <Navbar />
-            <main>
-                <div className="container mx-auto p-4">
-                    <section className="flex justify-between items-center my-5">
-                        <h1 className="text-4xl font-bold text-gray-700">Dashboard</h1>
-                    </section>
+  let [categories] = useState({
+    Graph_View: [
+      {
+        id: 1,
+        title: "Does drinking coffee make you smarter?",
+        date: "5h ago",
+        commentCount: 5,
+        shareCount: 2,
+      },
+      {
+        id: 2,
+        title: "So you've bought coffee... now what?",
+        date: "2h ago",
+        commentCount: 3,
+        shareCount: 2,
+      },
+    ],
+    Table_View: [
+      {
+        id: 1,
+        title: "Is tech making coffee better or worse?",
+        date: "Jan 7",
+        commentCount: 29,
+        shareCount: 16,
+      },
+      {
+        id: 2,
+        title: "The most innovative things happening in coffee",
+        date: "Mar 19",
+        commentCount: 24,
+        shareCount: 12,
+      },
+    ],
+    Board_View: [
+      {
+        id: 1,
+        title: "Ask Me Anything: 10 answers to your questions about coffee",
+        date: "2d ago",
+        commentCount: 9,
+        shareCount: 5,
+      },
+      {
+        id: 2,
+        title: "The worst advice we've ever heard about coffee",
+        date: "4d ago",
+        commentCount: 1,
+        shareCount: 2,
+      },
+    ],
+  });
+  return (
+    <>
+      <Navbar />
+      <main>
+        <div className="container mx-auto p-4">
+          <section className="flex justify-between items-center my-5">
+            <h1 className="text-4xl font-bold text-gray-700">Dashboard</h1>
+          </section>
 
-                    <section className='analytics_cards'>
-                        <AnalyticCard />
-                    </section>
-                    <section>
+          <section className="analytics_cards">
+            <AnalyticCard />
+          </section>
+          {/* <section>
                         <div className="w-full max-w-full px-2 py-16 sm:px-0">
                             <Tab.Group>
                                 <Tab.List className="flex space-x-1 rounded-xl bg-gray-200 p-1">
@@ -148,12 +148,11 @@ function Dashboard() {
                                 </Tab.Panels>
                             </Tab.Group>
                         </div>
-                    </section>
-                </div>
-            </main>
-        </>
-    )
+                    </section> */}
+        </div>
+      </main>
+    </>
+  );
 }
 
-
-export default Dashboard
+export default Dashboard;
