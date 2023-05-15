@@ -252,17 +252,17 @@ const Management = () => {
             </table>
           </section> */}
           <section>
-            <div className="tabs w-full max-w-full px-2 py-16 sm:px-0">
+            <div className="w-full max-w-full px-2 py-16 sm:px-0">
               <Tab.Group>
-                <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
+                <Tab.List className="flex space-x-1 shadow-md p-2 rounded-full">
                   <Tab
                     className={({ selected }) =>
                       classNames(
-                        "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
-                        "ring-white ring-opacity-60 ring-offset-2  focus:outline-none focus:ring-2",
+                        "w-full rounded-full py-2.5 text-md font-medium  text-gray-900",
+                        "border border-gray-100 focus:outline-none",
                         selected
-                          ? "bg-white shadow"
-                          : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
+                          ? "bg-[#e6eef9] text-[#185ee0]"
+                          : "text-blue-900 hover:bg-white/[0.12] "
                       )
                     }
                   >
@@ -271,11 +271,11 @@ const Management = () => {
                   <Tab
                     className={({ selected }) =>
                       classNames(
-                        "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
-                        "ring-white ring-opacity-60 ring-offset-2  focus:outline-none focus:ring-2",
+                        "w-full rounded-full py-2.5 text-md font-medium  text-gray-900",
+                        "border border-gray-100 focus:outline-none",
                         selected
-                          ? "bg-white shadow"
-                          : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
+                          ? "bg-[#e6eef9] text-[#185ee0]"
+                          : "text-blue-900 hover:bg-white/[0.12] "
                       )
                     }
                   >
@@ -284,11 +284,11 @@ const Management = () => {
                   <Tab
                     className={({ selected }) =>
                       classNames(
-                        "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
-                        "ring-white ring-opacity-60 ring-offset-2  focus:outline-none focus:ring-2",
+                        "w-full rounded-full py-2.5 text-md font-medium  text-gray-900",
+                        "border border-gray-100 focus:outline-none",
                         selected
-                          ? "bg-white shadow"
-                          : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
+                          ? "bg-[#e6eef9] text-[#185ee0]"
+                          : "text-blue-900 hover:bg-white/[0.12] "
                       )
                     }
                   >
