@@ -4,7 +4,6 @@ import {
   department_card_units_in,
 } from "../public/_data/department_card";
 
-
 // Units in card in dashboard
 
 function DepartmentCardUnitsIn() {
@@ -57,4 +56,3 @@ function DepartmentCardAssessed() {
 }
 
 export { DepartmentCardAssessed, DepartmentCardUnitsIn };
-

@@ -2,11 +2,9 @@ import AddEditBoardModal from "@/modals/AddEditBoardModal";
 import AddEditTaskModal from "@/modals/AddEditTaskModal";
 import DeleteModal from "@/modals/DeleteModal";
 import boardsSlice from "@/redux/boardsSlice";
-import { Fragment, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-// import ElipsisMenu from "./ElipsisMenu";
-import HeaderDropDown from "./ManagementTabOneHeaderDropdown";
 import { Menu, Transition } from "@headlessui/react";
+import { Fragment, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 function ManagementTabOneHeader({ setIsBoardModalOpen, isBoardModalOpen }) {
   const [openDropdown, setOpenDropdown] = useState(false);
@@ -56,34 +54,10 @@ function ManagementTabOneHeader({ setIsBoardModalOpen, isBoardModalOpen }) {
         {/* Right Side */}
 
         <div className="flex place-content-end items-center gap-2">
-          {/* <button
-            className="border rounded"
-            onClick={() => {
-              setIsBoardModalOpen(true);
-            }}
-          >
-            Add new column
-          </button>
-          <button
-            className="border"
-            onClick={() => {
-              setIsTaskModalOpen((prevState) => !prevState);
-            }}
-          >
-            Add New Task
-          </button>
-          <button
-            onClick={() => {
-              setIsTaskModalOpen((prevState) => !prevState);
-            }}
-            className=" button py-1 px-3 md:hidden "
-          >
-            +
-          </button> */}
-
+          {/* Add button kanban board header */}
           <Menu as="div" className="relative inline-block text-left">
             <div>
-              <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+              <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                 Menu
                 {/* <ChevronDownIcon
                     className="ml-2 -mr-1 h-5 w-5 text-violet-200 hover:text-violet-100"
@@ -124,7 +98,7 @@ function ManagementTabOneHeader({ setIsBoardModalOpen, isBoardModalOpen }) {
               </Menu.Items>
             </Transition>
           </Menu>
-
+          {/* Elipsis dropdown menu kanban board heaader */}
           <Menu as="div" className="relative inline-block text-left">
             <div
               onClick={() => {
@@ -133,7 +107,7 @@ function ManagementTabOneHeader({ setIsBoardModalOpen, isBoardModalOpen }) {
                 setIsElipsisMenuOpen((prevState) => !prevState);
               }}
             >
-              <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+              <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -187,37 +161,6 @@ function ManagementTabOneHeader({ setIsBoardModalOpen, isBoardModalOpen }) {
               </Menu.Items>
             </Transition>
           </Menu>
-          {/* 
-          <svg
-            onClick={() => {
-              // setBoardType("edit");
-              // setOpenDropdown(false);
-              setIsElipsisMenuOpen((prevState) => !prevState);
-            }}
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6 cursor-pointer"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
-            />
-          </svg> */}
-
-          {/* <img
-            onClick={() => {
-              setBoardType("edit");
-              setOpenDropdown(false);
-              setIsElipsisMenuOpen((prevState) => !prevState);
-            }}
-            src={elipsis}
-            alt="elipsis"
-            className=" cursor-pointer"
-          /> */}
           {isElipsisMenuOpen && (
             <Menu>
               <Menu.Items
@@ -252,11 +195,6 @@ function ManagementTabOneHeader({ setIsBoardModalOpen, isBoardModalOpen }) {
                 </div>
               </Menu.Items>
             </Menu>
-            // <ElipsisMenu
-            //   type="Boards"
-            //   setOpenEditModal={setOpenEditModal}
-            //   setOpenDeleteModal={setOpenDeleteModal}
-            // />
           )}
         </div>
 

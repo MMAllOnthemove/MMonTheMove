@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import TaskModal from "@/modals/TaskModal";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 
 function Task({ colIndex, taskIndex }) {
   const boards = useSelector((state) => state.boards);

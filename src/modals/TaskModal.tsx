@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ElipsisMenu from "../../components/ElipsisMenu";
-import elipsis from "../assets/icon-vertical-ellipsis.svg";
-import boardsSlice from "../redux/boardsSlice";
 import Subtask from "../../components/Subtask";
+import boardsSlice from "../redux/boardsSlice";
 import AddEditTaskModal from "./AddEditTaskModal";
 import DeleteModal from "./DeleteModal";
 
