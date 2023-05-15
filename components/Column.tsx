@@ -21,10 +21,10 @@ function Column({ colIndex }) {
   const [color, setColor] = useState(null);
   const boards = useSelector((state) => state.boards);
   const board = boards.find((board) => board.isActive === true);
-  const col = board.columns.find((col, i) => i === colIndex);
-  useEffect(() => {
-    setColor(shuffle(colors).pop());
-  }, [dispatch]);
+  const col = board.columns.find((col: any, i: any) => i === colIndex);
+  // useEffect(() => {
+  //   setColor(shuffle(colors).pop());
+  // }, [dispatch]);
 
   const handleOnDrop = (e) => {
     const { prevColIndex, taskIndex } = JSON.parse(
@@ -43,7 +43,7 @@ function Column({ colIndex }) {
   };
 
   return (
-    <div
+    <article
       onDrop={handleOnDrop}
       onDragOver={handleOnDragOver}
       className="border rounded p-1"
@@ -56,7 +56,7 @@ function Column({ colIndex }) {
       {col.tasks.map((task, index) => (
         <Task key={index} taskIndex={index} colIndex={colIndex} />
       ))}
-    </div>
+    </article>
   );
 }
 

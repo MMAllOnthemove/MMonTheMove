@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import AddEditBoardModal from "@/modals/AddEditBoardModal";
 import Column from "./Column";
 import EmptyBoard from "./EmptyBoard";
+import { nanoid } from "@reduxjs/toolkit";
 // import Sidebar from "./Sidebar";
 
 function ManagementTabOne() {
@@ -32,33 +33,37 @@ function ManagementTabOne() {
   // const [isSideBarOpen, setIsSideBarOpen] = useState(true);
 
   return (
-    <div className="flex items-start flex-row gap-5 h-full w-full py-2">
-      {/* {windowSize[0] >= 768 && (
-        <Sidebar
-          setIsBoardModalOpen={setIsBoardModalOpen}
-          isBoardModalOpen={isBoardModalOpen}
-          isSideBarOpen={isSideBarOpen}
-          setIsSideBarOpen={setIsSideBarOpen}
-        />
-      )} */}
+    // <div className="flex items-start flex-row gap-5 h-full w-full py-2">
 
-      {/* Columns Section */}
+    //   {/* Columns Section */}
 
+    //   {columns.length > 0 ? (
+    //     console.log(columns)
+    //     <>
+    //       {columns.map((col: any, index: any) => (
+    //         <div className="row flex items-center gap-5">
+    //           <Column key={col.name} colIndex={index} />
+    //         </div>
+    //       ))}
+    //     </>
+    //   ) : (
+    //     <>
+    //       <EmptyBoard type="edit" />
+    //     </>
+    //   )}
+    //   {isBoardModalOpen && (
+    //     <AddEditBoardModal
+    //       type="edit"
+    //       setIsBoardModalOpen={setIsBoardModalOpen}
+    //     />
+    //   )}
+    // </div>
+    <section className="flex items-start flex-row h-full w-full gap-5">
       {columns.length > 0 ? (
         <>
-          {columns.map((col, index) => (
-            <div className="row flex items-center gap-5">
-              <Column key={index} colIndex={index} />
-            </div>
+          {columns.map((col: any, index: any) => (
+            <Column key={index} colIndex={index} />
           ))}
-          {/* <div
-            onClick={() => {
-              setIsBoardModalOpen(true);
-            }}
-            className=" h-screen dark:bg-[#2b2c3740] flex justify-center items-center font-bold text-2xl hover:text-[#635FC7] transition duration-300 cursor-pointer bg-[#E9EFFA] scrollbar-hide mb-2   mx-5 pt-[90px] min-w-[280px] text-[#828FA3] mt-[135px] rounded-lg "
-          >
-            + New Column
-          </div> */}
         </>
       ) : (
         <>
@@ -71,7 +76,7 @@ function ManagementTabOne() {
           setIsBoardModalOpen={setIsBoardModalOpen}
         />
       )}
-    </div>
+    </section>
   );
 }
 
