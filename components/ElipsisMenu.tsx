@@ -5,8 +5,8 @@ function ElipsisMenu({ type, setOpenEditModal, setOpenDeleteModal }) {
     <div
       className={
         type === "Boards"
-          ? " absolute  top-16  right-5"
-          : " absolute  top-6  right-4"
+          ? " absolute  top-30 right-5"
+          : " absolute  top-30 right-5"
       }
     >
       <div className=" flex justify-end items-center">
