@@ -6,6 +6,7 @@
         "columns": [
           {
             "name": "Todo",
+            "id": 1,
             "tasks": [
               {
                 "title": "Build UI for onboarding flow",
@@ -71,6 +72,7 @@
           },
           {
             "name": "Doing",
+            "id": 2,
             "tasks": [
               {
                 "title": "Design settings and search pages",
@@ -182,6 +184,7 @@
           },
           {
             "name": "Done",
+            "id": 3,
             "tasks": [
               {
                 "title": "Conduct 5 wireframe tests",

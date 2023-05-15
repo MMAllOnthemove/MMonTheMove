@@ -197,13 +197,6 @@ function ManagementTabOneHeader({ setIsBoardModalOpen, isBoardModalOpen }) {
             </Menu>
           )}
         </div>
-
-        {openDropdown && (
-          <HeaderDropDown
-            setOpenDropdown={setOpenDropdown}
-            setIsBoardModalOpen={setIsBoardModalOpen}
-          />
-        )}
       </header>
       {isTaskModalOpen && (
         <AddEditTaskModal

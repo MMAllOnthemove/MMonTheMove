@@ -20,13 +20,14 @@ function DeleteModal({ type, title, onDeleteBtnClick, setIsDeleteModalOpen }) {
         </h3>
         {type === "task" ? (
           <p className="text-gray-500 font-[600] tracking-wide text-xs pt-6">
-            Are you sure you want to delete the "{title}" task and its subtasks?
-            This action cannot be reversed.
+            Are you sure you want to delete the `&quot;`,{title}`&quot;`, task
+            and its subtasks? This action cannot be reversed.
           </p>
         ) : (
           <p className="text-gray-500 font-[600] tracking-wide text-xs pt-6">
-            Are you sure you want to delete the "{title}" board? This action
-            will remove all columns and tasks and cannot be reversed.
+            Are you sure you want to delete the `&quot;`,{title}`&quot;`, board?
+            This action will remove all columns and tasks and cannot be
+            reversed.
           </p>
         )}
 
