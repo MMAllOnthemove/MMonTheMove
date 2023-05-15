@@ -2,13 +2,13 @@ import React from "react";
 import { analytic } from "../public/_data/analytics";
 import { useRouter } from "next/router";
 
-
 // Dashboard analytics card
 
 function AnalyticCard() {
   const router = useRouter();
   return (
     <>
+      {/* Gets card content analytic data we imported  */}
       {analytic.map((item) => (
         <article
           onClick={() => router.push(`/dashboard/${item.href}`)}

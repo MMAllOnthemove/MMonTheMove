@@ -1,8 +1,7 @@
-import React, { useState } from "react";
-import crossIcon from "../assets/icon-cross.svg";
-import boardsSlice from "../redux/boardsSlice";
-import { v4 as uuidv4 } from "uuid";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
+import boardsSlice from "../redux/boardsSlice";
 
 function AddEditBoardModal({ setIsBoardModalOpen, type }) {
   const dispatch = useDispatch();
