@@ -11,7 +11,7 @@ export default function Navbar() {
     <>
       {/* The navbar */}
       <nav
-        className="flex navbar items-center justify-between shadow-sm p-6 lg:px-8"
+        className="flex navbar items-center justify-between shadow-sm p-6 lg:px-8 z-10"
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
