@@ -16,7 +16,7 @@ function Parts() {
         credentials: "same-origin", // include, *same-origin, omit
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer 1c5914b1-9eaf-3aa7-a0d9-cf11c0a72e10",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPAAS}`,
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         redirect: "follow", // manual, *follow, error
@@ -35,11 +35,11 @@ function Parts() {
 
     getData("https://eu.ipaas.samsung.com/eu/gcic/GetPartsInfo/1.0/ImportSet", {
       IsCommonHeader: {
-        Company: "C720",
-        AscCode: "1730640",
-        Lang: "EN",
-        Country: "ZA",
-        Pac: "999999920180502152320",
+        Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
+        AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
+        Lang: `${process.env.NEXT_PUBLIC_LANG}`,
+        Country: `${process.env.NEXT_PUBLIC_COUNTRY}`,
+        Pac: `${process.env.NEXT_PUBLIC_PAC}`,
       },
       IvPartsNo: search,
     });
