@@ -1,8 +1,6 @@
-import Image from 'next/image'
+import Image from "next/image";
 
-import Navbar from '../../components/Navbar'
-
-
+import Navbar from "../../components/Navbar";
 
 export default function Home() {
   return (
@@ -15,5 +13,5 @@ export default function Home() {
         <h1 className="text-4xl text-green-500">The ultimate teams app</h1>
       </main>
     </>
-  )
+  );
 }
