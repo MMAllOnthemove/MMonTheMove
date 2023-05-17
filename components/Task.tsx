@@ -23,6 +23,8 @@ function Task({ colIndex, taskIndex }) {
       "text",
       JSON.stringify({ taskIndex, prevColIndex: colIndex })
     );
+
+    // console.log("Dragged", colIndex);
   };
 
   return (
