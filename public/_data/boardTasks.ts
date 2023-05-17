@@ -1,4 +1,4 @@
-const boards = [
+export const boards = [
     {
         name: "",
         isActive: false,
