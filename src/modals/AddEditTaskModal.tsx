@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
+import { nanoid } from "@reduxjs/toolkit";
 import boardsSlice from "../redux/boardsSlice";
 
 function AddEditTaskModal({
@@ -26,8 +26,8 @@ function AddEditTaskModal({
   const [status, setStatus] = useState(columns[prevColIndex].name);
   const [newColIndex, setNewColIndex] = useState(prevColIndex);
   const [subtasks, setSubtasks] = useState([
-    { title: "", isCompleted: false, id: uuidv4() },
-    { title: "", isCompleted: false, id: uuidv4() },
+    { title: "", isCompleted: false, id: nanoid() },
+    { title: "", isCompleted: false, id: nanoid() },
   ]);
 
   const onChangeSubtasks = (id, newValue) => {
@@ -61,7 +61,7 @@ function AddEditTaskModal({
   if (type === "edit" && isFirstLoad) {
     setSubtasks(
       task.subtasks.map((subtask) => {
-        return { ...subtask, id: uuidv4() };
+        return { ...subtask, id: nanoid() };
       })
     );
     setTitle(task.title);

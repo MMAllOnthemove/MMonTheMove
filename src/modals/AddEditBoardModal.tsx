@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
+import { nanoid } from "@reduxjs/toolkit";
 import boardsSlice from "../redux/boardsSlice";
 
 function AddEditBoardModal({ setIsBoardModalOpen, type }) {
@@ -8,8 +8,8 @@ function AddEditBoardModal({ setIsBoardModalOpen, type }) {
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [name, setName] = useState("");
   const [newColumns, setNewColumns] = useState([
-    { name: "Todo", tasks: [], id: uuidv4() },
-    { name: "Doing", tasks: [], id: uuidv4() },
+    { name: "Todo", tasks: [], id: nanoid() },
+    { name: "Doing", tasks: [], id: nanoid() },
   ]);
   const [isValid, setIsValid] = useState(true);
   const board = useSelector((state) => state.boards).find(
@@ -19,7 +19,7 @@ function AddEditBoardModal({ setIsBoardModalOpen, type }) {
   if (type === "edit" && isFirstLoad) {
     setNewColumns(
       board.columns.map((col) => {
-        return { ...col, id: uuidv4() };
+        return { ...col, id: nanoid() };
       })
     );
     setName(board.name);
