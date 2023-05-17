@@ -1,139 +1,261 @@
-  // <div className="p-2 border w-full flex items-center">
-    //   <header className=" flex items-center justify-between">
-    //     {/* Left Side  */}
-    //     <div className="flex items-center justify-between">
-    //       <h3 className="truncate md:text-2xl text-xl font-bold md:ml-20 font-sans">
-    //         {board.name}
-    //       </h3>
-    //       <div className="flex place-content-end">
-    //         {openDropdown ? (
-    //           <svg
-    //             xmlns="http://www.w3.org/2000/svg"
-    //             fill="none"
-    //             viewBox="0 0 24 24"
-    //             strokeWidth={1.5}
-    //             stroke="currentColor"
-    //             className="w-6 h-6"
-    //           >
-    //             <path
-    //               strokeLinecap="round"
-    //               strokeLinejoin="round"
-    //               d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
-    //             />
-    //           </svg>
-    //         ) : (
-    //           <svg
-    //             xmlns="http://www.w3.org/2000/svg"
-    //             fill="none"
-    //             viewBox="0 0 24 24"
-    //             strokeWidth={1.5}
-    //             stroke="currentColor"
-    //             className="w-6 h-6"
-    //           >
-    //             <path
-    //               strokeLinecap="round"
-    //               strokeLinejoin="round"
-    //               d="M12 4.5v15m0 0l6.75-6.75M12 19.5l-6.75-6.75"
-    //             />
-    //           </svg>
-    //         )}
-    //       </div>
-    //     </div>
+import AddEditBoardModal from "@/modals/AddEditBoardModal";
+import AddEditTaskModal from "@/modals/AddEditTaskModal";
+import DeleteModal from "@/modals/DeleteModal";
+import boardsSlice from "@/redux/boardsSlice";
+import { Menu, Transition } from "@headlessui/react";
+import { Fragment, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  Modal,
+  Button,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from "@chakra-ui/react";
 
-    //     {/* Right Side */}
+function TaskAddModal() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  return (
+    <>
+   <Button onClick={onOpen}>Open Modal</Button>
 
-    //     <div className=" flex space-x-4 items-center md:space-x-6 ">
-    //       <button
-    //         className="border rounded"
-    //         onClick={() => {
-    //           setIsBoardModalOpen(true);
-    //         }}
-    //       >
-    //         Add new column
-    //       </button>
-    //       <button
-    //         className=" button hidden md:block "
-    //         onClick={() => {
-    //           setIsTaskModalOpen((prevState) => !prevState);
-    //         }}
-    //       >
-    //         + Add New Task
-    //       </button>
-    //       <button
-    //         onClick={() => {
-    //           setIsTaskModalOpen((prevState) => !prevState);
-    //         }}
-    //         className=" button py-1 px-3 md:hidden "
-    //       >
-    //         +
-    //       </button>
-    //       <svg
-    //         onClick={() => {
-    //           setBoardType("edit");
-    //           setOpenDropdown(false);
-    //           setIsElipsisMenuOpen((prevState) => !prevState);
-    //         }}
-    //         xmlns="http://www.w3.org/2000/svg"
-    //         fill="none"
-    //         viewBox="0 0 24 24"
-    //         strokeWidth={1.5}
-    //         stroke="currentColor"
-    //         className="w-6 h-6 cursor-pointer"
-    //       >
-    //         <path
-    //           strokeLinecap="round"
-    //           strokeLinejoin="round"
-    //           d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
-    //         />
-    //       </svg>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Modal Title</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>Modal Body</ModalBody>
 
-    //       {/* <img
-    //         onClick={() => {
-    //           setBoardType("edit");
-    //           setOpenDropdown(false);
-    //           setIsElipsisMenuOpen((prevState) => !prevState);
-    //         }}
-    //         src={elipsis}
-    //         alt="elipsis"
-    //         className=" cursor-pointer"
-    //       /> */}
-    //       {isElipsisMenuOpen && (
-    //         <ElipsisMenu
-    //           type="Boards"
-    //           setOpenEditModal={setOpenEditModal}
-    //           setOpenDeleteModal={setOpenDeleteModal}
-    //         />
-    //       )}
-    //     </div>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant="ghost">Secondary Action</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}
 
-    //     {openDropdown && (
-    //       <HeaderDropDown
-    //         setOpenDropdown={setOpenDropdown}
-    //         setIsBoardModalOpen={setIsBoardModalOpen}
-    //       />
-    //     )}
-    //   </header>
-    //   {isTaskModalOpen && (
-    //     <AddEditTaskModal
-    //       setIsAddTaskModalOpen={setIsTaskModalOpen}
-    //       type="add"
-    //       device="mobile"
-    //     />
-    //   )}
+function ManagementTabOneHeader({ setIsBoardModalOpen, isBoardModalOpen }) {
+  const [openDropdown, setOpenDropdown] = useState(false);
+  const [isElipsisMenuOpen, setIsElipsisMenuOpen] = useState(false);
+  const [boardType, setBoardType] = useState("add");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
 
-    //   {isBoardModalOpen && (
-    //     <AddEditBoardModal
-    //       setBoardType={setBoardType}
-    //       type={boardType}
-    //       setIsBoardModalOpen={setIsBoardModalOpen}
-    //     />
-    //   )}
-    //   {isDeleteModalOpen && (
-    //     <DeleteModal
-    //       setIsDeleteModalOpen={setIsDeleteModalOpen}
-    //       type="board"
-    //       title={board.name}
-    //       onDeleteBtnClick={onDeleteBtnClick}
-    //     />
-    //   )}
-    // </div>
+  const dispatch = useDispatch();
+
+  const boards = useSelector((state) => state.boards);
+  const board = boards.find((board) => board.isActive);
+
+  const onDropdownClick = () => {
+    setOpenDropdown((state) => !state);
+    setIsElipsisMenuOpen(false);
+    setBoardType("add");
+  };
+
+  const setOpenEditModal = () => {
+    setIsBoardModalOpen(true);
+    setIsElipsisMenuOpen(false);
+  };
+  const setOpenDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+    setIsElipsisMenuOpen(false);
+  };
+
+  const onDeleteBtnClick = (e) => {
+    if (e.target.textContent === "Delete") {
+      dispatch(boardsSlice.actions.deleteBoard());
+      dispatch(boardsSlice.actions.setBoardActive({ index: 0 }));
+      setIsDeleteModalOpen(false);
+    } else {
+      setIsDeleteModalOpen(false);
+    }
+  };
+  return (
+    <div className="w-full flex items-center">
+      <header className="w-full flex items-center justify-between mb-3">
+        {/* Left Side  */}
+        <h3 className="truncate md:text-2xl text-xl font-bold font-sans">
+          {board.name}
+        </h3>
+
+        {/* Right Side */}
+
+        <div className="flex place-content-end items-center gap-2">
+          {/* Add button kanban board header */}
+          <Menu as="div" className="relative inline-block text-left">
+            <div>
+              <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+                Add
+                {/* <ChevronDownIcon
+                    className="ml-2 -mr-1 h-5 w-5 text-violet-200 hover:text-violet-100"
+                    aria-hidden="true"
+                  /> */}
+              </Menu.Button>
+            </div>
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-100"
+              enterFrom="transform opacity-0 scale-95"
+              enterTo="transform opacity-100 scale-100"
+              leave="transition ease-in duration-75"
+              leaveFrom="transform opacity-100 scale-100"
+              leaveTo="transform opacity-0 scale-95"
+            >
+              <Menu.Items className="absolute right-0 mt-2 w-auto origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <div className="px-1 py-1 ">
+                  <Menu.Item>
+                    {/* <button
+                      onClick={() => {
+                        setIsBoardModalOpen(true);
+                      }}
+                      className={`
+                              text-gray-900
+                          group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    >
+                      Column
+                    </button> */}
+                    <TaskAddModal />
+                  </Menu.Item>
+                  <Menu.Item>
+                    <button
+                      onClick={() => {
+                        setIsTaskModalOpen((prevState) => !prevState);
+                      }}
+                      className={`
+                              text-gray-900
+                          group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    >
+                      Task
+                    </button>
+                  </Menu.Item>
+                </div>
+              </Menu.Items>
+            </Transition>
+          </Menu>
+          {/* Elipsis dropdown menu kanban board heaader */}
+          <Menu as="div" className="relative inline-block text-left">
+            <div
+              onClick={() => {
+                setBoardType("edit");
+                setOpenDropdown(false);
+                setIsElipsisMenuOpen((prevState) => !prevState);
+              }}
+            >
+              <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+                Options
+                {/* <ChevronDownIcon
+                    className="ml-2 -mr-1 h-5 w-5 text-violet-200 hover:text-violet-100"
+                    aria-hidden="true"
+                  /> */}
+              </Menu.Button>
+            </div>
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-100"
+              enterFrom="transform opacity-0 scale-95"
+              enterTo="transform opacity-100 scale-100"
+              leave="transition ease-in duration-75"
+              leaveFrom="transform opacity-100 scale-100"
+              leaveTo="transform opacity-0 scale-95"
+            >
+              <Menu.Items className="absolute right-0 mt-2 w-100 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <div className="px-1 py-1 ">
+                  <Menu.Item>
+                    <button
+                      onClick={() => {
+                        setOpenEditModal();
+                      }}
+                      className={`
+                              text-gray-900
+                          group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    >
+                      Edit
+                    </button>
+                  </Menu.Item>
+                  <Menu.Item>
+                    <button
+                      onClick={() => setOpenDeleteModal()}
+                      className={`
+                              text-gray-900
+                          group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    >
+                      Delete
+                    </button>
+                  </Menu.Item>
+                </div>
+              </Menu.Items>
+            </Transition>
+          </Menu>
+          {isElipsisMenuOpen && (
+            <Menu>
+              <Menu.Items
+                type="Boards"
+                setOpenEditModal={setOpenEditModal}
+                setOpenDeleteModal={setOpenDeleteModal}
+                className="absolute right-0 mt-2 w-100 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+              >
+                <div className="px-1 py-1 ">
+                  <Menu.Item>
+                    <button
+                      onClick={() => {
+                        setOpenEditModal();
+                      }}
+                      className={`
+                            text-gray-900
+                        group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    >
+                      Edit
+                    </button>
+                  </Menu.Item>
+                  <Menu.Item>
+                    <button
+                      onClick={() => setOpenDeleteModal()}
+                      className={`
+                            text-gray-900
+                        group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    >
+                      Delete
+                    </button>
+                  </Menu.Item>
+                </div>
+              </Menu.Items>
+            </Menu>
+          )}
+        </div>
+      </header>
+      {isTaskModalOpen && (
+        <AddEditTaskModal
+          setIsAddTaskModalOpen={setIsTaskModalOpen}
+          type="add"
+          device="mobile"
+        />
+      )}
+
+      {isBoardModalOpen && (
+        <AddEditBoardModal
+          setBoardType={setBoardType}
+          type={boardType}
+          setIsBoardModalOpen={setIsBoardModalOpen}
+        />
+      )}
+      {isDeleteModalOpen && (
+        <DeleteModal
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
+          type="board"
+          title={board.name}
+          onDeleteBtnClick={onDeleteBtnClick}
+        />
+      )}
+    </div>
+  );
+}
+
+export default ManagementTabOneHeader;

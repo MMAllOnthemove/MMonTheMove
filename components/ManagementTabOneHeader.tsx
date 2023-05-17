@@ -5,6 +5,47 @@ import boardsSlice from "@/redux/boardsSlice";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  Modal,
+  Button,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from "@chakra-ui/react";
+
+function TaskAddModal() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  return (
+    <>
+      <button
+        className={`text-gray-900 group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+        onClick={onOpen}
+      >
+        Column
+      </button>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Modal Title</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>Modal Body</ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant="ghost">Secondary Action</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}
 
 function ManagementTabOneHeader({ setIsBoardModalOpen, isBoardModalOpen }) {
   const [openDropdown, setOpenDropdown] = useState(false);
@@ -42,7 +83,6 @@ function ManagementTabOneHeader({ setIsBoardModalOpen, isBoardModalOpen }) {
       setIsDeleteModalOpen(false);
     }
   };
-
   return (
     <div className="w-full flex items-center">
       <header className="w-full flex items-center justify-between mb-3">
@@ -77,7 +117,7 @@ function ManagementTabOneHeader({ setIsBoardModalOpen, isBoardModalOpen }) {
               <Menu.Items className="absolute right-0 mt-2 w-auto origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                 <div className="px-1 py-1 ">
                   <Menu.Item>
-                    <button
+                    {/* <button
                       onClick={() => {
                         setIsBoardModalOpen(true);
                       }}
@@ -86,7 +126,8 @@ function ManagementTabOneHeader({ setIsBoardModalOpen, isBoardModalOpen }) {
                           group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                     >
                       Column
-                    </button>
+                    </button> */}
+                    <TaskAddModal />
                   </Menu.Item>
                   <Menu.Item>
                     <button
