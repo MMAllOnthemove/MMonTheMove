@@ -1,6 +1,6 @@
 export const boards = [
     {
-        name: "",
+        name: "HHP",
         isActive: false,
         columns: [
             {
@@ -14,10 +14,10 @@ export const boards = [
                         subtasks: [
                             {
                                 title: "",
-                                isCompleted: false
-                            }
-                        ]
-                    }
+                                isCompleted: false,
+                            },
+                        ],
+                    },
                 ],
             },
             {
@@ -31,10 +31,10 @@ export const boards = [
                         subtasks: [
                             {
                                 title: "",
-                                isCompleted: false
-                            }
-                        ]
-                    }
+                                isCompleted: false,
+                            },
+                        ],
+                    },
                 ],
             },
             {
@@ -48,10 +48,10 @@ export const boards = [
                         subtasks: [
                             {
                                 title: "",
-                                isCompleted: false
-                            }
-                        ]
-                    }
+                                isCompleted: false,
+                            },
+                        ],
+                    },
                 ],
             },
         ],
