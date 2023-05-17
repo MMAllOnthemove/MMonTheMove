@@ -1,11 +1,6 @@
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { memo, useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
-import ManagementTabOne from "../../../components/ManagementTabOne";
-import { useDispatch, useSelector } from "react-redux";
-import EmptyBoard from "../../../components/EmptyBoard";
-import ManagementTabOneHeader from "../../../components/ManagementTabOneHeader";
-import boardsSlice from "@/redux/boardsSlice";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 
 // Classes
 
@@ -65,14 +60,6 @@ const Management = () => {
     setSearch(event.target.value);
   };
 
-  // Board logic
-  const [isBoardModalOpen, setIsBoardModalOpen] = useState(false);
-  const dispatch = useDispatch();
-  const boards = useSelector((state) => state.boards);
-  const activeBoard = boards.find((board) => board.isActive);
-  if (!activeBoard && boards.length > 0)
-    dispatch(boardsSlice.actions.setBoardActive({ index: 0 }));
-
   return (
     <>
       <Navbar />
@@ -108,24 +95,7 @@ const Management = () => {
               </TabList>
 
               <TabPanels>
-                <TabPanel>
-                  {boards.length > 0 ? (
-                    <>
-                      <ManagementTabOneHeader
-                        setIsBoardModalOpen={setIsBoardModalOpen}
-                        isBoardModalOpen={isBoardModalOpen}
-                      />
-                      <ManagementTabOne
-                        setIsBoardModalOpen={setIsBoardModalOpen}
-                        isBoardModalOpen={isBoardModalOpen}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <EmptyBoard type="add" />
-                    </>
-                  )}
-                </TabPanel>
+                <TabPanel>Kanban will be here</TabPanel>
                 <TabPanel>
                   <section className="w-full overflow-auto my-5">
                     <h2>EtFlowInfo</h2>
