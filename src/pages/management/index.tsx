@@ -37,7 +37,9 @@ const Management = () => {
       })
         .then((res) => res.json())
         .then((data: string | any) => {
-          console.log(data);
+          // console.log(data);
+          // Error message
+          // console.log(data.Return.EvRetMsg);
           // console.log(data.EtPartsInfo.results);
           setData(data);
           // setLoading(false);
