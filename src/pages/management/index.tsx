@@ -258,7 +258,7 @@ const Management = () => {
                   <Tab
                     className={({ selected }) =>
                       classNames(
-                        "w-full rounded-full py-2.5 text-md font-medium  text-gray-900",
+                        "w-full rounded-full py-2.5 px-1 text-md font-medium  text-gray-900",
                         "border border-gray-100 focus:outline-none",
                         selected
                           ? "bg-[#e6eef9] text-[#185ee0]"
@@ -266,7 +266,7 @@ const Management = () => {
                       )
                     }
                   >
-                    Kanboard View
+                    Board View
                   </Tab>
                   <Tab
                     className={({ selected }) =>
@@ -279,20 +279,7 @@ const Management = () => {
                       )
                     }
                   >
-                    Tab 2
-                  </Tab>
-                  <Tab
-                    className={({ selected }) =>
-                      classNames(
-                        "w-full rounded-full py-2.5 text-md font-medium  text-gray-900",
-                        "border border-gray-100 focus:outline-none",
-                        selected
-                          ? "bg-[#e6eef9] text-[#185ee0]"
-                          : "text-blue-900 hover:bg-white/[0.12] "
-                      )
-                    }
-                  >
-                    Tab 3
+                    Table View
                   </Tab>
                 </Tab.List>
                 <Tab.Panels className="mt-2">
@@ -328,14 +315,6 @@ const Management = () => {
                     )}
                   >
                     Content 2
-                  </Tab.Panel>
-                  <Tab.Panel
-                    className={classNames(
-                      "rounded-xl bg-white p-3",
-                      "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2"
-                    )}
-                  >
-                    Content 3
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
