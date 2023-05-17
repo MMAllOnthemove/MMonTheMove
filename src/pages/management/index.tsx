@@ -1,11 +1,11 @@
 import { memo, useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
-import { Tab } from "@headlessui/react";
 import ManagementTabOne from "../../../components/ManagementTabOne";
 import { useDispatch, useSelector } from "react-redux";
 import EmptyBoard from "../../../components/EmptyBoard";
 import ManagementTabOneHeader from "../../../components/ManagementTabOneHeader";
 import boardsSlice from "@/redux/boardsSlice";
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 
 // Classes
 
@@ -79,7 +79,7 @@ const Management = () => {
 
       <main>
         <div className="container flex justify-center flex-col mx-auto p-2">
-          {/* <section className="my-4 flex justify-center flex-col items-center gap-2">
+          <section className="my-4 flex justify-center flex-col items-center gap-2">
             <form onSubmit={handleSubmit} className="flex flex-row gap-2">
               <label htmlFor="searchPart" className="sr-only">
                 Search here
@@ -98,229 +98,197 @@ const Management = () => {
                 className="bg-sky-700 py-3 px-4 rounded text-white border-0 font-sans font-medium hover:bg-sky-950 cursor-pointer"
               />
             </form>
-          </section> */}
+          </section>
 
-          {/* <section className="w-full overflow-auto my-5">
-            <h2>EtFlowInfo</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Created By</th>
-                  <th>Created At</th>
-                  <th>CreatedTm</th>
-                  <th>Depth</th>
-                  <th>DetailType</th>
-                  <th>DetailTypeDesc</th>
-                  <th>ProcessName</th>
-                  <th>ProcessType</th>
-                  <th>RelationType</th>
-                  <th>Status</th>
-                  <th>StatusDesc</th>
-                  <th>SvcOrderNo</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data &&
-                  data?.EtFlowInfo?.results.map((item: any, index: any) => {
-                    return (
-                      <tr key={index}>
-                        <td>{item.CreatedBy}</td>
-                        <td>{item.CreatedAt}</td>
-                        <td>{item.CreatedTm}</td>
-                        <td>{item.Depth}</td>
-                        <td>{item.DetailType}</td>
-                        <td>{item.DetailTypeDesc}</td>
-                        <td>{item.PrcoessTypeName}</td>
-                        <td>{item.ProcessType}</td>
-                        <td>{item.RelationType}</td>
-                        <td>{item.Status}</td>
-                        <td>{item.StatusDesc}</td>
-                        <td>{item.SvcOrderNo}</td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </table>
-          </section>
-          <section className="w-full overflow-auto my-5">
-            <h2>EtLogInfo</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>AscCode</th>
-                  <th>ChangedBy</th>
-                  <th>Channel</th>
-                  <th>StReason</th>
-                  <th>StReasonDesc</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data &&
-                  data?.EtLogInfo?.results.map((item: any, index: any) => {
-                    return (
-                      <tr key={index}>
-                        <td>{item.AscCode}</td>
-                        <td>{item.ChangedBy}</td>
-                        <td>{item.Channel}</td>
-                        <td>{item.StReason}</td>
-                        <td>{item.StReasonDesc}</td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </table>
-          </section>
-          <section className="w-full overflow-auto my-5">
-            <h2>EtPartsInfo</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>GoodIssueDate</th>
-                  <th>InvoiceItemNo</th>
-                  <th>InvoiceNo</th>
-                  <th>MateralRequestNo</th>
-                  <th>PODate</th>
-                  <th>PONo</th>
-                  <th>POStatus</th>
-                  <th>PartStatus</th>
-                  <th>PartsDesc</th>
-                  <th>PartsNo</th>
-                  <th>PartsQty</th>
-                  <th>PartsRecvDate</th>
-                  <th>PartsSerial</th>
-                  <th>PartsSerialOld</th>
-                  <th>RepairLocation</th>
-                  <th>RequestDate</th>
-                  <th>SamsungOrderDate</th>
-                  <th>SamsungOrderNo</th>
-                  <th>SeqNo</th>
-                  <th>TrackingNo</th>
-                  <th>WtyType</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data &&
-                  data?.EtPartsInfo?.results.map((item: any, index: any) => {
-                    const {
-                      GoodIssueDate,
-                      InvoiceItemNo,
-                      InvoiceNo,
-                      MateralRequestNo,
-                      PODate,
-                      PONo,
-                      POStatus,
-                      PartStatus,
-                      PartsDesc,
-                      PartsNo,
-                      PartsQty,
-                      PartsRecvDate,
-                      PartsSerial,
-                      PartsSerialOld,
-                      RepairLocation,
-                      RequestDate,
-                      SamsungOrderDate,
-                      SamsungOrderNo,
-                      SeqNo,
-                      TrackingNo,
-                      WtyType,
-                    } = item;
-                    return (
-                      <tr key={index}>
-                        <td>{GoodIssueDate}</td>
-                        <td>{InvoiceItemNo}</td>
-                        <td>{InvoiceNo}</td>
-                        <td>{MateralRequestNo}</td>
-                        <td>{PODate}</td>
-                        <td>{PONo}</td>
-                        <td>{POStatus}</td>
-                        <td>{PartStatus}</td>
-                        <td>{PartsDesc}</td>
-                        <td>{PartsNo}</td>
-                        <td>{PartsQty}</td>
-                        <td>{PartsRecvDate}</td>
-                        <td>{PartsSerial}</td>
-                        <td>{PartsSerialOld}</td>
-                        <td>{RepairLocation}</td>
-                        <td>{RequestDate}</td>
-                        <td>{SamsungOrderDate}</td>
-                        <td>{SamsungOrderNo}</td>
-                        <td>{SeqNo}</td>
-                        <td>{TrackingNo}</td>
-                        <td>{WtyType === "O" ? "OOW" : "IW"}</td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </table>
-          </section> */}
-          <section>
-            <div className="w-full max-w-full px-2 py-16 sm:px-0">
-              <Tab.Group>
-                <Tab.List className="flex space-x-1 shadow-md p-2 rounded-full">
-                  <Tab
-                    className={({ selected }) =>
-                      classNames(
-                        "w-full rounded-full py-2.5 px-1 text-md font-medium  text-gray-900",
-                        "border border-gray-100 focus:outline-none",
-                        selected
-                          ? "bg-[#e6eef9] text-[#185ee0]"
-                          : "text-blue-900 hover:bg-white/[0.12] "
-                      )
-                    }
-                  >
-                    Board View
-                  </Tab>
-                  <Tab
-                    className={({ selected }) =>
-                      classNames(
-                        "w-full rounded-full py-2.5 text-md font-medium  text-gray-900",
-                        "border border-gray-100 focus:outline-none",
-                        selected
-                          ? "bg-[#e6eef9] text-[#185ee0]"
-                          : "text-blue-900 hover:bg-white/[0.12] "
-                      )
-                    }
-                  >
-                    Table View
-                  </Tab>
-                </Tab.List>
-                <Tab.Panels className="mt-2">
-                  <Tab.Panel
-                    className={classNames(
-                      "rounded-xl bg-white p-3",
-                      "ring-white ring-opacity-60 ring-offset-2  focus:outline-none focus:ring-2"
-                    )}
-                  >
-                    <div className=" overflow-hidden  overflow-x-scroll">
-                      {boards.length > 0 ? (
-                        <>
-                          <ManagementTabOneHeader
-                            setIsBoardModalOpen={setIsBoardModalOpen}
-                            isBoardModalOpen={isBoardModalOpen}
-                          />
-                          <ManagementTabOne
-                            setIsBoardModalOpen={setIsBoardModalOpen}
-                            isBoardModalOpen={isBoardModalOpen}
-                          />
-                        </>
-                      ) : (
-                        <>
-                          <EmptyBoard type="add" />
-                        </>
-                      )}
-                    </div>
-                  </Tab.Panel>
-                  <Tab.Panel
-                    className={classNames(
-                      "rounded-xl bg-white p-3",
-                      "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2"
-                    )}
-                  >
-                    Content 2
-                  </Tab.Panel>
-                </Tab.Panels>
-              </Tab.Group>
-            </div>
+          <section className="my-5">
+            <Tabs variant="enclosed">
+              <TabList>
+                <Tab>Board View</Tab>
+                <Tab>Table View</Tab>
+              </TabList>
+
+              <TabPanels>
+                <TabPanel>
+                  {boards.length > 0 ? (
+                    <>
+                      <ManagementTabOneHeader
+                        setIsBoardModalOpen={setIsBoardModalOpen}
+                        isBoardModalOpen={isBoardModalOpen}
+                      />
+                      <ManagementTabOne
+                        setIsBoardModalOpen={setIsBoardModalOpen}
+                        isBoardModalOpen={isBoardModalOpen}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <EmptyBoard type="add" />
+                    </>
+                  )}
+                </TabPanel>
+                <TabPanel>
+                  <section className="w-full overflow-auto my-5">
+                    <h2>EtFlowInfo</h2>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Created By</th>
+                          <th>Created At</th>
+                          <th>CreatedTm</th>
+                          <th>Depth</th>
+                          <th>DetailType</th>
+                          <th>DetailTypeDesc</th>
+                          <th>ProcessName</th>
+                          <th>ProcessType</th>
+                          <th>RelationType</th>
+                          <th>Status</th>
+                          <th>StatusDesc</th>
+                          <th>SvcOrderNo</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data &&
+                          data?.EtFlowInfo?.results.map(
+                            (item: any, index: any) => {
+                              return (
+                                <tr key={index}>
+                                  <td>{item.CreatedBy}</td>
+                                  <td>{item.CreatedAt}</td>
+                                  <td>{item.CreatedTm}</td>
+                                  <td>{item.Depth}</td>
+                                  <td>{item.DetailType}</td>
+                                  <td>{item.DetailTypeDesc}</td>
+                                  <td>{item.PrcoessTypeName}</td>
+                                  <td>{item.ProcessType}</td>
+                                  <td>{item.RelationType}</td>
+                                  <td>{item.Status}</td>
+                                  <td>{item.StatusDesc}</td>
+                                  <td>{item.SvcOrderNo}</td>
+                                </tr>
+                              );
+                            }
+                          )}
+                      </tbody>
+                    </table>
+                  </section>
+                  <section className="w-full overflow-auto my-5">
+                    <h2>EtLogInfo</h2>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>AscCode</th>
+                          <th>ChangedBy</th>
+                          <th>Channel</th>
+                          <th>StReason</th>
+                          <th>StReasonDesc</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data &&
+                          data?.EtLogInfo?.results.map(
+                            (item: any, index: any) => {
+                              return (
+                                <tr key={index}>
+                                  <td>{item.AscCode}</td>
+                                  <td>{item.ChangedBy}</td>
+                                  <td>{item.Channel}</td>
+                                  <td>{item.StReason}</td>
+                                  <td>{item.StReasonDesc}</td>
+                                </tr>
+                              );
+                            }
+                          )}
+                      </tbody>
+                    </table>
+                  </section>
+                  <section className="w-full overflow-auto my-5">
+                    <h2>EtPartsInfo</h2>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>GoodIssueDate</th>
+                          <th>InvoiceItemNo</th>
+                          <th>InvoiceNo</th>
+                          <th>MateralRequestNo</th>
+                          <th>PODate</th>
+                          <th>PONo</th>
+                          <th>POStatus</th>
+                          <th>PartStatus</th>
+                          <th>PartsDesc</th>
+                          <th>PartsNo</th>
+                          <th>PartsQty</th>
+                          <th>PartsRecvDate</th>
+                          <th>PartsSerial</th>
+                          <th>PartsSerialOld</th>
+                          <th>RepairLocation</th>
+                          <th>RequestDate</th>
+                          <th>SamsungOrderDate</th>
+                          <th>SamsungOrderNo</th>
+                          <th>SeqNo</th>
+                          <th>TrackingNo</th>
+                          <th>WtyType</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data &&
+                          data?.EtPartsInfo?.results.map(
+                            (item: any, index: any) => {
+                              const {
+                                GoodIssueDate,
+                                InvoiceItemNo,
+                                InvoiceNo,
+                                MateralRequestNo,
+                                PODate,
+                                PONo,
+                                POStatus,
+                                PartStatus,
+                                PartsDesc,
+                                PartsNo,
+                                PartsQty,
+                                PartsRecvDate,
+                                PartsSerial,
+                                PartsSerialOld,
+                                RepairLocation,
+                                RequestDate,
+                                SamsungOrderDate,
+                                SamsungOrderNo,
+                                SeqNo,
+                                TrackingNo,
+                                WtyType,
+                              } = item;
+                              return (
+                                <tr key={index}>
+                                  <td>{GoodIssueDate}</td>
+                                  <td>{InvoiceItemNo}</td>
+                                  <td>{InvoiceNo}</td>
+                                  <td>{MateralRequestNo}</td>
+                                  <td>{PODate}</td>
+                                  <td>{PONo}</td>
+                                  <td>{POStatus}</td>
+                                  <td>{PartStatus}</td>
+                                  <td>{PartsDesc}</td>
+                                  <td>{PartsNo}</td>
+                                  <td>{PartsQty}</td>
+                                  <td>{PartsRecvDate}</td>
+                                  <td>{PartsSerial}</td>
+                                  <td>{PartsSerialOld}</td>
+                                  <td>{RepairLocation}</td>
+                                  <td>{RequestDate}</td>
+                                  <td>{SamsungOrderDate}</td>
+                                  <td>{SamsungOrderNo}</td>
+                                  <td>{SeqNo}</td>
+                                  <td>{TrackingNo}</td>
+                                  <td>{WtyType === "O" ? "OOW" : "IW"}</td>
+                                </tr>
+                              );
+                            }
+                          )}
+                      </tbody>
+                    </table>
+                  </section>
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
           </section>
         </div>
       </main>
