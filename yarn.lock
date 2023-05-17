@@ -2363,6 +2363,36 @@
   resolved "https://registry.npmjs.org/@popperjs/core/-/core-2.11.7.tgz"
   integrity sha512-Cr4OjIkipTtcXKjAsm8agyleBuDHvxzeBoa1v543lbv1YaIwQjESsVcmjiWiPEbC1FIeHOG/Op9kdCmAmiS3Kw==
 
+"@react-dnd/asap@^4.0.0":
+  version "4.0.1"
+  resolved "https://registry.npmjs.org/@react-dnd/asap/-/asap-4.0.1.tgz"
+  integrity sha512-kLy0PJDDwvwwTXxqTFNAAllPHD73AycE9ypWeln/IguoGBEbvFcPDbCV03G52bEcC5E+YgupBE0VzHGdC8SIXg==
+
+"@react-dnd/asap@^5.0.1":
+  version "5.0.2"
+  resolved "https://registry.npmjs.org/@react-dnd/asap/-/asap-5.0.2.tgz"
+  integrity sha512-WLyfoHvxhs0V9U+GTsGilGgf2QsPl6ZZ44fnv0/b8T3nQyvzxidxsg/ZltbWssbsRDlYW8UKSQMTGotuTotZ6A==
+
+"@react-dnd/invariant@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/@react-dnd/invariant/-/invariant-2.0.0.tgz"
+  integrity sha512-xL4RCQBCBDJ+GRwKTFhGUW8GXa4yoDfJrPbLblc3U09ciS+9ZJXJ3Qrcs/x2IODOdIE5kQxvMmE2UKyqUictUw==
+
+"@react-dnd/invariant@^4.0.1":
+  version "4.0.2"
+  resolved "https://registry.npmjs.org/@react-dnd/invariant/-/invariant-4.0.2.tgz"
+  integrity sha512-xKCTqAK/FFauOM9Ta2pswIyT3D8AQlfrYdOi/toTPEhqCuAs1v5tcJ3Y08Izh1cJ5Jchwy9SeAXmMg6zrKs2iw==
+
+"@react-dnd/shallowequal@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/@react-dnd/shallowequal/-/shallowequal-2.0.0.tgz"
+  integrity sha512-Pc/AFTdwZwEKJxFJvlxrSmGe/di+aAOBn60sremrpLo6VI/6cmiUYNNwlI5KNYttg7uypzA3ILPMPgxB2GYZEg==
+
+"@react-dnd/shallowequal@^4.0.1":
+  version "4.0.2"
+  resolved "https://registry.npmjs.org/@react-dnd/shallowequal/-/shallowequal-4.0.2.tgz"
+  integrity sha512-/RVXdLvJxLg4QKvMoM5WlwNR9ViO9z8B/qPcc+C0Sa/teJY7QG7kJ441DwzOjMYEY7GmU4dj5EcGHIkKZiQZCA==
+
 "@reduxjs/toolkit@^1.9.5":
   version "1.9.5"
   resolved "https://registry.npmjs.org/@reduxjs/toolkit/-/toolkit-1.9.5.tgz"
@@ -2436,7 +2466,7 @@
   resolved "https://registry.npmjs.org/@types/d3-timer/-/d3-timer-3.0.0.tgz"
   integrity sha512-HNB/9GHqu7Fo8AQiugyJbv6ZxYz58wef0esl4Mv828w1ZKpAshw/uFWVDUcIB9KKFeFKoxS3cHY07FFgtTRZ1g==
 
-"@types/hoist-non-react-statics@^3.3.0", "@types/hoist-non-react-statics@^3.3.1":
+"@types/hoist-non-react-statics@^3.3.0", "@types/hoist-non-react-statics@^3.3.1", "@types/hoist-non-react-statics@>= 3.3.1":
   version "3.3.1"
   resolved "https://registry.npmjs.org/@types/hoist-non-react-statics/-/hoist-non-react-statics-3.3.1.tgz"
   integrity sha512-iMIqiko6ooLrTh1joXodJK5X9xeEALT1kM5G3ZLhD3hszxBdIEd5C75U834D9mLcINgD4OyZf5uQXjkuYydWvA==
@@ -2466,10 +2496,10 @@
   resolved "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.194.tgz"
   integrity sha512-r22s9tAS7imvBt2lyHC9B8AGwWnXaYb1tY09oyLkXDs4vArpYJzw09nj8MLx5VfciBPGIb+ZwG0ssYnEPJxn/g==
 
-"@types/node@18.15.13":
-  version "18.15.13"
-  resolved "https://registry.npmjs.org/@types/node/-/node-18.15.13.tgz"
-  integrity sha512-N+0kuo9KgrUQ1Sn/ifDXsvg0TTleP7rIy4zOBGECxAljqvqfqpTfzx0Q1NUedOixRMBfe2Whhb056a42cWs26Q==
+"@types/node@^20.1.7", "@types/node@>= 12":
+  version "20.1.7"
+  resolved "https://registry.npmjs.org/@types/node/-/node-20.1.7.tgz"
+  integrity sha512-WCuw/o4GSwDGMoonES8rcvwsig77dGCMbZDrZr2x4ZZiNW4P/gcoZXe/0twgtobcTkmg9TuKflxYL/DuwDyJzg==
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"
@@ -2480,6 +2510,20 @@
   version "15.7.5"
   resolved "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.5.tgz"
   integrity sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==
+
+"@types/react-beautiful-dnd@^13.1.4":
+  version "13.1.4"
+  resolved "https://registry.npmjs.org/@types/react-beautiful-dnd/-/react-beautiful-dnd-13.1.4.tgz"
+  integrity sha512-4bIBdzOr0aavN+88q3C7Pgz+xkb7tz3whORYrmSj77wfVEMfiWiooIwVWFR7KM2e+uGTe5BVrXqSfb0aHeflJA==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-dnd@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.npmjs.org/@types/react-dnd/-/react-dnd-3.0.2.tgz"
+  integrity sha512-Z1BqHYGFtfSPfWs+kgX4b6wQmwwtqq4/pLo4zdO9xcDUB1ZQP8iWTAYNf3EJ2f0WiVQpSLN8UytP+ILzZHDLYw==
+  dependencies:
+    react-dnd "*"
 
 "@types/react-dom@^16.8 || ^17.0 || ^18.0", "@types/react-dom@18.0.11":
   version "18.0.11"
@@ -2512,7 +2556,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^16.8 || ^17.0 || ^18.0", "@types/react@^16.8.0 || ^17.0.0 || ^18.0.0", "@types/react@^16.9.0 || ^17.0.0 || ^18.0.0", "@types/react@^17.0.0 || ^18.0.0", "@types/react@18.0.38":
+"@types/react@*", "@types/react@^16.8 || ^17.0 || ^18.0", "@types/react@^16.8.0 || ^17.0.0 || ^18.0.0", "@types/react@^16.9.0 || ^17.0.0 || ^18.0.0", "@types/react@^17.0.0 || ^18.0.0", "@types/react@>= 16", "@types/react@18.0.38":
   version "18.0.38"
   resolved "https://registry.npmjs.org/@types/react/-/react-18.0.38.tgz"
   integrity sha512-ExsidLLSzYj4cvaQjGnQCk4HFfVT9+EZ9XZsQ8Hsrcn8QNgXtpZ3m9vSIC2MWtx7jHictK6wYhQgGh6ic58oOw==
@@ -3347,6 +3391,29 @@ dlv@^1.1.3:
   version "1.1.3"
   resolved "https://registry.npmjs.org/dlv/-/dlv-1.1.3.tgz"
   integrity sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==
+
+dnd-core@^16.0.1:
+  version "16.0.1"
+  resolved "https://registry.npmjs.org/dnd-core/-/dnd-core-16.0.1.tgz"
+  integrity sha512-HK294sl7tbw6F6IeuK16YSBUoorvHpY8RHO+9yFfaJyCDVb6n7PRcezrOEOa2SBCqiYpemh5Jx20ZcjKdFAVng==
+  dependencies:
+    "@react-dnd/asap" "^5.0.1"
+    "@react-dnd/invariant" "^4.0.1"
+    redux "^4.2.0"
+
+dnd-core@14.0.0:
+  version "14.0.0"
+  resolved "https://registry.npmjs.org/dnd-core/-/dnd-core-14.0.0.tgz"
+  integrity sha512-wTDYKyjSqWuYw3ZG0GJ7k+UIfzxTNoZLjDrut37PbcPGNfwhlKYlPUqjAKUjOOv80izshUiqusaKgJPItXSevA==
+  dependencies:
+    "@react-dnd/asap" "^4.0.0"
+    "@react-dnd/invariant" "^2.0.0"
+    redux "^4.0.5"
+
+dnd-multi-backend@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.npmjs.org/dnd-multi-backend/-/dnd-multi-backend-8.0.0.tgz"
+  integrity sha512-5iFo8USv3+q0kVRTm9zsuyi/5GRZEA6fDZKr9ZpmV5pUdHmL9ktL/2c2Anw8T2tnpDDw8FM3k2cvqyMAKhWd/w==
 
 doctrine@^2.1.0:
   version "2.1.0"
@@ -5185,6 +5252,15 @@ raw-body@2.5.1:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
+rdndmb-html5-to-touch@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.npmjs.org/rdndmb-html5-to-touch/-/rdndmb-html5-to-touch-8.0.0.tgz"
+  integrity sha512-pBWigLQKJMD4hV+dwcEqcDB4dgGD7LD2ZCtT2gi8Yw4cef2pmp/ZvPZpYVxpAesJXOIDNFhmtYzZIsf9noKHmQ==
+  dependencies:
+    dnd-multi-backend "^8.0.0"
+    react-dnd-html5-backend "^16.0.1"
+    react-dnd-touch-backend "^16.0.1"
+
 react-clientside-effect@^1.2.6:
   version "1.2.6"
   resolved "https://registry.npmjs.org/react-clientside-effect/-/react-clientside-effect-1.2.6.tgz"
@@ -5192,7 +5268,57 @@ react-clientside-effect@^1.2.6:
   dependencies:
     "@babel/runtime" "^7.12.13"
 
-"react-dom@^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0", "react-dom@^16 || ^17 || ^18", "react-dom@^16.0.0 || ^17.0.0 || ^18.0.0", "react-dom@^16.8 || ^17.0 || ^18.0", "react-dom@^16.8.0  || ^17.0.0 || ^18.0.0", "react-dom@^17.0.0 || ^18.0.0", react-dom@^18.0.0, react-dom@^18.2.0, "react-dom@>= 16.8.0", react-dom@>=15.0.0, react-dom@>=16.6.0, react-dom@>=18, react-dom@18.2.0:
+react-dnd-html5-backend@^16.0.1:
+  version "16.0.1"
+  resolved "https://registry.npmjs.org/react-dnd-html5-backend/-/react-dnd-html5-backend-16.0.1.tgz"
+  integrity sha512-Wu3dw5aDJmOGw8WjH1I1/yTH+vlXEL4vmjk5p+MHxP8HuHJS1lAGeIdG/hze1AvNeXWo/JgULV87LyQOr+r5jw==
+  dependencies:
+    dnd-core "^16.0.1"
+
+react-dnd-multi-backend@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.npmjs.org/react-dnd-multi-backend/-/react-dnd-multi-backend-8.0.0.tgz"
+  integrity sha512-sYJmGUWRJsTa4sF/bxFu4tF/KSk668vf1TWbDqGdpvR9ltik/lBBqgihV3KLVtRRWytR/8wJCd9K5slj2Ve1tg==
+  dependencies:
+    dnd-multi-backend "^8.0.0"
+    react-dnd-preview "^8.0.0"
+
+react-dnd-preview@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.npmjs.org/react-dnd-preview/-/react-dnd-preview-8.0.0.tgz"
+  integrity sha512-pKDpJxaGya00tqPqswGHN6d1lmXe26gGkiXSb9xsDGEXMS+efjz4YAid9tKyaKNWJMU8hJOcUmJWTQpdi22P2g==
+
+react-dnd-touch-backend@^16.0.1:
+  version "16.0.1"
+  resolved "https://registry.npmjs.org/react-dnd-touch-backend/-/react-dnd-touch-backend-16.0.1.tgz"
+  integrity sha512-NonoCABzzjyWGZuDxSG77dbgMZ2Wad7eQiCd/ECtsR2/NBLTjGksPUx9UPezZ1nQ/L7iD130Tz3RUshL/ClKLA==
+  dependencies:
+    "@react-dnd/invariant" "^4.0.1"
+    dnd-core "^16.0.1"
+
+react-dnd@*, react-dnd@^14.0.1:
+  version "14.0.1"
+  resolved "https://registry.npmjs.org/react-dnd/-/react-dnd-14.0.1.tgz"
+  integrity sha512-r57KKBfmAYTwmQ/cREQehNjEX9U9Xi4AUWykLX92fB9JkY9z90DMWZhSE1M7o6Y71Y2/a2SBvSPQ385QboNrIQ==
+  dependencies:
+    "@react-dnd/invariant" "^2.0.0"
+    "@react-dnd/shallowequal" "^2.0.0"
+    dnd-core "14.0.0"
+    fast-deep-equal "^3.1.3"
+    hoist-non-react-statics "^3.3.2"
+
+react-dnd@^16.0.1:
+  version "16.0.1"
+  resolved "https://registry.npmjs.org/react-dnd/-/react-dnd-16.0.1.tgz"
+  integrity sha512-QeoM/i73HHu2XF9aKksIUuamHPDvRglEwdHL4jsp784BgUuWcg6mzfxT0QDdQz8Wj0qyRKx2eMg8iZtWvU4E2Q==
+  dependencies:
+    "@react-dnd/invariant" "^4.0.1"
+    "@react-dnd/shallowequal" "^4.0.1"
+    dnd-core "^16.0.1"
+    fast-deep-equal "^3.1.3"
+    hoist-non-react-statics "^3.3.2"
+
+"react-dom@^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0", "react-dom@^16 || ^17 || ^18", "react-dom@^16.0.0 || ^17.0.0 || ^18.0.0", "react-dom@^16.14.0 || ^17.0.2 || ^18.0.0", "react-dom@^16.8 || ^17.0 || ^18.0", "react-dom@^16.8.0  || ^17.0.0 || ^18.0.0", "react-dom@^17.0.0 || ^18.0.0", react-dom@^18.0.0, react-dom@^18.2.0, "react-dom@>= 16.8.0", react-dom@>=15.0.0, react-dom@>=16.6.0, react-dom@>=18, react-dom@18.2.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react-dom/-/react-dom-18.2.0.tgz"
   integrity sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==
@@ -5322,7 +5448,7 @@ react-transition-group@2.9.0:
     prop-types "^15.6.2"
     react-lifecycles-compat "^3.0.4"
 
-"react@^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0", "react@^15.3.0 || ^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16 || ^17 || ^18", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.5.1 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0  || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.1 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", "react@^17.0.0 || ^18.0.0", react@^18.0.0, react@^18.2.0, "react@>= 16", "react@>= 16.8.0", "react@>= 16.8.0 || 17.x.x || ^18.0.0-0", react@>=15.0.0, react@>=16.6.0, react@>=16.8.0, react@>=18, react@18.2.0:
+"react@^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0", "react@^15.3.0 || ^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16 || ^17 || ^18", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.14.0 || ^17.0.2 || ^18.0.0", "react@^16.5.1 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0  || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.1 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", "react@^17.0.0 || ^18.0.0", react@^18.0.0, react@^18.2.0, "react@>= 16", "react@>= 16.14", "react@>= 16.8.0", "react@>= 16.8.0 || 17.x.x || ^18.0.0-0", react@>=15.0.0, react@>=16.6.0, react@>=16.8.0, react@>=18, react@18.2.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
@@ -5378,7 +5504,7 @@ redux-thunk@^2.4.2:
   resolved "https://registry.npmjs.org/redux-thunk/-/redux-thunk-2.4.2.tgz"
   integrity sha512-+P3TjtnP0k/FEjcBL5FZpoovtvrTNT/UXd4/sluaSyrURlSlhLSzEdfsTBW7WsKB6yPvgd7q/iZPICFjW4o57Q==
 
-redux@^4, redux@^4.0.0, redux@^4.2.1:
+redux@^4, redux@^4.0.0, redux@^4.0.5, redux@^4.2.0, redux@^4.2.1:
   version "4.2.1"
   resolved "https://registry.npmjs.org/redux/-/redux-4.2.1.tgz"
   integrity sha512-LAUYz4lc+Do8/g7aeRa8JkyDErK6ekstQaqWQrNRW//MY1TvCEpMtpTWvlQ+FPbWCx+Xixu/6SHt5N0HR+SB4w==
