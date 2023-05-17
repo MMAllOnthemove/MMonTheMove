@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import data from "../data.json"
+// import data from "../data.json"
+import { boards } from "../../public/_data/boardTasks";
 
 const boardsSlice = createSlice({
     name: "boards",
-    initialState: data.boards,
+    initialState: boards,
     reducers: {
         addBoard: (state, action) => {
             const isActive = state.length > 0 ? false : true;
