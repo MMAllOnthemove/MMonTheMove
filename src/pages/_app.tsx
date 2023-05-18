@@ -1,15 +1,18 @@
 import "@/styles/globals.css";
 import { ChakraProvider } from "@chakra-ui/react";
 import type { AppProps } from "next/app";
-import { HTML5toTouch } from "rdndmb-html5-to-touch";
-import { DndProvider } from "react-dnd-multi-backend";
+import { DndProvider } from "react-dnd";
+import { AppStateProvider } from "@/state/AppStateContext";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <ChakraProvider>
-      <DndProvider options={HTML5toTouch}>
-        <Component {...pageProps} />
-      </DndProvider>
-    </ChakraProvider>
+    <AppStateProvider>
+      <ChakraProvider>
+        <DndProvider backend={HTML5Backend}>
+          <Component {...pageProps} />
+        </DndProvider>
+      </ChakraProvider>
+    </AppStateProvider>
   );
 }

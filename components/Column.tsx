@@ -1,63 +1,28 @@
-import boardsSlice from "@/redux/boardsSlice";
-import { shuffle } from "lodash";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import Task from "./Task";
+import { ColumnContainer, ColumnTitle } from "@/styles/styles";
+import { AddNewItem } from "./AddNewItem";
+import { FC } from "react";
+import { Card } from "./Card";
+import { useAppState } from "@/state/AppStateContext";
+import { addTask } from "@/state/actions";
 
-function Column({ colIndex }) {
-  const colors = [
-    "bg-red-500",
-    "bg-orange-500",
-    "bg-blue-500",
-    "bg-purple-500",
-    "bg-green-500",
-    "bg-indigo-500",
-    "bg-yellow-500",
-    "bg-pink-500",
-    "bg-sky-500",
-  ];
-
-  const dispatch = useDispatch();
-  const [color, setColor] = useState(null);
-  const boards = useSelector((state) => state.boards);
-  const board = boards.find((board) => board.isActive === true);
-  const col = board.columns.find((col: any, i: any) => i === colIndex);
-  // useEffect(() => {
-  //   setColor(shuffle(colors).pop());
-  // }, [dispatch]);
-
-  const handleOnDrop = (e) => {
-    const { prevColIndex, taskIndex } = JSON.parse(
-      e.dataTransfer.getData("text")
-    );
-
-    if (colIndex !== prevColIndex) {
-      dispatch(
-        boardsSlice.actions.dragTask({ colIndex, prevColIndex, taskIndex })
-      );
-    }
-  };
-
-  const handleOnDragOver = (e) => {
-    e.preventDefault();
-  };
-
+type ColumnProps = {
+  text: string;
+  id: string;
+};
+export const Column = ({ text, id }: ColumnProps) => {
+  const { getTasksByListId, dispatch } = useAppState();
+  const tasks = getTasksByListId(id);
   return (
-    <article
-      onDrop={handleOnDrop}
-      onDragOver={handleOnDragOver}
-      className="border rounded p-1"
-    >
-      <p className="flex items-center place-self-start gap-1 py-2 font-semibold text-gray-900">
-        {/* <div className={`rounded-full w-4 h-4 ${color} `} /> */}
-        {col.name} ({col.tasks.length})
-      </p>
-      {/* Displays tasks we got from our data */}
-      {col.tasks.map((task, index) => (
-        <Task key={index} taskIndex={index} colIndex={colIndex} />
+    <ColumnContainer>
+      <ColumnTitle>{text}</ColumnTitle>
+      {tasks.map((task) => (
+        <Card text={task.text} key={task.id} id={task.id} />
       ))}
-    </article>
+      <AddNewItem
+        toggleButtonText="+ Add another card"
+        onAdd={(text) => dispatch(addTask(text, id))}
+        dark
+      />
+    </ColumnContainer>
   );
-}
-
-export default Column;
+};
