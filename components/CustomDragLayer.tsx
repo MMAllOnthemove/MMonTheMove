@@ -1,8 +1,9 @@
 import React from "react";
 import { XYCoord, useDragLayer } from "react-dnd";
 import { Column } from "./Column";
-import { CustomDragLayerContainer } from "./styles";
+import { CustomDragLayerContainer, DragPreviewWrapper } from "@/styles/styles";
 import { Card } from "./Card";
+import { useAppState } from "@/state/AppStateContext";
 
 function getItemStyles(currentOffset: XYCoord | null) {
   if (!currentOffset) {
@@ -20,31 +21,14 @@ function getItemStyles(currentOffset: XYCoord | null) {
   };
 }
 
-export const CustomDragLayer: React.FC = () => {
-  const { isDragging, item, currentOffset } = useDragLayer((monitor) => ({
-    item: monitor.getItem(),
+export const CustomDragLayer = () => {
+  const { draggedItem } = useAppState();
+  const { currentOffset } = useDragLayer((monitor) => ({
     currentOffset: monitor.getSourceClientOffset(),
-    isDragging: monitor.isDragging(),
   }));
-
-  if (!isDragging) {
-    return null;
-  }
-
-  return (
-    <CustomDragLayerContainer>
-      <div style={getItemStyles(currentOffset)}>
-        {item.type === "COLUMN" ? (
-          <Column id={item.id} text={item.text} isPreview={true} />
-        ) : (
-          <Card
-            columnId={item.columnId}
-            isPreview={true}
-            id={item.id}
-            text={item.text}
-          />
-        )}
-      </div>
-    </CustomDragLayerContainer>
-  );
+  return draggedItem && currentOffset ? (
+    <DragPreviewWrapper position={currentOffset}>
+      <Column id={draggedItem.id} text={draggedItem.text} isPreview />
+    </DragPreviewWrapper>
+  ) : null;
 };

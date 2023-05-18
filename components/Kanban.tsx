@@ -3,13 +3,15 @@ import { AppContainer } from "@/styles/styles";
 import { AddNewItem } from "./AddNewItem";
 import { Column } from "./Column";
 import { addList } from "@/state/actions";
+import { CustomDragLayer } from "./CustomDragLayer";
 
 const Kanban = () => {
   const { lists, dispatch } = useAppState();
   return (
     <AppContainer>
+      <CustomDragLayer />
       {lists.map((list) => (
-        <Column text={list.text} key={list.id} id={list.id} />
+        <Column id={list.id} text={list.text} key={list.id} />
       ))}
       <AddNewItem
         toggleButtonText="+ Add another list"
