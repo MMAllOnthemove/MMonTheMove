@@ -24,7 +24,7 @@ export const Column = ({ text, id, isPreview }: ColumnProps) => {
 
   const [, drop] = useDrop({
     accept: ["COLUMN", "CARD"],
-    hover() {
+    hover(item: DragItem) {
       if (item.type === "COLUMN") {
         // ... dragging column
       } else {
