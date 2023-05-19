@@ -2,7 +2,7 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { memo, useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
 import Kanban from "../../../components/Kanban";
-
+import Table from "../../../components/Table";
 // Classes
 
 function classNames(...classes: string[] | any[]) {
@@ -100,7 +100,7 @@ const Management = () => {
                   <Kanban />
                 </TabPanel>
                 <TabPanel>
-                  <section className="w-full overflow-auto my-5">
+                  {/* <section className="w-full overflow-auto my-5">
                     <h2>EtFlowInfo</h2>
                     <table>
                       <thead>
@@ -258,6 +258,9 @@ const Management = () => {
                           )}
                       </tbody>
                     </table>
+                  </section> */}
+                  <section>
+                    <Table />
                   </section>
                 </TabPanel>
               </TabPanels>

@@ -8,12 +8,11 @@ import { useItemDrag } from "@/utils/useItemDrag";
 import { useDrop } from "react-dnd";
 import { isHidden } from "@/utils/isHidden";
 
-interface ColumnProps {
+type ColumnProps = {
   text: string;
-  index: number;
   id: string;
   isPreview?: boolean;
-}
+};
 
 export const Column = ({ text, id, isPreview }: ColumnProps) => {
   const { draggedItem, getTasksByListId, dispatch } = useAppState();
@@ -24,18 +23,15 @@ export const Column = ({ text, id, isPreview }: ColumnProps) => {
 
   const [, drop] = useDrop({
     accept: ["COLUMN", "CARD"],
-    hover(item: DragItem) {
-      if (item.type === "COLUMN") {
-        // ... dragging column
-      } else {
-        if (draggedItem.columnId === id) {
+    hover() {
+      if (!draggedItem) {
+        return;
+      }
+      if (draggedItem.type === "COLUMN") {
+        if (draggedItem.id === id) {
           return;
         }
-        if (tasks.length) {
-          return;
-        }
-        dispatch(moveTask(draggedItem.id, null, draggedItem.columnId, id));
-        dispatch(setDraggedItem({ ...draggedItem, columnId: id }));
+        dispatch(moveList(draggedItem.id, id));
       }
     },
   });
