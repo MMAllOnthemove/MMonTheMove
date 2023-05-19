@@ -1,8 +1,8 @@
-import { createContext, useEffect, useContext, Dispatch, FC } from "react";
-import { appStateReducer, AppState, List, Task } from "./appStateReducer";
-import { Action } from "./actions";
+import { Dispatch, FC, createContext, useContext } from "react";
 import { useImmerReducer } from "use-immer";
 import { DragItem } from "../../components/DragItem";
+import { Action } from "./actions";
+import { AppState, List, Task, appStateReducer } from "./appStateReducer";
 
 const AppStateContext = createContext<AppStateContextProps>(
   {} as AppStateContextProps
