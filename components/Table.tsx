@@ -46,25 +46,26 @@ const data = [
       lastName: "Rolluffs",
     },
     address: "32188 Larkin Turnpike",
-    city: "Charleston",
-    state: "South Carolina",
+    city: "Omaha",
+    state: "Nebraska",
   },
 ];
+
 const Table = () => {
   //should be memoized or stable
   const defaultMaterialTheme = createTheme();
   const columns = useMemo(
     () => [
       {
-        accessorKey: "name.firstName", //access nested data with dot notation
-        header: "First Name",
+        accessorKey: "service_order", //access nested data with dot notation
+        header: "Service Order No",
       },
       {
-        accessorKey: "name.lastName",
-        header: "Last Name",
+        accessorKey: "model",
+        header: "Model",
       },
       {
-        accessorKey: "address", //normal accessorKey
+        accessorKey: "Booked", //normal accessorKey
         header: "Address",
       },
       {
