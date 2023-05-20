@@ -1,52 +1,60 @@
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { CardContainer } from "@/styles/styles";
-import { useItemDrag } from "@/utils/useItemDrag";
+import { useItemDrag } from "./useItemDrag";
 import { useDrop } from "react-dnd";
+import { CardDragItem } from "./DragItem";
 import { useAppState } from "@/state/AppStateContext";
-import { moveTask, setDraggedItem } from "@/state/actions";
 import { isHidden } from "@/utils/isHidden";
 
-type CardProps = {
-  text: string;
-  id: string;
-  columnId: string;
-  isPreview?: boolean;
-};
 
-export const Card = ({ text, id, columnId, isPreview }: CardProps) => {
-  const { draggedItem, dispatch } = useAppState();
-  const ref = useRef<HTMLDivElement>(null);
+interface CardProps {
+  text: string
+  index: number
+  id: string
+  columnId: string
+  isPreview?: boolean
+}
 
-  const { drag } = useItemDrag({
-    type: "CARD",
-    id,
-    text,
-    columnId,
-  });
-
+export const Card = ({
+  text,
+  id,
+  index,
+  columnId,
+  isPreview
+}: CardProps) => {
+  const { state, dispatch } = useAppState()
+  const ref = useRef<HTMLDivElement>(null)
+  const { drag } = useItemDrag({ type: "CARD", id, index, text, columnId })
   const [, drop] = useDrop({
     accept: "CARD",
-    hover() {
-      if (!draggedItem) {
-        return;
+    hover(item: CardDragItem) {
+      if (item.id === id) {
+        return
       }
-      if (draggedItem.type !== "CARD") {
-        return;
-      }
-      if (draggedItem.id === id) {
-        return;
-      }
-      dispatch(moveTask(draggedItem.id, id, draggedItem.columnId, columnId));
-    },
-  });
-  drag(drop(ref));
+
+      const dragIndex = item.index
+      const hoverIndex = index
+      const sourceColumn = item.columnId
+      const targetColumn = columnId
+
+      dispatch({
+        type: "MOVE_TASK",
+        payload: { dragIndex, hoverIndex, sourceColumn, targetColumn }
+      })
+      item.index = hoverIndex
+      item.columnId = targetColumn
+    }
+  })
+
+  drag(drop(ref))
+
   return (
     <CardContainer
-      isHidden={isHidden(draggedItem, "CARD", id, isPreview)}
+      isHidden={isHidden(isPreview, state.draggedItem, "CARD", id)}
       isPreview={isPreview}
       ref={ref}
     >
       {text}
     </CardContainer>
-  );
-};
+  )
+}
