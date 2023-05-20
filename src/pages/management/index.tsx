@@ -1,12 +1,100 @@
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import {
+  Button,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { memo, useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
 import Kanban from "../../../components/Kanban";
 import Table from "../../../components/Table";
-// Classes
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from "@chakra-ui/react";
 
-function classNames(...classes: string[] | any[]) {
-  return classes.filter(Boolean).join(" ");
+function MyModal() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  return (
+    <>
+      <button
+        className="bg-green-800 text-white font-semibold rounded px-4 py-2 border-0"
+        onClick={onOpen}
+      >
+        Open Modal
+      </button>
+
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        blockScrollOnMount
+        closeOnEsc
+        closeOnOverlayClick
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Fields will auto populate</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <form className="flex flex-col">
+              <label
+                htmlFor="service_order"
+                className="text-gray-800 font-medium"
+              >
+                Service Order No
+              </label>
+              <input
+                type="number"
+                placeholder="Testing input"
+                name="service_order"
+                id="service_order"
+                className="mt-2 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-md font-medium shadow-sm placeholder-slate-400  focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+                invalid:border-red-500 invalid:text-red-600
+                focus:invalid:border-red-500 focus:invalid:ring-red-500"
+              />
+              <label htmlFor="assign_to" className="text-gray-800 font-medium">
+                Assign to
+              </label>
+              <input
+                disabled
+                type="text"
+                placeholder="Testing input"
+                name="assign_to"
+                id="assign_to"
+                className="mt-2 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-md font-medium shadow-sm placeholder-slate-400  focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+                invalid:border-pink-500 invalid:text-pink-600
+                focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+              />
+            </form>
+          </ModalBody>
+
+          <ModalFooter>
+            <button
+              type="button"
+              className="bg-sky-800 text-white font-semibold rounded px-4 py-2 border-0 mr-3"
+              onClick={onClose}
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              className="bg-green-800 text-white font-semibold rounded px-4 py-2 border-0"
+            >
+              Assign
+            </button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
 }
 
 const Management = () => {
@@ -260,6 +348,9 @@ const Management = () => {
                     </table>
                   </section> */}
                   <section>
+                    <section className="my-3 flex justify-center">
+                      <MyModal />
+                    </section>
                     <Table />
                   </section>
                 </TabPanel>
