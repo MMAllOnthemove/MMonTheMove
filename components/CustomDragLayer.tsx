@@ -1,34 +1,40 @@
-import { CustomDragLayerContainer } from "@/styles/styles";
-import { FC } from "react";
-import { XYCoord, useDragLayer } from "react-dnd";
-import { Card } from "./Card";
-import { Column } from "./Column";
+import { CustomDragLayerContainer } from "@/styles/styles"
+import { Column } from "./Column"
+import { XYCoord, useDragLayer } from "react-dnd"
+import { Card } from "./Card"
 
-function getItemStyles(currentOffset: XYCoord | null) {
+
+function getItemStyles(
+  currentOffset: XYCoord | null
+) {
   if (!currentOffset) {
     return {
-      display: "none",
-    };
+      display: "none"
+    }
   }
 
-  const { x, y } = currentOffset;
-  const transform = `translate(${x}px, ${y}px)`;
+  const { x, y } = currentOffset
+
+  const transform = `translate(${x}px, ${y}px)`
   return {
     transform,
-    WebkitTransform: transform,
-  };
+    WebkitTransform: transform
+  }
 }
 
-export const CustomDragLayer: FC = () => {
-  const { isDragging, item, currentOffset } = useDragLayer((monitor) => ({
-    item: monitor.getItem(),
-    currentOffset: monitor.getSourceClientOffset(),
-    isDragging: monitor.isDragging(),
-  }));
+const CustomDragLayer: React.FC = () => {
+  const { isDragging, item, currentOffset } = useDragLayer(
+    monitor => ({
+      item: monitor.getItem(),
+      currentOffset: monitor.getSourceClientOffset(),
+      isDragging: monitor.isDragging()
+    })
+  )
 
   if (!isDragging) {
-    return null;
+    return null
   }
+
   return (
     <CustomDragLayerContainer>
       <div style={getItemStyles(currentOffset)}>
@@ -50,5 +56,6 @@ export const CustomDragLayer: FC = () => {
         )}
       </div>
     </CustomDragLayerContainer>
-  );
-};
+  )
+}
+export default CustomDragLayer
