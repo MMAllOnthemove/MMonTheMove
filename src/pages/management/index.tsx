@@ -10,7 +10,7 @@ import {
 import { memo, useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
 import Kanban from "../../../components/Kanban";
-import Table from "../../../components/Table";
+// import Table from "../../../components/Table";
 import {
   Modal,
   ModalOverlay,
