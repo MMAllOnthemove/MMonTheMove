@@ -1,33 +1,46 @@
 import { findItemIndexById } from "@/utils/arrayUtils"
 import { nanoid } from "nanoid"
-import React, { createContext, useReducer, useContext } from "react"
-import { moveItem } from "../../components/moveItem"
+import React, { createContext, useContext, useReducer } from "react"
 import { DragItem } from "../../components/DragItem"
-import { AppState } from "../../components/Kanban"
+import { moveItem } from "../../components/moveItem"
 
+interface Task {
+  id: string
+  text: string
+}
+
+interface List {
+  id: string
+  text: string
+  tasks: Task[]
+}
+
+export interface AppState {
+  draggedItem: DragItem | undefined
+  lists: List[]
+}
 
 type Action =
+  | {
+    type: "SET_DRAGGED_ITEM"
+    payload: DragItem | undefined
+  }
   | {
     type: "ADD_LIST"
     payload: string
   }
   | {
     type: "ADD_TASK"
-    payload: { text: string; taskId: string }
-  } |
-  {
+    payload: { text: string; listId: string }
+  }
+  | {
     type: "MOVE_LIST"
     payload: {
       dragIndex: number
       hoverIndex: number
     }
   }
-  |
-  {
-    type: "SET_DRAGGED_ITEM"
-    payload: DragItem | undefined
-  } |
-  {
+  | {
     type: "MOVE_TASK"
     payload: {
       dragIndex: number
@@ -37,16 +50,20 @@ type Action =
     }
   }
 
-
 interface AppStateContextProps {
   state: AppState
   dispatch: React.Dispatch<any>
 }
 
-const AppStateContext = createContext<AppStateContextProps>({} as AppStateContextProps)
+const AppStateContext = createContext<AppStateContextProps>(
+  {} as AppStateContextProps
+)
 
 const appStateReducer = (state: AppState, action: Action): AppState => {
   switch (action.type) {
+    case "SET_DRAGGED_ITEM": {
+      return { ...state, draggedItem: action.payload }
+    }
     case "ADD_LIST": {
       return {
         ...state,
@@ -59,12 +76,13 @@ const appStateReducer = (state: AppState, action: Action): AppState => {
     case "ADD_TASK": {
       const targetLaneIndex = findItemIndexById(
         state.lists,
-        action.payload.taskId
+        action.payload.listId
       )
       state.lists[targetLaneIndex].tasks.push({
         id: nanoid(),
         text: action.payload.text
       })
+
       return {
         ...state
       }
@@ -73,9 +91,6 @@ const appStateReducer = (state: AppState, action: Action): AppState => {
       const { dragIndex, hoverIndex } = action.payload
       state.lists = moveItem(state.lists, dragIndex, hoverIndex)
       return { ...state }
-    }
-    case "SET_DRAGGED_ITEM": {
-      return { ...state, draggedItem: action.payload }
     }
     case "MOVE_TASK": {
       const {
@@ -90,7 +105,6 @@ const appStateReducer = (state: AppState, action: Action): AppState => {
       state.lists[targetLaneIndex].tasks.splice(hoverIndex, 0, item)
       return { ...state }
     }
-
     default: {
       return state
     }
@@ -117,7 +131,6 @@ const appData: AppState = {
     }
   ]
 }
-
 
 export const AppStateProvider = ({ children }: React.PropsWithChildren<{}>) => {
   const [state, dispatch] = useReducer(appStateReducer, appData)

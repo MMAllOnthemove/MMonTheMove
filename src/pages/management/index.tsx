@@ -351,7 +351,8 @@ const Management = () => {
                     <section className="my-3 flex justify-center">
                       <MyModal />
                     </section>
-                    <Table />
+                    <p>More content coming soon</p>
+                    {/* <Table /> */}
                   </section>
                 </TabPanel>
               </TabPanels>

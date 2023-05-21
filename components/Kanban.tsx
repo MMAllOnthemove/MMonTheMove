@@ -2,26 +2,8 @@ import { useAppState } from "@/state/AppStateContext";
 import { AppContainer } from "@/styles/styles";
 import { AddNewItem } from "./AddNewItem";
 import { Column } from "./Column";
-import { addList } from "@/state/actions";
 import CustomDragLayer from "./CustomDragLayer";
-import { DragItem } from "./DragItem";
 
-
-interface Task {
-  id: string
-  text: string
-}
-
-interface List {
-  id: string
-  text: string
-  tasks: Task[]
-}
-
-export interface AppState {
-  draggedItem: DragItem | undefined
-  lists: List[]
-}
 
 
 const Kanban = () => {

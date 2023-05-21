@@ -7,7 +7,7 @@ import {
 import { useFocus } from "@/utils/useFocus";
 
 interface NewItemFormProps {
-  onAdd(text: string): void;
+  onAdd(text: string): void
 }
 
 export const NewItemForm = ({ onAdd }: NewItemFormProps) => {
@@ -23,5 +23,5 @@ export const NewItemForm = ({ onAdd }: NewItemFormProps) => {
       />
       <NewItemButton onClick={() => onAdd(text)}>Create</NewItemButton>
     </NewItemFormContainer>
-  );
-};
+  )
+}

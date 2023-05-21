@@ -1,7 +1,8 @@
 import { CustomDragLayerContainer } from "@/styles/styles"
-import { Column } from "./Column"
+import React from "react"
 import { XYCoord, useDragLayer } from "react-dnd"
 import { Card } from "./Card"
+import { Column } from "./Column"
 
 
 function getItemStyles(
