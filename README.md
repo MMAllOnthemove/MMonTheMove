@@ -8,7 +8,7 @@ Features
 
 - [x] Part search
 - [x] Project management
-- [  ] Kanboard
+- [ ] Kanboard
 - [ ] Graphs
 - [x] Navbar
 - [ ] Signup 
