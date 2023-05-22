@@ -24,6 +24,7 @@ body {
   --thumbBG: #6c757d;
 }
 body::-webkit-scrollbar {
+  height: 12px;
   width: 12px; /* width of the entire scrollbar */
 }
 
@@ -31,7 +32,7 @@ body::-webkit-scrollbar-track {
   background: #dee2da; /* color of the tracking area */
 }
 
-body::-webkit-scrollbar-thumb {
+body::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb:horizontal {
   background-color: #6c757d; /* color of the scroll thumb */
   border-radius: 20px; /* roundness of the scroll thumb */
   border: 3px solid #dee2da; /* creates padding around scroll thumb */
@@ -245,14 +246,6 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   font-family: inherit;
 }
 
-/* Dashboard */
-/* Dashboard cards */
-/* .dashboard_cards  {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1em;
-} */
-
 /* Units assessed */
 .stats_cards_row {
   display: grid;
@@ -279,39 +272,3 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   font-size: 1rem;
   margin: auto;
 }
-
-/* Spinner */
-.spinner {
-  animation: rotator 1.4s linear infinite;
-  margin-top: 7rem;
-}
-@keyframes rotator {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(270deg); }
-}
-.path {
-  stroke-dasharray: 187;
-  stroke-dashoffset: 0;
-  transform-origin: center;
-  animation:
-    dash 1.4s ease-in-out infinite, 
-    colors (1.4s*4) ease-in-out infinite;
-}
-@keyframes colors {
-	0% { stroke: #4285F4; }
-	25% { stroke: #DE3E35; }
-	50% { stroke: #F7C223; }
-	75% { stroke: #1B9A59; }
-  100% { stroke: #4285F4; }
-}
-@keyframes dash {
-  0% { stroke-dashoffset: 187; }
-  50% {
-    stroke-dashoffset: 187/4;
-    transform:rotate(135deg);
-  }
-  100% {
-    stroke-dashoffset: 187;
-    transform:rotate(450deg);
-  }
- }
