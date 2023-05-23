@@ -1,6 +1,6 @@
 import { DragItem } from "../../components/DragItem";
 
-export const isHidden = (
+export const ishidden = (
   isPreview: boolean | undefined,
   draggedItem: DragItem | undefined,
   itemType: string,
@@ -8,8 +8,8 @@ export const isHidden = (
 ): boolean => {
   return Boolean(
     !isPreview &&
-      draggedItem &&
-      draggedItem.type === itemType &&
-      draggedItem.id === id
+    draggedItem &&
+    draggedItem.type === itemType &&
+    draggedItem.id === id
   );
 };

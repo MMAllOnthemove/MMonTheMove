@@ -38,7 +38,7 @@ width: 100%;
 
 export const ColumnContainer = styled(DragPreviewContainer)`
 background-color: #ebecf0;
-width: 300px;
+width: 400px;
 min-height: 40px;
 margin-right: 20px;
 border-radius: 3px;
