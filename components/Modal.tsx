@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function Modal({ setShowModal }) {
+function Modal({ setShowModal }: any) {
   const [model, setModel] = useState("");
   const [warranty, setWarranty] = useState("");
   const [fault, setFault] = useState("");
