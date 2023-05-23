@@ -19,10 +19,17 @@ function Modal({ setShowModal }) {
     }
   };
   return (
-    <div className="overlay w-screen h-screen absolute left-0 top-0 bg-[#000]/50 flex justify-center items-center">
+    <div
+      className="overlay w-screen z-10 h-screen absolute left-0 top-0 bg-[#000]/50 flex justify-center items-center"
+      onClick={() => {
+        setShowModal(false);
+      }}
+    >
       <div className="modal w-[400px] bg-white p-10 rounded-lg shadow">
         <div className="form_title_container flex justify-between items-center">
-          <h3>Fields will be auto populated</h3>
+          <h3 className="font-medium text-gray-900 capitalize">
+            Fields will be auto populated
+          </h3>
           <button
             className="border-none bg-transparent"
             onClick={() => {
