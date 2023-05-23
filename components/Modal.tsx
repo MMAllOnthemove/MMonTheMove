@@ -1,11 +1,26 @@
 import React, { useState } from "react";
 
 function Modal({ setShowModal }) {
-  const [soNumber, setSoNumber] = useState("");
-  const handleChange = () => {};
+  const [model, setModel] = useState("");
+  const [warranty, setWarranty] = useState("");
+  const [fault, setFault] = useState("");
+  const [technician, setTechnician] = useState("");
+  const postData = async (e: any) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:3001/management", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model, warranty, fault, technician }),
+      });
+      console.log("Response is", response);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div className="overlay w-screen h-screen absolute left-0 top-0 bg-[#000]/50 flex justify-center items-center">
-      <div className="modal w-[500px] bg-white p-10 rounded-lg shadow">
+      <div className="modal w-[400px] bg-white p-10 rounded-lg shadow">
         <div className="form_title_container flex justify-between items-center">
           <h3>Fields will be auto populated</h3>
           <button
@@ -18,20 +33,64 @@ function Modal({ setShowModal }) {
           </button>
         </div>
         <form className="flex flex-col">
-          <label htmlFor="service_order_no" className="sr-only">
-            Service Order No
+          <label htmlFor="model" className="sr-only">
+            Model
           </label>
           <input
             type="text"
-            name="service_order_no"
-            id="service_order_no"
+            name="model"
+            placeholder="Model"
+            id="model"
             className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
-            value={soNumber}
+            value={model}
             onChange={(e) => {
-              setSoNumber(e.target.value);
+              setModel(e.target.value);
+            }}
+          />
+          <label htmlFor="warranty" className="sr-only">
+            Warranty
+          </label>
+          <input
+            type="text"
+            name="warranty"
+            id="warranty"
+            placeholder="Warranty"
+            className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
+            value={warranty}
+            onChange={(e) => {
+              setWarranty(e.target.value);
+            }}
+          />
+          <label htmlFor="fault" className="sr-only">
+            Fault
+          </label>
+          <input
+            type="text"
+            name="fault"
+            id="fault"
+            placeholder="Fault"
+            className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
+            value={fault}
+            onChange={(e) => {
+              setFault(e.target.value);
+            }}
+          />
+          <label htmlFor="technician" className="sr-only">
+            Technician
+          </label>
+          <input
+            type="text"
+            name="technician"
+            id="technician"
+            placeholder="Technician"
+            className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
+            value={technician}
+            onChange={(e) => {
+              setTechnician(e.target.value);
             }}
           />
           <input
+            onClick={postData}
             type="submit"
             value="Submit"
             className="bg-green-900 text-white font-semibold font-sans rounded py-3 px-2 my-2"
