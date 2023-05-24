@@ -1,6 +1,6 @@
 import { useAppState } from "@/state/AppStateContext";
 import { ColumnContainer, ColumnTitle } from "@/styles/styles";
-import { ishidden } from "@/utils/isHidden";
+import { ishidden } from "@/utils/ishidden";
 import React, { useRef } from "react";
 import { useDrop } from "react-dnd";
 import { AddNewItem } from "./AddNewItem";
@@ -60,7 +60,7 @@ export const Column = ({ text, index, id, isPreview }: ColumnProps) => {
     <ColumnContainer
       isPreview={isPreview}
       ref={ref}
-      isHidden={ishidden(isPreview, state.draggedItem, "COLUMN", id)}
+      ishidden={ishidden(isPreview, state.draggedItem, "COLUMN", id)}
     >
       <ColumnTitle>{text}</ColumnTitle>
       {state.lists[index].tasks.map((task, i) => (

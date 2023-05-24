@@ -10,3 +10,5 @@ CREATE TABLE service_orders (
     PARTS_ORDERED VARCHAR(20) NULL,
     PARTS_ISSUED VARCHAR(20) NULL
     );
+
+INSERT INTO service_orders (service_order, warranty, model, fault, imei, serial_number, engineer, parts_ordered, parts_issued) 

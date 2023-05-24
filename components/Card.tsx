@@ -1,6 +1,6 @@
 import { useAppState } from "@/state/AppStateContext";
 import { CardContainer } from "@/styles/styles";
-import { ishidden } from "@/utils/isHidden";
+import { ishidden } from "@/utils/ishidden";
 import { useRef } from "react";
 import { useDrop } from "react-dnd";
 import { useItemDrag } from "./useItemDrag";
@@ -45,7 +45,7 @@ export const Card = ({ text, id, index, columnId, isPreview }: CardProps) => {
 
   return (
     <CardContainer
-      isHidden={ishidden(isPreview, state.draggedItem, "CARD", id)}
+      ishidden={ishidden(isPreview, state.draggedItem, "CARD", id)}
       isPreview={isPreview}
       ref={ref}
     >
