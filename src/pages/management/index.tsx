@@ -83,7 +83,7 @@ const Management = () => {
           </section>
 
           <section className="my-5">
-            <Tabs variant="enclosed">
+            <Tabs variant="enclosed" size="md">
               <TabList>
                 <Tab>Board View</Tab>
                 <Tab>Table View</Tab>
