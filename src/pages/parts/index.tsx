@@ -25,9 +25,6 @@ function Parts() {
       })
         .then((res) => res.json())
         .then((data: string | any) => {
-          // console.log(data.Return.EsPartsInfo.PartsDescription);
-          // //   console.log(Object.values(data.Return.EsPartsInfo));
-          // //   console.log(Object.values(data.Return.EsPartsInfo));
           setData(data);
           setLoading(false);
         });

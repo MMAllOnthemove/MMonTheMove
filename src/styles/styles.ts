@@ -5,12 +5,12 @@ type AddItemButtonProps = {
 }
 // For now, we won’t hide the column completely - we’ll just make it semitransparent.
 type DragPreviewContainerProps = {
-    isHidden?: boolean
+    ishidden?: boolean
     isPreview?: boolean
 }
 export const DragPreviewContainer = styled.div < DragPreviewContainerProps> `
 transform: ${props => (props.isPreview ? "rotate(5deg)" : undefined)};
-opacity: ${props => (props.isHidden ? 0 : 1)};
+opacity: ${props => (props.ishidden ? 0 : 1)};
 `
 type DragPreviewWrapperProps = {
     position: {

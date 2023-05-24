@@ -1,108 +1,57 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
 import { ThemeProvider, createTheme } from "@mui/material";
 
-interface table {
-  serviceOrder: string;
-  model: string;
-  warranty: string;
-  fault: string;
-  imei: string;
-  serialNumber: string;
-  engineer: string;
-  partsIssued: string;
-  partsOrdered: string;
-}
-const newdata: table[] = [
-  {
-    serviceOrder: "",
-    model: "",
-    warranty: "",
-    fault: "",
-    imei: "",
-    serialNumber: "",
-    engineer: "",
-    partsIssued: "",
-    partsOrdered: "",
-  },
-];
-
-//nested data is ok, see accessorKeys in ColumnDef below
-type Person = {
-  name: {
-    firstName: string;
-    lastName: string;
-  };
-  address: string;
-  city: string;
-  state: string;
+type ApiResponse = {
+  data: Array<Table>;
 };
 
-//nested data is ok, see accessorKeys in ColumnDef below
-const data: Person[] = [
-  {
-    name: {
-      firstName: "John",
-      lastName: "Doe",
-    },
-    address: "261 Erdman Ford",
-    city: "East Daphne",
-    state: "Kentucky",
-  },
-  {
-    name: {
-      firstName: "Jane",
-      lastName: "Doe",
-    },
-    address: "769 Dominic Grove",
-    city: "Columbus",
-    state: "Ohio",
-  },
-  {
-    name: {
-      firstName: "Joe",
-      lastName: "Doe",
-    },
-    address: "566 Brakus Inlet",
-    city: "South Linda",
-    state: "West Virginia",
-  },
-  {
-    name: {
-      firstName: "Kevin",
-      lastName: "Vandy",
-    },
-    address: "722 Emie Stream",
-    city: "Lincoln",
-    state: "Nebraska",
-  },
-  {
-    name: {
-      firstName: "Joshua",
-      lastName: "Rolluffs",
-    },
-    address: "32188 Larkin Turnpike",
-    city: "Omaha",
-    state: "Nebraska",
-  },
-];
+type Table = {
+  service_order: string;
+  warranty: string;
+  model: string;
+  fault: string;
+  imei: string;
+  serial_number: string;
+  engineer: string;
+  parts_ordered: string;
+  parts_issued: string;
+};
+
 const Table = () => {
+  const [tableData, setTableData] = useState<Table[]>([]);
+  const getData = async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/management`);
+      const json = (await response.json()) as ApiResponse;
+      // console.log(json);
+
+      setTableData(json.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+
   //should be memoized or stable
   const defaultMaterialTheme = createTheme();
-  const columns = useMemo<MRT_ColumnDef<table>[]>(
+  const columns = useMemo<MRT_ColumnDef<Table>[]>(
     () => [
       {
-        accessorKey: "serviceOrder", //access nested data with dot notation
+        accessorKey: "service_order", //access nested data with dot notation
         header: "Service Order",
-      },
-      {
-        accessorKey: "model",
-        header: "Model",
       },
       {
         accessorKey: "warranty", //normal accessorKey
         header: "Warranty",
       },
+      {
+        accessorKey: "model",
+        header: "Model",
+      },
+
       {
         accessorKey: "fault",
         header: "Fault",
@@ -112,7 +61,7 @@ const Table = () => {
         header: "IMEI",
       },
       {
-        accessorKey: "serialNumber",
+        accessorKey: "serial_number",
         header: "Serial No.",
       },
       {
@@ -120,12 +69,12 @@ const Table = () => {
         header: "Engineer",
       },
       {
-        accessorKey: "partsIssued",
-        header: "Parts Issued",
+        accessorKey: "parts_ordered",
+        header: "Parts Ordered",
       },
       {
-        accessorKey: "partsOrdered",
-        header: "Parts Ordered",
+        accessorKey: "parts_issued",
+        header: "Parts Issued",
       },
     ],
 
@@ -134,7 +83,7 @@ const Table = () => {
 
   return (
     <ThemeProvider theme={defaultMaterialTheme}>
-      <MaterialReactTable columns={columns} data={newdata} />
+      <MaterialReactTable columns={columns} data={tableData} />
     </ThemeProvider>
   );
 };
