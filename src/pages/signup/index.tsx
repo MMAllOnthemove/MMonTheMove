@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 
-export default function Signup() {
+export default function Signup({ setAuth }: any) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -15,12 +15,8 @@ export default function Signup() {
     setPasswordType("password");
   };
 
-  function handleSubmit(e: React.SyntheticEvent) {
+  async function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
-    console.log("Firstname", firstName);
-    console.log("Lastname", lastName);
-    console.log("Email", email);
-    console.log("Password", password);
     setFirstName("");
     setLastName("");
     setEmail("");
