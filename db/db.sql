@@ -12,3 +12,14 @@ CREATE TABLE service_orders (
     );
 
 INSERT INTO service_orders (service_order, warranty, model, fault, imei, serial_number, engineer, parts_ordered, parts_issued) 
+
+
+CREATE TABLE users (
+    ID BIGSERIAL PRIMARY KEY NOT NULL,
+    FIRSTNAME VARCHAR(100) NOT NULL,
+    LASTNAME VARCHAR(100) NOT NULL,
+    EMAIL VARCHAR(255) NOT NULL UNIQUE,
+    PASSWORD VARCHAR(255) NOT NULL,
+    CREATED_AT DATE DEFAULT CURRENT_DATE
+
+);
