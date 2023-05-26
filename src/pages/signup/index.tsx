@@ -1,12 +1,13 @@
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
+import { useFormik } from 'formik';
 
 export default function Signup({ setAuth }: any) {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [passwordType, setPasswordType] = useState("password");
   const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
   const togglePassword = () => {
     if (passwordType === "password") {
       setPasswordType("text");
@@ -17,10 +18,10 @@ export default function Signup({ setAuth }: any) {
 
   async function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
-    setFirstName("");
-    setLastName("");
+    setFullName("");
     setEmail("");
     setPassword("");
+    setPassword2("");
   }
   return (
     <>
@@ -60,21 +61,20 @@ export default function Signup({ setAuth }: any) {
             Create account
           </h2>
         </div>
-
         <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form method="POST" className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label
                 htmlFor="fname"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                First Name
+                Full Name
               </label>
               <div className="mt-1">
                 <input
-                  value={firstName}
+                  value={fullName}
                   onChange={(e: any): void => {
-                    setFirstName(e.target.value);
+                    setFullName(e.target.value);
                   }}
                   id="fname"
                   name="fname"
@@ -84,27 +84,7 @@ export default function Signup({ setAuth }: any) {
                 />
               </div>
             </div>
-            <div>
-              <label
-                htmlFor="lname"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Last Name
-              </label>
-              <div className="mt-1">
-                <input
-                  value={lastName}
-                  onChange={(e: any): void => {
-                    setLastName(e.target.value);
-                  }}
-                  id="lname"
-                  name="lname"
-                  type="lname"
-                  required
-                  className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 outline-none"
-                />
-              </div>
-            </div>
+
             <div>
               <label
                 htmlFor="email"
@@ -145,6 +125,55 @@ export default function Signup({ setAuth }: any) {
                   value={password}
                   onChange={(e: any): void => {
                     setPassword(e.target.value);
+                  }}
+                  required
+                  className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6  outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={togglePassword}
+                  className="border-none bg-transparent"
+                >
+                  {passwordType === "password" ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 19c.946 0 1.81-.103 2.598-.281l-1.757-1.757c-.273.021-.55.038-.841.038-5.351 0-7.424-3.846-7.926-5a8.642 8.642 0 0 1 1.508-2.297L4.184 8.305c-1.538 1.667-2.121 3.346-2.132 3.379a.994.994 0 0 0 0 .633C2.073 12.383 4.367 19 12 19zm0-14c-1.837 0-3.346.396-4.604.981L3.707 2.293 2.293 3.707l18 18 1.414-1.414-3.319-3.319c2.614-1.951 3.547-4.615 3.561-4.657a.994.994 0 0 0 0-.633C21.927 11.617 19.633 5 12 5zm4.972 10.558-2.28-2.28c.19-.39.308-.819.308-1.278 0-1.641-1.359-3-3-3-.459 0-.888.118-1.277.309L8.915 7.501A9.26 9.26 0 0 1 12 7c5.351 0 7.424 3.846 7.926 5-.302.692-1.166 2.342-2.954 3.558z"></path>
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 9a3.02 3.02 0 0 0-3 3c0 1.642 1.358 3 3 3 1.641 0 3-1.358 3-3 0-1.641-1.359-3-3-3z"></path>
+                      <path d="M12 5c-7.633 0-9.927 6.617-9.948 6.684L1.946 12l.105.316C2.073 12.383 4.367 19 12 19s9.927-6.617 9.948-6.684l.106-.316-.105-.316C21.927 11.617 19.633 5 12 5zm0 12c-5.351 0-7.424-3.846-7.926-5C4.578 10.842 6.652 7 12 7c5.351 0 7.424 3.846 7.926 5-.504 1.158-2.578 5-7.926 5z"></path>
+                    </svg>
+                  )}
+                </button>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="password2"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  Repeat Password
+                </label>
+              </div>
+              <div className="mt-1 flex gap-1 border rounded-md">
+                <input
+                  id="password2"
+                  name="password2"
+                  type={passwordType}
+                  value={password2}
+                  onChange={(e: any): void => {
+                    setPassword2(e.target.value);
                   }}
                   required
                   className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6  outline-none"
