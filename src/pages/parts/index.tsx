@@ -1,5 +1,6 @@
 import { memo, useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
+import Head from "next/head";
 
 function Parts() {
   const [data, setData] = useState<null | any>(null);
@@ -49,6 +50,9 @@ function Parts() {
   };
   return (
     <>
+      <Head>
+        <title>Parts</title>
+      </Head>
       <Navbar />
       <main>
         <div className="container mx-auto p-4">

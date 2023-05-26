@@ -1,10 +1,7 @@
 import { ThemeProvider, createTheme } from "@mui/material";
 import MaterialReactTable from "material-react-table";
 import { useEffect, useMemo, useState } from "react";
-
-// type ApiResponse = {
-//   data: Array<Table>;
-// };
+import { Box, Typography } from "@mui/material";
 
 type Table = {
   service_order: string;
@@ -76,7 +73,25 @@ const Table = () => {
   );
   return (
     <ThemeProvider theme={defaultMaterialTheme}>
-      <MaterialReactTable columns={columns} data={tableData} />
+      <MaterialReactTable
+        columns={columns}
+        data={tableData}
+        renderDetailPanel={({ row }) => (
+          <Box
+            sx={{
+              display: "grid",
+              margin: "auto",
+              gridTemplateColumns: "1fr 1fr",
+              width: "100%",
+            }}
+          >
+            <h3 className="text-gray-900 font-medium">
+              {" "}
+              Repairshopr details for this specific job will appear here
+            </h3>
+          </Box>
+        )}
+      />
     </ThemeProvider>
   );
 };
