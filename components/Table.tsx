@@ -14,70 +14,63 @@ type Table = {
   imei: string;
   serial_number: string;
   engineer: string;
-  parts_ordered: string;
   parts_issued: string;
+  parts_ordered: string;
 };
 
 const Table = () => {
-  const [tableData, setTableData] = useState<Table[]>([]);
-  const getData = async () => {
-    try {
-      const response = await fetch(`http://localhost:3001/management`);
-      const json = (await response.json()) as ApiResponse;
-      // console.log(json);
-
-      setTableData(json.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const [tableData, setTableData] = useState<string[]>([]);
+  const [isLoading, setLoading] = useState(false);
   useEffect(() => {
-    getData();
+    setLoading(true);
+    fetch("http://localhost:3001/management")
+      .then((res) => res.json())
+      .then((data) => {
+        setTableData(data);
+        setLoading(false);
+      });
   }, []);
+
+  // if (isLoading) return <p>Loading...</p>;
+  // if (!tableData) return <p>No profile data</p>;
 
   //should be memoized or stable
   const defaultMaterialTheme = createTheme();
-  const columns = useMemo<MRT_ColumnDef<Table>[]>(
+  const columns = useMemo(
     () => [
       {
         accessorKey: "service_order", //access nested data with dot notation
         header: "Service Order",
       },
       {
-        accessorKey: "warranty", //normal accessorKey
+        accessorKey: "warranty",
         header: "Warranty",
       },
       {
-        accessorKey: "model",
+        accessorKey: "model", //normal accessorKey
         header: "Model",
       },
-
       {
-        accessorKey: "fault",
-        header: "Fault",
-      },
-      {
-        accessorKey: "imei",
-        header: "IMEI",
+        accessorKey: "IMEI",
+        header: "Imei",
       },
       {
         accessorKey: "serial_number",
-        header: "Serial No.",
+        header: "Serial Number",
       },
       {
         accessorKey: "engineer",
         header: "Engineer",
       },
       {
-        accessorKey: "parts_ordered",
-        header: "Parts Ordered",
+        accessorKey: "parts_issued",
+        header: "Parts issued",
       },
       {
-        accessorKey: "parts_issued",
-        header: "Parts Issued",
+        accessorKey: "parts_ordered",
+        header: "Parts ordered",
       },
     ],
-
     []
   );
 

@@ -41,7 +41,7 @@ function Modal({ setShowModal }: any) {
     }
 
     getData("https://eu.ipaas.samsung.com/eu/gcic/GetSOInfoAll/1.0/ImportSet", {
-      IvSvcOrderNo: "4266443508",
+      IvSvcOrderNo: service_order,
       // IvSvcOrderNo: "4266810380",
       // IvAscJobNo: "4266443508",
       IsCommonHeader: {
@@ -74,6 +74,13 @@ function Modal({ setShowModal }: any) {
     } catch (err) {
       console.log(err);
     }
+    setEngineer("");
+    setFault("");
+    setModel("");
+    setFault("");
+    setImei("");
+    setSerialNumber("");
+    setEngineer("");
   };
   return (
     <div className="overlay w-screen z-10 h-screen absolute left-0 top-0 bg-[#000]/50 flex justify-center items-center">
