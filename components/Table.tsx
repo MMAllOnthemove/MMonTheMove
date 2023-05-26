@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
-import MaterialReactTable, { type MRT_ColumnDef } from "material-react-table";
 import { ThemeProvider, createTheme } from "@mui/material";
+import MaterialReactTable from "material-react-table";
+import { useEffect, useMemo, useState } from "react";
 
-type ApiResponse = {
-  data: Array<Table>;
-};
+// type ApiResponse = {
+//   data: Array<Table>;
+// };
 
 type Table = {
   service_order: string;
@@ -20,16 +20,13 @@ type Table = {
 
 const Table = () => {
   const [tableData, setTableData] = useState<string[]>([]);
-  const [isLoading, setLoading] = useState(false);
   useEffect(() => {
-    setLoading(true);
     fetch("http://localhost:3001/management")
       .then((res) => res.json())
       .then((data) => {
         setTableData(data);
-        setLoading(false);
       });
-  }, []);
+  }, [tableData]);
 
   // if (isLoading) return <p>Loading...</p>;
   // if (!tableData) return <p>No profile data</p>;
@@ -41,6 +38,7 @@ const Table = () => {
       {
         accessorKey: "service_order", //access nested data with dot notation
         header: "Service Order",
+        enableClickToCopy: true,
       },
       {
         accessorKey: "warranty",
@@ -49,14 +47,17 @@ const Table = () => {
       {
         accessorKey: "model", //normal accessorKey
         header: "Model",
+        enableClickToCopy: true,
       },
       {
-        accessorKey: "IMEI",
-        header: "Imei",
+        accessorKey: "imei",
+        header: "IMEI",
+        enableClickToCopy: true,
       },
       {
         accessorKey: "serial_number",
         header: "Serial Number",
+        enableClickToCopy: true,
       },
       {
         accessorKey: "engineer",
@@ -73,7 +74,6 @@ const Table = () => {
     ],
     []
   );
-
   return (
     <ThemeProvider theme={defaultMaterialTheme}>
       <MaterialReactTable columns={columns} data={tableData} />
