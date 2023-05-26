@@ -11,6 +11,14 @@ const Management = () => {
   const [search, setSearch] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
 
+  const [service_order, setServiceOrder] = useState("");
+  const [warranty, setWarranty] = useState("");
+  const [model, setModel] = useState("");
+  const [fault, setFault] = useState("");
+  const [imei, setImei] = useState("");
+  const [serial_number, setSerialNumber] = useState("");
+  const [engineer, setEngineer] = useState("");
+
   useEffect(() => {
     async function getData(url = "", data = {}) {
       // setLoading(true);
@@ -31,12 +39,18 @@ const Management = () => {
         .then((res) => res.json())
         .then((data: string | any) => {
           setData(data);
+          setWarranty(data?.Return.EsModelInfo.WtyType);
+          setModel(data?.Return.EsModelInfo.Model);
+          setFault(data?.Return.EsModelInfo.DefectDesc);
+          setImei(data?.Return.EsModelInfo.IMEI);
+          setSerialNumber(data?.Return.EsModelInfo.SerialNo);
+          setEngineer(data?.Return.EsScheInfo.Engineer);
           // setLoading(false);
         });
     }
 
     getData("https://eu.ipaas.samsung.com/eu/gcic/GetSOInfoAll/1.0/ImportSet", {
-      IvSvcOrderNo: "",
+      IvSvcOrderNo: service_order,
       // IvSvcOrderNo: "4266810380",
       // IvAscJobNo: "4266443508",
       IsCommonHeader: {
@@ -47,12 +61,35 @@ const Management = () => {
         Pac: `${process.env.NEXT_PUBLIC_PAC}`,
       },
     });
-  }, [search]);
+  }, [service_order]);
 
-  // if (isLoading) return <p>Loading...</p>;
-  const handleSubmit = (event: any) => {
-    event.preventDefault();
-    setSearch(event.target.value);
+  const postData = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:3001/management", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          service_order,
+          warranty,
+          model,
+          fault,
+          imei,
+          serial_number,
+          engineer,
+        }),
+      });
+      console.log("Response is", response);
+    } catch (err) {
+      console.log(err);
+    }
+    setEngineer("");
+    setFault("");
+    setModel("");
+    setFault("");
+    setImei("");
+    setSerialNumber("");
+    setEngineer("");
   };
 
   return (
@@ -61,25 +98,121 @@ const Management = () => {
 
       <main>
         <div className="container flex justify-center flex-col mx-auto p-2">
-          <section className="my-4 flex justify-center flex-col items-center gap-2">
-            <form onSubmit={handleSubmit} className="flex flex-row gap-2">
-              <label htmlFor="searchPart" className="sr-only">
-                Search here
-              </label>
-              <input
-                className="searchInput search input placeholder-sky-900 outline-none text-gray-950"
-                placeholder="Search Service Order No."
-                type="search"
-                name="search"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <input
-                type="submit"
-                value="Search"
-                className="bg-sky-700 py-3 px-4 rounded text-white border-0 font-sans font-medium hover:bg-sky-950 cursor-pointer"
-              />
-            </form>
+          <section className="flex justify-between items-center py-5">
+            <h1 className="text-3xl font-semibold leading-3 text-gray-800">
+              HHP Management
+            </h1>
+            <button
+              className="bg-green-900 text-white font-semibold font-sans rounded-md p-3 my-2"
+              type="button"
+              onClick={() => {
+                setShowModal(true);
+              }}
+            >
+              Open Modal
+            </button>
+            {showModal && (
+              <Modal
+                setShowModal={setShowModal}
+                modalTitle="Fields will be auto populated"
+              >
+                <form className="flex flex-col">
+                  <label htmlFor="ServiceOrder" className="sr-only">
+                    Service Order No
+                  </label>
+                  <input
+                    type="text"
+                    name="ServiceOrder"
+                    placeholder="Service Order"
+                    id="ServiceOrder"
+                    className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
+                    value={service_order}
+                    onChange={(e) => {
+                      setServiceOrder(e.target.value);
+                    }}
+                  />
+                  <label htmlFor="warranty" className="sr-only">
+                    Warranty
+                  </label>
+                  <input
+                    hidden
+                    type="text"
+                    name="model"
+                    placeholder="Warranty"
+                    id="warranty"
+                    className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
+                    value={warranty}
+                  />
+                  <label htmlFor="model" className="sr-only">
+                    Model
+                  </label>
+                  <input
+                    hidden
+                    type="text"
+                    name="model"
+                    placeholder="Model"
+                    id="model"
+                    className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
+                    value={model}
+                  />
+                  <label htmlFor="fault" className="sr-only">
+                    Fault
+                  </label>
+                  <input
+                    hidden
+                    type="text"
+                    name="fault"
+                    placeholder="Fault"
+                    id="fault"
+                    className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
+                    value={fault}
+                  />
+                  <label htmlFor="imei" className="sr-only">
+                    IMEI
+                  </label>
+                  <input
+                    hidden
+                    type="text"
+                    name="imei"
+                    placeholder="IMEI"
+                    id="imei"
+                    className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
+                    value={fault}
+                  />
+                  <label htmlFor="serial_number" className="sr-only">
+                    Serial Number
+                  </label>
+                  <input
+                    hidden
+                    type="text"
+                    name="serial_number"
+                    placeholder="Serial Number"
+                    id="serial_number"
+                    className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
+                    value={serial_number}
+                  />
+                  <label htmlFor="engineer" className="sr-only">
+                    Engineer
+                  </label>
+                  <input
+                    disabled
+                    type="text"
+                    name="engineer"
+                    placeholder="Engineer"
+                    id="engineer"
+                    className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
+                    value={engineer}
+                  />
+
+                  <input
+                    onClick={postData}
+                    type="submit"
+                    value="Submit"
+                    className="bg-green-900 text-white font-semibold font-sans rounded py-3 px-2 my-2"
+                  />
+                </form>
+              </Modal>
+            )}
           </section>
 
           <section className="my-5">
@@ -94,218 +227,7 @@ const Management = () => {
                   <Kanban />
                 </TabPanel>
                 <TabPanel>
-                  {/* <section className="w-full overflow-auto my-5">
-                    <h2>EtFlowInfo</h2>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Created By</th>
-                          <th>Created At</th>
-                          <th>CreatedTm</th>
-                          <th>Depth</th>
-                          <th>DetailType</th>
-                          <th>DetailTypeDesc</th>
-                          <th>ProcessName</th>
-                          <th>ProcessType</th>
-                          <th>RelationType</th>
-                          <th>Status</th>
-                          <th>StatusDesc</th>
-                          <th>SvcOrderNo</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {data &&
-                          data?.EtFlowInfo?.results.map(
-                            (item: any, index: any) => {
-                              return (
-                                <tr key={index}>
-                                  <td>{item.CreatedBy}</td>
-                                  <td>{item.CreatedAt}</td>
-                                  <td>{item.CreatedTm}</td>
-                                  <td>{item.Depth}</td>
-                                  <td>{item.DetailType}</td>
-                                  <td>{item.DetailTypeDesc}</td>
-                                  <td>{item.PrcoessTypeName}</td>
-                                  <td>{item.ProcessType}</td>
-                                  <td>{item.RelationType}</td>
-                                  <td>{item.Status}</td>
-                                  <td>{item.StatusDesc}</td>
-                                  <td>{item.SvcOrderNo}</td>
-                                </tr>
-                              );
-                            }
-                          )}
-                      </tbody>
-                    </table>
-                  </section>
-                  <section className="w-full overflow-auto my-5">
-                    <h2>EtLogInfo</h2>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>AscCode</th>
-                          <th>ChangedBy</th>
-                          <th>Channel</th>
-                          <th>StReason</th>
-                          <th>StReasonDesc</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {data &&
-                          data?.EtLogInfo?.results.map(
-                            (item: any, index: any) => {
-                              return (
-                                <tr key={index}>
-                                  <td>{item.AscCode}</td>
-                                  <td>{item.ChangedBy}</td>
-                                  <td>{item.Channel}</td>
-                                  <td>{item.StReason}</td>
-                                  <td>{item.StReasonDesc}</td>
-                                </tr>
-                              );
-                            }
-                          )}
-                      </tbody>
-                    </table>
-                  </section>
-                  <section className="w-full overflow-auto my-5">
-                    <h2>EtPartsInfo</h2>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>GoodIssueDate</th>
-                          <th>InvoiceItemNo</th>
-                          <th>InvoiceNo</th>
-                          <th>MateralRequestNo</th>
-                          <th>PODate</th>
-                          <th>PONo</th>
-                          <th>POStatus</th>
-                          <th>PartStatus</th>
-                          <th>PartsDesc</th>
-                          <th>PartsNo</th>
-                          <th>PartsQty</th>
-                          <th>PartsRecvDate</th>
-                          <th>PartsSerial</th>
-                          <th>PartsSerialOld</th>
-                          <th>RepairLocation</th>
-                          <th>RequestDate</th>
-                          <th>SamsungOrderDate</th>
-                          <th>SamsungOrderNo</th>
-                          <th>SeqNo</th>
-                          <th>TrackingNo</th>
-                          <th>WtyType</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {data &&
-                          data?.EtPartsInfo?.results.map(
-                            (item: any, index: any) => {
-                              const {
-                                GoodIssueDate,
-                                InvoiceItemNo,
-                                InvoiceNo,
-                                MateralRequestNo,
-                                PODate,
-                                PONo,
-                                POStatus,
-                                PartStatus,
-                                PartsDesc,
-                                PartsNo,
-                                PartsQty,
-                                PartsRecvDate,
-                                PartsSerial,
-                                PartsSerialOld,
-                                RepairLocation,
-                                RequestDate,
-                                SamsungOrderDate,
-                                SamsungOrderNo,
-                                SeqNo,
-                                TrackingNo,
-                                WtyType,
-                              } = item;
-                              return (
-                                <tr key={index}>
-                                  <td>{GoodIssueDate}</td>
-                                  <td>{InvoiceItemNo}</td>
-                                  <td>{InvoiceNo}</td>
-                                  <td>{MateralRequestNo}</td>
-                                  <td>{PODate}</td>
-                                  <td>{PONo}</td>
-                                  <td>{POStatus}</td>
-                                  <td>{PartStatus}</td>
-                                  <td>{PartsDesc}</td>
-                                  <td>{PartsNo}</td>
-                                  <td>{PartsQty}</td>
-                                  <td>{PartsRecvDate}</td>
-                                  <td>{PartsSerial}</td>
-                                  <td>{PartsSerialOld}</td>
-                                  <td>{RepairLocation}</td>
-                                  <td>{RequestDate}</td>
-                                  <td>{SamsungOrderDate}</td>
-                                  <td>{SamsungOrderNo}</td>
-                                  <td>{SeqNo}</td>
-                                  <td>{TrackingNo}</td>
-                                  <td>{WtyType === "O" ? "OOW" : "IW"}</td>
-                                </tr>
-                              );
-                            }
-                          )}
-                      </tbody>
-                    </table>
-                  </section> */}
                   <section>
-                    <section className="my-3 flex justify-center">
-                      <button
-                        className="bg-green-900 text-white font-semibold font-sans rounded py-3 px-2 my-2"
-                        type="button"
-                        onClick={() => {
-                          setShowModal(true);
-                        }}
-                      >
-                        Open Modal
-                      </button>
-                      {showModal && <Modal setShowModal={setShowModal} />}
-                    </section>
-
-                    <>
-                      {/* <p>More content coming soon</p>
-                      <p>Accessory: {data?.Return.EsModelInfo.Accessory}</p>
-                      <p>Defect Desc: {data?.Return.EsModelInfo.DefectDesc}</p>
-                      <p>IMEI: {data?.Return.EsModelInfo.IMEI}</p>
-                      <p>Model: {data?.Return.EsModelInfo.Model}</p>
-                      <p>Serial No: {data?.Return.EsModelInfo.SerialNo}</p>
-                      <p>Warranty: {data?.Return.EsModelInfo.WtyType}</p>
-                      <p>
-                        Service Order: {data?.Return.EsHeaderInfo.SvcOrderNo}
-                      </p>
-                      <p>
-                        Booked: {data?.Return.EsHeaderInfo.CreateDate},{" "}
-                        {data?.Return.EsHeaderInfo.CreateTime}{" "}
-                      </p>
-                      <p>Booked by: {data?.Return.EsHeaderInfo.CreatedBy}</p>
-                      <p>
-                        Customer Name: {data?.Return.EsBpInfo.CustFirstName}{" "}
-                        {data?.Return.EsBpInfo.CustLastName}
-                      </p>
-                      <p>Customer Email: {data?.Return.EsBpInfo.CustEmail}</p>
-                      <p>
-                        Customer Phone: {data?.Return.EsBpInfo.CustHomePhone} /{" "}
-                        {data?.Return.EsBpInfo.CustMobilePhone} /{" "}
-                        {data?.Return.EsBpInfo.CustOfficePhone}
-                      </p>
-                      <p>
-                        Customer Address:{" "}
-                        {data?.Return.EsBpInfo.CustAddrStreet1},{" "}
-                        {data?.Return.EsBpInfo.CustDistrict},{" "}
-                        {data?.Return.EsBpInfo.CustStateDesc},{" "}
-                        {data?.Return.EsBpInfo.CustZipcode},
-                        {data?.Return.EsBpInfo.CustCountry}
-                      </p>
-                      <p> Engineer:  {data?.Return.EsScheInfo.Engineer}</p>
-                      
-                       */}
-                    </>
-
                     <Table />
                   </section>
                 </TabPanel>

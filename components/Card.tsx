@@ -45,6 +45,7 @@ export const Card = ({ text, id, index, columnId, isPreview }: CardProps) => {
 
   return (
     <CardContainer
+      className="bg-sky-700"
       ishidden={ishidden(isPreview, state.draggedItem, "CARD", id)}
       isPreview={isPreview}
       ref={ref}
