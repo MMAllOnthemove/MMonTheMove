@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React, { useState } from "react";
+import Head from "next/head";
 
 export default function Login({ setAuth }: any) {
   const [email, setEmail] = useState("");
@@ -20,6 +21,9 @@ export default function Login({ setAuth }: any) {
   };
   return (
     <>
+      <Head>
+        <title>Login</title>
+      </Head>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm mx-auto">
           <svg

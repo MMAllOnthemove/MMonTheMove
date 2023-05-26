@@ -4,6 +4,7 @@ import Kanban from "../../../components/Kanban";
 import Navbar from "../../../components/Navbar";
 import Table from "../../../components/Table";
 import Modal from "../../../components/Modal";
+import Head from "next/head";
 
 const Management = () => {
   const [data, setData] = useState<null | any>(null);
@@ -94,6 +95,9 @@ const Management = () => {
 
   return (
     <>
+      <Head>
+        <title>Management</title>
+      </Head>
       <Navbar />
 
       <main>
