@@ -11,7 +11,8 @@ CREATE TABLE service_orders (
     PARTS_ISSUED VARCHAR(20) NULL
     );
 
-INSERT INTO service_orders (service_order, warranty, model, fault, imei, serial_number, engineer, parts_ordered, parts_issued) 
+
+
 
 
 CREATE TABLE users (
@@ -23,3 +24,5 @@ CREATE TABLE users (
     CREATED_AT DATE DEFAULT CURRENT_DATE
 
 );
+
+INSERT INTO service_orders (service_order) VALUES("4261942103");
