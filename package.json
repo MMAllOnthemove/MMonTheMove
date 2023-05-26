@@ -50,6 +50,7 @@
     "react-redux": "^8.0.5",
     "recharts": "^2.5.0",
     "styled-components": "^6.0.0-rc.1",
+    "swr": "^2.1.5",
     "tailwindcss": "3.3.1",
     "typescript": "5.0.4",
     "uninstall": "^0.0.0",
