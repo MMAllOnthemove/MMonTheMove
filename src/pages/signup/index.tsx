@@ -1,13 +1,54 @@
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import { useFormik } from 'formik';
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 export default function Signup({ setAuth }: any) {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
+  // const [fullName, setFullName] = useState("");
+  // const [email, setEmail] = useState("");
   const [passwordType, setPasswordType] = useState("password");
-  const [password, setPassword] = useState("");
-  const [password2, setPassword2] = useState("");
+  // const [password, setPassword] = useState("");
+  // const [confirmPassword, setconfirmPassword] = useState("");
+
+  const formik = useFormik({
+    initialValues: {
+      fullName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    validationSchema: Yup.object({
+      fullName: Yup.string().required("Full Name is required"),
+      email: Yup.string().email().required("Email is required"),
+      password: Yup.string()
+        .required("Password required")
+        .min(6, "Password must have 6 or more characters")
+        .max(28, "Password too long")
+        .matches(
+          /(?=.*[a-z])(?=.*[A-Z])\w+/,
+          "Password ahould contain at least one uppercase and lowercase character"
+        )
+        .matches(/\d/, "Password should contain at least one number")
+        .matches(
+          /[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/,
+          "Password should contain at least one special character"
+        ),
+      confirmPassword: Yup.string().when("password", (password, field) => {
+        {
+          password
+            ? field
+                .required("The passwords do not match")
+                .oneOf([Yup.ref("password")], "The passwords do not match")
+            : null;
+        }
+      }),
+    }),
+    onSubmit: (values, actions) => {
+      alert(JSON.stringify(values, null, 2));
+      actions.resetForm();
+    },
+  });
+
   const togglePassword = () => {
     if (passwordType === "password") {
       setPasswordType("text");
@@ -16,13 +57,6 @@ export default function Signup({ setAuth }: any) {
     setPasswordType("password");
   };
 
-  async function handleSubmit(e: React.SyntheticEvent) {
-    e.preventDefault();
-    setFullName("");
-    setEmail("");
-    setPassword("");
-    setPassword2("");
-  }
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -62,7 +96,11 @@ export default function Signup({ setAuth }: any) {
           </h2>
         </div>
         <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form method="POST" className="space-y-6" onSubmit={handleSubmit}>
+          <form
+            method="POST"
+            className="space-y-6"
+            onSubmit={formik.handleSubmit}
+          >
             <div>
               <label
                 htmlFor="fname"
@@ -72,16 +110,18 @@ export default function Signup({ setAuth }: any) {
               </label>
               <div className="mt-1">
                 <input
-                  value={fullName}
-                  onChange={(e: any): void => {
-                    setFullName(e.target.value);
-                  }}
                   id="fname"
                   name="fname"
                   type="fname"
-                  required
+                  onChange={formik.handleChange}
+                  value={formik.values.fullName}
                   className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 outline-none"
                 />
+                {formik.errors.fullName && formik.touched.fullName ? (
+                  <span className="text-red-600 text-sm font-semibold fonts-sans">
+                    {formik.errors.fullName}
+                  </span>
+                ) : null}
               </div>
             </div>
 
@@ -94,18 +134,20 @@ export default function Signup({ setAuth }: any) {
               </label>
               <div className="mt-1">
                 <input
-                  value={email}
-                  onChange={(e: any): void => {
-                    setEmail(e.target.value);
-                  }}
                   id="email"
                   name="email"
                   type="email"
                   autoComplete="email"
-                  required
+                  onChange={formik.handleChange}
+                  value={formik.values.email}
                   className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 outline-none"
                 />
               </div>
+              {formik.errors.email && formik.touched.email ? (
+                <span className="text-red-600 text-sm font-semibold fonts-sans">
+                  {formik.errors.email}
+                </span>
+              ) : null}
             </div>
 
             <div>
@@ -122,11 +164,8 @@ export default function Signup({ setAuth }: any) {
                   id="password"
                   name="password"
                   type={passwordType}
-                  value={password}
-                  onChange={(e: any): void => {
-                    setPassword(e.target.value);
-                  }}
-                  required
+                  onChange={formik.handleChange}
+                  value={formik.values.password}
                   className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6  outline-none"
                 />
                 <button
@@ -156,6 +195,11 @@ export default function Signup({ setAuth }: any) {
                   )}
                 </button>
               </div>
+              {formik.errors.password && formik.touched.password ? (
+                <span className="text-red-600 text-sm font-semibold fonts-sans">
+                  {formik.errors.password}
+                </span>
+              ) : null}
             </div>
             <div>
               <div className="flex items-center justify-between">
@@ -171,11 +215,8 @@ export default function Signup({ setAuth }: any) {
                   id="password2"
                   name="password2"
                   type={passwordType}
-                  value={password2}
-                  onChange={(e: any): void => {
-                    setPassword2(e.target.value);
-                  }}
-                  required
+                  onChange={formik.handleChange}
+                  value={formik.values.confirmPassword}
                   className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6  outline-none"
                 />
                 <button
@@ -205,6 +246,12 @@ export default function Signup({ setAuth }: any) {
                   )}
                 </button>
               </div>
+              {formik.errors.confirmPassword &&
+              formik.touched.confirmPassword ? (
+                <span className="text-red-600 text-sm font-semibold fonts-sans">
+                  {formik.errors.confirmPassword}
+                </span>
+              ) : null}
             </div>
 
             <div>
