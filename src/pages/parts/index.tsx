@@ -16,7 +16,7 @@ function Parts() {
         credentials: "same-origin", // include, *same-origin, omit
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPAAS}`,
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         redirect: "follow", // manual, *follow, error
