@@ -1,13 +1,21 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Head from "next/head";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useRouter } from "next/router";
+import { AccountContext } from "@/state/AccountContext";
 
 export default function Login({ setAuth }: any) {
   // const [email, setEmail] = useState("");
   // const [password, setPassword] = useState("");
   const [passwordType, setPasswordType] = useState("password");
+  const [error, setError] = useState(null);
+
+  const { setUser } = useContext(AccountContext);
+
+  // Navigate to this page on submit
+  const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
@@ -22,8 +30,35 @@ export default function Login({ setAuth }: any) {
         .max(28, "Password too long"),
     }),
     onSubmit: (values, actions) => {
-      alert(JSON.stringify(values, null, 2));
+      // alert(JSON.stringify(values, null, 2));
       actions.resetForm();
+      const vals = { ...values };
+      fetch(`${process.env.NEXT_PUBLIC_SERVER_URL_LOGIN}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(vals),
+      })
+        .catch((err) => {
+          return;
+        })
+        .then((res) => {
+          if (!res || !res.ok || res.status >= 400) {
+            return;
+          }
+          return res.json();
+        })
+        .then((data) => {
+          if (!data) return;
+          setUser({ ...data });
+          if (data.status) {
+            setError(data.status);
+          } else if (data.loggedIn) {
+            router.push("/management");
+          }
+        });
     },
   });
 
@@ -74,6 +109,7 @@ export default function Login({ setAuth }: any) {
           <h2 className="mt-10 text-center text-2xl font-semibold leading-9 tracking-tight text-gray-900">
             Login
           </h2>
+          <p>{error}</p>
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">

@@ -16,7 +16,7 @@ type Table = {
 };
 
 const Table = () => {
-  const [tableData, setTableData] = useState<string[]>([]);
+  const [tableData, setTableData] = useState<string[] | any[]>([]);
   useEffect(() => {
     fetch("http://localhost:3001/management")
       .then((res) => res.json())

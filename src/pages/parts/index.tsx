@@ -1,6 +1,8 @@
 import { memo, useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
 import Head from "next/head";
+// import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+// dotenv.config();
 
 function Parts() {
   const [data, setData] = useState<null | any>(null);
@@ -17,7 +19,7 @@ function Parts() {
         credentials: "same-origin", // include, *same-origin, omit
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPAAS}`,
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         redirect: "follow", // manual, *follow, error

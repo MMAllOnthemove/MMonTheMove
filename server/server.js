@@ -1,12 +1,39 @@
 const express = require("express");
-const cors = require("cors");
+const { Server } = require("socket.io");
 const app = express();
+const helmet = require("helmet");
+const cors = require("cors");
+const authRouter = require("./routes/authRouter");
 const pool = require("./db");
 const { v4: uuidv4 } = require("uuid");
-const bcrypt = require("bcrypt");
+const server = require("http").createServer(app);
+const {
+  sessionMiddleware,
+  wrap,
+  corsConfig,
+} = require("./controllers/serverController");
+const { authorizeUser } = require("./controllers/socketController");
 
-app.use(cors());
+const io = new Server(server, {
+  cors: corsConfig,
+});
+
+// express Middleware
+app.use(helmet());
+app.use(cors(corsConfig));
 app.use(express.json());
+// Share this session middlware with socket.io
+app.use(sessionMiddleware);
+app.use("/auth", authRouter);
+
+
+// This means the ip will be coming from a different domain
+app.set("trust proxy", 1)
+
+// session shared by app express middleware
+io.use(wrap(sessionMiddleware));
+io.use(authorizeUser);
+io.on("connect", (socket) => {});
 
 // GET info from database
 app.get("/management", async (req, res) => {
@@ -55,33 +82,6 @@ app.post("/management", async (req, res) => {
   } catch (err) {
     console.log(err);
   }
-});
-
-// POST user info to database
-app.post("/register", async (req, res) => {
-  const { fname, email, password, password2 } = req.body;
-  let errors = [];
-  if (!fname || !email || !password || !password2) {
-    errors.push({ message: "Please enter all fields" });
-  }
-  if (password.length < 6) {
-    errors.push({ message: "Password should be at least 6 characters" });
-  }
-  if (password !== password2) {
-    errors.push({ message: "Passwords do not match" });
-  }
-  if (errors.length > 0) {
-    res.render("register", { errors });
-  }else {
-    let hashedPassword = await bcrypt.hash(password, 10);
-    pool.query(`SELECT * FROM users WHERE email = $1`, [email], (err, results)=>{
-      if (err) {
-        throw err
-      }
-      console.log(results.rows);
-    })
-  }
-
 });
 
 const PORT = 3001;

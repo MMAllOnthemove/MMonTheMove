@@ -5,6 +5,7 @@ import Navbar from "../../../components/Navbar";
 import Table from "../../../components/Table";
 import Modal from "../../../components/Modal";
 import Head from "next/head";
+import useSocketSetup from "../useSocketSetup";
 
 const Management = () => {
   const [data, setData] = useState<null | any>(null);
@@ -19,6 +20,9 @@ const Management = () => {
   const [imei, setImei] = useState("");
   const [serial_number, setSerialNumber] = useState("");
   const [engineer, setEngineer] = useState("");
+
+  // Connects to socket io and logs user out if there is an error on our backend
+  useSocketSetup();
 
   useEffect(() => {
     async function getData(url = "", data = {}) {

@@ -1,21 +1,23 @@
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useRouter } from "next/router";
+import { AccountContext } from "@/state/AccountContext";
 
 export default function Signup({ setAuth }: any) {
-  // const [fullName, setFullName] = useState("");
-  // const [email, setEmail] = useState("");
   const [passwordType, setPasswordType] = useState("password");
-  // const [password, setPassword] = useState("");
-  // const [confirmPassword, setconfirmPassword] = useState("");
+  const [error, setError] = useState(null);
+  const { setUser } = useContext(AccountContext);
+
+  // Navigate to this page on submit
+  const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
       fullName: "",
       email: "",
       password: "",
-      confirmPassword: "",
     },
     validationSchema: Yup.object({
       fullName: Yup.string().required("Full Name is required"),
@@ -33,19 +35,38 @@ export default function Signup({ setAuth }: any) {
           /[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/,
           "Password should contain at least one special character"
         ),
-      confirmPassword: Yup.string().when("password", (password, field) => {
-        {
-          password
-            ? field
-                .required("The passwords do not match")
-                .oneOf([Yup.ref("password")], "The passwords do not match")
-            : null;
-        }
-      }),
     }),
     onSubmit: (values, actions) => {
-      alert(JSON.stringify(values, null, 2));
+      // alert(JSON.stringify(values, null, 2));
       actions.resetForm();
+      const vals = { ...values };
+      fetch(`${process.env.NEXT_PUBLIC_SERVER_URL_SIGNUP}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(vals),
+      })
+        .catch((err) => {
+          return;
+        })
+        .then((res) => {
+          if (!res || !res.ok || res.status >= 400) {
+            return;
+          }
+          return res.json();
+        })
+        .then((data) => {
+          if (!data) return;
+          setUser({ ...data });
+          if (data.status) {
+            setError(data.status);
+          } else if (data.loggedIn) {
+            router.push("/management");
+          }
+          // console.log(data);
+        });
     },
   });
 
@@ -60,7 +81,7 @@ export default function Signup({ setAuth }: any) {
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm flex flex-col justify-center ">
+        <div className="sm:w-full sm:max-w-sm flex flex-col justify-center mx-auto">
           <svg
             id="logo-15"
             width="49"
@@ -94,6 +115,7 @@ export default function Signup({ setAuth }: any) {
           <h2 className="mt-3 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Create account
           </h2>
+          <p>{error}</p>
         </div>
         <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
           <form
@@ -103,16 +125,16 @@ export default function Signup({ setAuth }: any) {
           >
             <div>
               <label
-                htmlFor="fname"
+                htmlFor="fullName"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 Full Name
               </label>
               <div className="mt-1">
                 <input
-                  id="fname"
-                  name="fname"
-                  type="fname"
+                  id="fullName"
+                  name="fullName"
+                  type="fullName"
                   onChange={formik.handleChange}
                   value={formik.values.fullName}
                   className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 outline-none"
@@ -201,58 +223,6 @@ export default function Signup({ setAuth }: any) {
                 </span>
               ) : null}
             </div>
-            <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password2"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Repeat Password
-                </label>
-              </div>
-              <div className="mt-1 flex gap-1 border rounded-md">
-                <input
-                  id="password2"
-                  name="password2"
-                  type={passwordType}
-                  onChange={formik.handleChange}
-                  value={formik.values.confirmPassword}
-                  className="px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6  outline-none"
-                />
-                <button
-                  type="button"
-                  onClick={togglePassword}
-                  className="border-none bg-transparent"
-                >
-                  {passwordType === "password" ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 19c.946 0 1.81-.103 2.598-.281l-1.757-1.757c-.273.021-.55.038-.841.038-5.351 0-7.424-3.846-7.926-5a8.642 8.642 0 0 1 1.508-2.297L4.184 8.305c-1.538 1.667-2.121 3.346-2.132 3.379a.994.994 0 0 0 0 .633C2.073 12.383 4.367 19 12 19zm0-14c-1.837 0-3.346.396-4.604.981L3.707 2.293 2.293 3.707l18 18 1.414-1.414-3.319-3.319c2.614-1.951 3.547-4.615 3.561-4.657a.994.994 0 0 0 0-.633C21.927 11.617 19.633 5 12 5zm4.972 10.558-2.28-2.28c.19-.39.308-.819.308-1.278 0-1.641-1.359-3-3-3-.459 0-.888.118-1.277.309L8.915 7.501A9.26 9.26 0 0 1 12 7c5.351 0 7.424 3.846 7.926 5-.302.692-1.166 2.342-2.954 3.558z"></path>
-                    </svg>
-                  ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 9a3.02 3.02 0 0 0-3 3c0 1.642 1.358 3 3 3 1.641 0 3-1.358 3-3 0-1.641-1.359-3-3-3z"></path>
-                      <path d="M12 5c-7.633 0-9.927 6.617-9.948 6.684L1.946 12l.105.316C2.073 12.383 4.367 19 12 19s9.927-6.617 9.948-6.684l.106-.316-.105-.316C21.927 11.617 19.633 5 12 5zm0 12c-5.351 0-7.424-3.846-7.926-5C4.578 10.842 6.652 7 12 7c5.351 0 7.424 3.846 7.926 5-.504 1.158-2.578 5-7.926 5z"></path>
-                    </svg>
-                  )}
-                </button>
-              </div>
-              {formik.errors.confirmPassword &&
-              formik.touched.confirmPassword ? (
-                <span className="text-red-600 text-sm font-semibold fonts-sans">
-                  {formik.errors.confirmPassword}
-                </span>
-              ) : null}
-            </div>
 
             <div>
               <button
@@ -266,12 +236,12 @@ export default function Signup({ setAuth }: any) {
 
           <p className="mt-3 text-center text-sm text-gray-500">
             Already have an account?{" "}
-            <a
-              href="#"
+            <Link
+              href="/login"
               className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
             >
               Login
-            </a>
+            </Link>
           </p>
         </div>
       </div>
