@@ -37,3 +37,4 @@ ipass.env.local
 db/structure.sql
 db/db.sql
 node_modules
+server/.env
