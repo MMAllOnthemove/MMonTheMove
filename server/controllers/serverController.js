@@ -22,9 +22,5 @@ const sessionMiddleware = session({
 const wrap = expressMiddleware => (socket, next) =>
   expressMiddleware(socket.request, {}, next);
 
-const corsConfig = {
-  origin: process.env.NEXT_PUBLIC_REACT_URL,
-  credentials: "true",
-};
 
-module.exports = { sessionMiddleware, wrap, corsConfig };
+module.exports = { sessionMiddleware, wrap };

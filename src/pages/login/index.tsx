@@ -33,7 +33,7 @@ export default function Login({ setAuth }: any) {
       // alert(JSON.stringify(values, null, 2));
       actions.resetForm();
       const vals = { ...values };
-      fetch(`${process.env.NEXT_PUBLIC_SERVER_URL_LOGIN}`, {
+      fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_LOGIN}`, {
         method: "POST",
         credentials: "include",
         headers: {
