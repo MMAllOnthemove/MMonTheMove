@@ -15,7 +15,7 @@ function UserContextFunction(props: ChildrenProps) {
   const [user, setUser] = useState<null | any>({ loggedIn: null });
   const router = useRouter();
   useEffect(() => {
-    fetch("http://localhost:3001/auth/login", {
+    fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_LOGIN}`, {
       credentials: "include",
     })
       .catch((err) => {

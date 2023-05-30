@@ -6,29 +6,39 @@ const cors = require("cors");
 const authRouter = require("./routes/authRouter");
 const pool = require("./db");
 const { v4: uuidv4 } = require("uuid");
+require("dotenv").config()
 const server = require("http").createServer(app);
+
+
+
 const {
   sessionMiddleware,
-  wrap,
-  corsConfig,
+  wrap
 } = require("./controllers/serverController");
 const { authorizeUser } = require("./controllers/socketController");
 
 const io = new Server(server, {
-  cors: corsConfig,
+  cors: {
+    origin: `${process.env.NEXT_PUBLIC_REACT_URL}`,
+    credentials: "true",
+  },
 });
 
 // express Middleware
 app.use(helmet());
-app.use(cors(corsConfig));
+app.use(
+  cors({
+    origin: `${process.env.NEXT_PUBLIC_REACT_URL}`,
+    credentials: true,
+  })
+);
 app.use(express.json());
 // Share this session middlware with socket.io
 app.use(sessionMiddleware);
 app.use("/auth", authRouter);
 
-
 // This means the ip will be coming from a different domain
-app.set("trust proxy", 1)
+// app.set("trust proxy", 1)
 
 // session shared by app express middleware
 io.use(wrap(sessionMiddleware));
@@ -85,7 +95,7 @@ app.post("/management", async (req, res) => {
 });
 
 const PORT = 3001;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is up and listening on port localhost:${PORT}`);
 });
 module.exports = pool;
