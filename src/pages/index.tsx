@@ -10,7 +10,9 @@ export default function Home() {
       </header>
 
       <main>
-        <h1 className="text-4xl text-green-500">The ultimate teams app</h1>
+        <h1 className="text-4xl text-green-500 text-center">
+          Home content will be here
+        </h1>
       </main>
     </>
   );
