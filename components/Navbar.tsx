@@ -4,9 +4,17 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { navitems } from "../public/_data/navbar";
 import Link from "next/link";
 import { AccountContext } from "@/state/AccountContext";
+import { useRouter } from "next/router";
 
 export default function Navbar() {
-  const { user } = useContext(AccountContext);
+  const { user, setUser } = useContext(AccountContext);
+
+  const router = useRouter();
+  const logOut = async () => {
+    await setUser({ loggedIn: false });
+    console.log("logged out");
+    router.push("/");
+  };
   // State for mobile open
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   return (
@@ -73,41 +81,25 @@ export default function Navbar() {
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          {user.loggedIn === null ? (
-            <Link
-              href="/login"
-              className="text-base font-semibold leading-6 flex items-center text-gray-900"
-            >
-              Log in{" "}
-              <span aria-hidden="true">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z" />
-                </svg>
-              </span>
-            </Link>
-          ) : (
-            <Link
-              href="/logout"
-              className="text-base font-semibold leading-6 flex items-center text-gray-900"
-            >
-              Logout
-              <span aria-hidden="true">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z" />
-                </svg>
-              </span>
-            </Link>
-          )}
+          <Link
+            href={user.loggedIn === null ? "/login" : ""}
+            onClick={() => {
+              if (user.loggedIn !== true) {
+                logOut();
+              }
+            }}
+            className="mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+          >
+            {user.loggedIn === null ? "Login" : "Logout"}
+          </Link>
+
+          {/* <Link
+            href="/"
+            onClick={logOut}
+            className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+          >
+            Logout
+          </Link> */}
         </div>
       </nav>
       {/* This is the mobile navigation */}
@@ -176,21 +168,22 @@ export default function Navbar() {
                 ))}
               </div>
               <div className="py-6">
-                {user.loggedIn === null ? (
-                  <Link
-                    href="/login"
-                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                  >
-                    Log in
-                  </Link>
-                ) : (
-                  <Link
-                    href="/logout"
-                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                  >
-                    Logout
-                  </Link>
-                )}
+                {/* user.loggedIn === null || user.loggedIn === false */}
+
+                <Link
+                  href="/login"
+                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                >
+                  Log in
+                </Link>
+
+                <Link
+                  href="/"
+                  onClick={logOut}
+                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                >
+                  Logout
+                </Link>
               </div>
             </div>
           </div>
