@@ -135,44 +135,9 @@ img {
   height: auto;
 }
 main {
-  padding-top: 6rem;
-}
-/* Table styles */
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-th,
-td {
-  padding: 8px;
-  text-align: left;
-  border: 1px solid #ddd;
-  font-weight: 500;
-  font-family: inherit;
-  color: #0d0d0d;
-}
-tr:hover {
-  background-color: #d6eeee;
-}
-th {
-  padding: 12px;
-  text-align: left;
+  padding-top: 6.3rem;
 }
 
-.input {
-  width: 100%;
-  /* padding: 1rem; */
-  box-sizing: border-box;
-  border: 1px solid #ddd;
-  outline: 0;
-  border-radius: 4px;
-  font-family: inherit;
-}
-::placeholder {
-  font-family: inherit;
-  font-weight: 500;
-  /* color: #eee; */
-}
 /* If input has 'search in the classname */
 .search {
   display: flex;
@@ -182,6 +147,14 @@ th {
   background-repeat: no-repeat;
   padding-left: 40px;
   padding-right: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  max-width: 360px;
+  min-width: 360px;
+  width: 100%;
+  font-family: inherit;
+  color: #0d0d0d;
+  margin: auto
 }
 /* clears the ‘X’ from Internet Explorer */
 input[type=search]::-ms-clear { display: none; width : 0; height: 0; }
