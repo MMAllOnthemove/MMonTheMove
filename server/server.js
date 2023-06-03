@@ -8,6 +8,8 @@ const { v4: uuidv4 } = require("uuid");
 require("dotenv").config();
 const server = require("http").createServer(app);
 const session = require("express-session");
+const Redis = require("ioredis");
+const RedisStore = require("connect-redis").default;
 
 const io = new Server(server, {
   cors: {
@@ -15,6 +17,9 @@ const io = new Server(server, {
     credentials: "true",
   },
 });
+
+// Redis for persistent sessions
+const redisClient = new Redis();
 
 app.use(
   cors({
@@ -28,6 +33,7 @@ app.use(
     secret: "fnwefnewncfjewnfcoienwocfenoi",
     credentials: true,
     name: "sid",
+    store: new RedisStore({ client: redisClient }),
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -47,6 +53,7 @@ app.get("/logout", (req, res) => {
 });
 
 io.on("connect", (socket) => {});
+
 // GET info from database
 app.get("/management", async (req, res) => {
   try {
