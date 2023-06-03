@@ -7,9 +7,8 @@ const pool = require("./db");
 const { v4: uuidv4 } = require("uuid");
 require("dotenv").config();
 const server = require("http").createServer(app);
-const session = require("express-session");
-const Redis = require("ioredis");
-const RedisStore = require("connect-redis").default;
+const { sessionMiddleware, wrap } = require("./controllers/serverControllers");
+const { authorizeUser } = require("./controllers/socketControllers");
 
 const io = new Server(server, {
   cors: {
@@ -18,9 +17,6 @@ const io = new Server(server, {
   },
 });
 
-// Redis for persistent sessions
-const redisClient = new Redis();
-
 app.use(
   cors({
     origin: "http://localhost:3000",
@@ -28,22 +24,7 @@ app.use(
   })
 );
 app.use(express.json());
-app.use(
-  session({
-    secret: "fnwefnewncfjewnfcoienwocfenoi",
-    credentials: true,
-    name: "sid",
-    store: new RedisStore({ client: redisClient }),
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: process.env.ENVIRONMENT === "production" ? "true" : "auto",
-      httpOnly: true,
-      expires: 1000 * 60 * 60 * 24,
-      sameSite: process.env.ENVIRONMENT === "production" ? "none" : "lax",
-    },
-  })
-);
+app.use(sessionMiddleware);
 app.use("/auth", authRouter);
 
 // lOGOUT
@@ -51,7 +32,8 @@ app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
 });
-
+io.use(wrap(sessionMiddleware));
+io.use(authorizeUser);
 io.on("connect", (socket) => {});
 
 // GET info from database
