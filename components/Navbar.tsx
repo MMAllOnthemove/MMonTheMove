@@ -11,8 +11,8 @@ export default function Navbar() {
 
   const router = useRouter();
   const logOut = async () => {
-    await setUser({ loggedIn: false });
-    console.log("logged out");
+    fetch("http://localhost:3001/logout").then((res) => res.json());
+    setUser({ loggedIn: false });
     router.push("/");
   };
   // State for mobile open
@@ -82,15 +82,11 @@ export default function Navbar() {
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <Link
-            href={user.loggedIn === null ? "/login" : ""}
-            onClick={() => {
-              if (user.loggedIn !== true) {
-                logOut();
-              }
-            }}
+            href={user.loggedIn !== true ? "/login" : "/logout"}
+            onClick={logOut}
             className="mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
           >
-            {user.loggedIn === null ? "Login" : "Logout"}
+            {user.loggedIn !== true ? "login" : "logout"}
           </Link>
 
           {/* <Link
