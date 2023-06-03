@@ -1,50 +1,52 @@
 const express = require("express");
 const { Server } = require("socket.io");
 const app = express();
-const helmet = require("helmet");
 const cors = require("cors");
 const authRouter = require("./routes/authRouter");
 const pool = require("./db");
 const { v4: uuidv4 } = require("uuid");
-require("dotenv").config()
+require("dotenv").config();
 const server = require("http").createServer(app);
-
-
-
-const {
-  sessionMiddleware,
-  wrap
-} = require("./controllers/serverController");
-const { authorizeUser } = require("./controllers/socketController");
+const session = require("express-session");
 
 const io = new Server(server, {
   cors: {
-    origin: `${process.env.NEXT_PUBLIC_REACT_URL}`,
+    origin: "http://localhost:3000",
     credentials: "true",
   },
 });
 
-// express Middleware
-app.use(helmet());
 app.use(
   cors({
-    origin: `${process.env.NEXT_PUBLIC_REACT_URL}`,
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
 app.use(express.json());
-// Share this session middlware with socket.io
-app.use(sessionMiddleware);
+app.use(
+  session({
+    secret: "fnwefnewncfjewnfcoienwocfenoi",
+    credentials: true,
+    name: "sid",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.ENVIRONMENT === "production" ? "true" : "auto",
+      httpOnly: true,
+      expires: 1000 * 60 * 60 * 24,
+      sameSite: process.env.ENVIRONMENT === "production" ? "none" : "lax",
+    },
+  })
+);
 app.use("/auth", authRouter);
 
-// This means the ip will be coming from a different domain
-// app.set("trust proxy", 1)
+// lOGOUT
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.redirect("/");
+});
 
-// session shared by app express middleware
-io.use(wrap(sessionMiddleware));
-io.use(authorizeUser);
 io.on("connect", (socket) => {});
-
 // GET info from database
 app.get("/management", async (req, res) => {
   try {
