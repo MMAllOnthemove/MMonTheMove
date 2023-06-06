@@ -11,19 +11,19 @@ Features
 - [ ] Kanboard
 - [ ] Graphs
 - [x] Navbar
-- [ ] Signup 
-- [ ] Login
+- [x] Signup 
+- [x] Login
 - [ ] Admin profile
 - [ ] Technician profile
 - [ ] Site search
 - [ ] Notifications
 - [ ] Dashboard
-- [ ] REST API from SAMSUNG ipaas
+- [x] REST API from SAMSUNG ipaas
 - [ ] Jobs available, pending, assessed, completed
-- [ ] Sessions
-- [ ] Able to book parts
+- [x] Sessions
+- [ ] Able to search parts
 - [ ] Feedback 
-- [ ] REST API info: 
+- [x] REST API info: 
   - Service Order No.
   - Part info
   - Model
@@ -31,7 +31,5 @@ Features
   - Technician
   - Warranty check
   - Unit Problem
-- [ ] One tech takes a job then it gets added to his list of jobs
-- [ ] Admin can delegate jobs to technicians
 - [ ] Todo list
 - [ ] Export data to CSV or PDF 
