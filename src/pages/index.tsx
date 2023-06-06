@@ -62,7 +62,7 @@ function Home() {
       </header>
 
       <main className="home_main flex flex-col justify-center">
-        <div className="container mx-auto p-1">
+        {/* <div className="container mx-auto p-1">
           <h1 className=" text-gray-900 text-center sm:text-base md:text-xl lg:text-2xl py-2 capitalize">
             Get info for a specific service order
           </h1>
@@ -127,6 +127,15 @@ function Home() {
               </p>
             </section>
           )}
+        </div> */}
+
+        <div className="mx-auto p-1 container">
+          <div className="content-wrapper">
+            <h1>
+              HHP <span>Management</span>{" "}
+            </h1>
+            <button type="button">Get service order</button>
+          </div>
         </div>
       </main>
     </>

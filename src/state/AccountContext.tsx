@@ -35,7 +35,7 @@ function UserContextFunction(props: ChildrenProps) {
           return;
         }
         setUser({ ...data });
-        router.push("/management");
+        router.push("/");
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
