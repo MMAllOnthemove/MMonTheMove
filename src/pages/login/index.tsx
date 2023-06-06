@@ -56,7 +56,7 @@ export default function Login({ setAuth }: any) {
           if (data.status) {
             setError(data.status);
           } else if (data.loggedIn) {
-            router.push("/management");
+            router.push("/");
           }
         });
     },

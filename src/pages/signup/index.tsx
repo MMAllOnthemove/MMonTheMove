@@ -63,7 +63,7 @@ export default function Signup({ setAuth }: any) {
           if (data.status) {
             setError(data.status);
           } else if (data.loggedIn) {
-            router.push("/management");
+            router.push("/");
           }
           // console.log(data);
         });

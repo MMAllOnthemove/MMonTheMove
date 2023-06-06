@@ -15,7 +15,7 @@ export default function Navbar() {
     fetch("http://localhost:3001/logout").then((res) => res.json());
     document.cookie = "name=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
     setUser({ loggedIn: false });
-    router.push("/");
+    router.push("/login");
   };
   // State for mobile open
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -27,7 +27,7 @@ export default function Navbar() {
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
-          <Link href="#" className="-m-1.5 p-1.5">
+          <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Logo</span>
             <svg
               id="logo-15"
