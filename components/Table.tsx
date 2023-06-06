@@ -16,7 +16,7 @@ type Table = {
 };
 
 const Table = () => {
-  const [tableData, setTableData] = useState<string[]>([]);
+  const [tableData, setTableData] = useState<any[]>([]);
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_MANAGEMENT_PAGE_SERVER_LINK}`)
       .then((res) => res.json())
