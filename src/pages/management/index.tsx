@@ -117,7 +117,7 @@ const Management = () => {
                 setShowModal(true);
               }}
             >
-              Open Modal
+              Create job
             </button>
             {showModal && (
               <Modal
