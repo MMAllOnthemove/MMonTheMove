@@ -307,3 +307,26 @@ border: 1px solid red;
     background-color: #075985;
   }
 }
+.modalSearch {
+  width: 100%;
+  max-width:100%;
+  min-width: 100%;
+}
+ .modalHome{
+  width: 100%;
+  min-width: auto;
+  height: auto;
+ }
+.modalHome section p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align:left;
+  font-weight: 500;
+}
+.modalHome section p > span {
+  font-size: medium;
+  text-align: right;
+  font-weight: 600;
+  color: #020617;
+}
