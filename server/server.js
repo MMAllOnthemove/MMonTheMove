@@ -33,7 +33,7 @@ app.get("/logout", (req, res) => {
   res.redirect("/");
 });
 io.use(wrap(sessionMiddleware));
-io.use(authorizeUser);
+// io.use(authorizeUser);
 io.on("connect", (socket) => {});
 
 // GET info from database

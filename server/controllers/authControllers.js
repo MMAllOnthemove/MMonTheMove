@@ -11,7 +11,7 @@ module.exports.handleLogin = async (req, res) => {
 
 module.exports.attemptLogin = async (req, res) => {
   const potentialLogin = await pool.query(
-    "SELECT user_id, email, password FROM users u WHERE u.email=$1",
+    "SELECT user_id, email, password, unique_id FROM users u WHERE u.email=$1",
     [req.body.email]
   );
 
@@ -24,6 +24,7 @@ module.exports.attemptLogin = async (req, res) => {
       req.session.user = {
         email: req.body.email,
         id: potentialLogin.rows[0].user_id,
+        unique_id: potentialLogin.rows[0].unique_id,
       };
       res.json({ loggedIn: true, email: req.body.email });
     } else {
@@ -52,6 +53,7 @@ module.exports.attemptRegister = async (req, res) => {
     req.session.user = {
       email: req.body.email,
       id: newUserQuery.rows[0].user_id,
+      unique_id: newUserQuery.rows[0].unique_id,
     };
 
     res.json({ loggedIn: true, email: req.body.email });
