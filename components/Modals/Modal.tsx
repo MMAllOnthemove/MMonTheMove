@@ -9,8 +9,8 @@ interface Props {
 
 function Modal({ setShowModal, children, modalTitle, setCloseModal }: Props) {
   return (
-    <div className="overlay w-screen z-10 h-screen absolute left-0 top-0 bg-[#000]/50 flex justify-center items-center">
-      <div className="modal w-[auto] h-[auto] bg-white p-10 rounded-lg shadow">
+    <div className="overlay w-screen z-10 h-screen absolute left-0 top-0 bg-[#000]/20 flex justify-center items-center flex-col">
+      <div className="modalHome">
         <div className="form_title_container flex justify-between items-center">
           <h3 className="font-medium text-gray-900 capitalize text-[1.2rem]">
             {modalTitle}

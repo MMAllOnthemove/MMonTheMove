@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import useDebounce from "../../components/useDebounce";
+import Modal from "../../components/Modals/modal.home";
 
 function Home() {
   const [data, setData] = useState<null | any>(null);
   const [searchValue, setSearchValue] = useState<string>("");
+  const [showModal, setShowModal] = useState(false);
+  // const [service_order, setServiceOrder] = useState("");
 
   const debouncedSearch = useDebounce(searchValue, 500);
 
@@ -63,7 +66,7 @@ function Home() {
 
       <main className="home_main flex flex-col justify-center">
         {/* <div className="container mx-auto p-1">
-          <h1 className=" text-gray-900 text-center sm:text-base md:text-xl lg:text-2xl py-2 capitalize">
+          <h1 className=" text-gray-900 text-center sm: md:text-xl lg:text-2xl py-2 capitalize">
             Get info for a specific service order
           </h1>
           <section>
@@ -89,39 +92,39 @@ function Home() {
           </section>
           {data && (
             <section className="my-2 border border-[#eee] rounded px-2 py-3 font-sans">
-              <p className="text-gray-800  flex items-center justify-between font-medium text-base border-b border-[#eee} py-2">
+              <p className="text-gray-800  flex items-center justify-between font-medium  border-b border-[#eee} py-2">
                 Accessory:{" "}
-                <span className="text-slate-700 text-base capitalize font-semibold">
+                <span className="text-slate-700  capitalize font-semibold">
                   {data?.Return?.EsModelInfo.Accessory}
                 </span>{" "}
               </p>
-              <p className="text-gray-800  flex items-center justify-between font-medium text-base border-b border-[#eee} py-2">
+              <p className="text-gray-800  flex items-center justify-between font-medium  border-b border-[#eee} py-2">
                 IMEI:{" "}
-                <span className="text-slate-700 text-base capitalize font-semibold">
+                <span className="text-slate-700  capitalize font-semibold">
                   {data?.Return?.EsModelInfo.IMEI}
                 </span>
               </p>
-              <p className="text-gray-800  flex items-center justify-between font-medium text-base border-b border-[#eee} py-2">
+              <p className="text-gray-800  flex items-center justify-between font-medium  border-b border-[#eee} py-2">
                 Model:{" "}
-                <span className="text-slate-700 text-base capitalize font-semibold">
+                <span className="text-slate-700  capitalize font-semibold">
                   {data?.Return?.EsModelInfo.Model}
                 </span>
               </p>
-              <p className="text-gray-800  flex items-center justify-between font-medium text-base border-b border-[#eee} py-2">
+              <p className="text-gray-800  flex items-center justify-between font-medium  border-b border-[#eee} py-2">
                 Serial Number:{" "}
-                <span className="text-slate-700 text-base capitalize font-semibold">
+                <span className="text-slate-700  capitalize font-semibold">
                   {data?.Return?.EsModelInfo.SerialNo}
                 </span>
               </p>
-              <p className="text-gray-800  flex items-center justify-between font-medium text-base border-b border-[#eee} py-2">
+              <p className="text-gray-800  flex items-center justify-between font-medium  border-b border-[#eee} py-2">
                 Defect Desc:{" "}
-                <span className="text-slate-700 text-base capitalize font-semibold">
+                <span className="text-slate-700  capitalize font-semibold">
                   {data?.Return?.EsModelInfo.DefectDesc}
                 </span>
               </p>
-              <p className="text-gray-800  flex items-center justify-between font-medium text-base border-b border-[#eee} py-2">
+              <p className="text-gray-800  flex items-center justify-between font-medium  border-b border-[#eee} py-2">
                 Warranty:{" "}
-                <span className="text-slate-700 text-base capitalize font-semibold">
+                <span className="text-slate-700  capitalize font-semibold">
                   {data?.Return?.EsModelInfo.WtyType}
                 </span>
               </p>
@@ -129,13 +132,87 @@ function Home() {
           )}
         </div> */}
 
-        <div className="mx-auto p-1 container">
+        <div className="mx-auto p-1 sm:p-0.5 container">
           <div className="content-wrapper">
             <h1>
               HHP <span>Management</span>{" "}
             </h1>
-            <button type="button">Get service order</button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowModal(true);
+              }}
+            >
+              Get service order
+            </button>
           </div>
+          {showModal && (
+            <Modal
+              setShowModal={setShowModal}
+              modalTitle="Fields will be auto populated"
+            >
+              <label htmlFor="ServiceOrder" className="sr-only">
+                Service Order No
+              </label>
+              <input
+                type="text"
+                name="ServiceOrder"
+                placeholder="Service Order"
+                id="ServiceOrder"
+                className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2 modalSearch"
+                value={debouncedSearch}
+                onChange={(e) => {
+                  setSearchValue(e.target.value);
+                }}
+              />
+
+              <section>
+                <p>
+                  Accessory:{" "}
+                  <span>
+                    {data?.Return?.EsModelInfo.Accessory === ""
+                      ? "Not available"
+                      : data?.Return?.EsModel}
+                  </span>{" "}
+                </p>
+                <p>
+                  IMEI:{" "}
+                  <span>
+                    {data?.Return?.EsModelInfo.IMEI === ""
+                      ? "Not available"
+                      : data?.Return?.EsModelInfo.IMEI}
+                  </span>
+                </p>
+                <p>
+                  Model:{" "}
+                  <span>
+                    {data?.Return?.EsModelInfo.Model === ""
+                      ? "Not available"
+                      : data?.Return?.EsModelInfo.Model}
+                  </span>
+                </p>
+                <p>
+                  Serial Number:{" "}
+                  <span>
+                    {data?.Return?.EsModelInfo.SerialNo === ""
+                      ? "Not available"
+                      : data?.Return?.EsModelInfo.SerialNo}
+                  </span>
+                </p>
+                <p>
+                  Issue:{" "}
+                  <span>
+                    {data?.Return?.EsModelInfo.DefectDesc === ""
+                      ? "Not available"
+                      : data?.Return?.EsModelInfo.DefectDesc}
+                  </span>
+                </p>
+                <p>
+                  Warranty: <span>{data?.Return?.EsModelInfo.WtyType}</span>
+                </p>
+              </section>
+            </Modal>
+          )}
         </div>
       </main>
     </>

@@ -3,7 +3,7 @@ import { memo, useEffect, useState } from "react";
 import Kanban from "../../../components/Kanban";
 import Navbar from "../../../components/Navbar";
 import Table from "../../../components/Table";
-import Modal from "../../../components/Modal";
+import Modal from "../../../components/Modals/Modal";
 import Head from "next/head";
 import useSocketSetup from "../useSocketSetup";
 
@@ -124,7 +124,7 @@ const Management = () => {
                 setShowModal={setShowModal}
                 modalTitle="Fields will be auto populated"
               >
-                <form className="flex flex-col">
+                <form className="flex flex-col overflow-auto">
                   <label htmlFor="ServiceOrder" className="sr-only">
                     Service Order No
                   </label>
