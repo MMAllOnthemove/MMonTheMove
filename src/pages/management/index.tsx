@@ -1,10 +1,8 @@
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import Head from "next/head";
 import { memo, useEffect, useState } from "react";
-import Kanban from "../../../components/Kanban";
+import Modal from "../../../components/Modals/Modal";
 import Navbar from "../../../components/Navbar";
 import Table from "../../../components/Table";
-import Modal from "../../../components/Modals/Modal";
-import Head from "next/head";
 import useSocketSetup from "../useSocketSetup";
 
 const Management = () => {
@@ -224,7 +222,7 @@ const Management = () => {
           </section>
 
           <section className="my-5">
-            <Tabs variant="enclosed" size="md">
+            {/* <Tabs variant="enclosed" size="md">
               <TabList>
                 <Tab>Board View</Tab>
                 <Tab>Table View</Tab>
@@ -240,7 +238,8 @@ const Management = () => {
                   </section>
                 </TabPanel>
               </TabPanels>
-            </Tabs>
+            </Tabs> */}
+            <Table />
           </section>
         </div>
       </main>

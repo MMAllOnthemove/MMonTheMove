@@ -169,7 +169,7 @@ export default function Navbar() {
                   </Link>
                 ))}
               </div>
-              <div className="py-6">
+              <div className="py-3">
                 {user?.loggedIn === true ? (
                   <button type="button" onClick={logOut}>
                     Logout
@@ -177,7 +177,7 @@ export default function Navbar() {
                 ) : (
                   <Link
                     href={"/login"}
-                    className="mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    className="block rounded-lg py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                   >
                     Login
                   </Link>
