@@ -36,7 +36,7 @@ io.use(wrap(sessionMiddleware));
 // io.use(authorizeUser);
 io.on("connect", (socket) => {});
 
-// GET info from database
+// GET table info from database
 app.get("/management", async (req, res) => {
   try {
     const dbData = await pool.query("SELECT * FROM service_orders");
@@ -46,7 +46,7 @@ app.get("/management", async (req, res) => {
   }
 });
 
-// POST info to database
+// POST table info to database
 app.post("/management", async (req, res) => {
   const {
     service_order,
@@ -85,6 +85,58 @@ app.post("/management", async (req, res) => {
   }
 });
 
+function get_board() {
+  // const boardData = {
+  //   tasks: {
+  //     "task-1": { id: "task-1", content: "create video" },
+  //     "task-2": { id: "task-2", content: "edit video" },
+  //     "task-3": { id: "task-3", content: "publish video" },
+  //   },
+  //   columns: {
+  //     "column-1": {
+  //       id: "column-1",
+  //       title: "To do",
+  //       taskIds: ["task-2", "task-3"],
+  //     },
+  //     "column-2": {
+  //       id: "column-2",
+  //       title: "Done",
+  //       taskIds: ["task-1"],
+  //     },
+  //   },
+  //   columnOrder: ["column-1", "column-2"],
+  // };
+  // res.json(boardData);
+  return { board: boardData };
+}
+
+// Get kanban data from database
+app.get("/board", async (req, res) => {
+  function get_board() {
+    const boardData = {
+      tasks: {
+        "task-1": { id: "task-1", content: "create video" },
+        "task-2": { id: "task-2", content: "edit video" },
+        "task-3": { id: "task-3", content: "publish video" },
+      },
+      columns: {
+        "column-1": {
+          id: "column-1",
+          title: "To do",
+          taskIds: ["task-2", "task-3"],
+        },
+        "column-2": {
+          id: "column-2",
+          title: "Done",
+          taskIds: ["task-1"],
+        },
+      },
+      columnOrder: ["column-1", "column-2"],
+    };
+    res.json(boardData);
+    return { board: {} };
+  }
+});
 const PORT = 3001;
 server.listen(PORT, () => {
   console.log(`Server is up and listening on port localhost:${PORT}`);

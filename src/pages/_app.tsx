@@ -1,5 +1,5 @@
 import UserContextFunction from "@/state/AccountContext";
-import { AppStateProvider } from "@/state/AppStateContext";
+// import { AppStateProvider } from "@/state/AppStateContext";
 import "@/styles/globals.css";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import type { AppProps } from "next/app";
@@ -19,13 +19,23 @@ export default function App({ Component, pageProps }: AppProps) {
   socket.connect();
   return (
     <UserContextFunction>
-      <AppStateProvider>
-        <ChakraProvider theme={theme}>
-          <DndProvider backend={HTML5Backend}>
-            <Component {...pageProps} />
-          </DndProvider>
-        </ChakraProvider>
-      </AppStateProvider>
+      <ChakraProvider theme={theme}>
+        <Component {...pageProps} />
+      </ChakraProvider>
     </UserContextFunction>
   );
 }
+// export default function App({ Component, pageProps }: AppProps) {
+//   socket.connect();
+//   return (
+//     <UserContextFunction>
+//       <AppStateProvider>
+//         <ChakraProvider theme={theme}>
+//           <DndProvider backend={HTML5Backend}>
+//             <Component {...pageProps} />
+//           </DndProvider>
+//         </ChakraProvider>
+//       </AppStateProvider>
+//     </UserContextFunction>
+//   );
+// }

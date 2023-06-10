@@ -16,6 +16,7 @@ function Modal({ setShowModal, children, modalTitle, setCloseModal }: Props) {
             {modalTitle}
           </h3>
           <button
+            type="button"
             className="border-none bg-transparent"
             onClick={() => {
               setShowModal(false);
