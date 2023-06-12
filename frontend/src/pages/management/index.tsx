@@ -14,10 +14,62 @@ const Management = () => {
   const [service_order, setServiceOrder] = useState("");
   const [warranty, setWarranty] = useState("");
   const [model, setModel] = useState("");
-  const [fault, setFault] = useState("");
   const [imei, setImei] = useState("");
+  const [fault, setFault] = useState("");
   const [serial_number, setSerialNumber] = useState("");
   const [engineer, setEngineer] = useState("");
+  const [status, setStatus] = useState("");
+  const [statusDesc, setStatusDesc] = useState("");
+  const [defectDesc, setDefectDesc] = useState("");
+  const [engineerAnalysis, setEngineerAnalysis] = useState("");
+  const [ascCode, setAscCode] = useState("");
+  const [createdBy, setCreatedBy] = useState("");
+  const [createdDate, setCreatedDate] = useState("");
+  const [createdTime, setCreatedTime] = useState("");
+  const [accessory, setAccessory] = useState("");
+  const [requestDate, setRequestDate] = useState("");
+  const [producedDate, setProducedDate] = useState("");
+  const [purchasedDate, setPurchasedDate] = useState("");
+  const [remark, setRemark] = useState("");
+  const [warrantyTermRemark, setWarrantyTermRemark] = useState("");
+  const [customerRequestDate, setCustomerRequestDate] = useState("");
+  const [customerRequestTime, setCustomerRequestTime] = useState("");
+  const [acknowledgeDate, setAcknowledgeDate] = useState("");
+  const [acknowledgeTime, setAcknowledgeTime] = useState("");
+  const [completeDate, setCompleteDate] = useState("");
+  const [completeTime, setCompleteTime] = useState("");
+  const [engineerAssignDate, setEngineerAssignDate] = useState("");
+  const [engineerAssignTime, setEngineerAssignTime] = useState("");
+  const [firstAppointmentDate, setFirstAppointmentDate] = useState("");
+  const [firstAppointmentTime, setFirstAppointmentTime] = useState("");
+  const [firstVisitDate, setFirstVisitDate] = useState("");
+  const [firstVisitTime, setFirstVisitTime] = useState("");
+  const [firstCustomerDate, setFirstCustomerDate] = useState("");
+  const [firstCustomerTime, setFirstCustomerTime] = useState("");
+  const [goodsDeliveryDate, setGoodsDeliveryDate] = useState("");
+  const [goodsDeliveryTime, setGoodsDeliveryTime] = useState("");
+  const [lastAppointmentDate, setLastAppointmentDate] = useState("");
+  const [lastAppointmentTime, setLastAppointmentTime] = useState("");
+  const [lastChangeDate, setLastChangeDate] = useState("");
+  const [lastChangeTime, setLastChangeTime] = useState("");
+  const [lastVisitDate, setLastVisitDate] = useState("");
+  const [lastVisitTime, setLastVisitTime] = useState("");
+  const [repairReceiveDate, setRepairReceiveDate] = useState("");
+  const [repairReceiveTime, setRepairReceiveTime] = useState("");
+  const [unitReceiveDate, setUnitReceiveDate] = useState("");
+  const [unitReceiveTime, setUnitReceiveTime] = useState("");
+
+  const [customerFirstName, setCustomerFirstName] = useState("");
+  const [customerLastName, setCustomerLastName] = useState("");
+  const [customerStreetAddress, setCustomerStreetAddress] = useState("");
+  const [customerDistrict, setCustomerDistrict] = useState("");
+  const [customerProvince, setCustomerProvince] = useState("");
+  const [customerZipCode, setCustomerZipCode] = useState("");
+  const [customerHomePhone, setCustomerHomePhone] = useState("");
+  const [customerMobilePhone, setCustomerMobilePhone] = useState("");
+  const [customerOfficePhone, setCustomerOfficePhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [customerCode, setCustomerCode] = useState("");
 
   // Connects to socket io and logs user out if there is an error on our backend
   useSocketSetup();
@@ -41,6 +93,7 @@ const Management = () => {
       })
         .then((res) => res.json())
         .then((data: string | any) => {
+          // console.info(data);
           setData(data);
           setWarranty(data?.Return.EsModelInfo.WtyType);
           setModel(data?.Return.EsModelInfo.Model);
@@ -53,7 +106,7 @@ const Management = () => {
     }
 
     getData("https://eu.ipaas.samsung.com/eu/gcic/GetSOInfoAll/1.0/ImportSet", {
-      IvSvcOrderNo: service_order,
+      IvSvcOrderNo: "4266443508",
       // IvSvcOrderNo: "4266810380",
       // IvAscJobNo: "4266443508",
       IsCommonHeader: {

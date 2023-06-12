@@ -39,7 +39,7 @@ const Table = () => {
       },
       {
         accessorKey: "warranty",
-        header: "Warranty",
+        header: "Customer No",
       },
       {
         accessorKey: "model", //normal accessorKey
@@ -61,21 +61,39 @@ const Table = () => {
         header: "Engineer",
       },
       {
-        accessorKey: "parts_issued",
-        header: "Parts issued",
+        accessorKey: "status",
+        header: "Status",
       },
       {
-        accessorKey: "parts_ordered",
-        header: "Parts ordered",
+        accessorKey: "defect_desc",
+        header: "Condition",
+      },
+      {
+        accessorKey: "engineer_analysis",
+        header: "Engineer Analysis",
       },
     ],
     []
   );
+  const handleSaveRow = async ({ exitEditingMode, row, values }) => {
+    //if using flat data and simple accessorKeys/ids, you can just do a simple assignment here.
+    tableData[row.index] = values;
+    await fetch(`${process.env.NEXT_PUBLIC_MANAGEMENT_PAGE_SERVER_LINK}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setTableData(data);
+      });
+    //send/receive api updates here
+    // setTableData(data);
+    exitEditingMode(); //required to exit editing mode
+  };
   return (
     <ThemeProvider theme={defaultMaterialTheme}>
       <MaterialReactTable
         columns={columns}
         data={tableData}
+        enableEditing
+        onEditingRowSave={handleSaveRow}
         renderDetailPanel={({ row }) => (
           <Box
             sx={{
@@ -85,10 +103,61 @@ const Table = () => {
               width: "100%",
             }}
           >
-            <h3 className="text-gray-900 font-medium">
-              {" "}
-              Repairshopr details for this specific job will appear here
-            </h3>
+            <section>
+              <h2 className="text-2xl uppercase text-slate-900 pb-2">Info</h2>
+              <p>AscCode </p>
+              <p>Created By</p>
+              <p>Created Date</p>
+              <p>Created Time</p>
+              <p>Status</p>
+              <p>StatusDesc</p>
+              <p>Accessory</p>
+              <p>Request Date</p>
+              <p>Produced date:</p>
+              <p>Purchased date:</p>
+              <p>Remark</p>
+              <p>WtyTermRemark</p>
+              <p>Customer request date:</p>
+              <p>Customer request time:</p>
+              <p>Acknowledge date:</p>
+              <p>Acknowledge time:</p>
+              <p>Complete date</p>
+              <p>Complete time</p>
+              <p>Engineer assign date</p>
+              <p>Engineer assign time</p>
+              <p>First Appointment date</p>
+              <p>First Appointment time</p>
+              <p>First Visit date</p>
+              <p>First Visit time</p>
+              <p>First Customer date</p>
+              <p>First Customer time</p>
+              <p>Goods delivery date</p>
+              <p>Goods delivery time</p>
+              <p>Last appointment date</p>
+              <p>Last appointment time</p>
+              <p>Last change date</p>
+              <p>Last change time</p>
+              <p>Last visit date</p>
+              <p>Last visit time</p>
+              <p>Repair receive date</p>
+              <p>Repair receive time</p>
+              <p>Unit receive date</p>
+              <p>Unit receive time</p>
+            </section>
+            <section>
+              <h2>Dates</h2>
+              <p>Customer first name</p>
+              <p>Customer last name</p>
+              <p>Customer street address</p>
+              <p>Customer district</p>
+              <p>Customer province</p>
+              <p>Customer zip code</p>
+              <p>Customer home phone</p>
+              <p>Customer mobile phone</p>
+              <p>Customer office phone</p>
+              <p>Customer Email</p>
+              <p>Customer Code:</p>
+            </section>
           </Box>
         )}
       />
