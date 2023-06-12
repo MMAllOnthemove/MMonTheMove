@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import useDebounce from "../../components/useDebounce";
 import Modal from "../../components/Modals/modal.home";
+import Image from "next/image";
+import { homeImages } from "../../public/_data/homeImages";
 
 function Home() {
   const [data, setData] = useState<null | any>(null);
@@ -145,7 +147,20 @@ function Home() {
             >
               Get service order
             </button>
+            <section>
+              <div className="home_image_grid">
+                {homeImages.map((item) => (
+                  <Image
+                    key={item.id}
+                    placeholder="blur"
+                    src={item.src}
+                    alt={``}
+                  />
+                ))}
+              </div>
+            </section>
           </div>
+
           {showModal && (
             <Modal
               setShowModal={setShowModal}
