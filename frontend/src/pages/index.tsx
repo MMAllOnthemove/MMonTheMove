@@ -4,6 +4,7 @@ import useDebounce from "../../components/useDebounce";
 import Modal from "../../components/Modals/modal.home";
 import Image from "next/image";
 import { homeImages } from "../../public/_data/homeImages";
+import Head from "next/head";
 
 function Home() {
   const [data, setData] = useState<null | any>(null);
@@ -62,78 +63,14 @@ function Home() {
   };
   return (
     <>
+      <Head>
+        <title>HHP - Home</title>
+      </Head>
       <header className="bg-white absolute inset-x-0 top-0 z-50">
         <Navbar />
       </header>
 
       <main className="home_main flex flex-col justify-center">
-        {/* <div className="container mx-auto p-1">
-          <h1 className=" text-gray-900 text-center sm: md:text-xl lg:text-2xl py-2 capitalize">
-            Get info for a specific service order
-          </h1>
-          <section>
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col justify-center mx-auto py-3"
-            >
-              <label
-                htmlFor="serviceOrder"
-                className="text-center text-gray-950 font-medium mb-1 sr-only"
-              >
-                Service order
-              </label>
-              <input
-                type="text"
-                name="serviceOrder"
-                id="serviceOrder"
-                className="search border border-[#eee] rounded focus:border-sky-500 focus:outline-none font-medium"
-                placeholder="Type service order"
-                onChange={(e) => setSearchValue(e.target.value)}
-              />
-            </form>
-          </section>
-          {data && (
-            <section className="my-2 border border-[#eee] rounded px-2 py-3 font-sans">
-              <p className="text-gray-800  flex items-center justify-between font-medium  border-b border-[#eee} py-2">
-                Accessory:{" "}
-                <span className="text-slate-700  capitalize font-semibold">
-                  {data?.Return?.EsModelInfo.Accessory}
-                </span>{" "}
-              </p>
-              <p className="text-gray-800  flex items-center justify-between font-medium  border-b border-[#eee} py-2">
-                IMEI:{" "}
-                <span className="text-slate-700  capitalize font-semibold">
-                  {data?.Return?.EsModelInfo.IMEI}
-                </span>
-              </p>
-              <p className="text-gray-800  flex items-center justify-between font-medium  border-b border-[#eee} py-2">
-                Model:{" "}
-                <span className="text-slate-700  capitalize font-semibold">
-                  {data?.Return?.EsModelInfo.Model}
-                </span>
-              </p>
-              <p className="text-gray-800  flex items-center justify-between font-medium  border-b border-[#eee} py-2">
-                Serial Number:{" "}
-                <span className="text-slate-700  capitalize font-semibold">
-                  {data?.Return?.EsModelInfo.SerialNo}
-                </span>
-              </p>
-              <p className="text-gray-800  flex items-center justify-between font-medium  border-b border-[#eee} py-2">
-                Defect Desc:{" "}
-                <span className="text-slate-700  capitalize font-semibold">
-                  {data?.Return?.EsModelInfo.DefectDesc}
-                </span>
-              </p>
-              <p className="text-gray-800  flex items-center justify-between font-medium  border-b border-[#eee} py-2">
-                Warranty:{" "}
-                <span className="text-slate-700  capitalize font-semibold">
-                  {data?.Return?.EsModelInfo.WtyType}
-                </span>
-              </p>
-            </section>
-          )}
-        </div> */}
-
         <div className="mx-auto p-1 sm:p-0.5 container">
           <div className="content-wrapper">
             <h1>
