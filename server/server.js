@@ -56,12 +56,59 @@ app.post("/management", async (req, res) => {
     imei,
     serial_number,
     engineer,
-    parts_issued,
-    parts_ordered,
+    engineerAnalysis,
+    status,
+    ascCode,
+    createdBy,
+    createdDate,
+    createdTime,
+    statusDesc,
+    accessory,
+    producedDate,
+    remark,
+    warrantyTermRemark,
+    customerRequestDate,
+    customerRequestTime,
+    acknowledgeTime,
+    acknowledgeDate,
+    completeDate,
+    completeTime,
+    engineerAssignTime,
+    engineerAssignDate,
+    firstAppointmentDate,
+    firstAppointmentTime,
+    firstVisitTime,
+    firstVisitDate,
+    firstCustomerTime,
+    goodsDeliveryTime,
+    goodsDeliveryDate,
+    lastAppointmentDate,
+    lastAppointmentTime,
+    lastChangeTime,
+    lastChangeDate,
+    lastVisitDate,
+    lastVisitTime,
+    repairReceiveTime,
+    repairReceiveDate,
+    unitReceiveDate,
+    unitReceiveTime,
+    customerFirstName,
+    customerLastName,
+    customerStreetAddress,
+    customerDistrict,
+    customerProvince,
+    customerZipCode,
+    customerHomePhone,
+    customerMobilePhone,
+    customerOfficePhone,
+    email,
+    customerCode,
+    purchasedDate,
+    firstCustomerDate,
   } = req.body;
   try {
     const results = await pool.query(
-      "INSERT INTO service_orders (service_order, warranty, model, fault, imei, serial_number, engineer, parts_issued, parts_ordered) values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning *",
+      "INSERT INTO service_orders (service_order_no, warranty, model,fault,imei, serial_number,engineer,engineer_analysis,asc_code, created_by, created_date,created_time,status,status_desc,accessory,produced_date,remark,wty_term_remark,customer_request_date,customer_request_time,acknowledge_time,acknowledge_date,complete_date,complete_time,engineer_assigned_time,engineer_assigned_date,first_appointment_date, first_appointment_time, first_visit_time, first_visit_date, first_customer_time, goods_delivery_time, goods_delivery_date, last_appointment_date, last_appointment_time, last_change_time, last_change_date, last_visit_date, last_visit_time, repair_receive_time, repair_receive_date, unit_receive_date, unit_receive_time, customer_first_name, customer_last_name, customer_street_address, customer_district, customer_province, customer_zip_code, customer_home_phone, customer_mobile_phone, customer_office_phone, customer_email, customer_code, purchased_date, first_customer_date) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55, $56) returning *",
       [
         service_order,
         warranty,
@@ -70,8 +117,55 @@ app.post("/management", async (req, res) => {
         imei,
         serial_number,
         engineer,
-        parts_issued,
-        parts_ordered,
+        engineerAnalysis,
+        ascCode,
+        createdBy,
+        createdDate,
+        createdTime,
+        status,
+        statusDesc,
+        accessory,
+        producedDate,
+        remark,
+        warrantyTermRemark,
+        customerRequestDate,
+        customerRequestTime,
+        acknowledgeTime,
+        acknowledgeDate,
+        completeDate,
+        completeTime,
+        engineerAssignTime,
+        engineerAssignDate,
+        firstAppointmentDate,
+        firstAppointmentTime,
+        firstVisitTime,
+        firstVisitDate,
+        firstCustomerTime,
+        goodsDeliveryTime,
+        goodsDeliveryDate,
+        lastAppointmentDate,
+        lastAppointmentTime,
+        lastChangeTime,
+        lastChangeDate,
+        lastVisitDate,
+        lastVisitTime,
+        repairReceiveTime,
+        repairReceiveDate,
+        unitReceiveDate,
+        unitReceiveTime,
+        customerFirstName,
+        customerLastName,
+        customerStreetAddress,
+        customerDistrict,
+        customerProvince,
+        customerZipCode,
+        customerHomePhone,
+        customerMobilePhone,
+        customerOfficePhone,
+        email,
+        customerCode,
+        purchasedDate,
+        firstCustomerDate,
       ]
     );
     res.status(201).json({
@@ -82,59 +176,6 @@ app.post("/management", async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-  }
-});
-
-function get_board() {
-  // const boardData = {
-  //   tasks: {
-  //     "task-1": { id: "task-1", content: "create video" },
-  //     "task-2": { id: "task-2", content: "edit video" },
-  //     "task-3": { id: "task-3", content: "publish video" },
-  //   },
-  //   columns: {
-  //     "column-1": {
-  //       id: "column-1",
-  //       title: "To do",
-  //       taskIds: ["task-2", "task-3"],
-  //     },
-  //     "column-2": {
-  //       id: "column-2",
-  //       title: "Done",
-  //       taskIds: ["task-1"],
-  //     },
-  //   },
-  //   columnOrder: ["column-1", "column-2"],
-  // };
-  // res.json(boardData);
-  return { board: boardData };
-}
-
-// Get kanban data from database
-app.get("/board", async (req, res) => {
-  function get_board() {
-    const boardData = {
-      tasks: {
-        "task-1": { id: "task-1", content: "create video" },
-        "task-2": { id: "task-2", content: "edit video" },
-        "task-3": { id: "task-3", content: "publish video" },
-      },
-      columns: {
-        "column-1": {
-          id: "column-1",
-          title: "To do",
-          taskIds: ["task-2", "task-3"],
-        },
-        "column-2": {
-          id: "column-2",
-          title: "Done",
-          taskIds: ["task-1"],
-        },
-      },
-      columnOrder: ["column-1", "column-2"],
-    };
-    res.json(boardData);
-    return { board: {} };
   }
 });
 const PORT = 3001;
