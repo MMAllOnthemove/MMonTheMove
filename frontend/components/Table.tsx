@@ -1,26 +1,10 @@
-import { ThemeProvider, createTheme } from "@mui/material";
+import { Box, ThemeProvider, createTheme } from "@mui/material";
 import {
   MaterialReactTable,
-  type MaterialReactTableProps,
-  type MRT_Cell,
   type MRT_ColumnDef,
-  type MRT_Row,
+  type MaterialReactTableProps,
 } from "material-react-table";
 import { useEffect, useMemo, useState } from "react";
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  MenuItem,
-  Stack,
-  TextField,
-  Tooltip,
-} from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
 
 const Table = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -28,23 +12,12 @@ const Table = () => {
 
   const handleSaveRowEdits: MaterialReactTableProps<any>["onEditingRowSave"] =
     async ({ exitEditingMode, row, values }) => {
-      const response = await fetch(
-        "http://localhost:3001/management" + row.id,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      tableData[row.index] = values;
-      //send/receive api updates here, then refetch or update local table data for re-render
-      setTableData([...tableData]);
       exitEditingMode(); //required to exit editing mode and close modal
     };
 
+  // Fetching info from our database
   useEffect(() => {
-    fetch("http://localhost:3001/management")
+    fetch(`${process.env.NEXT_PUBLIC_MANAGEMENT_PAGE_SERVER_LINK}`)
       .then((res) => res.json())
       .then((data) => {
         // console.log(data);
