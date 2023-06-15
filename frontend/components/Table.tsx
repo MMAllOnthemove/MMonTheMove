@@ -1,72 +1,120 @@
 import { ThemeProvider, createTheme } from "@mui/material";
-import MaterialReactTable from "material-react-table";
+import {
+  MaterialReactTable,
+  type MaterialReactTableProps,
+  type MRT_Cell,
+  type MRT_ColumnDef,
+  type MRT_Row,
+} from "material-react-table";
 import { useEffect, useMemo, useState } from "react";
-import { Box, Typography } from "@mui/material";
-
-type Table = {
-  service_order: string;
-  warranty: string;
-  model: string;
-  fault: string;
-  imei: string;
-  serial_number: string;
-  engineer: string;
-  parts_issued: string;
-  parts_ordered: string;
-};
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  MenuItem,
+  Stack,
+  TextField,
+  Tooltip,
+} from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
 
 const Table = () => {
+  const [createModalOpen, setCreateModalOpen] = useState(false);
   const [tableData, setTableData] = useState<any[]>([]);
+
+  const handleSaveRowEdits: MaterialReactTableProps<any>["onEditingRowSave"] =
+    async ({ exitEditingMode, row, values }) => {
+      const response = await fetch(
+        "http://localhost:3001/management" + row.id,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      tableData[row.index] = values;
+      //send/receive api updates here, then refetch or update local table data for re-render
+      setTableData([...tableData]);
+      exitEditingMode(); //required to exit editing mode and close modal
+    };
+
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_MANAGEMENT_PAGE_SERVER_LINK}`)
+    fetch("http://localhost:3001/management")
       .then((res) => res.json())
       .then((data) => {
+        // console.log(data);
         setTableData(data);
       });
   }, [tableData]);
-
-  // if (isLoading) return <p>Loading...</p>;
-  // if (!tableData) return <p>No profile data</p>;
-
   //should be memoized or stable
   const defaultMaterialTheme = createTheme();
-  const columns = useMemo(
+
+  const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
-        accessorKey: "service_order", //access nested data with dot notation
+        accessorKey: "service_order_no", //access nested data with dot notation
         header: "Service Order",
         enableClickToCopy: true,
+        enableColumnOrdering: false,
+        enableEditing: false, //disable editing on this column
+        enableSorting: false,
       },
       {
         accessorKey: "warranty",
-        header: "Customer No",
+        header: "Warranty",
+        enableColumnOrdering: false,
+        enableEditing: false, //disable editing on this column
+        enableSorting: false,
       },
       {
         accessorKey: "model", //normal accessorKey
         header: "Model",
         enableClickToCopy: true,
+        enableColumnOrdering: false,
+        enableEditing: false, //disable editing on this column
+        enableSorting: false,
       },
       {
         accessorKey: "imei",
         header: "IMEI",
         enableClickToCopy: true,
+        enableColumnOrdering: false,
+        enableEditing: false, //disable editing on this column
+        enableSorting: false,
       },
       {
         accessorKey: "serial_number",
         header: "Serial Number",
         enableClickToCopy: true,
+        enableColumnOrdering: false,
+        enableEditing: false, //disable editing on this column
+        enableSorting: false,
       },
       {
         accessorKey: "engineer",
         header: "Engineer",
+        enableColumnOrdering: false,
+        enableEditing: false, //disable editing on this column
+        enableSorting: false,
       },
       {
         accessorKey: "status",
         header: "Status",
+        enableColumnOrdering: false,
+        enableEditing: false, //disable editing on this column
+        enableSorting: false,
       },
       {
-        accessorKey: "defect_desc",
+        accessorKey: "fault",
         header: "Condition",
+        enableColumnOrdering: false,
+        enableEditing: false, //disable editing on this column
+        enableSorting: false,
       },
       {
         accessorKey: "engineer_analysis",
@@ -75,89 +123,199 @@ const Table = () => {
     ],
     []
   );
-  const handleSaveRow = async ({ exitEditingMode, row, values }) => {
-    //if using flat data and simple accessorKeys/ids, you can just do a simple assignment here.
-    tableData[row.index] = values;
-    await fetch(`${process.env.NEXT_PUBLIC_MANAGEMENT_PAGE_SERVER_LINK}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setTableData(data);
-      });
-    //send/receive api updates here
-    // setTableData(data);
-    exitEditingMode(); //required to exit editing mode
-  };
+
   return (
     <ThemeProvider theme={defaultMaterialTheme}>
       <MaterialReactTable
+        displayColumnDefOptions={{
+          "mrt-row-actions": {
+            muiTableHeadCellProps: {
+              align: "center",
+            },
+            size: 120,
+          },
+        }}
         columns={columns}
         data={tableData}
+        editingMode="modal" //default
+        enableColumnOrdering
         enableEditing
-        onEditingRowSave={handleSaveRow}
+        onEditingRowSave={handleSaveRowEdits}
+        // onEditingRowCancel={handleCancelRowEdits}
         renderDetailPanel={({ row }) => (
-          <Box
-            sx={{
-              display: "grid",
-              margin: "auto",
-              gridTemplateColumns: "1fr 1fr",
-              width: "100%",
-            }}
-          >
-            <section>
-              <h2 className="text-2xl uppercase text-slate-900 pb-2">Info</h2>
-              <p>AscCode </p>
-              <p>Created By</p>
-              <p>Created Date</p>
-              <p>Created Time</p>
-              <p>Status</p>
-              <p>StatusDesc</p>
-              <p>Accessory</p>
-              <p>Request Date</p>
-              <p>Produced date:</p>
-              <p>Purchased date:</p>
-              <p>Remark</p>
-              <p>WtyTermRemark</p>
-              <p>Customer request date:</p>
-              <p>Customer request time:</p>
-              <p>Acknowledge date:</p>
-              <p>Acknowledge time:</p>
-              <p>Complete date</p>
-              <p>Complete time</p>
-              <p>Engineer assign date</p>
-              <p>Engineer assign time</p>
-              <p>First Appointment date</p>
-              <p>First Appointment time</p>
-              <p>First Visit date</p>
-              <p>First Visit time</p>
-              <p>First Customer date</p>
-              <p>First Customer time</p>
-              <p>Goods delivery date</p>
-              <p>Goods delivery time</p>
-              <p>Last appointment date</p>
-              <p>Last appointment time</p>
-              <p>Last change date</p>
-              <p>Last change time</p>
-              <p>Last visit date</p>
-              <p>Last visit time</p>
-              <p>Repair receive date</p>
-              <p>Repair receive time</p>
-              <p>Unit receive date</p>
-              <p>Unit receive time</p>
-            </section>
-            <section>
-              <h2>Dates</h2>
-              <p>Customer first name</p>
-              <p>Customer last name</p>
-              <p>Customer street address</p>
-              <p>Customer district</p>
-              <p>Customer province</p>
-              <p>Customer zip code</p>
-              <p>Customer home phone</p>
-              <p>Customer mobile phone</p>
-              <p>Customer office phone</p>
-              <p>Customer Email</p>
-              <p>Customer Code:</p>
-            </section>
+          <Box sx={{ fontWeight: "fontWeightLight" }}>
+            {tableData.map((item) => (
+              <section key={item.id} className="grid grid-cols-2">
+                <div>
+                  <h2 className="text-2xl uppercase text-slate-900 pb-2">
+                    Info
+                  </h2>
+
+                  <p>
+                    Service Order no: <strong>{item?.service_order_no}</strong>
+                  </p>
+                  <p>
+                    AscCode: <strong>{item?.asc_code}</strong>
+                  </p>
+                  <p>
+                    Created By: <strong>{item?.created_by}</strong>
+                  </p>
+                  <p>
+                    Created Date: <strong>{item?.created_date}</strong>
+                  </p>
+                  <p>
+                    Created Time: <strong>{item?.created_time}</strong>
+                  </p>
+                  <p>
+                    Status: <strong>{item?.status}</strong>
+                  </p>
+                  <p>
+                    StatusDesc: <strong>{item?.status_desc}</strong>
+                  </p>
+                  <p>
+                    Accessory: <strong>{item?.accessory}</strong>
+                  </p>
+                  <p>
+                    Produced date: <strong>{item?.produced_date}</strong>
+                  </p>
+                  <p>
+                    Purchased date: <strong>{item?.purchased_date}</strong>
+                  </p>
+                  <p>
+                    Remark: <strong>{item?.remark}</strong>
+                  </p>
+                  <p>
+                    WtyTermRemark: <strong>{item?.wty_term_remark}</strong>
+                  </p>
+                  <p>
+                    Customer request date:{" "}
+                    <strong>{item?.customer_request_date}</strong>
+                  </p>
+                  <p>
+                    Customer request time:{" "}
+                    <strong>{item?.customer_request_time}</strong>
+                  </p>
+                  <p>
+                    Acknowledge date: <strong>{item?.acknowledge_date}</strong>
+                  </p>
+                  <p>
+                    Acknowledge time: <strong>{item?.acknowledge_time}</strong>
+                  </p>
+                  <p>
+                    Complete date: <strong>{item?.complete_date}</strong>
+                  </p>
+                  <p>
+                    Complete time: <strong>{item?.complete_time}</strong>
+                  </p>
+                  <p>
+                    Engineer assign date:{" "}
+                    <strong>{item?.engineer_assign_date}</strong>
+                  </p>
+                  <p>
+                    Engineer assign time:{" "}
+                    <strong>{item?.engineer_assign_time}</strong>
+                  </p>
+                  <p>
+                    First Appointment date:{" "}
+                    <strong>{item?.first_appointment_date}</strong>
+                  </p>
+                  <p>
+                    First Appointment time:{" "}
+                    <strong>{item?.first_appointment_time}</strong>
+                  </p>
+                  <p>
+                    First Visit date: <strong>{item?.first_visit_date}</strong>
+                  </p>
+                  <p>
+                    First Visit time: <strong>{item?.first_visit_time}</strong>
+                  </p>
+                  <p>
+                    First Customer date:{" "}
+                    <strong>{item?.first_customer_date}</strong>
+                  </p>
+                  <p>
+                    First Customer time:{" "}
+                    <strong>{item?.first_customer_time}</strong>
+                  </p>
+                  <p>
+                    Goods delivery date:{" "}
+                    <strong>{item?.goods_delivery_time}</strong>
+                  </p>
+                  <p>
+                    Goods delivery time:{" "}
+                    <strong>{item?.goods_delivery_time}</strong>
+                  </p>
+                  <p>
+                    Last appointment date:{" "}
+                    <strong>{item?.last_appointment_date}</strong>
+                  </p>
+                  <p>
+                    Last appointment time:{" "}
+                    <strong>{item?.last_appointment_time}</strong>
+                  </p>
+                  <p>
+                    Last change date: <strong>{item?.last_change_date}</strong>
+                  </p>
+                  <p>
+                    Last change time: <strong>{item?.last_change_time}</strong>
+                  </p>
+                  <p>
+                    Last visit date: <strong>{item?.last_visit_date}</strong>
+                  </p>
+                  <p>
+                    Last visit time: <strong>{item?.last_visit_time}</strong>
+                  </p>
+                  <p>
+                    Repair receive date:{" "}
+                    <strong>{item?.repair_receive_date}</strong>
+                  </p>
+                  <p>
+                    Repair receive time:{" "}
+                    <strong>{item?.repair_receive_time}</strong>
+                  </p>
+                  <p>
+                    Unit receive date:{" "}
+                    <strong>{item?.unit_receive_time}</strong>
+                  </p>
+                  <p>
+                    Unit receive time:{" "}
+                    <strong>{item?.unit_receive_time}</strong>
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="text-2xl uppercase text-slate-900 pb-2">
+                    Dates
+                  </h2>
+                  <p>
+                    Customer first name:{" "}
+                    <strong>{item?.customer_first_name}</strong>
+                  </p>
+                  <p>
+                    Customer last name:{" "}
+                    <strong>{item?.customer_last_name}</strong>
+                  </p>
+                  <p>
+                    Customer street address:{" "}
+                    <strong>{item?.customer_street_address}</strong>
+                  </p>
+                  <p>
+                    Customer district:{" "}
+                    <strong>{item?.customer_district}</strong>
+                  </p>
+                  <p>
+                    Customer province:{" "}
+                    <strong>{item?.customer_province}</strong>
+                  </p>
+                  <p>Customer zip code: {item?.customer_zip}</p>
+                  <p>Customer home phone: {item?.customer_home_phone}</p>
+                  <p>Customer mobile phone: {item?.customer_mobile_phone}</p>
+                  <p>Customer office phone: {item?.customer_office_phone}</p>
+                  <p>Customer Email: {item?.customer_email}</p>
+                  <p>Customer Code: {item?.customer_code}</p>
+                </div>
+              </section>
+            ))}
           </Box>
         )}
       />

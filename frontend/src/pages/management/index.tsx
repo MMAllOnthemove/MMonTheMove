@@ -10,6 +10,7 @@ const Management = () => {
   const [isLoading, setLoading] = useState(false);
   const [search, setSearch] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
+  const [searchServiceOrder, setSearchServiceOrder] = useState("");
 
   const [service_order, setServiceOrder] = useState("");
   const [warranty, setWarranty] = useState("");
@@ -20,14 +21,12 @@ const Management = () => {
   const [engineer, setEngineer] = useState("");
   const [status, setStatus] = useState("");
   const [statusDesc, setStatusDesc] = useState("");
-  const [defectDesc, setDefectDesc] = useState("");
   const [engineerAnalysis, setEngineerAnalysis] = useState("");
   const [ascCode, setAscCode] = useState("");
   const [createdBy, setCreatedBy] = useState("");
   const [createdDate, setCreatedDate] = useState("");
   const [createdTime, setCreatedTime] = useState("");
   const [accessory, setAccessory] = useState("");
-  const [requestDate, setRequestDate] = useState("");
   const [producedDate, setProducedDate] = useState("");
   const [purchasedDate, setPurchasedDate] = useState("");
   const [remark, setRemark] = useState("");
@@ -58,7 +57,6 @@ const Management = () => {
   const [repairReceiveTime, setRepairReceiveTime] = useState("");
   const [unitReceiveDate, setUnitReceiveDate] = useState("");
   const [unitReceiveTime, setUnitReceiveTime] = useState("");
-
   const [customerFirstName, setCustomerFirstName] = useState("");
   const [customerLastName, setCustomerLastName] = useState("");
   const [customerStreetAddress, setCustomerStreetAddress] = useState("");
@@ -95,18 +93,67 @@ const Management = () => {
         .then((data: string | any) => {
           // console.info(data);
           setData(data);
+          setServiceOrder(data?.Return.EsHeaderInfo.SvcOrderNo);
           setWarranty(data?.Return.EsModelInfo.WtyType);
           setModel(data?.Return.EsModelInfo.Model);
-          setFault(data?.Return.EsModelInfo.DefectDesc);
           setImei(data?.Return.EsModelInfo.IMEI);
+          setFault(data?.Return.EsModelInfo.DefectDesc);
           setSerialNumber(data?.Return.EsModelInfo.SerialNo);
-          setEngineer(data?.Return.EsScheInfo.Engineer);
+          setEngineer(data?.Return.EsScheInfo.EngineerName);
+          setStatus(data?.Return.EsJobInfo.Status);
+          setStatusDesc(data?.Return.EsJobInfo.StReasonDesc);
+          setAscCode(data?.Return.EsHeaderInfo.AscCode);
+          setCreatedBy(data?.Return.EsHeaderInfo.CreatedBy);
+          setCreatedDate(data?.Return.EsHeaderInfo.CreateDate);
+          setCreatedTime(data?.Return.EsHeaderInfo.CreateTime);
+          setAccessory(data?.Return.EsModelInfo.Accessory);
+          setProducedDate(data?.Return.EsModelInfo.ProductDate);
+          setPurchasedDate(data?.Return.EsModelInfo.PurchaseDate);
+          setRemark(data?.Return.EsModelInfo.Remark);
+          setWarrantyTermRemark(data?.Return.EsModelInfo.WtyTermRemark);
+          setCustomerRequestDate(data?.Return.EsScheInfo.CustRequestDate);
+          setCustomerRequestTime(data?.Return.EsScheInfo.CustRequestTime);
+          setAcknowledgeDate(data?.Return.EsScheInfo.ASCAckDate);
+          setAcknowledgeTime(data?.Return.EsScheInfo.ASCAckTime);
+          setCompleteDate(data?.Return.EsScheInfo.CompleteDate);
+          setCompleteTime(data?.Return.EsScheInfo.CompleteTime);
+          setEngineerAssignDate(data?.Return.EsScheInfo.EngrAssignDate);
+          setEngineerAssignTime(data?.Return.EsScheInfo.EngrAssignTime);
+          setFirstAppointmentDate(data?.Return.EsScheInfo.FirstAppDate);
+          setFirstAppointmentTime(data?.Return.EsScheInfo.FirstAppTime);
+          setFirstVisitDate(data?.Return.EsScheInfo.FirstVisitDate);
+          setFirstVisitTime(data?.Return.EsScheInfo.FirstVisitTime);
+          setFirstCustomerDate(data?.Return.EsScheInfo.FromCustDate);
+          setFirstCustomerTime(data?.Return.EsScheInfo.FromCustTime);
+          setGoodsDeliveryDate(data?.Return.EsScheInfo.GoodsDeliveryDate);
+          setGoodsDeliveryTime(data?.Return.EsScheInfo.GoodsDeliveryTime);
+          setLastAppointmentDate(data?.Return.EsScheInfo.LastAppDate);
+          setLastAppointmentTime(data?.Return.EsScheInfo.LastAppTime);
+          setLastChangeDate(data?.Return.EsScheInfo.LastChangeDate);
+          setLastChangeTime(data?.Return.EsScheInfo.LastChangeTime);
+          setLastVisitDate(data?.Return.EsScheInfo.LastVisitDate);
+          setLastVisitTime(data?.Return.EsScheInfo.LastVisitTime);
+          setRepairReceiveDate(data?.Return.EsScheInfo.RepairReceiveDate);
+          setRepairReceiveTime(data?.Return.EsScheInfo.RepairReceiveTime);
+          setUnitReceiveDate(data?.Return.EsScheInfo.UnitRcvDate);
+          setUnitReceiveTime(data?.Return.EsScheInfo.UnitRcvTime);
+          setCustomerFirstName(data?.Return.EsBpInfo.CustFirstName);
+          setCustomerLastName(data?.Return.EsBpInfo.CustLastName);
+          setCustomerStreetAddress(data?.Return.EsBpInfo.CustAddrStreet1);
+          setCustomerDistrict(data?.Return.EsBpInfo.CustDistrict);
+          setCustomerProvince(data?.Return.EsBpInfo.CustStateDesc);
+          setCustomerZipCode(data?.Return.EsBpInfo.CustZipcode);
+          setCustomerHomePhone(data?.Return.EsBpInfo.CustHomePhone);
+          setCustomerMobilePhone(data?.Return.EsBpInfo.CustMobilePhone);
+          setCustomerOfficePhone(data?.Return.EsBpInfo.CustOfficePhone);
+          setEmail(data?.Return.EsBpInfo.CustEmail);
+          setCustomerCode(data?.Return.EsBpInfo.CustomerCode);
           // setLoading(false);
         });
     }
 
     getData("https://eu.ipaas.samsung.com/eu/gcic/GetSOInfoAll/1.0/ImportSet", {
-      IvSvcOrderNo: "4266443508",
+      IvSvcOrderNo: searchServiceOrder,
       // IvSvcOrderNo: "4266810380",
       // IvAscJobNo: "4266443508",
       IsCommonHeader: {
@@ -117,7 +164,7 @@ const Management = () => {
         Pac: `${process.env.NEXT_PUBLIC_PAC}`,
       },
     });
-  }, [service_order]);
+  }, [searchServiceOrder]);
 
   const postData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -133,21 +180,66 @@ const Management = () => {
           imei,
           serial_number,
           engineer,
+          engineerAnalysis,
+          ascCode,
+          createdBy,
+          createdDate,
+          createdTime,
+          status,
+          statusDesc,
+          accessory,
+          producedDate,
+          remark,
+          warrantyTermRemark,
+          customerRequestDate,
+          customerRequestTime,
+          acknowledgeTime,
+          acknowledgeDate,
+          completeDate,
+          completeTime,
+          engineerAssignTime,
+          engineerAssignDate,
+          firstAppointmentDate,
+          firstAppointmentTime,
+          firstVisitTime,
+          firstVisitDate,
+          firstCustomerTime,
+          goodsDeliveryTime,
+          goodsDeliveryDate,
+          lastAppointmentDate,
+          lastAppointmentTime,
+          lastChangeTime,
+          lastChangeDate,
+          lastVisitDate,
+          lastVisitTime,
+          repairReceiveTime,
+          repairReceiveDate,
+          unitReceiveDate,
+          unitReceiveTime,
+          customerFirstName,
+          customerLastName,
+          customerStreetAddress,
+          customerDistrict,
+          customerProvince,
+          customerZipCode,
+          customerHomePhone,
+          customerMobilePhone,
+          customerOfficePhone,
+          email,
+          customerCode,
+          purchasedDate,
+          firstCustomerDate,
         }),
       });
       console.log("Response is", response);
     } catch (err) {
       console.log(err);
     }
-    setEngineer("");
-    setFault("");
-    setModel("");
-    setFault("");
-    setImei("");
-    setSerialNumber("");
-    setEngineer("");
   };
 
+  const logData = () => {
+    console.log(searchServiceOrder);
+  };
   return (
     <>
       <Head>
@@ -173,9 +265,9 @@ const Management = () => {
             {showModal && (
               <Modal
                 setShowModal={setShowModal}
-                modalTitle="Fields will be auto populated"
+                modalTitle="Fields will auto populate"
               >
-                <form className="flex flex-col overflow-auto">
+                <section className="flex flex-col overflow-auto">
                   <label htmlFor="ServiceOrder" className="sr-only">
                     Service Order No
                   </label>
@@ -185,91 +277,22 @@ const Management = () => {
                     placeholder="Service Order"
                     id="ServiceOrder"
                     className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
-                    value={service_order}
+                    size={10}
+                    maxLength={10}
+                    value={searchServiceOrder}
                     onChange={(e) => {
-                      setServiceOrder(e.target.value);
+                      setSearchServiceOrder(e.target.value);
                     }}
                   />
-                  <label htmlFor="warranty" className="sr-only">
-                    Warranty
-                  </label>
-                  <input
-                    hidden
-                    type="text"
-                    name="model"
-                    placeholder="Warranty"
-                    id="warranty"
-                    className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
-                    value={warranty}
-                  />
-                  <label htmlFor="model" className="sr-only">
-                    Model
-                  </label>
-                  <input
-                    hidden
-                    type="text"
-                    name="model"
-                    placeholder="Model"
-                    id="model"
-                    className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
-                    value={model}
-                  />
-                  <label htmlFor="fault" className="sr-only">
-                    Fault
-                  </label>
-                  <input
-                    hidden
-                    type="text"
-                    name="fault"
-                    placeholder="Fault"
-                    id="fault"
-                    className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
-                    value={fault}
-                  />
-                  <label htmlFor="imei" className="sr-only">
-                    IMEI
-                  </label>
-                  <input
-                    hidden
-                    type="text"
-                    name="imei"
-                    placeholder="IMEI"
-                    id="imei"
-                    className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
-                    value={fault}
-                  />
-                  <label htmlFor="serial_number" className="sr-only">
-                    Serial Number
-                  </label>
-                  <input
-                    hidden
-                    type="text"
-                    name="serial_number"
-                    placeholder="Serial Number"
-                    id="serial_number"
-                    className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
-                    value={serial_number}
-                  />
-                  <label htmlFor="engineer" className="sr-only">
-                    Engineer
-                  </label>
-                  <input
-                    disabled
-                    type="text"
-                    name="engineer"
-                    placeholder="Engineer"
-                    id="engineer"
-                    className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
-                    value={engineer}
-                  />
 
-                  <input
+                  <button
                     onClick={postData}
-                    type="submit"
-                    value="Submit"
+                    type="button"
                     className="bg-green-900 text-white font-semibold font-sans rounded py-3 px-2 my-2"
-                  />
-                </form>
+                  >
+                    Search
+                  </button>
+                </section>
               </Modal>
             )}
           </section>
