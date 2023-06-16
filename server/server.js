@@ -178,6 +178,24 @@ app.post("/management", async (req, res) => {
     console.log(err);
   }
 });
+
+app.post("/api/edit", async (req, res) => {
+  const { engineer_analysis } = req.body;
+  try {
+    const reults = await pool.query(
+      "INSERT INTO service_orders (engineer_analysis) VALUES ($1) WHERE id = $1 ",
+      [engineer_analysis]
+    );
+  res.status(201).json({
+    status: "success",
+    data: {
+      restaurant: results.rows[0],
+    },
+  });
+  } catch (err) {
+    console.log(err);
+  }
+});
 const PORT = 3001;
 server.listen(PORT, () => {
   console.log(`Server is up and listening on port localhost:${PORT}`);
