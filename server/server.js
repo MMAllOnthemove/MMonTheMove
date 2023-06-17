@@ -12,14 +12,14 @@ const { authorizeUser } = require("./controllers/socketControllers");
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: process.env.NEXT_PUBLIC_REACT_URL,
     credentials: "true",
   },
 });
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.NEXT_PUBLIC_REACT_URL,
     credentials: true,
   })
 );
@@ -186,12 +186,12 @@ app.post("/api/edit", async (req, res) => {
       "INSERT INTO service_orders (engineer_analysis) VALUES ($1) WHERE id = $1 ",
       [engineer_analysis]
     );
-  res.status(201).json({
-    status: "success",
-    data: {
-      restaurant: results.rows[0],
-    },
-  });
+    res.status(201).json({
+      status: "success",
+      data: {
+        restaurant: results.rows[0],
+      },
+    });
   } catch (err) {
     console.log(err);
   }
