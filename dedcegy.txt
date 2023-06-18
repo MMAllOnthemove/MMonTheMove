@@ -1,0 +1,173 @@
+import { ThemeProvider, createTheme } from "@mui/material";
+import MaterialReactTable from "material-react-table";
+import { useEffect, useMemo, useState } from "react";
+import { Box, Typography } from "@mui/material";
+
+type Table = {
+  service_order: string;
+  warranty: string;
+  model: string;
+  fault: string;
+  imei: string;
+  serial_number: string;
+  engineer: string;
+  parts_issued: string;
+  parts_ordered: string;
+};
+
+const Table = () => {
+  const [tableData, setTableData] = useState<any[]>([]);
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_MANAGEMENT_PAGE_SERVER_LINK}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setTableData(data);
+      });
+  }, [tableData]);
+
+  // if (isLoading) return <p>Loading...</p>;
+  // if (!tableData) return <p>No profile data</p>;
+
+  //should be memoized or stable
+  const defaultMaterialTheme = createTheme();
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: "service_order", //access nested data with dot notation
+        header: "Service Order",
+        enableClickToCopy: true,
+      },
+      {
+        accessorKey: "warranty",
+        header: "Warranty",
+      },
+      {
+        accessorKey: "model", //normal accessorKey
+        header: "Model",
+        enableClickToCopy: true,
+      },
+      {
+        accessorKey: "imei",
+        header: "IMEI",
+        enableClickToCopy: true,
+      },
+      {
+        accessorKey: "serial_number",
+        header: "Serial Number",
+        enableClickToCopy: true,
+      },
+      {
+        accessorKey: "engineer",
+        header: "Engineer",
+      },
+      {
+        accessorKey: "status",
+        header: "Status",
+      },
+      {
+        accessorKey: "defect_desc",
+        header: "Condition",
+      },
+      {
+        accessorKey: "engineer_analysis",
+        header: "Engineer Analysis",
+      },
+    ],
+    []
+  );
+  const handleSaveRow = async ({ exitEditingMode, row, values }) => {
+    //if using flat data and simple accessorKeys/ids, you can just do a simple assignment here.
+    tableData[row.index] = values;
+    await fetch(`${process.env.NEXT_PUBLIC_MANAGEMENT_PAGE_SERVER_LINK}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setTableData(data);
+      });
+    //send/receive api updates here
+    // setTableData(data);
+    exitEditingMode(); //required to exit editing mode
+  };
+  return (
+    <ThemeProvider theme={defaultMaterialTheme}>
+      <MaterialReactTable
+        columns={columns}
+        data={tableData}
+        enableEditing
+        onEditingRowSave={handleSaveRow}
+        renderDetailPanel={({ row }) => (
+          <Box
+            sx={{
+              display: "grid",
+              margin: "auto",
+              gridTemplateColumns: "1fr 1fr",
+              width: "100%",
+            }}
+          >
+            <section>
+              <h2 className="text-2xl uppercase text-slate-900 pb-2">Info</h2>
+              {tableData.map((item) => (
+                <div key={item.id}>
+                  <p>Service Order no: {item?.service_order_no}</p>
+                  <p>AscCode: {item?.asc_code}</p>
+                  <p>Created By {item?.created_by}</p>
+                  <p>Created Date {item?.created_date}</p>
+                  <p>Created Time {item?.created_time}</p>
+                  <p>Status {item?.status}</p>
+                  <p>StatusDesc</p>
+                  <p>Accessory</p>
+                  <p>Request Date</p>
+                  <p>Produced date:</p>
+                  <p>Purchased date:</p>
+                  <p>Remark</p>
+                  <p>WtyTermRemark</p>
+                  <p>Customer request date:</p>
+                  <p>Customer request time:</p>
+                  <p>Acknowledge date:</p>
+                  <p>Acknowledge time:</p>
+                  <p>Complete date</p>
+                  <p>Complete time</p>
+                  <p>Engineer assign date</p>
+                  <p>Engineer assign time</p>
+                  <p>First Appointment date</p>
+                  <p>First Appointment time</p>
+                  <p>First Visit date</p>
+                  <p>First Visit time</p>
+                  <p>First Customer date</p>
+                  <p>First Customer time</p>
+                  <p>Goods delivery date</p>
+                  <p>Goods delivery time</p>
+                  <p>Last appointment date</p>
+                  <p>Last appointment time</p>
+                  <p>Last change date</p>
+                  <p>Last change time</p>
+                  <p>Last visit date</p>
+                  <p>Last visit time</p>
+                  <p>Repair receive date</p>
+                  <p>Repair receive time</p>
+                  <p>Unit receive date</p>
+                  <p>Unit receive time</p>
+                </div>
+              ))}
+            </section>
+            <section>
+              <h2>Dates</h2>
+              <p>Customer first name</p>
+              <p>Customer last name</p>
+              <p>Customer street address</p>
+              <p>Customer district</p>
+              <p>Customer province</p>
+              <p>Customer zip code</p>
+              <p>Customer home phone</p>
+              <p>Customer mobile phone</p>
+              <p>Customer office phone</p>
+              <p>Customer Email</p>
+              <p>Customer Code:</p>
+            </section>
+          </Box>
+        )}
+      />
+    </ThemeProvider>
+  );
+};
+
+export default Table;
