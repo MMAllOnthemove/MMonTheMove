@@ -179,6 +179,7 @@ app.post("/management", async (req, res) => {
   }
 });
 
+// Just added this will come back to edit it
 app.post("/api/edit", async (req, res) => {
   const { engineer_analysis } = req.body;
   try {
@@ -196,7 +197,7 @@ app.post("/api/edit", async (req, res) => {
     console.log(err);
   }
 });
-const PORT = 3001;
+const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 server.listen(PORT, () => {
   console.log(`Server is up and listening on port localhost:${PORT}`);
 });
