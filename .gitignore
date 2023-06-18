@@ -3,6 +3,3 @@ node_modules
 .next
 .env
 .env.local
-frontend/.env.local
-server/.env
-frontend/.env.local
