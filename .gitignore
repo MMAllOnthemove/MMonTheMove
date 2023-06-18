@@ -1,5 +1,4 @@
 .eslintrc.json
 node_modules
 .next
-.env
-.env.local
+
