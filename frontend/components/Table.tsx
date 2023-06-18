@@ -28,7 +28,7 @@ const Table = () => {
         //if using flat data and simple accessorKeys/ids, you can just do a simple assignment here.
         tableData[row.index] = values;
         //send/receive api updates here
-        const response = await fetch("http://localhost:3001/api/edit");
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_EDIT}`);
         const jsonData = await response.json();
 
         setTableData(jsonData);
