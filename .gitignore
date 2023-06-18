@@ -3,3 +3,4 @@ node_modules
 .next
 .env
 .env.local
+frontend/db/db.sql
