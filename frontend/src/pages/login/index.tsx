@@ -29,11 +29,11 @@ export default function Login({ setAuth }: any) {
         .min(6, "Password too short")
         .max(28, "Password too long"),
     }),
-    onSubmit: (values, actions) => {
+    onSubmit: async (values, actions) => {
       // alert(JSON.stringify(values, null, 2));
       actions.resetForm();
       const vals = { ...values };
-      fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_LOGIN}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_LOGIN}`, {
         method: "POST",
         credentials: "include",
         headers: {
