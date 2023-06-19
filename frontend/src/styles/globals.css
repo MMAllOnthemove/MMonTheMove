@@ -177,10 +177,6 @@ input[type="search"]::-webkit-search-results-decoration {
 textarea{
   resize: none;
 }
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/main
 /* Analytics card */
 .analytics_cards {
   display: grid;
