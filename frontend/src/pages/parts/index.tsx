@@ -78,6 +78,7 @@ function Parts() {
                 Part number
               </label>
               <input
+                aria-labelledby="searchPart"
                 className="search border border-[#eee] rounded focus:border-sky-500 focus:outline-none font-medium"
                 placeholder="Search Part"
                 type="search"

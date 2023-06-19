@@ -275,6 +275,7 @@ const Management = () => {
                     Service Order No
                   </label>
                   <input
+                    aria-labelledby="ServiceOrder"
                     type="text"
                     name="ServiceOrder"
                     placeholder="Service Order"
@@ -291,6 +292,7 @@ const Management = () => {
                     Engineer analysis
                   </label>
                   <textarea
+                    aria-labelledby="engineerAnalysis"
                     name="engineerAnalysis"
                     placeholder="Engineer analysis"
                     id="engineerAnalysis"
@@ -302,10 +304,6 @@ const Management = () => {
                       setEngineerAnalysis(e.target.value);
                     }}
                   ></textarea>
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/main
                   <button
                     onClick={postData}
                     type="button"
