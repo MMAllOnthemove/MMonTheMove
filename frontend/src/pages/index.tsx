@@ -90,8 +90,10 @@ function Home() {
                   <Image
                     key={item.id}
                     placeholder="blur"
+                    loading="lazy"
+                    quality={100}
                     src={item.src}
-                    alt={``}
+                    alt={`${item.src}`}
                   />
                 ))}
               </div>
@@ -107,6 +109,8 @@ function Home() {
                 Service Order No
               </label>
               <input
+                autoFocus
+                aria-labelledby="ServiceOrder"
                 type="text"
                 name="ServiceOrder"
                 placeholder="Service Order"
