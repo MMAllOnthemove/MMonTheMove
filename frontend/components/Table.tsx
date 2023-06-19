@@ -1,23 +1,25 @@
 import { Box, ThemeProvider, createTheme } from "@mui/material";
-import {
-  MaterialReactTable,
-  type MRT_ColumnDef,
-  type MaterialReactTableProps,
-} from "material-react-table";
+import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 import { useEffect, useMemo, useState } from "react";
 
 const Table = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [tableData, setTableData] = useState<any[]>([]);
+  const [tableData, setTableData] = useState<string[] | any[]>([]);
 
   // Fetching info from our database
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_MANAGEMENT_PAGE_SERVER_LINK}`)
+  const fetchDataFromDatabase = async () => {
+    await fetch(`${process.env.NEXT_PUBLIC_MANAGEMENT_PAGE_SERVER_LINK}`)
       .then((res) => res.json())
       .then((data) => {
         // console.log(data);
         setTableData(data);
       });
+<<<<<<< HEAD
+  };
+  useEffect(() => {
+    fetchDataFromDatabase();
+=======
+>>>>>>> origin/main
   }, [tableData]);
 
   //should be memoized or stable
@@ -106,7 +108,10 @@ const Table = () => {
         }}
         columns={columns}
         data={tableData}
+<<<<<<< HEAD
+=======
         enableColumnOrdering
+>>>>>>> origin/main
         // onEditingRowCancel={handleCancelRowEdits}
         renderDetailPanel={({ row }) => (
           <Box sx={{ fontWeight: "fontWeightLight" }}>
