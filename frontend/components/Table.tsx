@@ -20,22 +20,6 @@ const Table = () => {
       });
   }, [tableData]);
 
-// Updating or patching info to our database
-  useEffect(() => {
-
-    const handleSaveRowEdits: MaterialReactTableProps<any>["onEditingRowSave"] =
-      async ({ exitEditingMode, row, values }) => {
-        //if using flat data and simple accessorKeys/ids, you can just do a simple assignment here.
-        tableData[row.index] = values;
-        //send/receive api updates here
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_EDIT}`);
-        const jsonData = await response.json();
-
-        setTableData(jsonData);
-        exitEditingMode(); //required to exit editing mode and close modal
-      };
-  }, [])
-
   //should be memoized or stable
   const defaultMaterialTheme = createTheme();
 
@@ -122,10 +106,7 @@ const Table = () => {
         }}
         columns={columns}
         data={tableData}
-        editingMode="modal" //default
         enableColumnOrdering
-        enableEditing
-        onEditingRowSave={handleSaveRowEdits}
         // onEditingRowCancel={handleCancelRowEdits}
         renderDetailPanel={({ row }) => (
           <Box sx={{ fontWeight: "fontWeightLight" }}>
