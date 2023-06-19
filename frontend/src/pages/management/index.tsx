@@ -302,6 +302,10 @@ const Management = () => {
                       setEngineerAnalysis(e.target.value);
                     }}
                   ></textarea>
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
                   <button
                     onClick={postData}
                     type="button"
