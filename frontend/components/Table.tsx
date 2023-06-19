@@ -14,9 +14,12 @@ const Table = () => {
         // console.log(data);
         setTableData(data);
       });
+<<<<<<< HEAD
   };
   useEffect(() => {
     fetchDataFromDatabase();
+=======
+>>>>>>> origin/main
   }, [tableData]);
 
   //should be memoized or stable
@@ -105,6 +108,10 @@ const Table = () => {
         }}
         columns={columns}
         data={tableData}
+<<<<<<< HEAD
+=======
+        enableColumnOrdering
+>>>>>>> origin/main
         // onEditingRowCancel={handleCancelRowEdits}
         renderDetailPanel={({ row }) => (
           <Box sx={{ fontWeight: "fontWeightLight" }}>
