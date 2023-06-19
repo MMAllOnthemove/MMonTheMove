@@ -1,11 +1,6 @@
 import { Box, ThemeProvider, createTheme } from "@mui/material";
-import {
-  MaterialReactTable,
-  type MRT_ColumnDef,
-  type MaterialReactTableProps,
-} from "material-react-table";
+import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 import { useEffect, useMemo, useState } from "react";
-import useSWR from "swr";
 
 const Table = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -20,23 +15,6 @@ const Table = () => {
         setTableData(data);
       });
   }, [tableData]);
-
-  // Updating or patching info to our database
-  useEffect(() => {
-    const handleSaveRowEdits: MaterialReactTableProps<any>["onEditingRowSave"] =
-      async ({ exitEditingMode, row, values }) => {
-        //if using flat data and simple accessorKeys/ids, you can just do a simple assignment here.
-        tableData[row.index] = values;
-        //send/receive api updates here
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_API_EDIT}`
-        );
-        const jsonData = await response.json();
-
-        setTableData(jsonData);
-        exitEditingMode(); //required to exit editing mode and close modal
-      };
-  }, []);
 
   //should be memoized or stable
   const defaultMaterialTheme = createTheme();
