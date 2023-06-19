@@ -36,11 +36,11 @@ export default function Signup({ setAuth }: any) {
           "Password should contain at least one special character"
         ),
     }),
-    onSubmit: (values, actions) => {
+    onSubmit: async (values, actions) => {
       // alert(JSON.stringify(values, null, 2));
       actions.resetForm();
       const vals = { ...values };
-      fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_SIGNUP}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_SIGNUP}`, {
         method: "POST",
         credentials: "include",
         headers: {
