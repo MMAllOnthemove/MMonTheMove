@@ -287,7 +287,21 @@ const Management = () => {
                       setSearchServiceOrder(e.target.value);
                     }}
                   />
-
+                  <label htmlFor="engineerAnalysis" className="sr-only">
+                    Engineer analysis
+                  </label>
+                  <textarea
+                    name="engineerAnalysis"
+                    placeholder="Engineer analysis"
+                    id="engineerAnalysis"
+                    className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
+                    maxLength={100}
+                    rows={4}
+                    value={engineerAnalysis}
+                    onChange={(e) => {
+                      setEngineerAnalysis(e.target.value);
+                    }}
+                  ></textarea>
                   <button
                     onClick={postData}
                     type="button"
