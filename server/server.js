@@ -26,6 +26,7 @@ app.use(
 app.use(express.json());
 app.use(sessionMiddleware);
 app.use("/auth", authRouter);
+app.set("trust proxy", 1);
 
 // lOGOUT
 app.get("/logout", (req, res) => {
