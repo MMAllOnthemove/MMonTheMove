@@ -37,7 +37,7 @@ io.use(wrap(sessionMiddleware));
 io.on("connect", (socket) => {});
 
 // GET table info from database
-app.get("/management", async (req, res) => {
+app.get("/api/management", async (req, res) => {
   try {
     const dbData = await pool.query("SELECT * FROM units");
     res.json(dbData.rows);
@@ -47,7 +47,7 @@ app.get("/management", async (req, res) => {
 });
 
 // POST table info to database
-app.post("/management", async (req, res) => {
+app.post("/api/management", async (req, res) => {
   const {
     service_order,
     warranty,
