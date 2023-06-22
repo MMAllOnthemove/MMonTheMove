@@ -9,10 +9,12 @@ import { useRouter } from "next/router";
 export default function Navbar() {
   const { user, setUser } = useContext(AccountContext);
   // console.log(user);
-  console.log(user?.loggedIn);
+  // console.log(user?.loggedIn);
   const router = useRouter();
   const logOut = async () => {
-    fetch("http://localhost:3001/logout").then((res) => res.json());
+    await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_LOGOUT}`).then(
+      (res) => res.json()
+    );
     document.cookie = "name=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
     setUser({ loggedIn: false });
     router.push("/login");
@@ -95,13 +97,6 @@ export default function Navbar() {
               Login
             </Link>
           )}
-          {/* <Link
-            href="/"
-            onClick={logOut}
-            className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-          >
-            Logout
-          </Link> */}
         </div>
       </nav>
       {/* This is the mobile navigation */}

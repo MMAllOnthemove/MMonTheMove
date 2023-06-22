@@ -10,13 +10,25 @@ export const AccountContext = createContext<AccountContextType | any>(null);
 
 interface ChildrenProps {
   children: React.ReactNode;
+  connect?: () => void | any;
+}
+// Because we are using next js
+
+if (typeof window !== "undefined") {
+  // Perform localStorage action
+  // used var to be able to access value outside this code block
+  var tokenValue = localStorage.getItem("token");
 }
 function UserContextFunction(props: ChildrenProps) {
-  const [user, setUser] = useState<null | any>({ loggedIn: null });
+  const [user, setUser] = useState<null | any>({
+    loggedIn: null,
+    token: tokenValue,
+  });
   const router = useRouter();
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_LOGIN}`, {
       credentials: "include",
+      headers: { Authorization: `Bearer ${user.token}` },
     })
       .catch((err) => {
         setUser({ loggedIn: false });
