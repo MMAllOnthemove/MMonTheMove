@@ -7,24 +7,26 @@ const pool = require("./db");
 const { v4: uuidv4 } = require("uuid");
 require("dotenv").config();
 const server = require("http").createServer(app);
-const { sessionMiddleware, wrap } = require("./controllers/serverControllers");
+// const { sessionMiddleware, wrap } = require("./controllers/serverControllers");
 const { authorizeUser } = require("./controllers/socketControllers");
 
 const io = new Server(server, {
   cors: {
     origin: process.env.NEXT_PUBLIC_REACT_URL,
-    credentials: "true",
+    methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
 app.use(
   cors({
     origin: process.env.NEXT_PUBLIC_REACT_URL,
+    methods: ["GET", "POST"],
     credentials: true,
   })
 );
 app.use(express.json());
-app.use(sessionMiddleware);
+// app.use(sessionMiddleware);
 app.use("/auth", authRouter);
 app.set("trust proxy", 1);
 
@@ -33,7 +35,7 @@ app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
 });
-io.use(wrap(sessionMiddleware));
+// io.use(wrap(sessionMiddleware));
 // io.use(authorizeUser);
 io.on("connect", (socket) => {});
 
