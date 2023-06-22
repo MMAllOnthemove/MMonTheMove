@@ -1,17 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, createContext, useContext } from "react";
 import Navbar from "../../components/Navbar";
 import useDebounce from "../../components/useDebounce";
 import Modal from "../../components/Modals/modal.home";
 import Image from "next/image";
 import { homeImages } from "../../public/_data/homeImages";
 import Head from "next/head";
+import useSocketSetup from "./useSocketSetup";
+import { socket as socketConn } from "../../components/socket"; // Had to rename to socketConn because we already have socket initialized in this page
+import { AccountContext } from "@/state/AccountContext";
+
+export const SocketContext = createContext<any>(null);
 
 function Home() {
   const [data, setData] = useState<null | any>(null);
   const [searchValue, setSearchValue] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
+  const { user } = useContext(AccountContext);
+  const [socket, setSocket] = useState(() => {
+    socketConn(user);
+  });
+  useEffect(() => {
+    setSocket(() => socketConn(user));
+  }, [user]);
   // const [service_order, setServiceOrder] = useState("");
 
+  // Connects to socket io and logs user out if there is an error on our backend
+  // useSocketSetup();
   const debouncedSearch = useDebounce(searchValue, 500);
 
   useEffect(() => {
@@ -70,107 +84,109 @@ function Home() {
         <Navbar />
       </header>
 
-      <main className="home_main flex flex-col justify-center">
-        <div className="mx-auto p-1 sm:p-0.5 container">
-          <div className="content-wrapper">
-            <h1>
-              HHP <span>Management</span>{" "}
-            </h1>
-            <button
-              type="button"
-              onClick={() => {
-                setShowModal(true);
-              }}
-            >
-              Get service order
-            </button>
-            <section>
-              <div className="home_image_grid">
-                {homeImages.map((item) => (
-                  <Image
-                    key={item.id}
-                    placeholder="blur"
-                    loading="lazy"
-                    quality={100}
-                    src={item.src}
-                    alt={`${item.src}`}
-                  />
-                ))}
-              </div>
-            </section>
-          </div>
-
-          {showModal && (
-            <Modal
-              setShowModal={setShowModal}
-              modalTitle="Fields will be auto populated"
-            >
-              <label htmlFor="ServiceOrder" className="sr-only">
-                Service Order No
-              </label>
-              <input
-                autoFocus
-                aria-labelledby="ServiceOrder"
-                type="text"
-                name="ServiceOrder"
-                placeholder="Service Order"
-                id="ServiceOrder"
-                className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2 modalSearch"
-                value={debouncedSearch}
-                onChange={(e) => {
-                  setSearchValue(e.target.value);
+      <SocketContext.Provider value={{ socket }}>
+        <main className="home_main flex flex-col justify-center">
+          <div className="mx-auto p-1 sm:p-0.5 container">
+            <div className="content-wrapper">
+              <h1>
+                HHP <span>Management</span>{" "}
+              </h1>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowModal(true);
                 }}
-              />
-
+              >
+                Get service order
+              </button>
               <section>
-                <p>
-                  Accessory:{" "}
-                  <span>
-                    {data?.Return?.EsModelInfo.Accessory === ""
-                      ? "Not available"
-                      : data?.Return?.EsModel}
-                  </span>{" "}
-                </p>
-                <p>
-                  IMEI:{" "}
-                  <span>
-                    {data?.Return?.EsModelInfo.IMEI === ""
-                      ? "Not available"
-                      : data?.Return?.EsModelInfo.IMEI}
-                  </span>
-                </p>
-                <p>
-                  Model:{" "}
-                  <span>
-                    {data?.Return?.EsModelInfo.Model === ""
-                      ? "Not available"
-                      : data?.Return?.EsModelInfo.Model}
-                  </span>
-                </p>
-                <p>
-                  Serial Number:{" "}
-                  <span>
-                    {data?.Return?.EsModelInfo.SerialNo === ""
-                      ? "Not available"
-                      : data?.Return?.EsModelInfo.SerialNo}
-                  </span>
-                </p>
-                <p>
-                  Issue:{" "}
-                  <span>
-                    {data?.Return?.EsModelInfo.DefectDesc === ""
-                      ? "Not available"
-                      : data?.Return?.EsModelInfo.DefectDesc}
-                  </span>
-                </p>
-                <p>
-                  Warranty: <span>{data?.Return?.EsModelInfo.WtyType}</span>
-                </p>
+                <div className="home_image_grid">
+                  {homeImages.map((item) => (
+                    <Image
+                      key={item.id}
+                      placeholder="blur"
+                      loading="lazy"
+                      quality={100}
+                      src={item.src}
+                      alt={`${item.src}`}
+                    />
+                  ))}
+                </div>
               </section>
-            </Modal>
-          )}
-        </div>
-      </main>
+            </div>
+
+            {showModal && (
+              <Modal
+                setShowModal={setShowModal}
+                modalTitle="Fields will be auto populated"
+              >
+                <label htmlFor="ServiceOrder" className="sr-only">
+                  Service Order No
+                </label>
+                <input
+                  autoFocus
+                  aria-labelledby="ServiceOrder"
+                  type="text"
+                  name="ServiceOrder"
+                  placeholder="Service Order"
+                  id="ServiceOrder"
+                  className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2 modalSearch"
+                  value={debouncedSearch}
+                  onChange={(e) => {
+                    setSearchValue(e.target.value);
+                  }}
+                />
+
+                <section>
+                  <p>
+                    Accessory:{" "}
+                    <span>
+                      {data?.Return?.EsModelInfo.Accessory === ""
+                        ? "Not available"
+                        : data?.Return?.EsModel}
+                    </span>{" "}
+                  </p>
+                  <p>
+                    IMEI:{" "}
+                    <span>
+                      {data?.Return?.EsModelInfo.IMEI === ""
+                        ? "Not available"
+                        : data?.Return?.EsModelInfo.IMEI}
+                    </span>
+                  </p>
+                  <p>
+                    Model:{" "}
+                    <span>
+                      {data?.Return?.EsModelInfo.Model === ""
+                        ? "Not available"
+                        : data?.Return?.EsModelInfo.Model}
+                    </span>
+                  </p>
+                  <p>
+                    Serial Number:{" "}
+                    <span>
+                      {data?.Return?.EsModelInfo.SerialNo === ""
+                        ? "Not available"
+                        : data?.Return?.EsModelInfo.SerialNo}
+                    </span>
+                  </p>
+                  <p>
+                    Issue:{" "}
+                    <span>
+                      {data?.Return?.EsModelInfo.DefectDesc === ""
+                        ? "Not available"
+                        : data?.Return?.EsModelInfo.DefectDesc}
+                    </span>
+                  </p>
+                  <p>
+                    Warranty: <span>{data?.Return?.EsModelInfo.WtyType}</span>
+                  </p>
+                </section>
+              </Modal>
+            )}
+          </div>
+        </main>
+      </SocketContext.Provider>
     </>
   );
 }

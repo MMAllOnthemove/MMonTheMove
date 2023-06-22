@@ -8,7 +8,7 @@ const Table = () => {
 
   // Fetching info from our database
   const fetchDataFromDatabase = async () => {
-    await fetch(`${process.env.NEXT_PUBLIC_MANAGEMENT_PAGE_SERVER_LINK}`)
+    await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`)
       .then((res) => res.json())
       .then((data) => {
         // console.log(data);

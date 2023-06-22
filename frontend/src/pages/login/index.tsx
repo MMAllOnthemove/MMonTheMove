@@ -35,9 +35,10 @@ export default function Login({ setAuth }: any) {
       const vals = { ...values };
       await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_LOGIN}`, {
         method: "POST",
-        credentials: "include",
+        credentials: "omit",
         headers: {
           "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "http://localhost:3000",
         },
         body: JSON.stringify(vals),
       })
@@ -56,6 +57,7 @@ export default function Login({ setAuth }: any) {
           if (data.status) {
             setError(data.status);
           } else if (data.loggedIn) {
+            localStorage.setItem("token", data.token);
             router.push("/");
           }
         });
@@ -109,7 +111,7 @@ export default function Login({ setAuth }: any) {
           <h2 className="mt-10 text-center text-2xl font-semibold leading-9 tracking-tight text-gray-900">
             Login
           </h2>
-          <p>{error}</p>
+          <p className="text-center error">{error}</p>
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
