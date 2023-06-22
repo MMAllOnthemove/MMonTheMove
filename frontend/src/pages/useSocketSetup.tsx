@@ -1,10 +1,11 @@
 import { useEffect, useContext } from "react";
-import socket from "../../components/socket";
 import { AccountContext } from "@/state/AccountContext";
+import { socket } from "../../components/socket";
 
 // This logs the user out if there is a problem with the backend connection
-const useSocketSetup = () => {
+const useSocketSetup = (socket: null | any) => {
   const { setUser } = useContext(AccountContext);
+  // let socket: null | any;
   useEffect(() => {
     socket.connect();
     socket.on("connect_error", () => {

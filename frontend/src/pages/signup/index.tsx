@@ -60,6 +60,8 @@ export default function Signup({ setAuth }: any) {
         .then((data) => {
           if (!data) return;
           setUser({ ...data });
+          localStorage.setItem("token", data.token);
+
           if (data.status) {
             setError(data.status);
           } else if (data.loggedIn) {
@@ -115,7 +117,7 @@ export default function Signup({ setAuth }: any) {
           <h2 className="mt-3 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Create account
           </h2>
-          <p>{error}</p>
+          <p className="text-center error">{error}</p>
         </div>
         <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
           <form

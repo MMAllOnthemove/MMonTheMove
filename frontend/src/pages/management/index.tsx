@@ -3,7 +3,6 @@ import { memo, useEffect, useState } from "react";
 import Modal from "../../../components/Modals/Modal";
 import Navbar from "../../../components/Navbar";
 import Table from "../../../components/Table";
-import useSocketSetup from "../useSocketSetup";
 
 const Management = () => {
   const [data, setData] = useState<null | any>(null);
@@ -68,9 +67,6 @@ const Management = () => {
   const [customerOfficePhone, setCustomerOfficePhone] = useState("");
   const [email, setEmail] = useState("");
   const [customerCode, setCustomerCode] = useState("");
-
-  // Connects to socket io and logs user out if there is an error on our backend
-  useSocketSetup();
 
   useEffect(() => {
     async function getData(url = "", data = {}) {
@@ -170,7 +166,7 @@ const Management = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_MANAGEMENT_PAGE_SERVER_LINK}`,
+        `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
