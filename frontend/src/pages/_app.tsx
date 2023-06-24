@@ -6,7 +6,8 @@ import type { AppProps } from "next/app";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import socket from "../../components/socket";
-
+import { RecoilRoot } from "recoil";
+import { TableInfoContextProvider } from "../context/TableInfoContext";
 // Extending the chakra/ui theme
 const theme = extendTheme({
   fonts: {
@@ -19,23 +20,13 @@ export default function App({ Component, pageProps }: AppProps) {
   // socket.connect();
   return (
     <UserContextFunction>
-      <ChakraProvider theme={theme}>
-        <Component {...pageProps} />
-      </ChakraProvider>
+      <TableInfoContextProvider>
+        <RecoilRoot>
+          <ChakraProvider theme={theme}>
+            <Component {...pageProps} />
+          </ChakraProvider>
+        </RecoilRoot>
+      </TableInfoContextProvider>
     </UserContextFunction>
   );
 }
-// export default function App({ Component, pageProps }: AppProps) {
-//   socket.connect();
-//   return (
-//     <UserContextFunction>
-//       <AppStateProvider>
-//         <ChakraProvider theme={theme}>
-//           <DndProvider backend={HTML5Backend}>
-//             <Component {...pageProps} />
-//           </DndProvider>
-//         </ChakraProvider>
-//       </AppStateProvider>
-//     </UserContextFunction>
-//   );
-// }

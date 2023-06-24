@@ -1,15 +1,24 @@
 import Head from "next/head";
-import { memo, useEffect, useState } from "react";
-import Modal from "../../../components/Modals/Modal";
+import { memo, useEffect, useState, useContext } from "react";
+// import Modal from "../../../components/Modals/Modal";
+import { managementModalState } from "@/atoms/managementModalAtom";
+import { useSetRecoilState } from "recoil";
+import ModalManagement from "../../../components/Modals/modal.management";
 import Navbar from "../../../components/Navbar";
-import Table from "../../../components/Table";
+// This is the axios instance
+import UnitFinder from "../api/UnitFinder";
 
-const Management = () => {
+// Table
+import { useRouter } from "next/router";
+import { TableInfoContext } from "@/context/TableInfoContext";
+
+const Management = (props) => {
   const [data, setData] = useState<null | any>(null);
   const [isLoading, setLoading] = useState(false);
-  const [search, setSearch] = useState<string>("");
-  const [showModal, setShowModal] = useState(false);
+  // Not to be confused with 'setServiceOrder'
   const [searchServiceOrder, setSearchServiceOrder] = useState("");
+  // Global state
+  const setManagementModalState = useSetRecoilState(managementModalState);
 
   const [service_order, setServiceOrder] = useState("");
   const [warranty, setWarranty] = useState("");
@@ -18,55 +27,14 @@ const Management = () => {
   const [fault, setFault] = useState("");
   const [serial_number, setSerialNumber] = useState("");
   const [engineer, setEngineer] = useState("");
-  const [status, setStatus] = useState("");
-  const [statusDesc, setStatusDesc] = useState("");
   const [engineerAnalysis, setEngineerAnalysis] = useState("");
-  const [ascCode, setAscCode] = useState("");
-  const [createdBy, setCreatedBy] = useState("");
   const [createdDate, setCreatedDate] = useState("");
   const [createdTime, setCreatedTime] = useState("");
-  const [accessory, setAccessory] = useState("");
-  const [producedDate, setProducedDate] = useState("");
-  const [purchasedDate, setPurchasedDate] = useState("");
-  const [remark, setRemark] = useState("");
-  const [warrantyTermRemark, setWarrantyTermRemark] = useState("");
-  const [customerRequestDate, setCustomerRequestDate] = useState("");
-  const [customerRequestTime, setCustomerRequestTime] = useState("");
-  const [acknowledgeDate, setAcknowledgeDate] = useState("");
-  const [acknowledgeTime, setAcknowledgeTime] = useState("");
-  const [completeDate, setCompleteDate] = useState("");
-  const [completeTime, setCompleteTime] = useState("");
   const [engineerAssignDate, setEngineerAssignDate] = useState("");
   const [engineerAssignTime, setEngineerAssignTime] = useState("");
-  const [firstAppointmentDate, setFirstAppointmentDate] = useState("");
-  const [firstAppointmentTime, setFirstAppointmentTime] = useState("");
-  const [firstVisitDate, setFirstVisitDate] = useState("");
-  const [firstVisitTime, setFirstVisitTime] = useState("");
-  const [firstCustomerDate, setFirstCustomerDate] = useState("");
-  const [firstCustomerTime, setFirstCustomerTime] = useState("");
-  const [goodsDeliveryDate, setGoodsDeliveryDate] = useState("");
-  const [goodsDeliveryTime, setGoodsDeliveryTime] = useState("");
-  const [lastAppointmentDate, setLastAppointmentDate] = useState("");
-  const [lastAppointmentTime, setLastAppointmentTime] = useState("");
-  const [lastChangeDate, setLastChangeDate] = useState("");
-  const [lastChangeTime, setLastChangeTime] = useState("");
-  const [lastVisitDate, setLastVisitDate] = useState("");
-  const [lastVisitTime, setLastVisitTime] = useState("");
-  const [repairReceiveDate, setRepairReceiveDate] = useState("");
-  const [repairReceiveTime, setRepairReceiveTime] = useState("");
-  const [unitReceiveDate, setUnitReceiveDate] = useState("");
-  const [unitReceiveTime, setUnitReceiveTime] = useState("");
-  const [customerFirstName, setCustomerFirstName] = useState("");
-  const [customerLastName, setCustomerLastName] = useState("");
-  const [customerStreetAddress, setCustomerStreetAddress] = useState("");
-  const [customerDistrict, setCustomerDistrict] = useState("");
-  const [customerProvince, setCustomerProvince] = useState("");
-  const [customerZipCode, setCustomerZipCode] = useState("");
-  const [customerHomePhone, setCustomerHomePhone] = useState("");
-  const [customerMobilePhone, setCustomerMobilePhone] = useState("");
-  const [customerOfficePhone, setCustomerOfficePhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [customerCode, setCustomerCode] = useState("");
+  const [inHouseStatus, setInHouseStatus] = useState("");
+  const [qualityControl, setQualityControl] = useState("");
+  const [ticketNumber, setTicketNumber] = useState("");
 
   useEffect(() => {
     async function getData(url = "", data = {}) {
@@ -90,60 +58,17 @@ const Management = () => {
           // console.info(data);
           setData(data);
           setServiceOrder(data?.Return.EsHeaderInfo.SvcOrderNo);
-          setWarranty(data?.Return.EsModelInfo.WtyType);
-          setModel(data?.Return.EsModelInfo.Model);
-          setImei(data?.Return.EsModelInfo.IMEI);
-          setFault(data?.Return.EsModelInfo.DefectDesc);
-          setSerialNumber(data?.Return.EsModelInfo.SerialNo);
-          setEngineer(data?.Return.EsScheInfo.EngineerName);
-          setStatus(data?.Return.EsJobInfo.Status);
-          setStatusDesc(data?.Return.EsJobInfo.StReasonDesc);
-          setAscCode(data?.Return.EsHeaderInfo.AscCode);
-          setCreatedBy(data?.Return.EsHeaderInfo.CreatedBy);
           setCreatedDate(data?.Return.EsHeaderInfo.CreateDate);
           setCreatedTime(data?.Return.EsHeaderInfo.CreateTime);
-          setAccessory(data?.Return.EsModelInfo.Accessory);
-          setProducedDate(data?.Return.EsModelInfo.ProductDate);
-          setPurchasedDate(data?.Return.EsModelInfo.PurchaseDate);
-          setRemark(data?.Return.EsModelInfo.Remark);
-          setWarrantyTermRemark(data?.Return.EsModelInfo.WtyTermRemark);
-          setCustomerRequestDate(data?.Return.EsScheInfo.CustRequestDate);
-          setCustomerRequestTime(data?.Return.EsScheInfo.CustRequestTime);
-          setAcknowledgeDate(data?.Return.EsScheInfo.ASCAckDate);
-          setAcknowledgeTime(data?.Return.EsScheInfo.ASCAckTime);
-          setCompleteDate(data?.Return.EsScheInfo.CompleteDate);
-          setCompleteTime(data?.Return.EsScheInfo.CompleteTime);
+          setModel(data?.Return.EsModelInfo.Model);
+          setWarranty(data?.Return.EsModelInfo.WtyType);
+          setEngineer(data?.Return.EsScheInfo.EngineerName);
+          setFault(data?.Return.EsModelInfo.DefectDesc);
+          setImei(data?.Return.EsModelInfo.IMEI);
+          setSerialNumber(data?.Return.EsModelInfo.SerialNo);
           setEngineerAssignDate(data?.Return.EsScheInfo.EngrAssignDate);
           setEngineerAssignTime(data?.Return.EsScheInfo.EngrAssignTime);
-          setFirstAppointmentDate(data?.Return.EsScheInfo.FirstAppDate);
-          setFirstAppointmentTime(data?.Return.EsScheInfo.FirstAppTime);
-          setFirstVisitDate(data?.Return.EsScheInfo.FirstVisitDate);
-          setFirstVisitTime(data?.Return.EsScheInfo.FirstVisitTime);
-          setFirstCustomerDate(data?.Return.EsScheInfo.FromCustDate);
-          setFirstCustomerTime(data?.Return.EsScheInfo.FromCustTime);
-          setGoodsDeliveryDate(data?.Return.EsScheInfo.GoodsDeliveryDate);
-          setGoodsDeliveryTime(data?.Return.EsScheInfo.GoodsDeliveryTime);
-          setLastAppointmentDate(data?.Return.EsScheInfo.LastAppDate);
-          setLastAppointmentTime(data?.Return.EsScheInfo.LastAppTime);
-          setLastChangeDate(data?.Return.EsScheInfo.LastChangeDate);
-          setLastChangeTime(data?.Return.EsScheInfo.LastChangeTime);
-          setLastVisitDate(data?.Return.EsScheInfo.LastVisitDate);
-          setLastVisitTime(data?.Return.EsScheInfo.LastVisitTime);
-          setRepairReceiveDate(data?.Return.EsScheInfo.RepairReceiveDate);
-          setRepairReceiveTime(data?.Return.EsScheInfo.RepairReceiveTime);
-          setUnitReceiveDate(data?.Return.EsScheInfo.UnitRcvDate);
-          setUnitReceiveTime(data?.Return.EsScheInfo.UnitRcvTime);
-          setCustomerFirstName(data?.Return.EsBpInfo.CustFirstName);
-          setCustomerLastName(data?.Return.EsBpInfo.CustLastName);
-          setCustomerStreetAddress(data?.Return.EsBpInfo.CustAddrStreet1);
-          setCustomerDistrict(data?.Return.EsBpInfo.CustDistrict);
-          setCustomerProvince(data?.Return.EsBpInfo.CustStateDesc);
-          setCustomerZipCode(data?.Return.EsBpInfo.CustZipcode);
-          setCustomerHomePhone(data?.Return.EsBpInfo.CustHomePhone);
-          setCustomerMobilePhone(data?.Return.EsBpInfo.CustMobilePhone);
-          setCustomerOfficePhone(data?.Return.EsBpInfo.CustOfficePhone);
-          setEmail(data?.Return.EsBpInfo.CustEmail);
-          setCustomerCode(data?.Return.EsBpInfo.CustomerCode);
+
           // setLoading(false);
         });
     }
@@ -162,83 +87,65 @@ const Management = () => {
     });
   }, [searchServiceOrder]);
 
-  const postData = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
+  const postData = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
+        "http://localhost:3001/hhp/api/v1/management",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             service_order,
-            warranty,
+            createdDate,
+            createdTime,
             model,
+            warranty,
+            engineer,
             fault,
             imei,
             serial_number,
-            engineer,
-            engineerAnalysis,
-            ascCode,
-            createdBy,
-            createdDate,
-            createdTime,
-            status,
-            statusDesc,
-            accessory,
-            producedDate,
-            remark,
-            warrantyTermRemark,
-            customerRequestDate,
-            customerRequestTime,
-            acknowledgeTime,
-            acknowledgeDate,
-            completeDate,
-            completeTime,
-            engineerAssignTime,
+            inHouseStatus,
+            qualityControl,
             engineerAssignDate,
-            firstAppointmentDate,
-            firstAppointmentTime,
-            firstVisitTime,
-            firstVisitDate,
-            firstCustomerTime,
-            goodsDeliveryTime,
-            goodsDeliveryDate,
-            lastAppointmentDate,
-            lastAppointmentTime,
-            lastChangeTime,
-            lastChangeDate,
-            lastVisitDate,
-            lastVisitTime,
-            repairReceiveTime,
-            repairReceiveDate,
-            unitReceiveDate,
-            unitReceiveTime,
-            customerFirstName,
-            customerLastName,
-            customerStreetAddress,
-            customerDistrict,
-            customerProvince,
-            customerZipCode,
-            customerHomePhone,
-            customerMobilePhone,
-            customerOfficePhone,
-            email,
-            customerCode,
-            purchasedDate,
-            firstCustomerDate,
+            engineerAssignTime,
+            engineerAnalysis,
+            ticketNumber,
           }),
         }
       );
+
       console.log("Response is", response);
     } catch (err) {
       console.log(err);
     }
   };
 
-  const logData = () => {
-    console.log(searchServiceOrder);
+  // For the table
+  const router = useRouter();
+
+  const { id } = router.query;
+
+  // Use context from the context we created
+  // destructure the context
+  const { tableInfo, setTableInfo } = useContext(TableInfoContext);
+
+  // Fetching info from our database
+  const fetchDataFromDatabase = async () => {
+    try {
+      //  '/' not to be confused with home
+      // the / is putting it at the end of our axios instance url defined in api folder
+      const response = await UnitFinder.get("/");
+      console.log("Response is", response);
+      // Accesing the response like this because we logged it to see how it was structured
+      setTableInfo(response.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
+  useEffect(() => {
+    fetchDataFromDatabase();
+  }, []);
+
   return (
     <>
       <Head>
@@ -255,82 +162,222 @@ const Management = () => {
             <button
               className="bg-green-900 text-white font-semibold font-sans rounded-md p-3 my-2"
               type="button"
-              onClick={() => {
-                setShowModal(true);
-              }}
+              onClick={() =>
+                setManagementModalState({
+                  open: true,
+                  view: "management",
+                })
+              }
             >
-              Create job
+              Add job
             </button>
-            {showModal && (
-              <Modal
-                setShowModal={setShowModal}
-                modalTitle="Fields will auto populate"
-              >
-                <section className="flex flex-col overflow-auto">
-                  <label htmlFor="ServiceOrder" className="sr-only">
-                    Service Order No
-                  </label>
-                  <input
-                    aria-labelledby="ServiceOrder"
-                    type="text"
-                    name="ServiceOrder"
-                    placeholder="Service Order"
-                    id="ServiceOrder"
-                    className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
-                    size={10}
-                    maxLength={10}
-                    value={searchServiceOrder}
-                    onChange={(e) => {
-                      setSearchServiceOrder(e.target.value);
-                    }}
-                  />
-                  <label htmlFor="engineerAnalysis" className="sr-only">
-                    Engineer analysis
-                  </label>
-                  <textarea
-                    aria-labelledby="engineerAnalysis"
-                    name="engineerAnalysis"
-                    placeholder="Engineer analysis"
-                    id="engineerAnalysis"
-                    className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2"
-                    maxLength={100}
-                    rows={4}
-                    value={engineerAnalysis}
-                    onChange={(e) => {
-                      setEngineerAnalysis(e.target.value);
-                    }}
-                  ></textarea>
+
+            {/* Called the modal here and added a post data prop that posts data on click */}
+            <ModalManagement>
+              <section className="flex flex-col overflow-auto">
+                <label htmlFor="ServiceOrder" className="sr-only">
+                  Service Order No
+                </label>
+                <input
+                  aria-labelledby="ServiceOrder"
+                  type="text"
+                  name="ServiceOrder"
+                  placeholder="Service Order"
+                  id="ServiceOrder"
+                  className="outline-none border-sky-600 py-2 px-2 border-2 rounded-md my-2"
+                  size={10}
+                  maxLength={10}
+                  value={searchServiceOrder}
+                  onChange={(e) => {
+                    setSearchServiceOrder(e.target.value);
+                  }}
+                />
+                <label htmlFor="Warranty" className="sr-only">
+                  Warranty
+                </label>
+                <input
+                  aria-labelledby="warranty"
+                  type="text"
+                  name="warranty"
+                  placeholder="Warranty"
+                  id="warranty"
+                  className="outline-none bg-white py-2 px-2 border-2 border-slate-400 rounded-md my-2"
+                  value={warranty}
+                  disabled
+                />
+                <label htmlFor="inHouseStatus" className="sr-only">
+                  In house status
+                </label>
+                <input
+                  aria-labelledby="inHouseStatus"
+                  type="text"
+                  name="inHouseStatus"
+                  placeholder="In house status"
+                  id="inHouseStatus"
+                  className="outline-none bg-white py-2 px-2 border-2 border-slate-400 rounded-md my-2"
+                  value={inHouseStatus}
+                  onChange={(e) => setInHouseStatus(e.target.value)}
+                  hidden
+                />
+                <label htmlFor="qualityControl" className="sr-only">
+                  Quality Control
+                </label>
+                <input
+                  aria-labelledby="qualityControl"
+                  type="text"
+                  name="qualityControl"
+                  placeholder="Quality Control"
+                  id="qualityControl"
+                  className="outline-none bg-white py-2 px-2 border-2 border-slate-400 rounded-md my-2"
+                  value={qualityControl}
+                  onChange={(e) => setQualityControl(e.target.value)}
+                  hidden
+                />
+                <label htmlFor="ticketNumber" className="sr-only">
+                  Ticket Number
+                </label>
+                <input
+                  aria-labelledby="ticketNumber"
+                  type="text"
+                  name="ticketNumber"
+                  placeholder="Ticket Number"
+                  id="ticketNumber"
+                  className="outline-none bg-white py-2 px-2 border-2 border-slate-400 rounded-md my-2"
+                  value={ticketNumber}
+                  onChange={(e) => setTicketNumber(e.target.value)}
+                  hidden
+                />
+                <label htmlFor="engineerAnalysis" className="sr-only">
+                  Engineer Analysis
+                </label>
+                <input
+                  aria-labelledby="engineerAnalysis"
+                  type="text"
+                  name="engineerAnalysis"
+                  placeholder="Engineer Analysis"
+                  id="engineerAnalysis"
+                  className="outline-none bg-white py-2 px-2 border-2 border-slate-400 rounded-md my-2"
+                  value={engineerAnalysis}
+                  onChange={(e) => setEngineerAnalysis(e.target.value)}
+                  hidden
+                />
+
+                <div className="flex g-3 justify-between items-center">
+                  <button
+                    onClick={() =>
+                      setManagementModalState({
+                        open: false,
+                        view: "management",
+                      })
+                    }
+                    type="button"
+                    className="bg-slate-950 text-white font-semibold font-sans rounded py-3 px-2 my-2 w-full mr-3"
+                  >
+                    Close
+                  </button>
+
                   <button
                     onClick={postData}
                     type="button"
-                    className="bg-green-900 text-white font-semibold font-sans rounded py-3 px-2 my-2"
+                    className="bg-green-900 text-white font-semibold font-sans rounded py-3 px-2 my-2 w-full ml-3"
                   >
-                    Search
+                    Add
                   </button>
-                </section>
-              </Modal>
-            )}
+                </div>
+              </section>
+            </ModalManagement>
           </section>
 
-          <section className="my-5">
-            {/* <Tabs variant="enclosed" size="md">
-              <TabList>
-                <Tab>Board View</Tab>
-                <Tab>Table View</Tab>
-              </TabList>
+          <section className="relative overflow-x shadow-md sm:rounded-lg my-5">
+            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 table-auto">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                  <th scope="col" className="px-6 py-3">
+                    <span className="sr-only">Edit</span>
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Service Order
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Booking
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Model
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Warranty
+                  </th>
 
-              <TabPanels>
-                <TabPanel>
-                  <Kanban />
-                </TabPanel>
-                <TabPanel>
-                  <section>
-                    <Table />
-                  </section>
-                </TabPanel>
-              </TabPanels>
-            </Tabs> */}
-            <Table />
+                  <th scope="col" className="px-6 py-3">
+                    Technician
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Fault
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    IMEI
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Serial Number
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    In house status
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Quality Control
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Assessment Date
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Engineer Analysis
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Ticket number
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {tableInfo &&
+                  tableInfo.map((item: string | number | any) => {
+                    return (
+                      <tr
+                        key={item.id}
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                      >
+                        <td className="px-6 py-4">
+                          <a
+                            href="#"
+                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                          >
+                            Edit
+                          </a>
+                        </td>
+                        <td
+                          scope="row"
+                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                          {item.service_order_no}
+                        </td>
+                        <td className="px-6 py-4">{item.created_date}</td>
+                        <td className="px-6 py-4">{item.model}</td>
+                        <td className="px-6 py-4">{item.warranty}</td>
+                        <td className="px-6 py-4">{item.engineer}</td>
+                        <td className="px-6 py-4">{item.fault}</td>
+                        <td className="px-6 py-4">{item.imei}</td>
+                        <td className="px-6 py-4">{item.serial_number}</td>
+                        <td className="px-6 py-4">{item.in_house_status}</td>
+                        <td className="px-6 py-4">{item.quality_control}</td>
+                        <td className="px-6 py-4">
+                          {item.engineer_assign_date}
+                        </td>
+                        <td className="px-6 py-4">{item.engineer_analysis}</td>
+                        <td className="px-6 py-4">{item.ticket_number}</td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
           </section>
         </div>
       </main>
