@@ -1,31 +1,38 @@
-import React, { useEffect, useState, createContext, useContext } from "react";
-import Navbar from "../../components/Navbar";
-import useDebounce from "../../components/useDebounce";
-import Modal from "../../components/Modals/modal.home";
-import Image from "next/image";
-import { homeImages } from "../../public/_data/homeImages";
-import Head from "next/head";
-import useSocketSetup from "./useSocketSetup";
-import { socket as socketConn } from "../../components/socket"; // Had to rename to socketConn because we already have socket initialized in this page
+import { homepageModalState } from "@/atoms/homepageModalAtom";
 import { AccountContext } from "@/state/AccountContext";
+import Head from "next/head";
+import Image from "next/image";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useSetRecoilState } from "recoil";
+import ModalHomepage from "../../components/Modals/modal.home";
+import Navbar from "../../components/Navbar";
+import { socket as socketConn } from "../../components/socket"; // Had to rename to socketConn because we already have socket initialized in this page
+import useDebounce from "../../components/useDebounce";
+import { homeImages } from "../../public/_data/homeImages";
 
 export const SocketContext = createContext<any>(null);
 
 function Home() {
   const [data, setData] = useState<null | any>(null);
   const [searchValue, setSearchValue] = useState<string>("");
-  const [showModal, setShowModal] = useState(false);
+
+  // Global state for the modal
+  const setHomeModalState = useSetRecoilState(homepageModalState);
+
+  // Context to check if user is already logged in
   const { user } = useContext(AccountContext);
   const [socket, setSocket] = useState(() => {
     socketConn(user);
   });
+
   useEffect(() => {
     setSocket(() => socketConn(user));
   }, [user]);
-  // const [service_order, setServiceOrder] = useState("");
 
   // Connects to socket io and logs user out if there is an error on our backend
   // useSocketSetup();
+
+  // debounced search debounces the search query
   const debouncedSearch = useDebounce(searchValue, 500);
 
   useEffect(() => {
@@ -72,9 +79,7 @@ function Home() {
       );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch]);
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-  };
+
   return (
     <>
       <Head>
@@ -94,7 +99,10 @@ function Home() {
               <button
                 type="button"
                 onClick={() => {
-                  setShowModal(true);
+                  setHomeModalState({
+                    open: true,
+                    view: "/",
+                  });
                 }}
               >
                 Get service order
@@ -115,75 +123,75 @@ function Home() {
               </section>
             </div>
 
-            {showModal && (
-              <Modal
-                setShowModal={setShowModal}
-                modalTitle="Fields will be auto populated"
-              >
-                <label htmlFor="ServiceOrder" className="sr-only">
-                  Service Order No
-                </label>
-                <input
-                  autoFocus
-                  aria-labelledby="ServiceOrder"
-                  type="text"
-                  name="ServiceOrder"
-                  placeholder="Service Order"
-                  id="ServiceOrder"
-                  className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2 modalSearch"
-                  value={debouncedSearch}
-                  onChange={(e) => {
-                    setSearchValue(e.target.value);
-                  }}
-                />
+            <ModalHomepage>
+              <label htmlFor="ServiceOrder" className="sr-only">
+                Service Order No
+              </label>
+              <input
+                autoFocus
+                aria-labelledby="ServiceOrder"
+                type="text"
+                name="ServiceOrder"
+                placeholder="Get random service order information"
+                id="ServiceOrder"
+                className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2 w-full"
+                value={debouncedSearch}
+                onChange={(e) => {
+                  setSearchValue(e.target.value);
+                }}
+              />
 
-                <section>
-                  <p>
-                    Accessory:{" "}
-                    <span>
-                      {data?.Return?.EsModelInfo.Accessory === ""
-                        ? "Not available"
-                        : data?.Return?.EsModel}
-                    </span>{" "}
-                  </p>
-                  <p>
-                    IMEI:{" "}
-                    <span>
-                      {data?.Return?.EsModelInfo.IMEI === ""
-                        ? "Not available"
-                        : data?.Return?.EsModelInfo.IMEI}
-                    </span>
-                  </p>
-                  <p>
-                    Model:{" "}
-                    <span>
-                      {data?.Return?.EsModelInfo.Model === ""
-                        ? "Not available"
-                        : data?.Return?.EsModelInfo.Model}
-                    </span>
-                  </p>
-                  <p>
-                    Serial Number:{" "}
-                    <span>
-                      {data?.Return?.EsModelInfo.SerialNo === ""
-                        ? "Not available"
-                        : data?.Return?.EsModelInfo.SerialNo}
-                    </span>
-                  </p>
-                  <p>
-                    Issue:{" "}
-                    <span>
-                      {data?.Return?.EsModelInfo.DefectDesc === ""
-                        ? "Not available"
-                        : data?.Return?.EsModelInfo.DefectDesc}
-                    </span>
-                  </p>
-                  <p>
-                    Warranty: <span>{data?.Return?.EsModelInfo.WtyType}</span>
-                  </p>
-                </section>
-              </Modal>
-            )}
+              <section className="homepage_modal_content">
+                <p className="text-[#0d0d0d] font-inherit font-medium py-2">
+                  Accessory:{" "}
+                  <span>
+                    {data?.Return?.EsModelInfo.Accessory === ""
+                      ? "Not available"
+                      : data?.Return?.EsModel}
+                  </span>{" "}
+                </p>
+                <p className="text-[#0d0d0d] font-inherit font-semibold py-2">
+                  IMEI:{" "}
+                  <span className="text-[#075985] font-medium">
+                    {data?.Return?.EsModelInfo.IMEI === ""
+                      ? "Not available"
+                      : data?.Return?.EsModelInfo.IMEI}
+                  </span>
+                </p>
+                <p className="text-[#0d0d0d] font-inherit font-semibold py-2">
+                  Model:{" "}
+                  <span className="text-[#075985] font-medium">
+                    {data?.Return?.EsModelInfo.Model === ""
+                      ? "Not available"
+                      : data?.Return?.EsModelInfo.Model}
+                  </span>
+                </p>
+                <p className="text-[#0d0d0d] font-inherit font-semibold py-2">
+                  Serial Number:{" "}
+                  <span className="text-[#075985] font-medium">
+                    {data?.Return?.EsModelInfo.SerialNo === ""
+                      ? "Not available"
+                      : data?.Return?.EsModelInfo.SerialNo}
+                  </span>
+                </p>
+                <p className="text-[#0d0d0d] font-inherit font-medium py-2">
+                  Issue:{" "}
+                  <span className="text-[#075985] font-medium">
+                    {data?.Return?.EsModelInfo.DefectDesc === ""
+                      ? "Not available"
+                      : data?.Return?.EsModelInfo.DefectDesc}
+                  </span>
+                </p>
+                <p className="text-[#0d0d0d] font-inherit font-semibold py-2">
+                  Warranty:{" "}
+                  <span className="text-[#075985] font-medium">
+                    {data?.Return?.EsModelInfo.WtyType === "LP"
+                      ? "IW"
+                      : data?.Return?.EsModelInfo.WtyType}
+                  </span>
+                </p>
+              </section>
+            </ModalHomepage>
           </div>
         </main>
       </SocketContext.Provider>
