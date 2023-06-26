@@ -12,16 +12,16 @@ const { authorizeUser } = require("./controllers/socketControllers");
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.NEXT_PUBLIC_REACT_URL,
-    methods: ["GET", "POST"],
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT"],
     credentials: true,
   },
 });
 
 app.use(
   cors({
-    origin: process.env.NEXT_PUBLIC_REACT_URL,
-    methods: ["GET", "POST"],
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT"],
     credentials: true,
   })
 );
@@ -40,7 +40,7 @@ app.get("/logout", (req, res) => {
 io.on("connect", (socket) => {});
 
 // GET table info from database
-app.get("/management", async (req, res) => {
+app.get("/hhp/api/v1/management", async (req, res) => {
   try {
     const dbData = await pool.query("SELECT * FROM units");
     res.json(dbData.rows);
@@ -50,133 +50,76 @@ app.get("/management", async (req, res) => {
 });
 
 // POST table info to database
-app.post("/management", async (req, res) => {
+app.post("/hhp/api/v1/management", async (req, res) => {
   const {
     service_order,
-    warranty,
+    createdDate,
+    createdTime,
     model,
+    warranty,
+    engineer,
     fault,
     imei,
     serial_number,
-    engineer,
-    engineerAnalysis,
-    status,
-    ascCode,
-    createdBy,
-    createdDate,
-    createdTime,
-    statusDesc,
-    accessory,
-    producedDate,
-    remark,
-    warrantyTermRemark,
-    customerRequestDate,
-    customerRequestTime,
-    acknowledgeTime,
-    acknowledgeDate,
-    completeDate,
-    completeTime,
-    engineerAssignTime,
+    inHouseStatus,
+    qualityControl,
     engineerAssignDate,
-    firstAppointmentDate,
-    firstAppointmentTime,
-    firstVisitTime,
-    firstVisitDate,
-    firstCustomerTime,
-    goodsDeliveryTime,
-    goodsDeliveryDate,
-    lastAppointmentDate,
-    lastAppointmentTime,
-    lastChangeTime,
-    lastChangeDate,
-    lastVisitDate,
-    lastVisitTime,
-    repairReceiveTime,
-    repairReceiveDate,
-    unitReceiveDate,
-    unitReceiveTime,
-    customerFirstName,
-    customerLastName,
-    customerStreetAddress,
-    customerDistrict,
-    customerProvince,
-    customerZipCode,
-    customerHomePhone,
-    customerMobilePhone,
-    customerOfficePhone,
-    email,
-    customerCode,
-    purchasedDate,
-    firstCustomerDate,
+    engineerAssignTime,
+    engineerAnalysis,
+    ticketNumber,
   } = req.body;
   try {
     const results = await pool.query(
-      "INSERT INTO units (service_order_no, warranty, model,fault,imei, serial_number,engineer,engineer_analysis,asc_code, created_by, created_date,created_time,status,status_desc,accessory,produced_date,remark,wty_term_remark,customer_request_date,customer_request_time,acknowledge_time,acknowledge_date,complete_date,complete_time,engineer_assigned_time,engineer_assigned_date,first_appointment_date, first_appointment_time, first_visit_time, first_visit_date, first_customer_time, goods_delivery_time, goods_delivery_date, last_appointment_date, last_appointment_time, last_change_time, last_change_date, last_visit_date, last_visit_time, repair_receive_time, repair_receive_date, unit_receive_date, unit_receive_time, customer_first_name, customer_last_name, customer_street_address, customer_district, customer_province, customer_zip_code, customer_home_phone, customer_mobile_phone, customer_office_phone, customer_email, customer_code, purchased_date, first_customer_date) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55, $56) returning *",
+      "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, quality_control, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket_number) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning *",
       [
         service_order,
-        warranty,
+        createdDate,
+        createdTime,
         model,
+        warranty,
+        engineer,
         fault,
         imei,
         serial_number,
-        engineer,
-        engineerAnalysis,
-        ascCode,
-        createdBy,
-        createdDate,
-        createdTime,
-        status,
-        statusDesc,
-        accessory,
-        producedDate,
-        remark,
-        warrantyTermRemark,
-        customerRequestDate,
-        customerRequestTime,
-        acknowledgeTime,
-        acknowledgeDate,
-        completeDate,
-        completeTime,
-        engineerAssignTime,
+        inHouseStatus,
+        qualityControl,
         engineerAssignDate,
-        firstAppointmentDate,
-        firstAppointmentTime,
-        firstVisitTime,
-        firstVisitDate,
-        firstCustomerTime,
-        goodsDeliveryTime,
-        goodsDeliveryDate,
-        lastAppointmentDate,
-        lastAppointmentTime,
-        lastChangeTime,
-        lastChangeDate,
-        lastVisitDate,
-        lastVisitTime,
-        repairReceiveTime,
-        repairReceiveDate,
-        unitReceiveDate,
-        unitReceiveTime,
-        customerFirstName,
-        customerLastName,
-        customerStreetAddress,
-        customerDistrict,
-        customerProvince,
-        customerZipCode,
-        customerHomePhone,
-        customerMobilePhone,
-        customerOfficePhone,
-        email,
-        customerCode,
-        purchasedDate,
-        firstCustomerDate,
+        engineerAssignTime,
+        engineerAnalysis,
+        ticketNumber,
       ]
     );
+    console.log(results);
     res.status(201).json({
       status: "success",
       data: {
         restaurant: results.rows[0],
       },
     });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Update info on database
+
+app.put("/hhp/api/v1/management/:id", async (req, res) => {
+  try {
+    const { id } = req.params.id;
+    console.log(id);
+    const { inHouseStatus, qualityControl, engineerAnalysis } = req.body;
+    const editQuery = await pool.query(
+      "UPDATE units SET in_house_status = $1, quality_control = $2, engineer_analysis = $3 WHERE id = $4 returning id",
+      [inHouseStatus, qualityControl, engineerAnalysis, id]
+    );
+
+    const successstatus = res.status(200).json({
+      status: "success",
+      data: {
+        row: editQuery.rows[0].id,
+      },
+    });
+    console.log(successstatus);
   } catch (err) {
     console.log(err);
   }

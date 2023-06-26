@@ -36,10 +36,8 @@ export default function Login({ setAuth }: any) {
       await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_LOGIN}`, {
         method: "POST",
         credentials: "omit",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "http://localhost:3000",
-        },
+        mode: "cors",
+        headers: {},
         body: JSON.stringify(vals),
       })
         .catch((err) => {
