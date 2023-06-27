@@ -55,6 +55,7 @@
     "react-redux": "^8.0.5",
     "recharts": "^2.5.0",
     "recoil": "^0.7.7",
+    "sharp": "^0.31.3",
     "socket.io-client": "^4.6.1",
     "styled-components": "^6.0.0-rc.1",
     "swr": "^2.1.5",
