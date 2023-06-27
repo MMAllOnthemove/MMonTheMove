@@ -12,7 +12,7 @@ import UnitFinder from "../api/UnitFinder";
 import { TableInfoContext } from "@/context/TableInfoContext";
 import { useRouter } from "next/router";
 
-const Management = (props) => {
+const Management = () => {
   const [data, setData] = useState<null | any>(null);
   const [isLoading, setLoading] = useState(false);
   // Not to be confused with 'setServiceOrder'
@@ -116,6 +116,7 @@ const Management = (props) => {
       );
 
       console.log("Response is", response);
+      setLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -133,12 +134,14 @@ const Management = (props) => {
   // Fetching info from our database
   const fetchDataFromDatabase = async () => {
     try {
+      setLoading(true);
       //  '/' not to be confused with home
       // the / is putting it at the end of our axios instance url defined in api folder
       const response = await UnitFinder.get("/");
-      console.log("Response is", response);
+      // console.log("Response is", response);
       // Accesing the response like this because we logged it to see how it was structured
       setTableInfo(response.data);
+      setLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -147,7 +150,7 @@ const Management = (props) => {
     fetchDataFromDatabase();
   }, []);
   // Redirects user to the edit table page
-  const handleUpdate = (e, id) => {
+  const handleUpdate = (e: React.SyntheticEvent, id: string | number) => {
     e.stopPropagation();
     router.push(`/management/edit/${id}`);
   };
@@ -343,7 +346,7 @@ const Management = (props) => {
                 </tr>
               </thead>
               <tbody>
-                {tableInfo &&
+                {tableInfo ? (
                   tableInfo.map((item: string | number | any) => {
                     return (
                       <tr
@@ -381,7 +384,10 @@ const Management = (props) => {
                         <td className="px-6 py-4">{item.ticket_number}</td>
                       </tr>
                     );
-                  })}
+                  })
+                ) : (
+                  <p>Loading...</p>
+                )}
               </tbody>
             </table>
           </section>
