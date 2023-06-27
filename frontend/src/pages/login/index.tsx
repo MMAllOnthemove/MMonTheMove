@@ -33,11 +33,13 @@ export default function Login({ setAuth }: any) {
       // alert(JSON.stringify(values, null, 2));
       actions.resetForm();
       const vals = { ...values };
-      await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_LOGIN}`, {
+      fetch(`http://localhost:3001/auth/login`, {
         method: "POST",
         credentials: "omit",
         mode: "cors",
-        headers: {},
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(vals),
       })
         .catch((err) => {

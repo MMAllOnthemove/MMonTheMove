@@ -1,6 +1,7 @@
 const express = require("express");
 const { Server } = require("socket.io");
 const app = express();
+const helmet = require("helmet");
 const cors = require("cors");
 const authRouter = require("./routes/authRouter");
 const pool = require("./db");
@@ -12,15 +13,16 @@ const { authorizeUser } = require("./controllers/socketControllers");
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: `${process.env.NEXT_PUBLIC_REACT_URL}`,
     methods: ["GET", "POST", "PUT"],
     credentials: true,
   },
 });
 
+app.use(helmet());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: `${process.env.NEXT_PUBLIC_REACT_URL}`,
     methods: ["GET", "POST", "PUT"],
     credentials: true,
   })

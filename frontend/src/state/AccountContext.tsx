@@ -26,17 +26,20 @@ function UserContextFunction(props: ChildrenProps) {
   });
   const router = useRouter();
   useEffect(() => {
-    fetch(`http://localhost:3001/hhp/v1/api/auth/login`, {
+    fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_LOGIN}`, {
       credentials: "include",
       headers: { Authorization: `Bearer ${user.token}` },
     })
       .catch((err) => {
         setUser({ loggedIn: false });
-        return;
+        router.push("/login");
+
+        // return;
       })
       .then((response) => {
         if (!response || !response.ok || response.status >= 400) {
           setUser({ loggedIn: false });
+          router.push("/login");
           return;
         }
         return response.json();
@@ -44,6 +47,7 @@ function UserContextFunction(props: ChildrenProps) {
       .then((data) => {
         if (!data) {
           setUser({ loggedIn: false });
+          router.push("/login");
           return;
         }
         setUser({ ...data });

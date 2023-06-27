@@ -8,22 +8,19 @@ import { useRouter } from "next/router";
 
 export default function Navbar() {
   const { user, setUser } = useContext(AccountContext);
-  const [loading, setLoading] = useState(false);
   // console.log(user);
   // console.log(user?.loggedIn);
   const router = useRouter();
   const logOut = async () => {
-    await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_LOGOUT}`).then(
-      (res) => res.json()
+    fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_LOGOUT}`).then((res) =>
+      res.json()
     );
-    document.cookie = "name=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
     setUser({ loggedIn: false });
     router.push("/login");
+    // document.cookie = "name=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
   };
   // State for mobile open
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  if (loading) return <p>Loading...</p>;
   return (
     <>
       {/* The navbar */}
@@ -97,7 +94,7 @@ export default function Navbar() {
               href={"/login"}
               className="mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
             >
-              Login
+              {user?.loggedIn === null ? "Loading..." : "Login"}
             </Link>
           )}
         </div>
@@ -177,7 +174,7 @@ export default function Navbar() {
                     href={"/login"}
                     className="block rounded-lg py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                   >
-                    Login
+                    {user?.loggedIn === null ? "Loading..." : "Log in"}
                   </Link>
                 )}
               </div>
