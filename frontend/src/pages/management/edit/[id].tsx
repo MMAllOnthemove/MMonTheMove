@@ -8,6 +8,7 @@ function EditRow() {
   // These are already handled in the table but for user experience
   // We just show them and make their inputs disabled
   const [showServiceOrderNumber, setShowServiceOrderNumber] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // These one are the ones use has to update
   const [inHouseStatus, setInHouseStatus] = useState("");
@@ -19,10 +20,12 @@ function EditRow() {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       const response = await UnitFinder.get(`/${id}`);
       setShowServiceOrderNumber(response.data[0].service_order_no);
       // console.log(response.data[0].created_date);
       setInHouseStatus(response.data[0].in_house_status);
+      setLoading(false);
       // setEngineerAnalysis(response.data.data.restaurant.engineer_analysis);
       // setTicket(response.data.data.restaurant.ticket_number);
     };
@@ -31,6 +34,7 @@ function EditRow() {
   }, []);
 
   const updateData = async () => {
+    setLoading(true);
     const response = await UnitFinder.put(`/${id}`, {
       inHouseStatus,
       qualityControl,
@@ -38,13 +42,21 @@ function EditRow() {
       ticket,
       id,
     });
-    // router.push();
+
+    if (!response || response.status !== 200 || response.status >= 400) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+      router.push("/management");
+    }
+
     // console.log(response);
   };
   useEffect(() => {
     updateData();
   }, []);
 
+  if (loading) return <p>Loading...</p>;
   return (
     <>
       <main className="edit_page_main">
@@ -162,7 +174,7 @@ function EditRow() {
               className="bg-[#082f49] w-full font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               onClick={updateData}
             >
-              Update
+              {loading ? "Loading" : "Update"}
             </button>
           </article>
         </div>

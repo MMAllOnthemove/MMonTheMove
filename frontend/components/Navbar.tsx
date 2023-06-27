@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 
 export default function Navbar() {
   const { user, setUser } = useContext(AccountContext);
+  const [loading, setLoading] = useState(false);
   // console.log(user);
   // console.log(user?.loggedIn);
   const router = useRouter();
@@ -21,6 +22,8 @@ export default function Navbar() {
   };
   // State for mobile open
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  if (loading) return <p>Loading...</p>;
   return (
     <>
       {/* The navbar */}
