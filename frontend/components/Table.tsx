@@ -1,12 +1,11 @@
-import { Box, ThemeProvider, createTheme } from "@mui/material";
+import { ThemeProvider, createTheme } from "@mui/material";
 import {
   MaterialReactTable,
   MaterialReactTableProps,
-  type MRT_Cell,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
+import { useEffect, useMemo, useState } from "react";
 
 type EditData = {
   inHouseStatus: string;
@@ -15,7 +14,6 @@ type EditData = {
 };
 
 const Table = () => {
-  const [createModalOpen, setCreateModalOpen] = useState(false);
   const [tableData, setTableData] = useState<string[] | any[]>([]);
   const router = useRouter();
 
@@ -26,7 +24,7 @@ const Table = () => {
     await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`)
       .then((res) => res.json())
       .then((data) => {
-        // console.log(data);
+        console.log(data);
         setTableData(data);
       });
   };

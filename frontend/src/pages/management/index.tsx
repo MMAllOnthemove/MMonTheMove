@@ -91,7 +91,7 @@ const Management = () => {
   const postData = async () => {
     try {
       const response = await fetch(
-        "http://localhost:3001/hhp/api/v1/management",
+        `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -134,14 +134,12 @@ const Management = () => {
   // Fetching info from our database
   const fetchDataFromDatabase = async () => {
     try {
-      setLoading(true);
       //  '/' not to be confused with home
       // the / is putting it at the end of our axios instance url defined in api folder
       const response = await UnitFinder.get("/");
       // console.log("Response is", response);
       // Accesing the response like this because we logged it to see how it was structured
       setTableInfo(response.data);
-      setLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -346,7 +344,7 @@ const Management = () => {
                 </tr>
               </thead>
               <tbody>
-                {tableInfo ? (
+                {tableInfo &&
                   tableInfo.map((item: string | number | any) => {
                     return (
                       <tr
@@ -384,10 +382,7 @@ const Management = () => {
                         <td className="px-6 py-4">{item.ticket_number}</td>
                       </tr>
                     );
-                  })
-                ) : (
-                  <p>Loading...</p>
-                )}
+                  })}
               </tbody>
             </table>
           </section>
