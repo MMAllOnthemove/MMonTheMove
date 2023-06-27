@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState, useContext } from "react";
 import UnitFinder from "@/pages/api/UnitFinder";
 import { TableInfoContext } from "@/context/TableInfoContext";
+import Head from "next/head";
 
 function EditRow() {
   const { tableInfo, setTableInfo } = useContext(TableInfoContext);
@@ -20,17 +21,15 @@ function EditRow() {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
       const response = await UnitFinder.get(`/${id}`);
       setShowServiceOrderNumber(response.data[0].service_order_no);
       // console.log(response.data[0].created_date);
       setInHouseStatus(response.data[0].in_house_status);
-      setLoading(false);
+      fetchData();
+
       // setEngineerAnalysis(response.data.data.restaurant.engineer_analysis);
       // setTicket(response.data.data.restaurant.ticket_number);
     };
-
-    fetchData();
   }, []);
 
   const updateData = async () => {
@@ -43,9 +42,7 @@ function EditRow() {
       id,
     });
 
-    if (!response || response.status !== 200 || response.status >= 400) {
-      setLoading(true);
-    } else {
+    if (response) {
       setLoading(false);
       router.push("/management");
     }
@@ -57,8 +54,12 @@ function EditRow() {
   }, []);
 
   if (loading) return <p>Loading...</p>;
+  if (!loading) return <></>;
   return (
     <>
+      <Head>
+        <title>Edit row</title>
+      </Head>
       <main className="edit_page_main">
         <h4 className="edit_page_title font-bold tracking-tight text-gray-900 dark:text-white">
           Edit Row
