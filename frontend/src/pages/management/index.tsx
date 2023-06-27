@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { memo, useEffect, useState, useContext } from "react";
+import { memo, useContext, useEffect, useState } from "react";
 // import Modal from "../../../components/Modals/Modal";
 import { managementModalState } from "@/atoms/managementModalAtom";
 import { useSetRecoilState } from "recoil";
@@ -9,15 +9,16 @@ import Navbar from "../../../components/Navbar";
 import UnitFinder from "../api/UnitFinder";
 
 // Table
-import { useRouter } from "next/router";
 import { TableInfoContext } from "@/context/TableInfoContext";
+import { useRouter } from "next/router";
 
 const Management = (props) => {
   const [data, setData] = useState<null | any>(null);
   const [isLoading, setLoading] = useState(false);
   // Not to be confused with 'setServiceOrder'
   const [searchServiceOrder, setSearchServiceOrder] = useState("");
-  // Global state
+
+  // Global state for the modal
   const setManagementModalState = useSetRecoilState(managementModalState);
 
   const [service_order, setServiceOrder] = useState("");
@@ -145,7 +146,11 @@ const Management = (props) => {
   useEffect(() => {
     fetchDataFromDatabase();
   }, []);
-
+  // Redirects user to the edit table page
+  const handleUpdate = (e, id) => {
+    e.stopPropagation();
+    router.push(`/management/edit/${id}`);
+  };
   return (
     <>
       <Head>
@@ -160,7 +165,7 @@ const Management = (props) => {
               HHP Management
             </h1>
             <button
-              className="bg-green-900 text-white font-semibold font-sans rounded-md p-3 my-2"
+              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer font-sans rounded-md p-3 my-2"
               type="button"
               onClick={() =>
                 setManagementModalState({
@@ -184,7 +189,7 @@ const Management = (props) => {
                   name="ServiceOrder"
                   placeholder="Service Order"
                   id="ServiceOrder"
-                  className="outline-none border-sky-600 py-2 px-2 border-2 rounded-md my-2"
+                  className="w-full outline-none py-2 px-2 border-2 rounded-md my-2"
                   size={10}
                   maxLength={10}
                   value={searchServiceOrder}
@@ -201,7 +206,7 @@ const Management = (props) => {
                   name="warranty"
                   placeholder="Warranty"
                   id="warranty"
-                  className="outline-none bg-white py-2 px-2 border-2 border-slate-400 rounded-md my-2"
+                  className="w-full disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneoutline-none bg-white py-2 px-2 border-2 border-slate-400 rounded-md my-2"
                   value={warranty}
                   disabled
                 />
@@ -271,7 +276,7 @@ const Management = (props) => {
                       })
                     }
                     type="button"
-                    className="bg-slate-950 text-white font-semibold font-sans rounded py-3 px-2 my-2 w-full mr-3"
+                    className="bg-red-600 text-white font-semibold font-sans rounded py-3 px-2 my-2 w-full mr-3"
                   >
                     Close
                   </button>
@@ -279,7 +284,7 @@ const Management = (props) => {
                   <button
                     onClick={postData}
                     type="button"
-                    className="bg-green-900 text-white font-semibold font-sans rounded py-3 px-2 my-2 w-full ml-3"
+                    className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus: text-white font-semibold font-sans rounded py-3 px-2 my-2 w-full ml-3"
                   >
                     Add
                   </button>
@@ -288,12 +293,12 @@ const Management = (props) => {
             </ModalManagement>
           </section>
 
-          <section className="relative overflow-x shadow-md sm:rounded-lg my-5">
-            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 table-auto">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <section className="relative overflow-x shadow-md rounded-lg my-5">
+            <table className="w-full text-sm text-left text-gray-500 font-medium dark:text-gray-400 table-auto">
+              <thead className="text-xs text-white uppercase bg-[#075985] dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                   <th scope="col" className="px-6 py-3">
-                    <span className="sr-only">Edit</span>
+                    <span className="sr-only">Actions</span>
                   </th>
                   <th scope="col" className="px-6 py-3">
                     Service Order
@@ -346,16 +351,17 @@ const Management = (props) => {
                         className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                       >
                         <td className="px-6 py-4">
-                          <a
-                            href="#"
-                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                          <button
+                            onClick={(e) => handleUpdate(e, item.id)}
+                            type="button"
+                            className="font-medium font-sans text-blue-600 dark:text-blue-500 hover:underline"
                           >
                             Edit
-                          </a>
+                          </button>
                         </td>
                         <td
                           scope="row"
-                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                          className="px-6 py-4 font- whitespace-nowrap dark:text-white"
                         >
                           {item.service_order_no}
                         </td>

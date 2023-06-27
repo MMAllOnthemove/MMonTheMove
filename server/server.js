@@ -39,7 +39,7 @@ app.get("/logout", (req, res) => {
 // io.use(authorizeUser);
 io.on("connect", (socket) => {});
 
-// GET table info from database
+// GET all table info from database
 app.get("/hhp/api/v1/management", async (req, res) => {
   try {
     const dbData = await pool.query("SELECT * FROM units");
@@ -49,7 +49,18 @@ app.get("/hhp/api/v1/management", async (req, res) => {
   }
 });
 
-// POST table info to database
+// GET one row table info from database
+app.get("/hhp/api/v1/management/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const dbData = await pool.query("SELECT * FROM units WHERE id = $1", [id]);
+    res.json(dbData.rows);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// POST all table info to database
 app.post("/hhp/api/v1/management", async (req, res) => {
   const {
     service_order,
@@ -101,25 +112,18 @@ app.post("/hhp/api/v1/management", async (req, res) => {
   }
 });
 
-// Update info on database
-
+// Update single row on database
+// Using COALESCE to prevent null values when updating
 app.put("/hhp/api/v1/management/:id", async (req, res) => {
   try {
-    const { id } = req.params.id;
-    console.log(id);
-    const { inHouseStatus, qualityControl, engineerAnalysis } = req.body;
+    const { id } = req.params;
+    const { inHouseStatus, qualityControl, engineerAnalysis, ticket } =
+      req.body;
     const editQuery = await pool.query(
-      "UPDATE units SET in_house_status = $1, quality_control = $2, engineer_analysis = $3 WHERE id = $4 returning id",
-      [inHouseStatus, qualityControl, engineerAnalysis, id]
+      "UPDATE units SET in_house_status = COALESCE (NULLIF($1, ''), in_house_status), quality_control = COALESCE (NULLIF($2, ''), quality_control), engineer_analysis = COALESCE (NULLIF($3, ''), engineer_analysis), ticket_number = COALESCE (NULLIF($4, ''), ticket_number) WHERE id = $5 returning *",
+      [inHouseStatus, qualityControl, engineerAnalysis, ticket, id]
     );
-
-    const successstatus = res.status(200).json({
-      status: "success",
-      data: {
-        row: editQuery.rows[0].id,
-      },
-    });
-    console.log(successstatus);
+    console.log(editQuery.rows);
   } catch (err) {
     console.log(err);
   }

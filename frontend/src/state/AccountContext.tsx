@@ -26,7 +26,7 @@ function UserContextFunction(props: ChildrenProps) {
   });
   const router = useRouter();
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_LOGIN}`, {
+    fetch(`http://localhost:3001/hhp/v1/api/auth/login`, {
       credentials: "include",
       headers: { Authorization: `Bearer ${user.token}` },
     })
