@@ -2,51 +2,35 @@
 
 ```
 import "./styles.css";
-import React, { useEffect, useState } from "react";
+import {useState}from "react"
 
 export default function App() {
-  const [selectedFruit, setSelectedFruit] = useState("orange");
-  const [value, setValue] = useState(Date);
+  const [selectedValue, setSelectedValue] =  useState("")
+  const [value, setValue] =  useState("");
+  let d = new Date();
+  var today = d.toISOString().split('T')[0];
+  // var yesterday = d.setDate(d.getDate() -1);
 
-  const handleChange = (e) => {
-    if (selectedFruit === "apple") {
-      setValue(new Date().toISOString().slice(0, 10));
-    }
-  };
-  function submitChange() {
-    console.log(value);
+  function submit (){
+    console.log(selectedValue)
+    console.log(value)
   }
-  useEffect(() => {
-    handleChange();
-  }, []);
   return (
     <div className="App">
       <h1>Hello CodeSandbox</h1>
-      <h2>Start editing to see some magic happen!</h2>
-      <select
-        value={selectedFruit}
-        onChange={(e) => setSelectedFruit(e.target.value)}
-      >
-        <option disabled value="">
-          Select
-        </option>
-        <option value="apple">Apple</option>
-        <option value="banana">Banana</option>
-        <option value="orange">Orange</option>
+      <select value={selectedValue} onChange={(e)=>setSelectedValue(e.target.value)}>
+        <option value="" disabled>Select</option>
+        <option value="apple" >Apple</option>
+        <option value="banana" >Banana</option>
       </select>
 
-      <input
-        type="text"
-        value={selectedFruit === "apple" && new Date()}
-        onChange={handleChange}
-      />
-
-      <button type="button" onClick={submitChange}>
-        Button
-      </button>
+   
+<input type="date" value={value} onChange={(e)=>{setValue(e.target.value)}}  min={today} max={today} />
+<button type="button" onClick={submit}>Button</button>
     </div>
   );
 }
+
 
 
 ```
