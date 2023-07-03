@@ -12,11 +12,11 @@ export default function Navbar() {
   // console.log(user?.loggedIn);
   const router = useRouter();
   const logOut = async () => {
-    fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_LOGOUT}`).then((res) =>
-      res.json()
+    await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_LOGOUT}`).then(
+      (res) => res.json()
     );
     setUser({ loggedIn: false });
-    router.push("/login");
+    router.push("/auth/login");
     // document.cookie = "name=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
   };
   // State for mobile open
@@ -91,7 +91,7 @@ export default function Navbar() {
             </button>
           ) : (
             <Link
-              href={"/login"}
+              href={"/auth/login"}
               className="mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
             >
               {user?.loggedIn === null ? "Loading..." : "Login"}
@@ -171,7 +171,7 @@ export default function Navbar() {
                   </button>
                 ) : (
                   <Link
-                    href={"/login"}
+                    href={"/auth/login"}
                     className="block rounded-lg py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                   >
                     {user?.loggedIn === null ? "Loading..." : "Log in"}

@@ -1,59 +1,100 @@
 {
-    "data": [
+    "id": 69786678,
+    "number": 101030,
+    "subject": "CRACKED SCREEN+SCREEN FLICKERING AND  NOT WORKING",
+    "created_at": "2023-06-27T13:23:00.000+02:00",
+    "customer_id": 29760108,
+    "customer_business_then_name": "Rosa Maria Gome Gaces",
+    "due_date": "2023-07-04T14:53:00.000+02:00",
+    "resolved_at": null,
+    "start_at": null,
+    "end_at": null,
+    "location_id": null,
+    "problem_type": "HHP(Mobile Phone/Tablets)",
+    "status": "Parts to be ordered",
+    "ticket_type_id": 21877,
+    "properties": {
+        "IMEI": "350299942119490",
+        "PO No.": "",
+        "Password": "",
+        "Warranty": "75132",
+        "Item Condition": "SIM TRAY +CRACKED SCREEN AND DENTS ON CORNERS",
+        "Location (BIN)": "",
+        "Backup Requires": "75128",
+        "Job Repair No.:": "",
+        "Part seal number": "",
+        "Service Order No.": "4267803907",
+        "Special Requirement ": "SAMS017760\t"
+    },
+    "user_id": 177868,
+    "updated_at": "2023-06-28T10:10:23.682+02:00",
+    "pdf_url": null,
+    "priority": null,
+    "comments": [
         {
-            "id": "1",
-            "service_order_no": "",
-            "created_date": "00000000",
-            "created_time": "000000",
-            "model": "",
-            "warranty": "",
-            "engineer": "",
-            "fault": "",
-            "imei": "",
-            "serial_number": "",
-            "in_house_status": "",
-            "quality_control": "",
-            "engineer_assign_date": "00000000",
-            "engineer_assign_time": "000000",
-            "engineer_analysis": "",
-            "ticket_number": "",
-            "unique_id": "d19d8778-a447-4acd-8ec6-26950e0fc3e0"
+            "id": 250929933,
+            "created_at": "2023-06-28T10:08:18.378+02:00",
+            "updated_at": "2023-06-28T10:08:18.413+02:00",
+            "ticket_id": 69786678,
+            "subject": "Update",
+            "body": "Devices screen is cracked and has an ink spill.------------------------------------------------------------------------Parts to be orderedocta GH82-26035A, batt  GH82-24592A, kit     GH82-24597A",
+            "tech": "Sizwe Phungwayo",
+            "hidden": true,
+            "user_id": 177868
+        },
+        {
+            "id": 250771792,
+            "created_at": "2023-06-27T13:35:34.390+02:00",
+            "updated_at": "2023-06-27T13:35:34.432+02:00",
+            "ticket_id": 69786678,
+            "subject": "Update",
+            "body": "CUSTOMER PAID IUA PLS PROCEED",
+            "tech": "Lavona Jacobs",
+            "hidden": true,
+            "user_id": 112717
+        },
+        {
+            "id": 250770787,
+            "created_at": "2023-06-27T13:35:15.316+02:00",
+            "updated_at": "2023-06-27T13:35:15.316+02:00",
+            "ticket_id": 69786678,
+            "subject": "Invoice Emailed",
+            "body": "Invoice emailed to mpenaledi@gmail.com by user: Lavona Jacobs",
+            "tech": "Lavona Jacobs",
+            "hidden": true,
+            "user_id": null
+        },
+        {
+            "id": 250737832,
+            "created_at": "2023-06-27T13:23:00.705+02:00",
+            "updated_at": "2023-06-27T13:23:00.705+02:00",
+            "ticket_id": 69786678,
+            "subject": "Diagnosis",
+            "body": "Ticket marked as Pre-Diagnosed.",
+            "tech": "Sherry Leigh James",
+            "hidden": true,
+            "user_id": null
+        },
+        {
+            "id": 250737829,
+            "created_at": "2023-06-27T13:23:00.618+02:00",
+            "updated_at": "2023-06-27T13:23:00.618+02:00",
+            "ticket_id": 69786678,
+            "subject": "Initial Issue",
+            "body": "CRACKED SCREEN+SCREEN FLICKERING AND  NOT WORKING ",
+            "tech": "Sherry Leigh James",
+            "hidden": false,
+            "user_id": 177862
         }
     ],
-    "status": 200,
-    "statusText": "OK",
-    "headers": {
-        "content-length": "364",
-        "content-type": "application/json; charset=utf-8"
-    },
-    "config": {
-        "transitional": {
-            "silentJSONParsing": true,
-            "forcedJSONParsing": true,
-            "clarifyTimeoutError": false
-        },
-        "adapter": [
-            "xhr",
-            "http"
-        ],
-        "transformRequest": [
-            null
-        ],
-        "transformResponse": [
-            null
-        ],
-        "timeout": 0,
-        "xsrfCookieName": "XSRF-TOKEN",
-        "xsrfHeaderName": "X-XSRF-TOKEN",
-        "maxContentLength": -1,
-        "maxBodyLength": -1,
-        "env": {},
-        "headers": {
-            "Accept": "application/json, text/plain, */*"
-        },
-        "baseURL": "http://localhost:3001/hhp/api/v1/management",
-        "method": "get",
-        "url": "/"
-    },
-    "request": {}
+    "user": {
+        "id": 177868,
+        "email": "sizwe_phungwayo@allelectronics.co.za",
+        "full_name": "Sizwe Phungwayo",
+        "created_at": "2023-03-06T14:51:42.453+02:00",
+        "updated_at": "2023-06-28T10:06:48.387+02:00",
+        "group": "Techs",
+        "admin?": false,
+        "color": "FFFFFF"
+    }
 }

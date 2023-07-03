@@ -72,3 +72,6 @@ CREATE TABLE users (
 );
 
 INSERT INTO service_orders (service_order) VALUES("4261942103");
+
+DATE FORMATS
+ select TO_CHAR(to_timestamp('230629', 'DDMMYY'),'YYYY-MM-DD');
