@@ -13,7 +13,11 @@ const { authorizeUser } = require("./controllers/socketControllers");
 
 const io = new Server(server, {
   cors: {
-    origin: `${process.env.NEXT_PUBLIC_REACT_URL}`,
+    origin: [
+      process.env.NEXT_PUBLIC_MAIN_DOMAIN,
+      process.env.NEXT_PRODUCTION_SUBDOMAIN_REGEX,
+      process.env.NEXT_PUBLIC_MAIN_DOMAIN_IP_URL,
+    ],
     methods: ["GET", "POST", "PUT"],
     credentials: true,
   },
@@ -22,7 +26,11 @@ const io = new Server(server, {
 app.use(helmet());
 app.use(
   cors({
-    origin: `${process.env.NEXT_PUBLIC_REACT_URL}`,
+    origin: [
+      process.env.NEXT_PUBLIC_MAIN_DOMAIN,
+      process.env.NEXT_PRODUCTION_SUBDOMAIN_REGEX,
+      process.env.NEXT_PUBLIC_MAIN_DOMAIN_IP_URL,
+    ],
     methods: ["GET", "POST", "PUT"],
     credentials: true,
   })
@@ -33,10 +41,10 @@ app.use("/auth", authRouter);
 app.set("trust proxy", 1);
 
 // lOGOUT
-app.get("/logout", (req, res) => {
-  req.session.destroy();
-  res.redirect("/");
-});
+// app.get("/logout", (req, res) => {
+//   req.session.destroy();
+//   res.redirect("/");
+// });
 // io.use(wrap(sessionMiddleware));
 // io.use(authorizeUser);
 io.on("connect", (socket) => {});
@@ -75,15 +83,14 @@ app.post("/hhp/api/v1/management", async (req, res) => {
     imei,
     serial_number,
     inHouseStatus,
-    qualityControl,
     engineerAssignDate,
     engineerAssignTime,
     engineerAnalysis,
-    ticketNumber,
+    ticket,
   } = req.body;
   try {
     const results = await pool.query(
-      "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, quality_control, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket_number) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning *",
+      "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) returning *",
       [
         service_order,
         createdDate,
@@ -95,11 +102,10 @@ app.post("/hhp/api/v1/management", async (req, res) => {
         imei,
         serial_number,
         inHouseStatus,
-        qualityControl,
         engineerAssignDate,
         engineerAssignTime,
         engineerAnalysis,
-        ticketNumber,
+        ticket,
       ]
     );
     console.log(results);
@@ -119,18 +125,35 @@ app.post("/hhp/api/v1/management", async (req, res) => {
 app.put("/hhp/api/v1/management/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { inHouseStatus, qualityControl, engineerAnalysis, ticket } =
-      req.body;
+    const {
+      engineerAnalysis,
+      inHouseStatus,
+      partsPendingDate,
+      partsOrderedDate,
+      partsIssuedDate,
+      qcCompletedDate,
+      repairCompletedDate,
+      ticket,
+    } = req.body;
     const editQuery = await pool.query(
-      "UPDATE units SET in_house_status = COALESCE (NULLIF($1, ''), in_house_status), quality_control = COALESCE (NULLIF($2, ''), quality_control), engineer_analysis = COALESCE (NULLIF($3, ''), engineer_analysis), ticket_number = COALESCE (NULLIF($4, ''), ticket_number) WHERE id = $5 returning *",
-      [inHouseStatus, qualityControl, engineerAnalysis, ticket, id]
+      "UPDATE units SET engineer_analysis = $1, in_house_status = $2, parts_pending_date = $3, parts_ordered_date = $4, parts_issued_date = $5, qc_completed_date = $6, repair_completed_date = $7, ticket = $8 WHERE id = $9 returning *",
+      [
+        engineerAnalysis,
+        inHouseStatus,
+        partsPendingDate,
+        partsOrderedDate,
+        partsIssuedDate,
+        qcCompletedDate,
+        repairCompletedDate,
+        ticket,
+        id,
+      ]
     );
     console.log(editQuery.rows);
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log(error);
   }
 });
-
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 server.listen(PORT, () => {
   console.log(`Server is up and listening on port localhost:${PORT}`);

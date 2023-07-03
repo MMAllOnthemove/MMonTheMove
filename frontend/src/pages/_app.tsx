@@ -15,6 +15,7 @@ const theme = extendTheme({
 
 export default function App({ Component, pageProps }: AppProps) {
   // socket.connect();
+
   return (
     <UserContextFunction>
       <TableInfoContextProvider>

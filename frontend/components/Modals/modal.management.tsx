@@ -33,7 +33,9 @@ function ModalManagement(props: Props) {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
-            {modalState.view === "management" && "Fields will auto populate"}
+            {modalState.view === "management"
+              ? "Fields will auto populate"
+              : "Edit table"}
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>{props.children}</ModalBody>
