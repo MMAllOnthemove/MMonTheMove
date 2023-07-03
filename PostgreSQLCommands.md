@@ -117,3 +117,9 @@ After installing pgAdmin 4 and running it you will get to a standard pgAdmin 4 d
 Links
 
 [Installing PostgreSQL](https://www.cherryservers.com/blog/how-to-install-and-setup-postgresql-server-on-ubuntu-20-04)
+
+Notes
+
+Selecting date and formating from 6 digits
+
+``` SELECT to_char(to_timestamp('310322', 'DDMMYY'),'YYYY-MM-DD') ```

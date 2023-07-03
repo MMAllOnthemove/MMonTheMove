@@ -1,173 +1,194 @@
-import { ThemeProvider, createTheme } from "@mui/material";
-import MaterialReactTable from "material-react-table";
-import { useEffect, useMemo, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { useRouter } from "next/router";
+import React, { useEffect, useState, useContext, useRef, memo } from "react";
+import UnitFinder from "@/pages/api/UnitFinder";
+import { TableInfoContext } from "@/context/TableInfoContext";
+import Head from "next/head";
+import { Button, useToast } from "@chakra-ui/react";
 
-type Table = {
-  service_order: string;
-  warranty: string;
-  model: string;
-  fault: string;
-  imei: string;
-  serial_number: string;
-  engineer: string;
-  parts_issued: string;
-  parts_ordered: string;
-};
+function EditRow() {
+  const { tableInfo, setTableInfo } = useContext(TableInfoContext);
+  // These are already handled in the table but for user experience
+  // We just show them and make their inputs disabled
+  const [showServiceOrderNumber, setShowServiceOrderNumber] = useState("");
+  const [loading, setLoading] = useState(false);
 
-const Table = () => {
-  const [tableData, setTableData] = useState<any[]>([]);
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_MANAGEMENT_PAGE_SERVER_LINK}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setTableData(data);
-      });
-  }, [tableData]);
+  let defaultDate = new Date();
+  // defaultDate.setDate(defaultDate.getDate() + 3);
+  const formatDate =
+    defaultDate.getDate() < 10
+      ? `0${defaultDate.getDate()}`
+      : defaultDate.getDate();
+  const formatMonth =
+    defaultDate.getMonth() < 10
+      ? `0${defaultDate.getMonth()}`
+      : defaultDate.getMonth();
+  const formattedDate = [
+    defaultDate.getFullYear(),
+    formatMonth,
+    formatDate,
+  ].join("-");
 
-  // if (isLoading) return <p>Loading...</p>;
-  // if (!tableData) return <p>No profile data</p>;
+  // These one are the ones use has to update
+  const [inHouseStatus, setInHouseStatus] = useState("");
+  const [engineerAnalysis, setEngineerAnalysis] = useState("");
+  const [qualityControl, setQualityControl] = useState<Date>(formattedDate);
+  const [ticket, setTicket] = useState("");
+  const [hasValue, setHasValue] = useState(false);
+  const router = useRouter();
+  const { id } = router.query;
+  const toast = useToast();
 
-  //should be memoized or stable
-  const defaultMaterialTheme = createTheme();
-  const columns = useMemo(
-    () => [
-      {
-        accessorKey: "service_order", //access nested data with dot notation
-        header: "Service Order",
-        enableClickToCopy: true,
-      },
-      {
-        accessorKey: "warranty",
-        header: "Warranty",
-      },
-      {
-        accessorKey: "model", //normal accessorKey
-        header: "Model",
-        enableClickToCopy: true,
-      },
-      {
-        accessorKey: "imei",
-        header: "IMEI",
-        enableClickToCopy: true,
-      },
-      {
-        accessorKey: "serial_number",
-        header: "Serial Number",
-        enableClickToCopy: true,
-      },
-      {
-        accessorKey: "engineer",
-        header: "Engineer",
-      },
-      {
-        accessorKey: "status",
-        header: "Status",
-      },
-      {
-        accessorKey: "defect_desc",
-        header: "Condition",
-      },
-      {
-        accessorKey: "engineer_analysis",
-        header: "Engineer Analysis",
-      },
-    ],
-    []
-  );
-  const handleSaveRow = async ({ exitEditingMode, row, values }) => {
-    //if using flat data and simple accessorKeys/ids, you can just do a simple assignment here.
-    tableData[row.index] = values;
-    await fetch(`${process.env.NEXT_PUBLIC_MANAGEMENT_PAGE_SERVER_LINK}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setTableData(data);
-      });
-    //send/receive api updates here
-    // setTableData(data);
-    exitEditingMode(); //required to exit editing mode
+  // console.log(memo(inHouseStatus).type);
+
+  const fetchData = async () => {
+    const response = await UnitFinder.get(`/${id}`);
+    setShowServiceOrderNumber(response.data[0].service_order_no);
+    // console.log(response.data[0].created_date);
+    setInHouseStatus(response.data[0].in_house_status);
+
+    // setEngineerAnalysis(response.data.data.restaurant.engineer_analysis);
+    // setTicket(response.data.data.restaurant.ticket_number);
   };
-  return (
-    <ThemeProvider theme={defaultMaterialTheme}>
-      <MaterialReactTable
-        columns={columns}
-        data={tableData}
-        enableEditing
-        onEditingRowSave={handleSaveRow}
-        renderDetailPanel={({ row }) => (
-          <Box
-            sx={{
-              display: "grid",
-              margin: "auto",
-              gridTemplateColumns: "1fr 1fr",
-              width: "100%",
-            }}
-          >
-            <section>
-              <h2 className="text-2xl uppercase text-slate-900 pb-2">Info</h2>
-              {tableData.map((item) => (
-                <div key={item.id}>
-                  <p>Service Order no: {item?.service_order_no}</p>
-                  <p>AscCode: {item?.asc_code}</p>
-                  <p>Created By {item?.created_by}</p>
-                  <p>Created Date {item?.created_date}</p>
-                  <p>Created Time {item?.created_time}</p>
-                  <p>Status {item?.status}</p>
-                  <p>StatusDesc</p>
-                  <p>Accessory</p>
-                  <p>Request Date</p>
-                  <p>Produced date:</p>
-                  <p>Purchased date:</p>
-                  <p>Remark</p>
-                  <p>WtyTermRemark</p>
-                  <p>Customer request date:</p>
-                  <p>Customer request time:</p>
-                  <p>Acknowledge date:</p>
-                  <p>Acknowledge time:</p>
-                  <p>Complete date</p>
-                  <p>Complete time</p>
-                  <p>Engineer assign date</p>
-                  <p>Engineer assign time</p>
-                  <p>First Appointment date</p>
-                  <p>First Appointment time</p>
-                  <p>First Visit date</p>
-                  <p>First Visit time</p>
-                  <p>First Customer date</p>
-                  <p>First Customer time</p>
-                  <p>Goods delivery date</p>
-                  <p>Goods delivery time</p>
-                  <p>Last appointment date</p>
-                  <p>Last appointment time</p>
-                  <p>Last change date</p>
-                  <p>Last change time</p>
-                  <p>Last visit date</p>
-                  <p>Last visit time</p>
-                  <p>Repair receive date</p>
-                  <p>Repair receive time</p>
-                  <p>Unit receive date</p>
-                  <p>Unit receive time</p>
-                </div>
-              ))}
-            </section>
-            <section>
-              <h2>Dates</h2>
-              <p>Customer first name</p>
-              <p>Customer last name</p>
-              <p>Customer street address</p>
-              <p>Customer district</p>
-              <p>Customer province</p>
-              <p>Customer zip code</p>
-              <p>Customer home phone</p>
-              <p>Customer mobile phone</p>
-              <p>Customer office phone</p>
-              <p>Customer Email</p>
-              <p>Customer Code:</p>
-            </section>
-          </Box>
-        )}
-      />
-    </ThemeProvider>
-  );
-};
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-export default Table;
+  async function updateData(e: React.SyntheticEvent) {
+    e.preventDefault();
+    console.log(inHouseStatus);
+    console.log(qualityControl);
+    // router.push("/management");
+    // toast({
+    //   title: "Job edited.",
+    //   description: "You've successfully edited the job.",
+    //   status: "success",
+    //   duration: 9000,
+    //   isClosable: true,
+    // });
+    // const response = await UnitFinder.put(`/${id}`, {
+    //   inHouseStatus,
+    //   qualityControl,
+    //   engineerAnalysis,
+    //   ticket,
+    //   id,
+    // });
+  }
+  return (
+    <>
+      <section className="section container mx-auto">
+        <form className="">
+          <span>
+            <label htmlFor="">Service Order No</label>
+            <input
+              type="text"
+              name="showServiceOrderNumber"
+              id="showServiceOrderNumber"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-whitew-full"
+              value={showServiceOrderNumber}
+              disabled
+            />
+          </span>
+
+          <span>
+            <label
+              htmlFor="engineerAnalysis"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Engineer Analysis
+            </label>
+            <textarea
+              name="engineerAnalysis"
+              id="engineerAnalysis"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+              value={engineerAnalysis}
+              onChange={(event) => setEngineerAnalysis(event.target.value)}
+            ></textarea>
+          </span>
+          <span>
+            <label
+              htmlFor="qualityControl"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              In house status
+            </label>
+            <select
+              value={inHouseStatus}
+              className="bg-gray-50 border border-gray-300 outline-0 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+              onChange={(e) => {
+                setInHouseStatus(e.target.value);
+                if (!hasValue) {
+                  setQualityControl(new Date(e.target.value));
+                }
+              }}
+            >
+              <option disabled>Choose status</option>
+              <option value="Booked in">Booked in</option>
+              <option value="Repair in progress">Repair in progress</option>
+              <option value="Parts pending">Parts pending</option>
+              <option value="Parts issued">Parts issued</option>
+              <option value="Quote pending">Quote pending</option>
+              <option value="Waiting for customer">Waiting for customer</option>
+              <option value="Waiting SAW">Waiting SAW</option>
+              <option value="Quality Control (QC)">Quality Control</option>
+              <option value="Repair completed">Repair completed</option>
+              <option value="QR completed">QC completed</option>
+              <option value="Pending Q&A">Pending Q&A</option>
+              <option value="SO cancel">SO cancel</option>
+              <option value="Scrap approved">Scrap approved</option>
+              <option value="Quote rejected">Quote rejected</option>
+              <option value="Waiting for parts">Waiting for parts</option>
+              <option value="For invoicing">For invoicing</option>
+            </select>
+          </span>
+          <span>
+            <label
+              htmlFor="qualityControl"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Quality Control
+            </label>
+            <input
+              type="date"
+              name="qualityControl"
+              id="qualityControl"
+              value={qualityControl.toLocaleDateString("en-CA")}
+              placeholder="Type in this format, YYMMDD"
+              className="bg-gray-50 border border-gray-300 outline-0 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+              disabled
+              onChange={(e) => {
+                setHasValue(Boolean(e.target.value));
+                setQualityControl(new Date(e.target.value));
+              }}
+            />
+          </span>
+          <span>
+            <label
+              htmlFor="ticket"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Set ticket number
+            </label>
+            <input
+              type="text"
+              name="ticket"
+              id="ticket"
+              value={ticket}
+              className="bg-gray-50 border border-gray-300 outline-0 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+            />
+          </span>
+          <span>
+            <button
+              type="submit"
+              className="bg-[#082f49] w-full font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              onClick={updateData}
+            >
+              Update
+            </button>
+          </span>
+        </form>
+      </section>
+    </>
+  );
+}
+
+export default EditRow;

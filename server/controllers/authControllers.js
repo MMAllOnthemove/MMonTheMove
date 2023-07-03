@@ -38,7 +38,7 @@ module.exports.handleLogin = async (req, res) => {
 
 module.exports.attemptLogin = async (req, res) => {
   const potentialLogin = await pool.query(
-    "SELECT user_id, email, password, unique_id FROM users u WHERE u.email=$1",
+    "SELECT id, email, password, unique_id FROM users u WHERE u.email=$1",
     [req.body.email]
   );
 
@@ -50,13 +50,13 @@ module.exports.attemptLogin = async (req, res) => {
     if (isSamePass) {
       // req.session.user = {
       //   email: req.body.email,
-      //   id: potentialLogin.rows[0].user_id,
+      //   id: potentialLogin.rows[0].id,
       //   unique_id: potentialLogin.rows[0].unique_id,
       // };
       jwtSign(
         {
           email: req.body.email,
-          id: potentialLogin.rows[0].user_id,
+          id: potentialLogin.rows[0].id,
           unique_id: potentialLogin.rows[0].unique_id,
         },
         process.env.JWT_SECRET_KEY,
@@ -81,27 +81,29 @@ module.exports.attemptLogin = async (req, res) => {
 };
 
 module.exports.attemptRegister = async (req, res) => {
+  // Check if user creating account exists
   const existingUser = await pool.query(
     "SELECT email from users WHERE email=$1",
     [req.body.email]
   );
 
+  // If user does not exist, proceed
   if (existingUser.rowCount === 0) {
     // register
     const hashedPass = await bcrypt.hash(req.body.password, 10);
     const newUserQuery = await pool.query(
-      "INSERT INTO users(email, password) values($1,$2) RETURNING user_id, email",
-      [req.body.email, hashedPass]
+      "INSERT INTO users(email, password, fullname) values($1, $2, $3) RETURNING id, email",
+      [req.body.email, hashedPass, req.body.fullName]
     );
     // req.session.user = {
     //   email: req.body.email,
-    //   id: newUserQuery.rows[0].user_id,
+    //   id: newUserQuery.rows[0].id,
     //   unique_id: newUserQuery.rows[0].unique_id,
     // };
     jwtSign(
       {
         email: req.body.email,
-        id: newUserQuery.rows[0].user_id,
+        id: newUserQuery.rows[0].id,
         unique_id: newUserQuery.rows[0].unique_id,
       },
       process.env.JWT_SECRET_KEY,
@@ -118,4 +120,10 @@ module.exports.attemptRegister = async (req, res) => {
   } else {
     res.json({ loggedIn: false, status: "Email taken" });
   }
+};
+
+// Created this new one
+module.exports.handleLogout = async (req, res) => {
+  req.session.destroy();
+  res.json({ loggedIn: false });
 };

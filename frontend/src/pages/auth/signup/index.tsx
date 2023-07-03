@@ -239,7 +239,7 @@ export default function Signup({ setAuth }: any) {
           <p className="mt-3 text-center text-sm text-gray-500">
             Already have an account?{" "}
             <Link
-              href="/login"
+              href="/auth/login"
               className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
             >
               Login

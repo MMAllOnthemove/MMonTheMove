@@ -6,4 +6,5 @@ export const navitems = [
   // { id: 3, item: "Orders", pageRoute: "/orders" },
   // { id: 4, item: "Notifications", pageRoute: "/notifications" },
   { id: 2, item: "Parts", pageRoute: "/parts" },
+  // { id: 3, item: "Tests", pageRoute: "/tests" },
 ];

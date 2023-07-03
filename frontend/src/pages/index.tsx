@@ -29,6 +29,7 @@ function Home() {
     setSocket(() => socketConn(user));
   }, [user]);
 
+  // console.log(user);
   // Connects to socket io and logs user out if there is an error on our backend
   // useSocketSetup();
 

@@ -33,7 +33,7 @@ export default function Login({ setAuth }: any) {
       // alert(JSON.stringify(values, null, 2));
       actions.resetForm();
       const vals = { ...values };
-      fetch(`http://localhost:3001/auth/login`, {
+      fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_LOGIN}`, {
         method: "POST",
         credentials: "omit",
         mode: "cors",
@@ -217,7 +217,7 @@ export default function Login({ setAuth }: any) {
           <p className="mt-10 text-center text-sm text-gray-500">
             Don&apos;t have an account?{" "}
             <Link
-              href="/signup"
+              href="/auth/signup"
               className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
             >
               Signup
