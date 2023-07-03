@@ -2,52 +2,25 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
 import useDebounce from "../../../components/useDebounce";
+import { getPartsInfoFunction } from "@/functions/ipass_api";
 
 function Parts() {
   const [data, setData] = useState<null | any>(null);
-  const [isLoading, setLoading] = useState(false);
   const [search, setSearch] = useState<string>("");
 
   const debouncedSearch = useDebounce(search, 500);
 
   useEffect(() => {
-    async function getData(url = "", data = {}) {
-      setLoading(true);
-      await fetch(url, {
-        method: "POST", // *GET, POST, PUT, DELETE, etc.
-        mode: "cors", // no-cors, *cors, same-origin
-        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: "same-origin", // include, *same-origin, omit
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        redirect: "follow", // manual, *follow, error
-        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(data), // body data type must match "Content-Type" header
-      })
-        .then((res) => res.json())
-        .then((data: string | any) => {
-          setData(data);
-          setLoading(false);
-        });
-    }
+    getPartsInfoFunction({
+      debouncedSearch,
+      setData,
+    });
 
     if (debouncedSearch)
-      getData(
-        "https://eu.ipaas.samsung.com/eu/gcic/GetPartsInfo/1.0/ImportSet",
-        {
-          IsCommonHeader: {
-            Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
-            AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
-            Lang: `${process.env.NEXT_PUBLIC_LANG}`,
-            Country: `${process.env.NEXT_PUBLIC_COUNTRY}`,
-            Pac: `${process.env.NEXT_PUBLIC_PAC}`,
-          },
-          IvPartsNo: debouncedSearch,
-        }
-      );
+      getPartsInfoFunction({
+        debouncedSearch,
+        setData,
+      });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch]);
