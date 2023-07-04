@@ -1,5 +1,5 @@
 management:1 
-Access to fetch at 'http://localhost:3001/management' from origin 'http://localhost:3000' 
+Access to fetch at 'http://localhost:8000/management' from origin 'http://localhost:3000' 
 has been blocked by CORS policy: 
 Response to preflight request doesn't pass access control check: 
 The 'Access-Control-Allow-Origin' header has a value 'https://localhost:3000' that 

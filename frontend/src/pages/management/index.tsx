@@ -158,8 +158,12 @@ const Management = () => {
         imei,
         serial_number,
         in_house_status,
-        quality_control,
         engineer_assign_date,
+        partsPendingDate,
+        partsOrderedDate,
+        partsIssuedDate,
+        qcCompletedDate,
+        repairCompletedDate,
         engineer_analysis,
         ticket,
       } = item;
@@ -184,8 +188,12 @@ const Management = () => {
             <td className="px-6 py-4">{imei}</td>
             <td className="px-6 py-4">{serial_number}</td>
             <td className="px-6 py-4">{in_house_status}</td>
-            <td className="px-6 py-4">{quality_control}</td>
             <td className="px-6 py-4">{engineer_assign_date}</td>
+            <td className="px-6 py-4">{partsPendingDate}</td>
+            <td className="px-6 py-4">{partsOrderedDate}</td>
+            <td className="px-6 py-4">{partsIssuedDate}</td>
+            <td className="px-6 py-4">{qcCompletedDate}</td>
+            <td className="px-6 py-4">{repairCompletedDate}</td>
             <td className="px-6 py-4">{engineer_analysis}</td>
             <td className="px-6 py-4">{ticket}</td>
           </tr>
