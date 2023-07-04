@@ -406,14 +406,28 @@ const Management = () => {
                     In house status
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Quality Control
+                    Assessment Date
+                  </th>
+
+                  <th scope="col" className="px-6 py-3">
+                    Parts pending date
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Assessment Date
+                    Parts ordered date
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Parts issued date
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    QC completed date
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Repair completed date
                   </th>
                   <th scope="col" className="px-6 py-3">
                     Engineer Analysis
                   </th>
+
                   <th scope="col" className="px-6 py-3">
                     Ticket number
                   </th>
