@@ -13,11 +13,7 @@ const { authorizeUser } = require("./controllers/socketControllers");
 
 const io = new Server(server, {
   cors: {
-    origin: [
-      process.env.NEXT_PUBLIC_MAIN_DOMAIN,
-      process.env.NEXT_PRODUCTION_SUBDOMAIN_REGEX,
-      process.env.NEXT_PUBLIC_MAIN_DOMAIN_IP_URL,
-    ],
+    origin: [process.env.NEXT_PUBLIC_API_SERVER_URL],
     methods: ["GET", "POST", "PUT"],
     credentials: true,
   },
@@ -26,11 +22,7 @@ const io = new Server(server, {
 app.use(helmet());
 app.use(
   cors({
-    origin: [
-      process.env.NEXT_PUBLIC_MAIN_DOMAIN,
-      process.env.NEXT_PRODUCTION_SUBDOMAIN_REGEX,
-      process.env.NEXT_PUBLIC_MAIN_DOMAIN_IP_URL,
-    ],
+    origin: [process.env.NEXT_PUBLIC_API_SERVER_URL],
     methods: ["GET", "POST", "PUT"],
     credentials: true,
   })
