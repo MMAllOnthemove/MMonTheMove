@@ -32,14 +32,14 @@ function UserContextFunction(props: ChildrenProps) {
     })
       .catch((err) => {
         setUser({ loggedIn: false });
-        router.push("/login");
+        router.push("/auth/login");
 
         // return;
       })
       .then((response) => {
         if (!response || !response.ok || response.status >= 400) {
           setUser({ loggedIn: false });
-          router.push("/login");
+          router.push("/auth/login");
           return;
         }
         return response.json();
@@ -47,7 +47,7 @@ function UserContextFunction(props: ChildrenProps) {
       .then((data) => {
         if (!data) {
           setUser({ loggedIn: false });
-          router.push("/login");
+          router.push("/auth/login");
           return;
         }
         setUser({ ...data });
