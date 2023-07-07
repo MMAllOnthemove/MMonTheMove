@@ -52,7 +52,11 @@ export default function Navbar() {
           <Menu as="div" className="relative inline-block text-left">
             <div>
               <Menu.Button className="inline-flex w-full justify-center avi">
-                <img src={`${session?.user?.image}`} alt="" />
+                <img
+                  src={`${session?.user?.image}`}
+                  alt="user avatar"
+                  placeholder="blur"
+                />
               </Menu.Button>
             </div>
             <Menu.Items className="flex flex-col absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-md focus:outline-none">
