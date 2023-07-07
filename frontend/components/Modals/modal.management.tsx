@@ -1,17 +1,14 @@
-import React, { useState } from "react";
+import { managementModalState } from "@/atoms/managementModalAtom";
 import {
   Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
-  useDisclosure,
-  Button,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
 } from "@chakra-ui/react";
+import React from "react";
 import { useRecoilState } from "recoil";
-import { managementModalState } from "@/atoms/managementModalAtom";
 
 interface Props {
   children: React.ReactNode;
