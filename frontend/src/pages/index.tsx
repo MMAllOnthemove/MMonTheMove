@@ -1,48 +1,49 @@
 import Head from "next/head";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 // import Modal from "../../../components/Modals/Modal";
 import { managementModalState } from "@/atoms/managementModalAtom";
 import { useSetRecoilState } from "recoil";
 import ModalManagement from "../../components/Modals/modal.management";
 import Navbar from "../../components/Navbar";
+import { useToast } from "@chakra-ui/react";
 // This is the axios instance
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
-import UnitFinder from "./api/UnitFinder";
-// Table
-import { TableInfoContext } from "@/context/TableInfoContext";
-import { useToast } from "@chakra-ui/react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import Login from "./auth/login";
+
+// Tanstack table
 import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
-} from "@chakra-ui/react";
-import {
-  useReactTable,
-  getCoreRowModel,
+  SortingState,
   flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  getFilteredRowModel,
-  SortingState,
+  useReactTable,
 } from "@tanstack/react-table";
+
+// Next auth session hook
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { columns } from "../../components/table/columns";
+import Login from "./auth/login";
 
 const Home = () => {
+  // Google auth session
   const { data: session } = useSession();
+
   const [tableData, setTableData] = useState<string[]>([]);
-  const [isLoading, setLoading] = useState(false);
+
   // Not to be confused with 'setServiceOrder'
   const [searchServiceOrder, setSearchServiceOrder] = useState("");
+
+  // Chakra ui toast
   const toast = useToast();
+
   // Global state for the modal
   const setManagementModalState = useSetRecoilState(managementModalState);
 
   // Table sorting
   const [sorting, setSorting] = useState<SortingState>([]);
+
   // Table filtering
   const [filtering, setFiltering] = useState("");
 
@@ -60,6 +61,10 @@ const Home = () => {
   const [engineerAssignTime, setEngineerAssignTime] = useState("");
   const [inHouseStatus, setInHouseStatus] = useState("");
   const [ticket, setTicket] = useState("");
+
+  useEffect(() => {
+    fetchDataFromDatabase();
+  }, []);
 
   useEffect(() => {
     getSOInfoAllFunction({
@@ -125,36 +130,30 @@ const Home = () => {
         });
         window.location.reload();
       }
-      console.log("Response is", response);
-      setLoading(false);
+      // console.log("Response is", response);
     } catch (err) {
       console.log(err);
     }
   };
+
   // Use context from the context we created
   // destructure the context
   // const { tableInfo, setTableInfo } = useContext(TableInfoContext);
   // For the table
   const router = useRouter();
 
-  // Fetching info from our database
-  const fetchDataFromDatabase = async () => {
-    try {
-      //  '/' not to be confused with home
-      // the / is putting it at the end of our axios instance url defined in api folder
-      const response = await UnitFinder.get("/");
-      // console.log("Response is", response.data);
-      // Accesing the response like this because we logged it to see how it was structured
-      setTableData(response.data);
-      // console.log(tableData);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    fetchDataFromDatabase();
-  }, []);
+  async function fetchDataFromDatabase() {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/`,
+      {
+        cache: "default",
+        next: { revalidate: 3 }, // refetch every 3 seconds
+      }
+    );
+    const data = await response.json();
+    setTableData(data);
+    return data;
+  }
 
   // Redirects user to the edit table page
   const handleUpdate = (e: React.SyntheticEvent, id: string | number) => {
@@ -163,11 +162,11 @@ const Home = () => {
   };
 
   // Table contents
-  const memoizedData = useMemo(() => tableData, []);
+  // const memoizedData = useMemo(() => tableData, []);
   // console.log(memoizedData);
 
   const table = useReactTable({
-    data: memoizedData,
+    data: tableData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -188,18 +187,7 @@ const Home = () => {
           <title>Management</title>
         </Head>
         <Navbar />
-        <section className="my-3">
-          <Alert status="error">
-            <AlertIcon />
-            <AlertTitle>
-              Please note! This site is still on testing phase.
-            </AlertTitle>
-            <AlertDescription>
-              You can use it regardless to understand how it works. Feel free to
-              add any input or suggestion(s)
-            </AlertDescription>
-          </Alert>
-        </section>
+
         <main>
           <div className="container flex justify-center flex-col mx-auto p-2">
             <section className="flex justify-center pt-5">
@@ -368,15 +356,18 @@ const Home = () => {
                   To edit, double click on the row you want to edit
                 </span>
               </div>
-              <table className="w-full text-sm text-left text-gray-500 font-medium dark:text-gray-400 table-auto">
-                <thead className="text-xs text-white uppercase bg-[#075985] dark:bg-gray-700 dark:text-gray-400">
+              <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 table-auto">
+                <thead className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-sans text-sm uppercase font-semibold  table-auto">
                   {table.getHeaderGroups().map((headerGroup) => (
-                    <tr key={headerGroup.id}>
+                    <tr
+                      key={headerGroup.id}
+                      className="font-sans font-semibold"
+                    >
                       {headerGroup.headers.map((header) => (
                         <th
                           key={header.id}
                           onClick={header.column.getToggleSortingHandler()}
-                          className="px-6 py-3 cursor-pointer"
+                          className="px-4 py-3 cursor-pointer font-sans font-semibold"
                         >
                           <div>
                             {flexRender(
@@ -398,9 +389,13 @@ const Home = () => {
                     <tr
                       key={row.id}
                       onDoubleClick={(e) => handleUpdate(e, row.original.id)}
+                      className="border-b dark:border-gray-700"
                     >
                       {row.getVisibleCells().map((cell: any) => (
-                        <td key={cell.id}>
+                        <td
+                          key={cell.id}
+                          className="px-4 py-3 font-sans font-medium text-sm"
+                        >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
@@ -448,9 +443,7 @@ const Home = () => {
         </main>
       </>
     );
-  } else if (session === null) {
-    return <p>Loading</p>;
-  } else if (!session) {
+  } else {
     return <Login />;
   }
 };
