@@ -5,7 +5,6 @@ interface IgetSOInfoAll {
   setCreatedTime: (order: string) => void;
   setModel: (order: string) => void;
   setWarranty: (order: string) => void;
-  setEngineer: (order: string) => void;
   setFault: (order: string) => void;
   setImei: (order: string) => void;
   setSerialNumber: (order: string) => void;
@@ -51,7 +50,6 @@ export async function getSOInfoAllFunction(props: IgetSOInfoAll) {
   props.setCreatedTime(data?.Return.EsHeaderInfo.CreateTime);
   props.setModel(data?.Return.EsModelInfo.Model);
   props.setWarranty(data?.Return.EsModelInfo.WtyType);
-  props.setEngineer(data?.Return.EsScheInfo.EngineerName);
   props.setFault(data?.Return.EsModelInfo.DefectDesc);
   props.setImei(data?.Return.EsModelInfo.IMEI);
   props.setSerialNumber(data?.Return.EsModelInfo.SerialNo);

@@ -54,7 +54,7 @@ function EditRow() {
     // console.log("ticket", ticket);
     // console.log("id", id);
 
-    router.push("/management");
+    router.push("/");
     toast({
       title: "Job edited.",
       description: "You've successfully edited the job.",
@@ -74,11 +74,26 @@ function EditRow() {
       id,
     });
   }
+
+  async function deleteData() {
+    router.push("/");
+    toast({
+      title: "Job edited.",
+      description: "You've successfully edited the job.",
+      status: "success",
+      duration: 9000,
+      isClosable: true,
+    });
+    const response = await UnitFinder.delete(`/${id}`);
+  }
   return (
     <>
       <section className="section container mx-auto">
         <h1 className="text-center py-2 text-gray-900 font-sans font-semibold lg:text-2xl">
-          Editing service order {showServiceOrderNumber}
+          Editing service order:{" "}
+          <span className="text-sky-700 font-sans font-bold">
+            {showServiceOrderNumber}
+          </span>
         </h1>
         <hr />
         <form className="my-3" onSubmit={updateData}>
@@ -247,12 +262,21 @@ function EditRow() {
           <span>
             <button
               type="submit"
-              className="bg-[#082f49] w-full font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              className="bg-[#082f49] w-full font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 my-3"
             >
               Update
             </button>
           </span>
         </form>
+        <span>
+          <button
+            onClick={deleteData}
+            type="button"
+            className="bg-red-500 w-full font-sans font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center my-3"
+          >
+            Delete
+          </button>
+        </span>
       </section>
     </>
   );
