@@ -1,4 +1,3 @@
-import UserContextFunction from "@/state/AccountContext";
 // import { AppStateProvider } from "@/state/AppStateContext";
 import "@/styles/globals.css";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
