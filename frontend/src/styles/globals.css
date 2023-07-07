@@ -18,7 +18,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: "Inter Tight", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
     Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   height: 100vh;
   --scrollbarBG: #dee2da;
@@ -39,7 +39,10 @@ body::-webkit-scrollbar-thumb,
   border-radius: 20px; /* roundness of the scroll thumb */
   border: 3px solid #dee2da; /* creates padding around scroll thumb */
 }
-
+img {
+  width: 100%;
+  height: 100%;
+}
 /* Navbar */
 .navbar {
   padding: 1rem;
@@ -55,7 +58,13 @@ body::-webkit-scrollbar-thumb,
 .nav_links {
   display: none;
 }
-
+/* avatar */
+.avi {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  overflow: hidden;
+}
 /* Sidebar */
 .sidebar {
   width: 100%;
@@ -150,9 +159,6 @@ img {
   height: auto;
 }
 
-main:not(.edit_page_main) {
-  padding-top: 6.3rem;
-}
 .edit_page_main{
   padding-top: 2rem;
 }
