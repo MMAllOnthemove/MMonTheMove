@@ -2,14 +2,13 @@ import { TableInfoContext } from "@/context/TableInfoContext";
 import UnitFinder from "@/pages/api/UnitFinder";
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 function EditRow() {
   const { tableInfo, setTableInfo } = useContext(TableInfoContext);
   // These are already handled in the table but for user experience
   // We just show them and make their inputs disabled
   const [showServiceOrderNumber, setShowServiceOrderNumber] = useState("");
-  const [loading, setLoading] = useState(false);
 
   // Allow user to select only today's date
   var today = new Date().toISOString().split("T")[0];
@@ -29,6 +28,7 @@ function EditRow() {
     const response = await UnitFinder.get(`/${id}`);
     setShowServiceOrderNumber(response.data[0].service_order_no);
     setInHouseStatus(response.data[0].in_house_status);
+    setEngineerAnalysis(response.data[0].engineer_analysis);
   };
   useEffect(() => {
     fetchData();

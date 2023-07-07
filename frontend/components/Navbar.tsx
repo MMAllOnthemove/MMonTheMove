@@ -71,14 +71,20 @@ export default function Navbar() {
                 </span>
               </Menu.Item>
               <Menu.Item>
-                <button className="cursor-pointer p-2 font-sans text-slate-900 text-left font-medium text-sm">
+                <Link
+                  href="/dashboard"
+                  className="cursor-pointer p-2 font-sans text-slate-900 text-left font-medium text-sm"
+                >
                   Dashboard
-                </button>
+                </Link>
               </Menu.Item>
               <Menu.Item>
-                <button className="cursor-pointer p-2 font-sans text-slate-900 text-left font-medium text-sm">
-                  Dark mode
-                </button>
+                <Link
+                  href="/"
+                  className="cursor-pointer p-2 font-sans text-slate-900 text-left font-medium text-sm"
+                >
+                  Report a problem
+                </Link>
               </Menu.Item>
               <Menu.Item>
                 <button

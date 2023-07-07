@@ -14,7 +14,7 @@ const { authorizeUser } = require("./controllers/socketControllers");
 const io = new Server(server, {
   cors: {
     origin: [
-      process.env.NEXT_PUBLIC_MAIN_DOMAIN,
+      process.env.NEXT_PUBLIC_REACT_URL,
       process.env.NEXT_PRODUCTION_SUBDOMAIN_REGEX,
       process.env.NEXT_PUBLIC_MAIN_DOMAIN_IP_URL,
     ],
@@ -27,7 +27,7 @@ app.use(helmet());
 app.use(
   cors({
     origin: [
-      process.env.NEXT_PUBLIC_MAIN_DOMAIN,
+      process.env.NEXT_PUBLIC_REACT_URL,
       process.env.NEXT_PRODUCTION_SUBDOMAIN_REGEX,
       process.env.NEXT_PUBLIC_MAIN_DOMAIN_IP_URL,
     ],
@@ -52,7 +52,9 @@ io.on("connect", (socket) => {});
 // GET all table info from database
 app.get("/hhp/api/v1/management", async (req, res) => {
   try {
-    const dbData = await pool.query("SELECT * FROM units");
+    const dbData = await pool.query(
+      "SELECT id, unique_id, service_order_no, to_char(to_timestamp(created_date, 'YYYYMMDD'),'YYYY-MM-DD') AS created_date, model, warranty, engineer, fault, imei, serial_number, in_house_status, to_char(to_timestamp(engineer_assign_date, 'YYYYMMDD'),'YYYY-MM-DD') AS engineer_assign_date, ticket, engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date FROM units"
+    );
     res.json(dbData.rows);
   } catch (err) {
     console.log(err);
@@ -108,7 +110,7 @@ app.post("/hhp/api/v1/management", async (req, res) => {
         ticket,
       ]
     );
-    console.log(results);
+    // console.log(results);
     res.status(201).json({
       status: "success",
       data: {
