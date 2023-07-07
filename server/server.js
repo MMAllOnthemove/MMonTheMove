@@ -13,8 +13,12 @@ const { authorizeUser } = require("./controllers/socketControllers");
 
 const io = new Server(server, {
   cors: {
-    origin: [process.env.NEXT_PUBLIC_API_SERVER_URL],
-    methods: ["GET", "POST", "PUT"],
+    origin: [
+      process.env.NEXT_PUBLIC_MAIN_DOMAIN,
+      process.env.NEXT_PRODUCTION_SUBDOMAIN_REGEX,
+      process.env.NEXT_PUBLIC_MAIN_DOMAIN_IP_URL,
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   },
 });
@@ -22,8 +26,12 @@ const io = new Server(server, {
 app.use(helmet());
 app.use(
   cors({
-    origin: [process.env.NEXT_PUBLIC_API_SERVER_URL],
-    methods: ["GET", "POST", "PUT"],
+    origin: [
+      process.env.NEXT_PUBLIC_MAIN_DOMAIN,
+      process.env.NEXT_PRODUCTION_SUBDOMAIN_REGEX,
+      process.env.NEXT_PUBLIC_MAIN_DOMAIN_IP_URL,
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
 );
@@ -141,7 +149,31 @@ app.put("/hhp/api/v1/management/:id", async (req, res) => {
         id,
       ]
     );
-    console.log(editQuery.rows);
+    if (res.status === 200 || res.status === 201) {
+      res.send("Updated successfully");
+      res.send(editQuery.rows);
+    } else if (res.status === 404 || res.status === 405) {
+      res.send("Failed to update");
+    }
+    // console.log(editQuery.rows);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// Delete single row on database
+app.delete("/hhp/api/v1/management/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleteQuery = await pool.query("DELETE FROM units WHERE id = $1", [
+      id,
+    ]);
+    if (res.status === 200 || res.status === 201) {
+      res.send("Deleted successfully");
+      res.send(deleteQuery.rows[0]);
+    } else if (res.status === 404 || res.status === 405) {
+      res.send("Failed to delete");
+    }
   } catch (error) {
     console.log(error);
   }

@@ -1,203 +1,457 @@
-import { homepageModalState } from "@/atoms/homepageModalAtom";
-import { AccountContext } from "@/state/AccountContext";
 import Head from "next/head";
-import Image from "next/image";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
+// import Modal from "../../../components/Modals/Modal";
+import { managementModalState } from "@/atoms/managementModalAtom";
 import { useSetRecoilState } from "recoil";
-import ModalHomepage from "../../components/Modals/modal.home";
+import ModalManagement from "../../components/Modals/modal.management";
 import Navbar from "../../components/Navbar";
-import { socket as socketConn } from "../../components/socket"; // Had to rename to socketConn because we already have socket initialized in this page
-import useDebounce from "../../components/useDebounce";
-import { homeImages } from "../../public/_data/homeImages";
+// This is the axios instance
+import { getSOInfoAllFunction } from "@/functions/ipass_api";
+import UnitFinder from "./api/UnitFinder";
+// Table
+import { TableInfoContext } from "@/context/TableInfoContext";
+import { useToast } from "@chakra-ui/react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import Login from "./auth/login";
+import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+} from "@chakra-ui/react";
+import {
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+  getPaginationRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
+  SortingState,
+} from "@tanstack/react-table";
+import { columns } from "../../components/table/columns";
 
-export const SocketContext = createContext<any>(null);
-
-function Home() {
-  const [data, setData] = useState<null | any>(null);
-  const [searchValue, setSearchValue] = useState<string>("");
-
+const Home = () => {
+  const { data: session } = useSession();
+  const [tableData, setTableData] = useState<string[]>([]);
+  const [isLoading, setLoading] = useState(false);
+  // Not to be confused with 'setServiceOrder'
+  const [searchServiceOrder, setSearchServiceOrder] = useState("");
+  const toast = useToast();
   // Global state for the modal
-  const setHomeModalState = useSetRecoilState(homepageModalState);
+  const setManagementModalState = useSetRecoilState(managementModalState);
 
-  // Context to check if user is already logged in
-  const { user } = useContext(AccountContext);
-  const [socket, setSocket] = useState(() => {
-    socketConn(user);
-  });
+  // Table sorting
+  const [sorting, setSorting] = useState<SortingState>([]);
+  // Table filtering
+  const [filtering, setFiltering] = useState("");
+
+  const [service_order, setServiceOrder] = useState("");
+  const [warranty, setWarranty] = useState("");
+  const [model, setModel] = useState("");
+  const [imei, setImei] = useState("");
+  const [fault, setFault] = useState("");
+  const [serial_number, setSerialNumber] = useState("");
+  const [engineer, setEngineer] = useState("");
+  const [engineerAnalysis, setEngineerAnalysis] = useState("");
+  const [createdDate, setCreatedDate] = useState("");
+  const [createdTime, setCreatedTime] = useState("");
+  const [engineerAssignDate, setEngineerAssignDate] = useState("");
+  const [engineerAssignTime, setEngineerAssignTime] = useState("");
+  const [inHouseStatus, setInHouseStatus] = useState("");
+  const [ticket, setTicket] = useState("");
 
   useEffect(() => {
-    setSocket(() => socketConn(user));
-  }, [user]);
+    getSOInfoAllFunction({
+      searchServiceOrder,
+      setServiceOrder,
+      setCreatedDate,
+      setCreatedTime,
+      setModel,
+      setWarranty,
+      setFault,
+      setImei,
+      setSerialNumber,
+      setEngineerAssignDate,
+      setEngineerAssignTime,
+    });
+  }, [searchServiceOrder]);
 
-  // console.log(user);
-  // Connects to socket io and logs user out if there is an error on our backend
-  // useSocketSetup();
-
-  // debounced search debounces the search query
-  const debouncedSearch = useDebounce(searchValue, 500);
-
-  useEffect(() => {
-    const getData = async (url = "", data = {}) => {
-      // setLoading(true);
-      await fetch(url, {
-        method: "POST", // *GET, POST, PUT, DELETE, etc.
-        mode: "cors", // no-cors, *cors, same-origin
-        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: "same-origin", // include, *same-origin, omit
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        redirect: "follow", // manual, *follow, error
-        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(data), // body data type must match "Content-Type" header
-      })
-        .then((res) => res.json())
-        .then((data: string | any) => {
-          setData(data);
-          // console.log(data);
-
-          // setLoading(false);
-        });
-    };
-
-    if (debouncedSearch)
-      getData(
-        "https://eu.ipaas.samsung.com/eu/gcic/GetSOInfoAll/1.0/ImportSet",
+  const postData = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
         {
-          IvSvcOrderNo: debouncedSearch,
-          // IvSvcOrderNo: "4266810380",
-          // IvAscJobNo: "4266443508",
-          IsCommonHeader: {
-            Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
-            AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
-            Lang: `${process.env.NEXT_PUBLIC_LANG}`,
-            Country: `${process.env.NEXT_PUBLIC_COUNTRY}`,
-            Pac: `${process.env.NEXT_PUBLIC_PAC}`,
-          },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            service_order,
+            createdDate,
+            createdTime,
+            model,
+            warranty,
+            engineer,
+            fault,
+            imei,
+            serial_number,
+            inHouseStatus,
+            engineerAssignDate,
+            engineerAssignTime,
+            engineerAnalysis,
+            ticket,
+          }),
         }
       );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearch]);
+      if (response) {
+        toast({
+          title: "Job added.",
+          description: "You've added a job to the table.",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+        setManagementModalState({
+          open: false,
+          view: "/",
+        });
+        window.location.reload();
+      } else {
+        toast({
+          title: "Job failed to add.",
+          description: "Failed to add a job to the table.",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+        window.location.reload();
+      }
+      console.log("Response is", response);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  // Use context from the context we created
+  // destructure the context
+  // const { tableInfo, setTableInfo } = useContext(TableInfoContext);
+  // For the table
+  const router = useRouter();
 
-  return (
-    <>
-      <Head>
-        <title>HHP - Home</title>
-      </Head>
-      <header className="bg-white absolute inset-x-0 top-0 z-50">
+  // Fetching info from our database
+  const fetchDataFromDatabase = async () => {
+    try {
+      //  '/' not to be confused with home
+      // the / is putting it at the end of our axios instance url defined in api folder
+      const response = await UnitFinder.get("/");
+      // console.log("Response is", response.data);
+      // Accesing the response like this because we logged it to see how it was structured
+      setTableData(response.data);
+      // console.log(tableData);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchDataFromDatabase();
+  }, []);
+
+  // Redirects user to the edit table page
+  const handleUpdate = (e: React.SyntheticEvent, id: string | number) => {
+    e.stopPropagation();
+    router.push(`/edit/${id}`);
+  };
+
+  // Table contents
+  const memoizedData = useMemo(() => tableData, []);
+  // console.log(memoizedData);
+
+  const table = useReactTable({
+    data: memoizedData,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      sorting: sorting,
+      globalFilter: filtering,
+    },
+    onSortingChange: setSorting,
+    onGlobalFilterChange: setFiltering,
+  });
+  // console.log(table.getRowModel().rows[0].original.id);
+  if (session) {
+    return (
+      <>
+        <Head>
+          <title>Management</title>
+        </Head>
         <Navbar />
-      </header>
-
-      <SocketContext.Provider value={{ socket }}>
-        <main className="home_main flex flex-col justify-center">
-          <div className="mx-auto p-1 sm:p-0.5 container">
-            <div className="content-wrapper">
-              <h1>
-                HHP <span>Management</span>{" "}
+        <section className="my-3">
+          <Alert status="error">
+            <AlertIcon />
+            <AlertTitle>
+              Please note! This site is still on testing phase.
+            </AlertTitle>
+            <AlertDescription>
+              You can use it regardless to understand how it works. Feel free to
+              add any input or suggestion(s)
+            </AlertDescription>
+          </Alert>
+        </section>
+        <main>
+          <div className="container flex justify-center flex-col mx-auto p-2">
+            <section className="flex justify-center pt-5">
+              <h1 className="md:text-3xl text-xl font-semibold leading-3 text-gray-800">
+                HHP Management
               </h1>
+            </section>
+            <section className="flex justify-between items-center py-5">
+              <form className="flex items-center">
+                <label htmlFor="simple-search" className="sr-only">
+                  Search
+                </label>
+                <div className="relative w-full">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <svg
+                      aria-hidden="true"
+                      className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    id="simple-search"
+                    className="bg-gray-50 font-sans border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-primary-500 block w-full pl-10 p-2"
+                    placeholder="Search"
+                    value={filtering}
+                    onChange={(e) => setFiltering(e.target.value)}
+                  />
+                </div>
+              </form>
               <button
+                className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer font-sans rounded-md p-3 my-2"
                 type="button"
-                onClick={() => {
-                  setHomeModalState({
+                onClick={() =>
+                  setManagementModalState({
                     open: true,
                     view: "/",
-                  });
-                }}
+                  })
+                }
               >
-                Get service order
+                Add job
               </button>
-              <section>
-                <div className="home_image_grid">
-                  {homeImages.map((item) => (
-                    <Image
-                      key={item.id}
-                      placeholder="blur"
-                      loading="lazy"
-                      quality={100}
-                      src={item.src}
-                      alt={`${item.src}`}
-                    />
+
+              {/* Called the modal here and added a post data prop that posts data on click */}
+              <ModalManagement>
+                <section className="flex flex-col overflow-auto">
+                  <label htmlFor="ServiceOrder" className="sr-only">
+                    Service Order No
+                  </label>
+                  <input
+                    aria-labelledby="ServiceOrder"
+                    type="text"
+                    name="ServiceOrder"
+                    placeholder="Service Order"
+                    id="ServiceOrder"
+                    className="w-full outline-none py-2 px-2 border-2 font-sans font-semibold text-sm rounded-sm my-2"
+                    size={10}
+                    maxLength={10}
+                    value={searchServiceOrder}
+                    onChange={(e) => {
+                      setSearchServiceOrder(e.target.value);
+                    }}
+                  />
+                  <label htmlFor="Warranty" className="sr-only">
+                    Warranty
+                  </label>
+                  <input
+                    aria-labelledby="warranty"
+                    type="text"
+                    name="warranty"
+                    placeholder="Warranty"
+                    id="warranty"
+                    className="w-full disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none outline-none bg-white py-2 px-2 border-2 border-slate-400 font-sans font-semibold text-sm rounded-sm my-2"
+                    value={warranty}
+                    disabled
+                  />
+                  <label htmlFor="inHouseStatus" className="sr-only">
+                    In house status
+                  </label>
+                  <input
+                    aria-labelledby="inHouseStatus"
+                    type="text"
+                    name="inHouseStatus"
+                    placeholder="In house status"
+                    id="inHouseStatus"
+                    className="outline-none bg-white py-2 px-2 border-2 border-slate-400 font-sans font-semibold text-sm rounded-sm my-2"
+                    value={inHouseStatus}
+                    onChange={(e) => setInHouseStatus(e.target.value)}
+                    hidden
+                  />
+                  <label htmlFor="ticketNumber" className="sr-only">
+                    Ticket Number
+                  </label>
+                  <input
+                    aria-labelledby="ticketNumber"
+                    type="text"
+                    name="ticketNumber"
+                    placeholder="Ticket Number"
+                    id="ticketNumber"
+                    className="outline-none bg-white py-2 px-2 border-2 border-slate-400 font-sans font-semibold text-sm rounded-sm my-2"
+                    value={ticket}
+                    onChange={(e) => setTicket(e.target.value)}
+                    hidden
+                  />
+                  <label htmlFor="engineerAnalysis" className="sr-only">
+                    Engineer Analysis
+                  </label>
+                  <input
+                    aria-labelledby="engineerAnalysis"
+                    type="text"
+                    name="engineerAnalysis"
+                    placeholder="Engineer Analysis"
+                    id="engineerAnalysis"
+                    className="outline-none bg-white py-2 px-2 border-2 border-slate-400 font-sans font-semibold text-sm rounded-sm my-2"
+                    value={engineerAnalysis}
+                    onChange={(e) => setEngineerAnalysis(e.target.value)}
+                    hidden
+                  />
+                  <label htmlFor="engineerAnalysis" className="sr-only">
+                    Engineer
+                  </label>
+                  <select
+                    name="engineer"
+                    id="engineer"
+                    className="mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    value={engineer}
+                    onChange={(e) => setEngineer(e.target.value)}
+                  >
+                    <option value="" disabled>
+                      Select engineer
+                    </option>
+                    <option value="Acklas Sakala">Acklas Sakala</option>
+                    <option value="Manuel Kaba">Manuel Kaba</option>
+                    <option value="Olivier Munguakolwa">
+                      Olivier Munguakolwa
+                    </option>
+                    <option value="Paulas Gambu">Paulas Gambu</option>
+                    <option value="Pule Mokoena">Pule Mokoena</option>
+                    <option value="Sizwe Phungwayo">Sizwe Phungwayo</option>
+                  </select>
+
+                  <div className="flex g-3 justify-between items-center">
+                    <button
+                      onClick={postData}
+                      type="button"
+                      className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus: text-white font-semibold font-sans rounded py-3 px-2 my-2 w-full ml-3"
+                    >
+                      Add
+                    </button>
+                  </div>
+                </section>
+              </ModalManagement>
+            </section>
+
+            <section className="relative overflow-x-auto shadow-md rounded-sm my-5">
+              <div className="row flex items-center justify-center">
+                <span className="flex mx-auto text-center font-medium font-sans py-1 text-gray-500">
+                  To edit, double click on the row you want to edit
+                </span>
+              </div>
+              <table className="w-full text-sm text-left text-gray-500 font-medium dark:text-gray-400 table-auto">
+                <thead className="text-xs text-white uppercase bg-[#075985] dark:bg-gray-700 dark:text-gray-400">
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <tr key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => (
+                        <th
+                          key={header.id}
+                          onClick={header.column.getToggleSortingHandler()}
+                          className="px-6 py-3 cursor-pointer"
+                        >
+                          <div>
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                            {{
+                              asc: " 🔼",
+                              desc: " 🔽",
+                            }[header.column.getIsSorted() as string] ?? null}
+                          </div>
+                        </th>
+                      ))}
+                    </tr>
                   ))}
-                </div>
-              </section>
+                </thead>
+                <tbody>
+                  {table.getRowModel().rows.map((row: any) => (
+                    <tr
+                      key={row.id}
+                      onDoubleClick={(e) => handleUpdate(e, row.original.id)}
+                    >
+                      {row.getVisibleCells().map((cell: any) => (
+                        <td key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
+            <div className="pagination flex gap-1">
+              <button
+                onClick={() => table.setPageIndex(0)}
+                type="button"
+                className="border border-sky-700 rounded-sm font-sans font-semibold text-gray-900 px-2 py-1"
+              >
+                Page 1
+              </button>
+              <button
+                disabled={!table.getCanPreviousPage()}
+                onClick={() => table.previousPage()}
+                type="button"
+                className="border border-sky-700 rounded-sm font-sans font-semibold text-gray-900 px-2 py-1"
+              >
+                Prev
+              </button>
+              <button
+                disabled={!table.getCanNextPage()}
+                onClick={() => table.nextPage()}
+                type="button"
+                className="border border-sky-700 rounded-sm font-sans font-semibold text-gray-900 px-2 py-1"
+              >
+                Next
+              </button>
+              <button
+                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                type="button"
+                className="border border-sky-700 rounded-sm font-sans font-semibold text-gray-900 px-2 py-1"
+              >
+                Last
+              </button>
             </div>
-
-            <ModalHomepage>
-              <label htmlFor="ServiceOrder" className="sr-only">
-                Service Order No
-              </label>
-              <input
-                autoFocus
-                aria-labelledby="ServiceOrder"
-                type="text"
-                name="ServiceOrder"
-                placeholder="Get random service order information"
-                id="ServiceOrder"
-                className="outline-none border-sky-600 py-2 px-2 border rounded-sm my-2 w-full"
-                value={debouncedSearch}
-                onChange={(e) => {
-                  setSearchValue(e.target.value);
-                }}
-              />
-
-              <section className="homepage_modal_content">
-                <p className="text-[#0d0d0d] font-inherit font-medium py-2">
-                  Accessory:{" "}
-                  <span>
-                    {data?.Return?.EsModelInfo.Accessory === ""
-                      ? "Not available"
-                      : data?.Return?.EsModel}
-                  </span>{" "}
-                </p>
-                <p className="text-[#0d0d0d] font-inherit font-semibold py-2">
-                  IMEI:{" "}
-                  <span className="text-[#075985] font-medium">
-                    {data?.Return?.EsModelInfo.IMEI === ""
-                      ? "Not available"
-                      : data?.Return?.EsModelInfo.IMEI}
-                  </span>
-                </p>
-                <p className="text-[#0d0d0d] font-inherit font-semibold py-2">
-                  Model:{" "}
-                  <span className="text-[#075985] font-medium">
-                    {data?.Return?.EsModelInfo.Model === ""
-                      ? "Not available"
-                      : data?.Return?.EsModelInfo.Model}
-                  </span>
-                </p>
-                <p className="text-[#0d0d0d] font-inherit font-semibold py-2">
-                  Serial Number:{" "}
-                  <span className="text-[#075985] font-medium">
-                    {data?.Return?.EsModelInfo.SerialNo === ""
-                      ? "Not available"
-                      : data?.Return?.EsModelInfo.SerialNo}
-                  </span>
-                </p>
-                <p className="text-[#0d0d0d] font-inherit font-medium py-2">
-                  Issue:{" "}
-                  <span className="text-[#075985] font-medium">
-                    {data?.Return?.EsModelInfo.DefectDesc === ""
-                      ? "Not available"
-                      : data?.Return?.EsModelInfo.DefectDesc}
-                  </span>
-                </p>
-                <p className="text-[#0d0d0d] font-inherit font-semibold py-2">
-                  Warranty:{" "}
-                  <span className="text-[#075985] font-medium">
-                    {data?.Return?.EsModelInfo.WtyType === "LP"
-                      ? "IW"
-                      : data?.Return?.EsModelInfo.WtyType}
-                  </span>
-                </p>
-              </section>
-            </ModalHomepage>
           </div>
         </main>
-      </SocketContext.Provider>
-    </>
-  );
-}
-
+      </>
+    );
+  } else if (session === null) {
+    return <p>Loading</p>;
+  } else if (!session) {
+    return <Login />;
+  }
+};
 export default Home;
