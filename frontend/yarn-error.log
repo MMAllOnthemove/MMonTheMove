@@ -1,0 +1,116 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\Developer2\Documents\github\MMonTheMove\frontend\node_modules\yarn\bin\yarn.js add tailwindcss-animate class-variance-authority clsx tailwind-merge @radix-ui/react-icons
+
+PATH: 
+  C:\Users\Developer2\AppData\Local\npm-cache\_npx\125ee17d583c4e03\node_modules\.bin;C:\Users\Developer2\Documents\github\MMonTheMove\frontend\node_modules\.bin;C:\Users\Developer2\Documents\github\MMonTheMove\node_modules\.bin;C:\Users\Developer2\Documents\github\node_modules\.bin;C:\Users\Developer2\Documents\node_modules\.bin;C:\Users\Developer2\node_modules\.bin;C:\Users\node_modules\.bin;C:\node_modules\.bin;C:\Users\Developer2\AppData\Roaming\npm\node_modules\npm\node_modules\@npmcli\run-script\lib\node-gyp-bin;C:\Program Files (x86)\AMD APP\bin\x86_64;C:\Program Files (x86)\AMD APP\bin\x86;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Program Files\Broadcom\Broadcom 802.11 Network Adapter\Driver;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;C:\Program Files\Redis\;C:\Program Files\Git\cmd;C:\Program Files\PuTTY\;C:\Users\Developer2\.console-ninja\.bin;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Users\Developer2\AppData\Local\Microsoft\WindowsApps;;C:\Users\Developer2\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Developer2\AppData\Roaming\npm
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  18.16.0
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/@mui/icons-material/-/icons-material-5.13.7.tgz: ESOCKETTIMEDOUT
+      at ClientRequest.<anonymous> (C:\Users\Developer2\Documents\github\MMonTheMove\frontend\node_modules\yarn\lib\cli.js:141517:19)
+      at Object.onceWrapper (node:events:627:28)
+      at ClientRequest.emit (node:events:513:28)
+      at TLSSocket.emitRequestTimeout (node:_http_client:848:9)
+      at Object.onceWrapper (node:events:627:28)
+      at TLSSocket.emit (node:events:525:35)
+      at Socket._onTimeout (node:net:570:8)
+      at listOnTimeout (node:internal/timers:569:17)
+      at process.processTimers (node:internal/timers:512:7)
+
+npm manifest: 
+  {
+    "name": "hhp",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+      "dev": "next dev",
+      "build": "next build",
+      "start": "next start",
+      "lint": "next lint"
+    },
+    "dependencies": {
+      "@chakra-ui/next-js": "^2.1.4",
+      "@chakra-ui/react": "^2.7.1",
+      "@dicebear/collection": "^6.0.3",
+      "@dicebear/core": "^6.0.3",
+      "@dnd-kit/core": "^6.0.8",
+      "@dnd-kit/sortable": "^7.0.2",
+      "@emotion/react": "^11.11.1",
+      "@emotion/styled": "^11.11.0",
+      "@fontsource-variable/inter-tight": "^5.0.2",
+      "@headlessui/react": "^1.7.14",
+      "@heroicons/react": "^2.0.17",
+      "@mui/icons-material": "^5.11.16",
+      "@mui/material": "^5.13.4",
+      "@reduxjs/toolkit": "^1.9.5",
+      "@types/react": "18.0.38",
+      "@types/react-beautiful-dnd": "^13.1.4",
+      "@types/react-dnd": "^3.0.2",
+      "@types/react-dom": "18.0.11",
+      "autoprefixer": "10.4.14",
+      "axios": "^1.4.0",
+      "bcrypt": "^5.1.0",
+      "connect-redis": "^7.1.0",
+      "cors": "^2.8.5",
+      "eslint": "8.39.0",
+      "eslint-config-next": "13.3.1",
+      "express": "^4.18.2",
+      "express-session": "^1.17.3",
+      "express-validator": "^7.0.1",
+      "formik": "^2.2.9",
+      "framer-motion": "^10.12.16",
+      "immer": "^10.0.2",
+      "ioredis": "^5.3.2",
+      "jsonwebtoken": "^9.0.0",
+      "lodash": "^4.17.21",
+      "lucide-react": "^0.216.0",
+      "material-react-table": "^1.12.0",
+      "moment": "^2.29.4",
+      "nanoid": "^4.0.2",
+      "next": "^13.4.7",
+      "postcss": "8.4.23",
+      "rdndmb-html5-to-touch": "^8.0.0",
+      "react": "^18.2.0",
+      "react-dnd-html5-backend": "^16.0.1",
+      "react-dom": "^18.2.0",
+      "react-redux": "^8.0.5",
+      "recharts": "^2.5.0",
+      "recoil": "^0.7.7",
+      "sharp": "^0.31.3",
+      "socket.io-client": "^4.6.1",
+      "styled-components": "^6.0.0-rc.1",
+      "swr": "^2.1.5",
+      "tailwindcss": "3.3.1",
+      "typescript": "5.0.4",
+      "uninstall": "^0.0.0",
+      "use-immer": "^0.9.0",
+      "usehooks-ts": "^2.9.1",
+      "yarn": "^1.22.19",
+      "yup": "^1.2.0"
+    },
+    "description": "\"# MMonTheMove\"",
+    "main": "next.config.js",
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+      "@types/node": "^20.1.7",
+      "@types/react-redux": "^7.1.25",
+      "@types/tabulator-tables": "^5.4.8",
+      "@types/uuid": "^9.0.1"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  
