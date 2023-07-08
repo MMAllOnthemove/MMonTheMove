@@ -70,4 +70,8 @@ export const columns: any = [
         header: 'Ticket',
         accessorKey: 'ticket'
     },
+    {
+        header: 'Department',
+        accessorKey: 'department'
+    },
 ]

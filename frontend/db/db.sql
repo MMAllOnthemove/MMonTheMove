@@ -75,3 +75,14 @@ INSERT INTO service_orders (service_order) VALUES("4261942103");
 
 DATE FORMATS
  select TO_CHAR(to_timestamp('230629', 'DDMMYY'),'YYYY-MM-DD');
+
+
+ CREATE TABLE feedback (
+	id BIGSERIAL PRIMARY KEY,
+	issue_title text,
+	issue_body text,
+	posted_by_who text,
+	date_created date default current_date
+
+
+);

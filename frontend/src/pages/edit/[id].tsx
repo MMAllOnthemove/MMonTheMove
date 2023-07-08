@@ -78,9 +78,9 @@ function EditRow() {
   async function deleteData() {
     router.push("/");
     toast({
-      title: "Job edited.",
-      description: "You've successfully edited the job.",
-      status: "success",
+      title: "Job deleted.",
+      description: "You've successfully deleted the job.",
+      status: "error",
       duration: 9000,
       isClosable: true,
     });
