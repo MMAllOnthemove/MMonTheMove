@@ -61,6 +61,7 @@ const Home = () => {
   const [engineerAssignTime, setEngineerAssignTime] = useState("");
   const [inHouseStatus, setInHouseStatus] = useState("");
   const [ticket, setTicket] = useState("");
+  const [department, setDepartment] = useState("");
 
   useEffect(() => {
     fetchDataFromDatabase();
@@ -335,6 +336,21 @@ const Home = () => {
                     <option value="Paulas Gambu">Paulas Gambu</option>
                     <option value="Pule Mokoena">Pule Mokoena</option>
                     <option value="Sizwe Phungwayo">Sizwe Phungwayo</option>
+                  </select>
+                  <label htmlFor="engineerAnalysis" className="sr-only">
+                    Department
+                  </label>
+                  <select
+                    name="engineer"
+                    id="engineer"
+                    className="mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    value={department}
+                    onChange={(e) => setDepartment(e.target.value)}
+                  >
+                    <option value="" disabled>
+                      Select department
+                    </option>
+                    <option value="HHP">HHP</option>
                   </select>
 
                   <div className="flex g-3 justify-between items-center">
