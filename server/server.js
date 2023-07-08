@@ -14,9 +14,8 @@ const { authorizeUser } = require("./controllers/socketControllers");
 const io = new Server(server, {
   cors: {
     origin: [
-      process.env.NEXT_PUBLIC_REACT_URL,
+      process.env.NEXT_PUBLIC_MAIN_DOMAIN,
       process.env.NEXT_PRODUCTION_SUBDOMAIN_REGEX,
-      process.env.NEXT_PUBLIC_MAIN_DOMAIN_IP_URL,
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
@@ -27,9 +26,8 @@ app.use(helmet());
 app.use(
   cors({
     origin: [
-      process.env.NEXT_PUBLIC_REACT_URL,
+      process.env.NEXT_PUBLIC_MAIN_DOMAIN,
       process.env.NEXT_PRODUCTION_SUBDOMAIN_REGEX,
-      process.env.NEXT_PUBLIC_MAIN_DOMAIN_IP_URL,
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
@@ -53,7 +51,7 @@ io.on("connect", (socket) => {});
 app.get("/hhp/api/v1/management", async (req, res) => {
   try {
     const dbData = await pool.query(
-      "SELECT id, unique_id, service_order_no, to_char(to_timestamp(created_date, 'YYYYMMDD'),'YYYY-MM-DD') AS created_date, model, warranty, engineer, fault, imei, serial_number, in_house_status, to_char(to_timestamp(engineer_assign_date, 'YYYYMMDD'),'YYYY-MM-DD') AS engineer_assign_date, ticket, engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date FROM units"
+      "SELECT id, unique_id, service_order_no, to_char(to_timestamp(created_date, 'YYYYMMDD'),'YYYY-MM-DD') AS created_date, model, warranty, engineer, fault, imei, serial_number, in_house_status, to_char(to_timestamp(engineer_assign_date, 'YYYYMMDD'),'YYYY-MM-DD') AS engineer_assign_date, ticket, engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department FROM units"
     );
     res.json(dbData.rows);
   } catch (err) {
@@ -89,10 +87,11 @@ app.post("/hhp/api/v1/management", async (req, res) => {
     engineerAssignTime,
     engineerAnalysis,
     ticket,
+    department,
   } = req.body;
   try {
     const results = await pool.query(
-      "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) returning *",
+      "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket, department) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning *",
       [
         service_order,
         createdDate,
@@ -108,6 +107,7 @@ app.post("/hhp/api/v1/management", async (req, res) => {
         engineerAssignTime,
         engineerAnalysis,
         ticket,
+        department,
       ]
     );
     // console.log(results);
@@ -180,6 +180,27 @@ app.delete("/hhp/api/v1/management/:id", async (req, res) => {
     console.log(error);
   }
 });
+
+// Post feedback to database
+app.post("/hhp/api/v1/feedback", async (req, res) => {
+  const { issue_title, issue_body, userInfo } = req.body;
+  try {
+    const results = await pool.query(
+      "INSERT INTO feedback (issue_title, issue_body, posted_by_who) values ($1, $2, $3) returning *",
+      [issue_title, issue_body, userInfo]
+    );
+    // console.log(results);
+    res.status(201).json({
+      status: "success",
+      data: {
+        restaurant: results.rows[0],
+      },
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 server.listen(PORT, () => {
   console.log(`Server is up and listening on port localhost:${PORT}`);

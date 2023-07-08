@@ -80,7 +80,7 @@ export default function Navbar() {
               </Menu.Item>
               <Menu.Item>
                 <Link
-                  href="/"
+                  href="/report"
                   className="cursor-pointer p-2 font-sans text-slate-900 text-left font-medium text-sm"
                 >
                   Report a problem
