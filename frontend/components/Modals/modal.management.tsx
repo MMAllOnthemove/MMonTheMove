@@ -30,9 +30,9 @@ function ModalManagement(props: Props) {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
-            {modalState.view === "/"
-              ? "Fields will auto populate"
-              : "Edit table"}
+            <h2 className="font-sans text-slate-800">
+              Fields will auto populate
+            </h2>
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>{props.children}</ModalBody>
