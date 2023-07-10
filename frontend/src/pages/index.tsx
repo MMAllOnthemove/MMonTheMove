@@ -85,52 +85,42 @@ const Home = () => {
 
   const postData = async () => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            service_order,
-            createdDate,
-            createdTime,
-            model,
-            warranty,
-            engineer,
-            fault,
-            imei,
-            serial_number,
-            inHouseStatus,
-            engineerAssignDate,
-            engineerAssignTime,
-            engineerAnalysis,
-            ticket,
-          }),
-        }
-      );
-      if (response) {
-        toast({
-          title: "Job added.",
-          description: "You've added a job to the table.",
-          status: "success",
-          duration: 9000,
-          isClosable: true,
-        });
-        setManagementModalState({
-          open: false,
-          view: "/",
-        });
-        window.location.reload();
-      } else {
-        toast({
-          title: "Job failed to add.",
-          description: "Failed to add a job to the table.",
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-        window.location.reload();
-      }
+      await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          service_order,
+          createdDate,
+          createdTime,
+          model,
+          warranty,
+          engineer,
+          fault,
+          imei,
+          serial_number,
+          inHouseStatus,
+          engineerAssignDate,
+          engineerAssignTime,
+          engineerAnalysis,
+          ticket,
+          department,
+        }),
+      });
+
+      setManagementModalState({
+        open: false,
+        view: "/",
+      });
+      toast({
+        title: "Job added.",
+        description: "You've added a job to the table.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+
+      window.location.reload();
+
       // console.log("Response is", response);
     } catch (err) {
       console.log(err);
@@ -145,7 +135,7 @@ const Home = () => {
 
   async function fetchDataFromDatabase() {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/`,
+      "http://localhost:8000/hhp/api/v1/management/",
       {
         cache: "default",
         next: { revalidate: 3 }, // refetch every 3 seconds
@@ -357,7 +347,7 @@ const Home = () => {
                     <button
                       onClick={postData}
                       type="button"
-                      className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus: text-white font-semibold font-sans rounded py-3 px-2 my-2 w-full ml-3"
+                      className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus: text-white font-semibold font-sans rounded py-3 px-2 my-2 w-full"
                     >
                       Add
                     </button>
