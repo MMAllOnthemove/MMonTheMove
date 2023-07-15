@@ -4,17 +4,11 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import type { AppProps } from "next/app";
 import { RecoilRoot } from "recoil";
 import { TableInfoContextProvider } from "../context/TableInfoContext";
+import { Inter } from "next/font/google";
 
 import { SessionProvider } from "next-auth/react";
 
-// Extending the chakra/ui theme
-const theme = extendTheme({
-  fonts: {
-    heading: `'Inter Variable', sans-serif`,
-    body: `'Inter Variable', sans-serif`,
-  },
-});
-
+const inter = Inter({ subsets: ["latin"] });
 // Instances of useSession will then have access to the session data and status. The <SessionProvider /> also takes care of keeping the session updated and synced between browser tabs and windows.
 
 export default function App({
@@ -24,14 +18,21 @@ export default function App({
   // socket.connect();
 
   return (
-    <SessionProvider session={session}>
-      <TableInfoContextProvider>
-        <RecoilRoot>
-          <ChakraProvider theme={theme}>
-            <Component {...pageProps} />
-          </ChakraProvider>
-        </RecoilRoot>
-      </TableInfoContextProvider>
-    </SessionProvider>
+    <>
+      <style jsx global>{`
+        html {
+          font-family: ${inter.style.fontFamily};
+        }
+      `}</style>
+      <SessionProvider session={session}>
+        <TableInfoContextProvider>
+          <RecoilRoot>
+            <ChakraProvider>
+              <Component {...pageProps} />
+            </ChakraProvider>
+          </RecoilRoot>
+        </TableInfoContextProvider>
+      </SessionProvider>
+    </>
   );
 }

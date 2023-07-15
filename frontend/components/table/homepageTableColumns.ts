@@ -74,4 +74,8 @@ export const columns: any = [
         header: 'Department',
         accessorKey: 'department'
     },
+    {
+        header: 'Completed days',
+        accessorKey: 'completed_days'
+    },
 ]

@@ -49,7 +49,7 @@ export default function Navbar() {
         </div>
         {/* Profile dropdown */}
         <div className="profile_dropdown w-56 text-right">
-          <Menu as="div" className="relative inline-block text-left">
+          <Menu as="div" className="relative inline-block text-left z-10">
             <div>
               <Menu.Button className="inline-flex w-full justify-center avi">
                 <img
