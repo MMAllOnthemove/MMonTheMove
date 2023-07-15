@@ -1,8 +1,0 @@
-management:1 
-Access to fetch at 'http://localhost:8000/management' from origin 'http://localhost:3000' 
-has been blocked by CORS policy: 
-Response to preflight request doesn't pass access control check: 
-The 'Access-Control-Allow-Origin' header has a value 'https://localhost:3000' that 
-is not equal to the supplied origin. Have the server send the header with a valid value, or, 
-if an opaque response serves your needs, 
-set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
