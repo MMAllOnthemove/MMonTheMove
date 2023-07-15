@@ -1,60 +1,32 @@
 CREATE TABLE service_orders (
-    ID BIGSERIAL NOT NULL PRIMARY KEY,
-    SERVICE_ORDER VARCHAR(10) NOT NULL UNIQUE,
-    WARRANTY VARCHAR(3) NOT NULL,
-    MODEL VARCHAR(20) NOT NULL UNIQUE,
-    FAULT TEXT NOT NULL,
-    IMEI VARCHAR(25) NOT NULL UNIQUE,
-    SERIAL_NUMBER VARCHAR(30) NOT NULL UNIQUE,
-    ENGINEER VARCHAR(50) NOT NULL,
-    ENGINEER_ANALYSIS TEXT,
-  UNIT_STATUS TEXT NOT NULL,
-  ASC_CODE VARCHAR(12) NOT NULL,
-  CREATED_BY TEXT,
-  CREATED_DATE TEXT,
-  CREATED_TIME TEXT,
-  STATUS_DESC TEXT NOT NULL,
-  ACCESORY TEXT, 
-  PRODUCED_DATED TEXT,
-  REMARK TEXT,
-  WTY_TERM_REMARK TEXT,
-  CUSTOMER_REQUEST_DATE TEXT,
-  CUSTOMER_REQUEST_TIME TEXT,
-ACKNOWLEDGE_TIME TEXT,
-ACKNOWLEDGE_DATE TEXT,
-COMPLETE_TIME TEXT,
-COMPLETE_DATE TEXT,
-ENGINEER_ASSIGNED_TIME TEXT,
-ENGINEER_ASSIGNED_DATE TEXT,
-FIRST_APPOINTMENT_DATE TEXT,
-FIRST_APPOINTMENT_TIME TEXT,
-FIRST_VISIT_TIME TEXT,
-FIRST_VISIT_DATE TEXT,
-FIRST_CUSTOMER_TIME TEXT,
-GOODS_DELIVERY_TIME TEXT,
-GOODS_DELIVERY_DATE TEXT,
-LAST_APPOINTMENT_DATE TEXT,
-LAST_APPOINTMENT_TIME TEXT,
-LAST_CHANGE_TIME TEXT,
-LAST_CHANGE_DATE TEXT,
-LAST_VISIT_DATE TEXT,
-LAST_VISIT_TIME TEXT,
-REPAIR_RECEIVE_TIME TEXT,
-REPAIR_RECEIVE_DATE TEXT,
-UNIT_RECEIVE_DATE TEXT,
-UNIT_RECEIVE_TIME TEXT,
-CUSTOMER_FIRST_NAME TEXT,
-CUSTOMER_LAST_NAME TEXT,
-CUSTOMER_STREET_ADDRESS TEXT,
-CUSTOMER_DISTRICT TEXT,
-CUSTOMER_PROVINCE TEXT,
-CUSTOMER_ZIP_CODE VARCHAR(5),
-CUSTOMER_MOBILE_PHONE VARCHAR(10),
-CUSTOMER_OFFICE_PHONE VARCHAR(20),
-CUSTOMER_EMAIL TEXT,
-CUSTOMER_CODE VARCHAR(14),
-PURCHASED_DATE TEXT,
-FIRST_CUSTOMER_DATE TEXT );
+   id BIGSERIAL PRIMARY KEY,
+unique_id  uuid DEFAULT gen_random_uuid(), 
+-- ALTER TABLE test_units_repairshpr
+-- ADD FOREIGN KEY (unit_id) REFERENCES units(id);
+-- SELECT * FROM test_units_repairshpr;
+-- ALTER TABLE test_units_repairshpr
+-- ADD COLUMN service_order_no varchar(15),
+-- ADD COLUMN created_date text,
+-- ADD COLUMN created_time text,
+-- ADD COLUMN model text,
+-- ADD COLUMN warranty text,
+-- ADD COLUMN engineer text,
+-- ADD COLUMN fault text,
+-- ADD COLUMN imei text,
+-- ADD COLUMN serial_number text,
+-- ADD COLUMN in_house_status text,
+-- ADD COLUMN engineer_assign_date text,
+-- ADD COLUMN engineer_assign_time text
+-- ADD COLUMN ticket text,
+-- ADD COLUMN engineer_analysis text,
+-- ADD COLUMN parts_ordered_date text,
+-- ADD COLUMN parts_pending_date text,
+-- ADD COLUMN parts_issued_date text,
+-- ADD COLUMN qc_completed_date text,
+-- ADD COLUMN repair_completed_date text,
+-- ADD COLUMN department text,
+-- ADD COLUMN date_modified DATE NOT NULL DEFAULT CURRENT_DATE
+ );
 
 
 
@@ -84,5 +56,37 @@ DATE FORMATS
 	posted_by_who text,
 	date_created date default current_date
 
+
+);
+
+CREATE TABLE test_units_repairshpr (
+id BIGSERIAL PRIMARY KEY,
+unit_id BIGSERIAL
+-- ALTER TABLE test_units_repairshpr
+-- ADD FOREIGN KEY (unit_id) REFERENCES units(id);
+-- SELECT * FROM test_units_repairshpr;
+-- ALTER TABLE test_units_repairshpr
+-- ADD COLUMN service_order_no varchar(15),
+-- ADD COLUMN created_date text,
+-- ADD COLUMN created_time text,
+-- ADD COLUMN model text,
+-- ADD COLUMN warranty text,
+-- ADD COLUMN engineer text,
+-- ADD COLUMN fault text,
+-- ADD COLUMN imei text,
+-- ADD COLUMN serial_number text,
+-- ADD COLUMN in_house_status text,
+-- ADD COLUMN engineer_assign_date text,
+-- ADD COLUMN engineer_assign_time text
+-- ADD COLUMN ticket text,
+-- ADD COLUMN engineer_analysis text,
+-- ADD COLUMN parts_ordered_date text,
+-- ADD COLUMN parts_pending_date text,
+-- ADD COLUMN parts_issued_date text,
+-- ADD COLUMN qc_completed_date text,
+-- ADD COLUMN repair_completed_date text,
+-- ADD COLUMN department text,
+-- ADD COLUMN date_modified DATE NOT NULL DEFAULT CURRENT_DATE
+-- ;
 
 );
