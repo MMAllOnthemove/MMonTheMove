@@ -233,4 +233,3 @@ const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {
   console.log(`Server is up and listening on port localhost:${PORT}`);
 });
-module.exports = pool;
