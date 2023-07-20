@@ -3,49 +3,21 @@ const { Server } = require("socket.io");
 const app = express();
 const helmet = require("helmet");
 const cors = require("cors");
-const authRouter = require("./routes/authRouter");
 const pool = require("./db");
 const { v4: uuidv4 } = require("uuid");
 require("dotenv").config();
-const server = require("http").createServer(app);
-// const { sessionMiddleware, wrap } = require("./controllers/serverControllers");
-const { authorizeUser } = require("./controllers/socketControllers");
-
-const io = new Server(server, {
-  cors: {
-    origin: [
-      process.env.NEXT_PUBLIC_MAIN_DOMAIN,
-      process.env.NEXT_PRODUCTION_SUBDOMAIN_REGEX,
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    credentials: true,
-  },
-});
 
 app.use(helmet());
 app.use(
   cors({
-    origin: [
-      process.env.NEXT_PUBLIC_MAIN_DOMAIN,
-      process.env.NEXT_PRODUCTION_SUBDOMAIN_REGEX,
-    ],
+    origin: ["http://localhost:3000"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
 );
 app.use(express.json());
 // app.use(sessionMiddleware);
-app.use("/auth", authRouter);
 app.set("trust proxy", 1);
-
-// lOGOUT
-// app.get("/logout", (req, res) => {
-//   req.session.destroy();
-//   res.redirect("/");
-// });
-// io.use(wrap(sessionMiddleware));
-// io.use(authorizeUser);
-io.on("connect", (socket) => {});
 
 // GET all table info from database
 app.get(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, async (req, res) => {
@@ -258,7 +230,7 @@ app.get(
 );
 
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server is up and listening on port localhost:${PORT}`);
 });
 module.exports = pool;
