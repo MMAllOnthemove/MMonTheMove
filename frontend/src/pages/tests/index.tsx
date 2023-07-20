@@ -31,75 +31,71 @@ function Tests() {
   const [getData, setGetData] = useState("");
   const [searchTicket, setSearchTicket] = useState("");
 
-  const [service_order, setServiceOrder] = useState("");
-  const [warranty, setWarranty] = useState("");
-  const [model, setModel] = useState("");
-  const [imei, setImei] = useState("");
-  const [fault, setFault] = useState("");
-  const [serial_number, setSerialNumber] = useState("");
-  const [engineer, setEngineer] = useState("");
-  const [engineerAnalysis, setEngineerAnalysis] = useState("");
-  const [createdDate, setCreatedDate] = useState("");
-  const [createdTime, setCreatedTime] = useState("");
-  const [engineerAssignDate, setEngineerAssignDate] = useState("");
-  const [engineerAssignTime, setEngineerAssignTime] = useState("");
-  const [inHouseStatus, setInHouseStatus] = useState("");
-  const [ticket, setTicket] = useState("");
-  const [department, setDepartment] = useState("");
+  // const [service_order, setServiceOrder] = useState("");
+  // const [warranty, setWarranty] = useState("");
+  // const [model, setModel] = useState("");
+  // const [imei, setImei] = useState("");
+  // const [fault, setFault] = useState("");
+  // const [serial_number, setSerialNumber] = useState("");
+  // const [engineer, setEngineer] = useState("");
+  // const [engineerAnalysis, setEngineerAnalysis] = useState("");
+  // const [createdDate, setCreatedDate] = useState("");
+  // const [createdTime, setCreatedTime] = useState("");
+  // const [engineerAssignDate, setEngineerAssignDate] = useState("");
+  // const [engineerAssignTime, setEngineerAssignTime] = useState("");
+  // const [inHouseStatus, setInHouseStatus] = useState("");
+  // const [ticket, setTicket] = useState("");
+  // const [department, setDepartment] = useState("");
 
-  async function getRepairShoprData() {
+  // async function getRepairShoprData() {
+  //   const response = await fetch(
+  //     `https://allelectronics.repairshopr.com/api/v1/tickets?number=${searchTicket}`,
+  //     {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
+  //       },
+  //     }
+  //   );
+  //   const data = await response.json();
+  //   setGetData(data);
+  //   // console.log(data.tickets[0].created_at);
+  //   setCreatedDate(data.tickets[0].created_at);
+  //   // setServiceOrder();
+  //   // setWarranty();
+  // }
+
+  async function getGSPNInfo() {
+    const options = {
+      IvCompany: `${process.env.NEXT_PUBLIC_COMPANY}`,
+      SvcOrderNo: "4266810380",
+      // IvAscJobNo: "4266443508",
+      // IsCommonHeader: {
+      //   Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
+      //   AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
+      //   Lang: `${process.env.NEXT_PUBLIC_LANG}`,
+      //   Country: `${process.env.NEXT_PUBLIC_COUNTRY}`,
+      //   Pac: `${process.env.NEXT_PUBLIC_PAC}`,
+      // },
+    };
     const response = await fetch(
-      `https://allelectronics.repairshopr.com/api/v1/tickets?number=${searchTicket}`,
+      "https://eu.ipaas.samsung.com/eu/gcic/GetSOList/1.0/ImportSet",
       {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
         },
+        body: JSON.stringify(options),
       }
     );
     const data = await response.json();
-    setGetData(data);
-    // console.log(data.tickets[0].created_at);
-    setCreatedDate(data.tickets[0].created_at);
-    // setServiceOrder();
-    // setWarranty();
+    console.log(data);
   }
 
-  useEffect(() => {
-    getRepairShoprData();
-  }, []);
-  useEffect(() => {
-    postTicketData();
-  }, [searchTicket]);
-
-  const user = session?.user?.email;
-
-  async function postTicketData() {
-    const response = await fetch("", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        service_order,
-        createdDate,
-        createdTime,
-        model,
-        warranty,
-        engineer,
-        fault,
-        imei,
-        serial_number,
-        inHouseStatus,
-        engineerAssignDate,
-        engineerAssignTime,
-        engineerAnalysis,
-        ticket,
-        department,
-        user,
-      }),
-    });
-  }
   return (
     <div className="container mx-auto">
       <h1>Tests</h1>
@@ -167,7 +163,7 @@ function Tests() {
       ) : (
         ""
       )} */}
-      <button type="button" className="border" onClick={postTicketData}>
+      <button type="button" className="border">
         Add
       </button>
     </div>
