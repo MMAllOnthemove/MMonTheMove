@@ -10,7 +10,10 @@ require("dotenv").config();
 app.use(helmet());
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: [
+      process.env.NEXT_PUBLIC_MAIN_DOMAIN,
+      process.env.NEXT_PRODUCTION_SUBDOMAIN_REGEX,
+    ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
@@ -64,7 +67,7 @@ app.post(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, async (req, res) => {
   } = req.body;
   try {
     const results = await pool.query(
-      "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket, department, job_added_by) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning *",
+      "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket, department, job_added_by) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) returning *",
       [
         service_order,
         createdDate,
