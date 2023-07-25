@@ -86,6 +86,7 @@ function Report() {
                   <option value="cannot update delete info from table">
                     Cannot update delete info from table
                   </option>
+                  <option value="Suggestion">Suggestion</option>
                 </select>
                 <label
                   htmlFor="issue_body"

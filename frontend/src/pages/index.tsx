@@ -354,12 +354,38 @@ const Home = () => {
                 Last
               </button>
             </div>
+            <div className="flex flex-row items-center gap-2 my-3">
+              <span className="flex gap-1">
+                <p className="font-sans font-semibold text-sky-700">
+                  {table.getRowModel().rows.length}
+                </p>{" "}
+                Rows
+              </span>
+              <span className="flex items-center gap-1">
+                <div className="font-sans">Page</div>
+                <strong className="font-sans text-sky-700">
+                  {table.getState().pagination.pageIndex + 1} of{" "}
+                  {table.getPageCount()}
+                </strong>
+              </span>
+              <select
+                className="border outline-none cursor-pointer font-semibold font-sans"
+                value={table.getState().pagination.pageSize}
+                onChange={(e) => {
+                  table.setPageSize(Number(e.target.value));
+                }}
+              >
+                {[10, 20, 30, 40, 50].map((pageSize) => (
+                  <option key={pageSize} value={pageSize}>
+                    Show {pageSize}
+                  </option>
+                ))}
+              </select>
+            </div>
           </Container>
         </main>
       </>
     );
-  } else {
-    return <Login />;
   }
 };
 export default Home;
