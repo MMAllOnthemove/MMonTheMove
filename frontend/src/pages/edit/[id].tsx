@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from "react";
 // Next auth session hook
 import { useSession } from "next-auth/react";
 import Login from "../auth/login";
+import Head from "next/head";
 
 function EditRow() {
   const { tableInfo, setTableInfo } = useContext(TableInfoContext);
@@ -86,10 +87,14 @@ function EditRow() {
     });
     const response = await UnitFinder.delete(`/${id}`);
   }
-  
+
   if (session) {
     return (
       <>
+        <Head>
+          <title>Edit {showServiceOrderNumber}</title>
+          <meta name="robots" content="noindex, nofollow"></meta>
+        </Head>
         <section className="section container mx-auto">
           <h1 className="text-center py-2 text-gray-900 font-sans font-semibold lg:text-2xl">
             Editing service order:{" "}

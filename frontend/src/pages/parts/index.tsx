@@ -32,6 +32,7 @@ function Parts() {
     <>
       <Head>
         <title>Parts</title>
+        <meta name="robots" content="noindex, nofollow"></meta>
       </Head>
       <Navbar />
       <main className="flex flex-col justify-center">

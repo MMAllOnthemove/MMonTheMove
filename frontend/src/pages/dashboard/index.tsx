@@ -80,6 +80,7 @@ function Dashboard() {
       <>
         <Head>
           <title>Dashboard</title>
+          <meta name="robots" content="noindex, nofollow"></meta>
         </Head>
         <Navbar />
         <main>
