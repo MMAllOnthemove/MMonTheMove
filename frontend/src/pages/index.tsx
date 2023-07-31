@@ -33,7 +33,7 @@ import { columns } from "../../components/table/homepageTableColumns";
 
 const Home = () => {
   // Google auth session
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const [tableData, setTableData] = useState<string[]>([]);
 
@@ -182,7 +182,7 @@ const Home = () => {
     onGlobalFilterChange: setFiltering,
   });
 
-  if (session) {
+  if (status === "authenticated") {
     return (
       <>
         <Head>
@@ -387,6 +387,8 @@ const Home = () => {
         </main>
       </>
     );
+  } else {
+    return <Login />;
   }
 };
 export default Home;
