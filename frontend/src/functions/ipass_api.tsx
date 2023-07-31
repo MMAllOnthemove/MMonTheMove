@@ -31,7 +31,7 @@ export async function getSOInfoAllFunction(props: IgetSOInfoAll) {
     },
   };
   const response = await fetch(
-    "https://eu.ipaas.samsung.com/eu/gcic/GetSOInfoAll/1.0/ImportSet",
+    `${process.env.NEXT_PUBLIC_IPAAS_API_GETSOINFOALL}`,
     {
       method: "POST",
       mode: "cors",

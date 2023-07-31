@@ -187,6 +187,7 @@ const Home = () => {
       <>
         <Head>
           <title>Management</title>
+          <meta name="robots" content="noindex"></meta>
         </Head>
         <Navbar />
 
