@@ -56,6 +56,7 @@ function Report() {
       <>
         <Head>
           <title>Report a problem</title>
+          <meta name="robots" content="noindex, nofollow"></meta>
         </Head>
         <main className="flex justify-center h-screen items-center flex-col">
           <div className="container mx-auto">

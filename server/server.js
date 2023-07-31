@@ -4,7 +4,9 @@ const app = express();
 const helmet = require("helmet");
 const cors = require("cors");
 const pool = require("./db");
+const limiter = require("../server/controllers/rateLimiter");
 const { v4: uuidv4 } = require("uuid");
+
 require("dotenv").config();
 
 app.use(helmet());
@@ -20,7 +22,9 @@ app.use(
 );
 app.use(express.json());
 // app.use(sessionMiddleware);
-app.set("trust proxy", 1);
+app.set("trust proxy", 1); // trust first proxy
+app.disable("x-powered-by");
+app.use(limiter);
 
 // GET all table info from database
 app.get(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, async (req, res) => {
