@@ -22,7 +22,7 @@ function ToTopButton() {
   return (
     <>
       {showTopBtn && (
-        <button id="myBtn" title="Go to top" onClick={goToTop}>
+        <button id="toTop" title="Go to top" onClick={goToTop}>
           Top
         </button>
       )}

@@ -1,79 +1,78 @@
 import Navbar from "../../../components/Navbar";
 // Next auth session hook
+import {
+  ArrowDownTrayIcon,
+  ArrowPathIcon,
+  ArrowUpTrayIcon,
+  UserGroupIcon,
+} from "@heroicons/react/24/outline";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-// Tanstack table
-import {
-  SortingState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import { columns } from "../../../components/table/dashboardTableColumns";
+import { Grid, Col, Card, Text, Metric } from "@tremor/react";
 
-function Dashboard() {
+export default function Dashboard() {
   // Google auth session
   const { data: session } = useSession();
 
   const [completeCount, setCompleteCount] = useState("");
   const [pendingCount, setPendingCount] = useState("");
-  const [inCount, setInCount] = useState("");
+  const [unitsInCount, setUnitsInCount] = useState("");
 
   useEffect(() => {
     dashboardCountUnitsIn();
     dashboardCountUnitsPending();
     dashboardCountUnitsComplete();
-  }, []);
+  }, [unitsInCount, pendingCount, completeCount]);
 
   async function dashboardCountUnitsIn() {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT}/in`,
       {
         cache: "default",
-        next: { revalidate: 2 }, // refetch every 3 seconds
+        next: { revalidate: 2 },
       }
     );
     const json = await response.json();
-    setInCount(json[0].units_in);
+    setUnitsInCount(json.units_in);
+    // console.log("In", json);
+
     return json;
   }
+
   async function dashboardCountUnitsPending() {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT}/pending`,
       {
         cache: "default",
-        next: { revalidate: 2 }, // refetch every 3 seconds
+        next: { revalidate: 2 },
       }
     );
     const json = await response.json();
-    setPendingCount(json[0].pending);
+    setPendingCount(json.pending);
+    // console.log("Pending", json);
+
     return json;
   }
+
   async function dashboardCountUnitsComplete() {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT}/complete`,
       {
         cache: "default",
-        next: { revalidate: 2 }, // refetch every 3 seconds
+        next: { revalidate: 2 },
       }
     );
     const json = await response.json();
-    setCompleteCount(json[0].complete);
+    // console.log("Complete", json);
+
+    setCompleteCount(json.complete);
+
     return json;
   }
 
-  // Table sorting
-  const [sorting, setSorting] = useState<SortingState>([]);
-
-  // Table filtering
-  const [filtering, setFiltering] = useState("");
-  // Table contents
-  // const memoizedData = useMemo(() => tableData, []);
-  // console.log(memoizedData);
+  const router = useRouter();
 
   if (session) {
     return (
@@ -83,77 +82,101 @@ function Dashboard() {
           <meta name="robots" content="noindex, nofollow"></meta>
         </Head>
         <Navbar />
-        <main>
-          <h1 className="font-sans text-xl md:text-3xl lg:text-4xl text-slate-800 font-bold text-center">
-            Dashboard
-          </h1>
-          <section className="container mx-auto">
-            <div className="max-w-full mx-4 py-6 sm:mx-auto sm:px-6 lg:px-8">
-              <div className="sm:flex sm:space-x-4">
-                <article className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow transform transition-all mb-4 w-full sm:w-1/3 sm:my-8">
-                  <div className="bg-white p-5">
-                    <div className="sm:flex sm:items-start">
-                      <div className="text-center sm:mt-0 sm:ml-2 sm:text-left">
-                        <h3 className="text-md font-sans leading-6 font-semibold text-gray-800 uppercase">
-                          Units In
-                        </h3>
-                        <p className="text-4xl font-sans font-bold text-sky-600">
-                          {inCount}
-                        </p>
-                      </div>
+        <main className="space-between-navbar-and-content">
+          <div className="container max-w-6xl px-5 mx-auto pt-5 mb-28">
+            <h1 className="mb-4 text-4xl font-semibold font-sans leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+              Analytics
+            </h1>
+
+            <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3 my-3 ">
+              <article
+                className="flex items-center justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer"
+                onClick={() => {
+                  router.push("/dashboard/units/in");
+                }}
+              >
+                <div>
+                  <Text className="text-sm text-gray-400  font-medium font-sans">
+                    Units in
+                  </Text>
+                  <div className="flex items-center pt-1">
+                    <Metric className="text-xl lg:text-5xl font-bold text-indigo-500 ">
+                      {unitsInCount}
+                    </Metric>
+                  </div>
+                </div>
+                <div>
+                  <ArrowUpTrayIcon className="h-6 w-6 text-gray-500" />
+                </div>
+              </article>
+              <article
+                className="flex items-center justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer"
+                onClick={() => {
+                  router.push("/dashboard/units/pending");
+                }}
+              >
+                <div>
+                  <div className="text-sm text-gray-400  font-medium font-sans">
+                    Units pending
+                  </div>
+                  <div className="flex items-center pt-1">
+                    <div className="text-xl lg:text-5xl font-bold text-indigo-500 ">
+                      {/* // Used the Number object because it returns blank instead
+                      of zero */}
+                      {pendingCount}
                     </div>
                   </div>
-                </article>
-                <article className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow transform transition-all mb-4 w-full sm:w-1/3 sm:my-8">
-                  <div className="bg-white p-5">
-                    <div className="sm:flex sm:items-start">
-                      <div className="text-center sm:mt-0 sm:ml-2 sm:text-left">
-                        <h3 className="text-md font-sans leading-6 font-semibold text-gray-800 uppercase">
-                          In progress
-                        </h3>
-                        <p className="text-4xl font-sans font-bold text-sky-600">
-                          {pendingCount}
-                        </p>
-                      </div>
+                </div>
+                <div>
+                  <ArrowPathIcon className="h-6 w-6 text-gray-500" />
+                </div>
+              </article>
+              <article
+                className="flex items-center justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer"
+                onClick={() => {
+                  router.push("/dashboard/units/complete");
+                }}
+              >
+                <div>
+                  <div className="text-sm text-gray-400 font-medium font-sans">
+                    Units repair complete
+                  </div>
+                  <div className="flex items-center pt-1">
+                    <div className="text-xl lg:text-5xl font-bold text-indigo-500 ">
+                      {completeCount}
                     </div>
                   </div>
-                </article>
-                <article className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow transform transition-all mb-4 w-full sm:w-1/3 sm:my-8">
-                  <div className="bg-white p-5">
-                    <div className="sm:flex sm:items-start">
-                      <div className="text-center sm:mt-0 sm:ml-2 sm:text-left">
-                        <h3 className="text-md font-sans leading-6 font-semibold text-gray-800 uppercase">
-                          Complete
-                        </h3>
-                        <p className="text-4xl font-sans font-bold text-sky-600">
-                          {completeCount}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </article>
-                {/* This card is static until an engineers table is created */}
-                <article className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow transform transition-all mb-4 w-full sm:w-1/3 sm:my-8">
-                  <div className="bg-white p-5">
-                    <div className="sm:flex sm:items-start">
-                      <div className="text-center sm:mt-0 sm:ml-2 sm:text-left">
-                        <h3 className="text-md font-sans leading-6 font-semibold text-gray-800 uppercase">
-                          Engineers
-                        </h3>
-                        <p className="text-4xl font-sans font-bold text-sky-600">
-                          6
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </article>
-              </div>
+                </div>
+                <div>
+                  <ArrowDownTrayIcon className="h-6 w-6 text-gray-500" />
+                </div>
+              </article>
             </div>
-          </section>
+            <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3 my-3 ">
+              <article className="flex items-center justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer">
+                <div>
+                  <div
+                    className="text-sm text-gray-400  font-medium font-sans"
+                    onClick={() => {
+                      router.push("/dashboard/engineers");
+                    }}
+                  >
+                    Engineers
+                  </div>
+                  <div className="flex items-center pt-1">
+                    <div className="text-xl lg:text-5xl font-bold text-indigo-500 ">
+                      6
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <UserGroupIcon className="h-6 w-6 text-gray-500" />
+                </div>
+              </article>
+            </div>
+          </div>
         </main>
       </>
     );
   }
 }
-
-export default Dashboard;

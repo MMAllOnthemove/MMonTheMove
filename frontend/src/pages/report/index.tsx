@@ -58,7 +58,7 @@ function Report() {
           <title>Report a problem</title>
           <meta name="robots" content="noindex, nofollow"></meta>
         </Head>
-        <main className="flex justify-center h-screen items-center flex-col">
+        <main className="flex justify-center h-screen items-center flex-col space-between-navbar-and-content">
           <div className="container mx-auto">
             <h1 className="mb-4 font-extrabold text-gray-900 text-center font-sans text-xl dark:text-white">
               Report a problem
