@@ -5,7 +5,7 @@ interface IProps {
   setSearchServiceOrder: (e: React.ChangeEvent<HTMLInputElement>) => void;
   warranty: string;
   inHouseStatus: string;
-  setInHouseStatus: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  setInHouseStatus: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   ticket: string;
   setTicket: (e: React.ChangeEvent<HTMLInputElement>) => void;
   engineerAnalysis: string;
@@ -49,20 +49,42 @@ export function HomepageModalTabOneContent(props: IProps) {
           value={props.warranty}
           disabled
         />
-        <label htmlFor="inHouseStatus" className="sr-only">
-          In house status
-        </label>
-        <input
-          aria-labelledby="inHouseStatus"
-          type="text"
-          name="inHouseStatus"
-          placeholder="In house status"
-          id="inHouseStatus"
-          className="outline-none bg-white py-2 px-2 border-2 border-slate-400 font-sans font-semibold text-sm rounded-sm my-2"
+        <select
           value={props.inHouseStatus}
           onChange={props.setInHouseStatus}
-          hidden
-        />
+          className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+        >
+          <option disabled value="">
+            Choose status
+          </option>
+          <option value="Booked in">Booked in</option>
+          <option value="Repair in progress">Repair in progress</option>
+          <option value="Waiting for parts">Waiting for parts</option>
+          <option value="Waiting for customer">Waiting for customer</option>
+          <option value="Scheduled">Scheduled</option>
+          <option value="Customer reply">Customer reply</option>
+          <option value="Assigned to tech">Assigned to tech</option>
+          <option value="Parts request 1st approval">
+            Parts request 1st approval
+          </option>
+          <option value="Quote pending">Quote pending</option>
+          <option value="Quote approved">Quote approved</option>
+          <option value="Quality Control (QC)">Quality Control</option>
+          <option value="Parts issued">Parts issued</option>
+          <option value="Parts to be ordered">Parts to be ordered</option>
+          <option value="Quote pending">Quote pending</option>
+          <option value="Waiting for customer">Waiting for customer</option>
+          <option value="Waiting SAW">Waiting SAW</option>
+          <option value="Repair complete">Repair completed</option>
+          <option value="QC failed">QC failed</option>
+          <option value="QC completed">QC completed</option>
+          <option value="Pending Q&A">Pending Q&A</option>
+          <option value="SO cancel">SO cancel</option>
+          <option value="Scrap approved">Scrap approved</option>
+          <option value="Quote rejected">Quote rejected</option>
+          <option value="For invoicing">For invoicing</option>
+          <option value="Parts DNA">Parts DNA</option>
+        </select>
         <label htmlFor="ticketNumber" className="sr-only">
           Ticket Number
         </label>
@@ -97,7 +119,7 @@ export function HomepageModalTabOneContent(props: IProps) {
         <select
           name="engineer"
           id="engineer"
-          className="mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+          className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
           value={props.engineer}
           onChange={props.setEngineer}
         >
@@ -111,21 +133,7 @@ export function HomepageModalTabOneContent(props: IProps) {
           <option value="Pule Mokoena">Pule Mokoena</option>
           <option value="Sizwe Phungwayo">Sizwe Phungwayo</option>
         </select>
-        <label htmlFor="engineerAnalysis" className="sr-only">
-          Department
-        </label>
-        <select
-          name="engineer"
-          id="engineer"
-          className="mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-          value={props.department}
-          onChange={props.setDepartment}
-        >
-          <option value="" disabled>
-            Select department
-          </option>
-          <option value="HHP">HHP</option>
-        </select>
+
         <div className="flex g-3 justify-between items-center">
           <button
             onClick={props.postData}

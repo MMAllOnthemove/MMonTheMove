@@ -11,7 +11,7 @@ export default function Navbar() {
     <>
       {/* The navbar */}
 
-      <header className="flex justify-between items-center px-3 py-4 border-b border-b-slate-100">
+      <header className="flex justify-between items-center px-3 py-4 border-b border-b-slate-100 fixed top-0 w-full bg-white z-10 h-24">
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Logo</span>
@@ -72,7 +72,7 @@ export default function Navbar() {
               </Menu.Item>
               <Menu.Item>
                 <Link
-                  href="/dashboard"
+                  href="/"
                   className="cursor-pointer p-2 font-sans text-slate-900 text-left font-medium text-sm"
                 >
                   Dashboard
