@@ -20,8 +20,6 @@ interface IgetPartsInfo {
 export async function getSOInfoAllFunction(props: IgetSOInfoAll) {
   const options = {
     IvSvcOrderNo: props.searchServiceOrder,
-    // IvSvcOrderNo: "4266810380",
-    // IvAscJobNo: "4266443508",
     IsCommonHeader: {
       Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
       AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
@@ -69,7 +67,7 @@ export async function getPartsInfoFunction(props: IgetPartsInfo) {
     IvPartsNo: props.debouncedSearch,
   };
   const response = await fetch(
-    "https://eu.ipaas.samsung.com/eu/gcic/GetPartsInfo/1.0/ImportSet",
+    `${process.env.NEXT_PUBLIC_IPAAS_API_GETSOINFOALL}`,
     {
       method: "POST",
       mode: "cors",

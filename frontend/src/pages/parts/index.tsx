@@ -35,7 +35,7 @@ function Parts() {
         <meta name="robots" content="noindex, nofollow"></meta>
       </Head>
       <Navbar />
-      <main className="flex flex-col justify-center">
+      <main className="flex flex-col justify-center space-between-navbar-and-content">
         <div className="container mx-auto p-1">
           <h1 className=" text-gray-900 text-center sm:text-base md:text-xl lg:text-2xl py-2 capitalize">
             Get info for a specific part
