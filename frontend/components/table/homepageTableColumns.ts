@@ -51,8 +51,16 @@ export const columns: any = [
         accessorKey: 'parts_ordered_date'
     },
     {
+        header: 'Parts ordered',
+        accessorKey: 'partslist'
+    },
+    {
         header: 'Parts issued date',
         accessorKey: 'parts_issued_date'
+    },
+    {
+        header: 'QC Done',
+        accessorKey: 'isqcchecked'
     },
     {
         header: 'QC completed date',

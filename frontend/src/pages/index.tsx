@@ -10,10 +10,11 @@ import Navbar from "../../components/Navbar";
 // This is the axios instance
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
-import Login from "./auth/login";
+import Container from "../../components/Container";
+import ToTopButton from "../../components/ToTopButton";
 import ManagementSearchForm from "../../components/table/ManagementSearchForm";
 import { HomepageModalTabOneContent } from "../../components/table/homepageModalTabOneContent";
-import Container from "../../components/Container";
+import Login from "./auth/login";
 // Tanstack table functionality
 import {
   SortingState,
@@ -186,12 +187,12 @@ const Home = () => {
     return (
       <>
         <Head>
-          <title>Management</title>
+          <title>HHPManagement</title>
           <meta name="robots" content="noindex"></meta>
         </Head>
         <Navbar />
 
-        <main>
+        <main className="space-between-navbar-and-content">
           <Container>
             <section className="flex justify-center pt-5">
               <h1 className="mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
@@ -266,14 +267,14 @@ const Home = () => {
               </ModalManagement>
             </section>
 
-            <section className="relative overflow-x-auto shadow-md rounded-sm my-5">
-              <div className="row flex items-center justify-center">
-                <span className="flex mx-auto text-center font-medium font-sans py-1 text-gray-500">
-                  To edit, double click on the row you want to edit
-                </span>
-              </div>
-              <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 table-auto">
-                <thead className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-sans text-sm uppercase font-semibold  table-auto">
+            <div className="row flex items-center justify-center">
+              <span className="flex mx-auto text-center font-medium font-sans py-1 text-gray-500">
+                To edit, double click on the row you want to edit
+              </span>
+            </div>
+            <div className="max-h-[540px] overflow-y-auto">
+              <table className="relative w-full text-sm text-left text-gray-500 dark:text-gray-400 table-auto">
+                <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-sans text-sm uppercase font-semibold">
                   {table.getHeaderGroups().map((headerGroup) => (
                     <tr
                       key={headerGroup.id}
@@ -300,12 +301,12 @@ const Home = () => {
                     </tr>
                   ))}
                 </thead>
-                <tbody>
+                <tbody className="z-0">
                   {table.getRowModel().rows.map((row: any) => (
                     <tr
                       key={row.id}
                       onDoubleClick={(e) => handleUpdate(e, row.original.id)}
-                      className="border-b dark:border-gray-700"
+                      className="border-b dark:border-gray-700 cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
                     >
                       {row.getVisibleCells().map((cell: any) => (
                         <td
@@ -322,56 +323,63 @@ const Home = () => {
                   ))}
                 </tbody>
               </table>
-            </section>
+            </div>
+            <div className="h-2" />
             <div className="pagination flex gap-1">
               <button
+                className="border rounded p-1"
                 onClick={() => table.setPageIndex(0)}
-                type="button"
-                className="border border-sky-700 rounded-sm font-sans font-semibold text-gray-900 px-2 py-1"
-              >
-                Page 1
-              </button>
-              <button
                 disabled={!table.getCanPreviousPage()}
+              >
+                {"<<"}
+              </button>
+              <button
+                className="border rounded p-1 font-sans font-medium"
                 onClick={() => table.previousPage()}
-                type="button"
-                className="border border-sky-700 rounded-sm font-sans font-semibold text-gray-900 px-2 py-1"
+                disabled={!table.getCanPreviousPage()}
               >
-                Prev
+                {"<"}
               </button>
               <button
-                disabled={!table.getCanNextPage()}
+                className="border rounded p-1 font-sans font-medium"
                 onClick={() => table.nextPage()}
-                type="button"
-                className="border border-sky-700 rounded-sm font-sans font-semibold text-gray-900 px-2 py-1"
+                disabled={!table.getCanNextPage()}
               >
-                Next
+                {">"}
               </button>
               <button
+                className="border rounded p-1 font-sans font-medium"
                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                type="button"
-                className="border border-sky-700 rounded-sm font-sans font-semibold text-gray-900 px-2 py-1"
+                disabled={!table.getCanNextPage()}
               >
-                Last
+                {">>"}
               </button>
-            </div>
-            <div className="flex flex-row items-center gap-2 my-3">
-              <span className="flex gap-1">
-                <p className="font-sans font-semibold text-sky-700">
-                  {table.getRowModel().rows.length}
-                </p>{" "}
-                Rows
-              </span>
               <span className="flex items-center gap-1">
-                <div className="font-sans">Page</div>
-                <strong className="font-sans text-sky-700">
+                <div className="font-sans font-semibold text-[#0d0d0d]">
+                  Page
+                </div>
+                <strong>
                   {table.getState().pagination.pageIndex + 1} of{" "}
                   {table.getPageCount()}
                 </strong>
               </span>
+              <span className="flex items-center gap-1 font-sans">
+                | Go to page:
+                <input
+                  type="number"
+                  defaultValue={table.getState().pagination.pageIndex + 1}
+                  onChange={(e) => {
+                    const page = e.target.value
+                      ? Number(e.target.value) - 1
+                      : 0;
+                    table.setPageIndex(page);
+                  }}
+                  className="border p-1 rounded w-16"
+                />
+              </span>
               <select
-                className="border outline-none cursor-pointer font-semibold font-sans"
                 value={table.getState().pagination.pageSize}
+                className="border border-[#eee] outline-none ring-0 font-sans font-medium cursor-pointer"
                 onChange={(e) => {
                   table.setPageSize(Number(e.target.value));
                 }}
@@ -383,12 +391,15 @@ const Home = () => {
                 ))}
               </select>
             </div>
+            <ToTopButton />
           </Container>
         </main>
       </>
     );
+  } else if (status === "loading") {
+    return <p>Loading...</p>;
   } else {
-    return <Login />;
+    <Login />;
   }
 };
 export default Home;

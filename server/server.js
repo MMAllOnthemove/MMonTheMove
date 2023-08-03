@@ -24,13 +24,13 @@ app.use(express.json());
 // app.use(sessionMiddleware);
 app.set("trust proxy", 1); // trust first proxy
 app.disable("x-powered-by");
-app.use(limiter);
+// app.use(limiter);
 
 // GET all table info from database
 app.get(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, async (req, res) => {
   try {
     const { rows } = await pool.query(
-      "SELECT id, unique_id, service_order_no, to_char(to_timestamp(created_date, 'YYYYMMDD'),'YYYY-MM-DD') AS created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, to_char(to_timestamp(engineer_assign_date, 'YYYYMMDD'),'YYYY-MM-DD') AS engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department FROM units ORDER BY date_modified DESC"
+      "SELECT id, unique_id, service_order_no, to_char(to_timestamp(created_date, 'YYYYMMDD'),'YYYY-MM-DD') AS created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, to_char(to_timestamp(engineer_assign_date, 'YYYYMMDD'),'YYYY-MM-DD') AS engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment FROM units ORDER BY date_modified DESC"
     );
     res.json(rows);
   } catch (err) {
@@ -118,10 +118,14 @@ app.put(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_EDIT, async (req, res) => {
       qcCompletedDate,
       repairCompletedDate,
       ticket,
+      reassignEngineer,
+      isQCchecked,
+      QCcomments,
+      partsArr,
       user,
     } = req.body;
     const editQuery = await pool.query(
-      "UPDATE units SET engineer_analysis = $1, in_house_status = $2, parts_pending_date = $3, parts_ordered_date = $4, parts_issued_date = $5, qc_completed_date = $6, repair_completed_date = $7, ticket = $8, modified_by_who = $9 WHERE id = $10 returning *",
+      "UPDATE units SET engineer_analysis = $1, in_house_status = $2, parts_pending_date = $3, parts_ordered_date = $4, parts_issued_date = $5, qc_completed_date = $6, repair_completed_date = $7, ticket = $8, reassignengineer = $9, isqcchecked = $10, qc_comment = $11, partslist = $12, modified_by_who = $13 WHERE id = $14 returning *",
       [
         engineerAnalysis,
         inHouseStatus,
@@ -131,6 +135,10 @@ app.put(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_EDIT, async (req, res) => {
         qcCompletedDate,
         repairCompletedDate,
         ticket,
+        reassignEngineer,
+        isQCchecked,
+        QCcomments,
+        partsArr,
         user,
         id,
       ]
@@ -172,6 +180,20 @@ app.delete(
 app.post(
   process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_FEEDBACK,
   async (req, res) => {
+    try {
+      const { rows } = await pool.query(
+        "SELECT * FROM feedback ORDER BY date_created"
+      );
+      console.log(rows[0]);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+// Get feedback to database
+app.get(
+  process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_FEEDBACK,
+  async (req, res) => {
     const { issue_title, issue_body, userInfo } = req.body;
     try {
       const results = await pool.query(
@@ -201,9 +223,10 @@ app.get(
   async (req, res) => {
     try {
       const { rows } = await pool.query(
-        "SELECT COUNT(DISTINCT service_order_no) AS units_in FROM units"
+        // "SELECT COUNT(DISTINCT service_order_no) AS units_in FROM units"
+        "select count(1) AS units_in from UNITS where date_modified = current_date"
       );
-      res.json(rows);
+      res.json(rows[0]);
     } catch (err) {
       console.log(err);
     }
@@ -214,9 +237,9 @@ app.get(
   async (req, res) => {
     try {
       const { rows } = await pool.query(
-        "SELECT count(DISTINCT service_order_no) AS pending FROM units WHERE NOT in_house_status = 'Booked in'"
+        "SELECT count(DISTINCT service_order_no) AS pending FROM units WHERE (in_house_status != 'Repair complete' AND in_house_status != 'Booked in') "
       );
-      res.json(rows);
+      res.json(rows[0]);
     } catch (err) {
       console.log(err);
     }
@@ -229,7 +252,7 @@ app.get(
       const { rows } = await pool.query(
         "SELECT count(DISTINCT service_order_no) AS complete FROM units WHERE in_house_status = 'Repair complete'"
       );
-      res.json(rows);
+      res.json(rows[0]);
     } catch (err) {
       console.log(err);
     }

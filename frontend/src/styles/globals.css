@@ -54,6 +54,10 @@ img {
   background-color: white;
   border-bottom: 1px solid #eee;
 }
+/*  space-between-navbar-and-content */
+.space-between-navbar-and-content {
+  margin-top: calc(100vh - 85vh);
+}
 
 .nav_links {
   display: none;
@@ -357,7 +361,7 @@ td {
 }
 
 /* Scroll to top button */
-#myBtn {
+#toTop {
   /* display: none; Hidden by default */
   position: fixed; /* Fixed/sticky position */
   bottom: 20px; /* Place the button at the bottom of the page */
@@ -371,8 +375,9 @@ td {
   padding: 15px; /* Some padding */
   border-radius: 10px; /* Rounded corners */
   font-size: 18px; /* Increase font size */
+  font-family: inherit;
 }
 
-#myBtn:hover {
+#toTop:hover {
   background-color: #555; /* Add a dark-grey background on hover */
 }
