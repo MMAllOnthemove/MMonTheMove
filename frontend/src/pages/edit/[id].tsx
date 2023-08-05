@@ -251,7 +251,6 @@ function EditRow() {
                         onChange={(e) => handleServiceChange(e, index)}
                         maxLength={10}
                         minLength={7}
-                        required
                       />
                       {partsList.length - 1 === index &&
                         partsList.length < 10 && (
