@@ -34,7 +34,7 @@ app.get(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, async (req, res) => {
     );
     res.json(rows);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   }
 });
 
@@ -45,7 +45,7 @@ app.get(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_EDIT, async (req, res) => {
     const dbData = await pool.query("SELECT * FROM units WHERE id = $1", [id]);
     res.json(dbData.rows);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   }
 });
 
@@ -96,11 +96,11 @@ app.post(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, async (req, res) => {
     res.status(201).json({
       status: "success",
       data: {
-        restaurant: results.rows[0],
+        // restaurant: results.rows[0],
       },
     });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   }
 });
 
@@ -151,7 +151,7 @@ app.put(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_EDIT, async (req, res) => {
     }
     // console.log(editQuery.rows);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 });
 
@@ -171,7 +171,7 @@ app.delete(
         res.send("Failed to delete");
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }
 );
@@ -184,9 +184,9 @@ app.post(
       const { rows } = await pool.query(
         "SELECT * FROM feedback ORDER BY date_created"
       );
-      console.log(rows[0]);
+      // console.log(rows[0]);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   }
 );
@@ -204,11 +204,11 @@ app.get(
       res.status(201).json({
         status: "success",
         data: {
-          restaurant: results.rows[0],
+          // restaurant: results.rows[0],
         },
       });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   }
 );
@@ -228,7 +228,7 @@ app.get(
       );
       res.json(rows[0]);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   }
 );
@@ -241,7 +241,7 @@ app.get(
       );
       res.json(rows[0]);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   }
 );
@@ -252,14 +252,17 @@ app.get(
       const { rows } = await pool.query(
         "SELECT count(DISTINCT service_order_no) AS complete FROM units WHERE in_house_status = 'Repair complete'"
       );
+
       res.json(rows[0]);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   }
 );
 
+// Filter by engineers
+
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {
-  console.log(`Server is up and listening on port localhost:${PORT}`);
+  // console.log(`Server is up and listening on port localhost:${PORT}`);
 });
