@@ -13,6 +13,6 @@ export const fetchDataFromDatabase = async (props: IfetchDataFromDatabase) => {
     props.setTableData(response.data);
     // console.log(tableData);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   }
 };

@@ -31,6 +31,7 @@ import { useSession } from "next-auth/react";
 
 // Management columns
 import { columns } from "../../components/table/homepageTableColumns";
+import Spinner from "../../components/Spinner";
 
 const Home = () => {
   // Google auth session
@@ -121,12 +122,12 @@ const Home = () => {
     )
       .then((data: any) => {
         if (!data.ok) {
-          console.log(data.status);
+          // console.log(data.status);
         }
         return data.json();
       })
       .then((update) => {
-        console.log(update);
+        // console.log(update);
       });
     setManagementModalState({
       open: false,
@@ -183,6 +184,12 @@ const Home = () => {
     onGlobalFilterChange: setFiltering,
   });
 
+  if (status === "loading") {
+    return <Spinner />;
+  }
+  if (status === "unauthenticated" || !session) {
+    router.push("/auth/login");
+  }
   if (status === "authenticated") {
     return (
       <>
@@ -273,7 +280,7 @@ const Home = () => {
               </span>
             </div>
             <div className="max-h-[540px] overflow-y-auto">
-              <table className="relative w-full text-sm text-left text-gray-500 dark:text-gray-400 table-auto">
+              <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 dark:text-gray-400 table-auto">
                 <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-sans text-sm uppercase font-semibold">
                   {table.getHeaderGroups().map((headerGroup) => (
                     <tr
@@ -396,10 +403,6 @@ const Home = () => {
         </main>
       </>
     );
-  } else if (status === "loading") {
-    return <p>Loading...</p>;
-  } else {
-    <Login />;
   }
 };
 export default Home;

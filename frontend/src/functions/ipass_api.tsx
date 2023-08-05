@@ -82,5 +82,5 @@ export async function getPartsInfoFunction(props: IgetPartsInfo) {
   );
   const data = await response.json();
   props.setData(data);
-  console.log(data);
+  // console.log(data);
 }
