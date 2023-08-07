@@ -5,8 +5,8 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 // Next auth session hook
 import { useSession } from "next-auth/react";
-import Login from "../auth/login";
 import Head from "next/head";
+import Login from "../auth/login";
 
 function EditRow() {
   const { tableInfo, setTableInfo } = useContext(TableInfoContext);
@@ -160,7 +160,7 @@ function EditRow() {
               <span>
                 <label
                   htmlFor="showServiceOrderNumber"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium font-sans text-gray-900 "
                 >
                   Service Order No
                 </label>
@@ -168,7 +168,7 @@ function EditRow() {
                   type="text"
                   name="showServiceOrderNumber"
                   id="showServiceOrderNumber"
-                  className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-whitew-full"
+                  className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                   value={showServiceOrderNumber}
                   disabled
                 />
@@ -176,7 +176,7 @@ function EditRow() {
               <span>
                 <label
                   htmlFor="engineer"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium font-sans text-gray-900 "
                 >
                   Engineer
                 </label>
@@ -184,7 +184,7 @@ function EditRow() {
                   type="text"
                   name="engineer"
                   id="engineer"
-                  className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-whitew-full"
+                  className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   defaultValue={engineer}
                   disabled
                 />
@@ -197,7 +197,7 @@ function EditRow() {
                   <select
                     name="reassignEngineer"
                     id="reassignEngineer"
-                    className="mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    className="mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                     value={reassignEngineer}
                     onChange={(e) => setReassignEngineer(e.target.value)}
                   >
@@ -220,14 +220,14 @@ function EditRow() {
               <span>
                 <label
                   htmlFor="engineerAnalysis"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium font-sans text-gray-900 "
                 >
                   Engineer Analysis
                 </label>
                 <textarea
                   name="engineerAnalysis"
                   id="engineerAnalysis"
-                  className="mb-2 bg-white border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  className="mb-2 bg-white border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5 "
                   value={engineerAnalysis}
                   onChange={(event) => setEngineerAnalysis(event.target.value)}
                 ></textarea>
@@ -235,15 +235,17 @@ function EditRow() {
               <span>
                 <label
                   htmlFor="partNumber"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium font-sans text-gray-900 "
                 >
                   Parts you are ordering. <small>Max = 10</small>
+                  <br />
+                  <small>e.g. LED - GHS7-0000..</small>
                 </label>
                 {partsList.map((singleService, index) => (
                   <div key={index} className="services">
                     <div className="first-division flex justify-space-between items-center gap-2">
                       <input
-                        className="my-2 border w-auto border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        className="my-2 border w-auto border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
                         name="partNumber"
                         type="text"
                         id="partNumber"
@@ -255,7 +257,7 @@ function EditRow() {
                       {partsList.length - 1 === index &&
                         partsList.length < 10 && (
                           <button
-                            className="my-2 bg-[#082f49]  font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 add-btn"
+                            className="my-2 bg-[#082f49]  font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
                             type="button"
                             onClick={handleServiceAdd}
                           >
@@ -280,14 +282,14 @@ function EditRow() {
               <span>
                 <label
                   htmlFor="inHouseStatus"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium font-sans text-gray-900"
                 >
                   In house status
                 </label>
                 <select
                   value={inHouseStatus}
                   onChange={(e) => setInHouseStatus(e.target.value)}
-                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 >
                   <option disabled value="">
                     Choose status
@@ -341,7 +343,7 @@ function EditRow() {
                     />
                     <label
                       htmlFor="QcChecked"
-                      className="cursor-pointer mb-2 text-sm font-medium font-sans text-gray-900 dark:text-white"
+                      className="cursor-pointer mb-2 text-sm font-medium font-sans text-gray-900"
                     >
                       QC checked?
                     </label>
@@ -349,7 +351,7 @@ function EditRow() {
                   <span>
                     <label
                       htmlFor="QCcomments"
-                      className="block mb-2 text-sm font-medium font-sans text-gray-900 dark:text-white"
+                      className="block mb-2 text-sm font-medium font-sans text-gray-900"
                     >
                       QC comments
                     </label>
@@ -358,7 +360,7 @@ function EditRow() {
                       id="QCcomments"
                       value={QCcomments}
                       onChange={(e) => setQCcomments(e.target.value)}
-                      className="mb-2 bg-white border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                      className="mb-2 bg-white border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5"
                     ></textarea>
                   </span>
                 </>
@@ -369,7 +371,7 @@ function EditRow() {
               <span>
                 <label
                   htmlFor="partsPendingDate"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium font-sans text-gray-900"
                 >
                   Waiting for parts date
                 </label>
@@ -379,13 +381,13 @@ function EditRow() {
                   min={today}
                   max={today}
                   id="partsPendingDate"
-                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
               </span>
               <span>
                 <label
                   htmlFor="partsOrderedDate"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium font-sans text-gray-900"
                 >
                   Parts ordered date
                 </label>
@@ -395,13 +397,13 @@ function EditRow() {
                   min={today}
                   max={today}
                   id="partsOrderedDate"
-                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
               </span>
               <span>
                 <label
                   htmlFor="partsIssuedDate"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium font-sans text-gray-900"
                 >
                   Parts issued date
                 </label>
@@ -411,13 +413,13 @@ function EditRow() {
                   min={today}
                   max={today}
                   id="partsIssuedDate"
-                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
               </span>
               <span>
                 <label
                   htmlFor="qcCompletedDate"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium font-sans text-gray-900"
                 >
                   QC completed date
                 </label>
@@ -427,13 +429,13 @@ function EditRow() {
                   min={today}
                   max={today}
                   id="qcCompletedDate"
-                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
               </span>
               <span>
                 <label
                   htmlFor="repairCompletedDate"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium font-sans text-gray-900"
                 >
                   Repair completed date
                 </label>
@@ -443,13 +445,13 @@ function EditRow() {
                   min={today}
                   max={today}
                   id="repairCompletedDate"
-                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
               </span>
               <span>
                 <label
                   htmlFor="ticket"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium font-sans text-gray-900"
                 >
                   Set ticket number
                 </label>
@@ -459,13 +461,13 @@ function EditRow() {
                   id="ticket"
                   value={ticket}
                   onChange={(e) => setTicket(e.target.value)}
-                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
               </span>
               <span>
                 <button
                   type="submit"
-                  className="bg-[#082f49] w-full font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 my-3"
+                  className="bg-[#082f49] w-full font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
                 >
                   Update
                 </button>
