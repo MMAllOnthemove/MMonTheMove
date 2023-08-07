@@ -60,7 +60,7 @@ function Report() {
         </Head>
         <main className="flex justify-center h-screen items-center flex-col space-between-navbar-and-content">
           <div className="container mx-auto">
-            <h1 className="mb-4 font-extrabold text-gray-900 text-center font-sans text-xl dark:text-white">
+            <h1 className="mb-4 font-extrabold text-gray-900 text-center font-sans text-xl">
               Report a problem
             </h1>
             <article className="rounded-md border border-slate-100 p-2 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -71,7 +71,7 @@ function Report() {
                 <select
                   name="issue_title"
                   id="issue_title"
-                  className="mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  className="mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   value={issue_title}
                   onChange={(e) => setIssueTitle(e.target.value)}
                 >
@@ -91,14 +91,14 @@ function Report() {
                 </select>
                 <label
                   htmlFor="issue_body"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium font-sans text-gray-900"
                 >
                   Issue body
                 </label>
                 <textarea
                   name="issue_body"
                   id="issue_body"
-                  className="mb-2 bg-white border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  className="mb-2 bg-white border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5"
                   value={issue_body}
                   onChange={(event) => setIssueBody(event.target.value)}
                 ></textarea>

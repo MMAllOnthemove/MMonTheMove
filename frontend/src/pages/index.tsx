@@ -30,8 +30,8 @@ import {
 import { useSession } from "next-auth/react";
 
 // Management columns
-import { columns } from "../../components/table/homepageTableColumns";
 import Spinner from "../../components/Spinner";
+import { columns } from "../../components/table/homepageTableColumns";
 
 const Home = () => {
   // Google auth session
@@ -91,8 +91,9 @@ const Home = () => {
       setEngineerAssignTime,
     });
   }, [searchServiceOrder]);
+
   const user = session?.user?.email;
-  // console.log(user);
+
   const postData = () => {
     const postThisInfo = {
       service_order,
@@ -155,10 +156,10 @@ const Home = () => {
         cache: "default",
         next: { revalidate: 2 }, // refetch every 3 seconds
       }
-    );
-    const data = await response.json();
-    setTableData(data);
-    return data;
+    )
+      .then((res) => res.json())
+      .then((data) => setTableData(data))
+      .catch((e) => console.log("Fetch from db error", e));
   }
 
   // Redirects user to the edit table page
@@ -188,7 +189,7 @@ const Home = () => {
     return <Spinner />;
   }
   if (status === "unauthenticated" || !session) {
-    router.push("/auth/login");
+    return <Login />;
   }
   if (status === "authenticated") {
     return (
@@ -202,7 +203,7 @@ const Home = () => {
         <main className="space-between-navbar-and-content">
           <Container>
             <section className="flex justify-center pt-5">
-              <h1 className="mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
+              <h1 className="mb-4 text-3xl font-extrabold text-gray-900 md:text-5xl lg:text-6xl">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
                   HHP
                 </span>{" "}
@@ -280,7 +281,7 @@ const Home = () => {
               </span>
             </div>
             <div className="max-h-[540px] overflow-y-auto">
-              <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 dark:text-gray-400 table-auto">
+              <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
                 <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-sans text-sm uppercase font-semibold">
                   {table.getHeaderGroups().map((headerGroup) => (
                     <tr
@@ -313,12 +314,12 @@ const Home = () => {
                     <tr
                       key={row.id}
                       onDoubleClick={(e) => handleUpdate(e, row.original.id)}
-                      className="border-b dark:border-gray-700 cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
+                      className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
                     >
                       {row.getVisibleCells().map((cell: any) => (
                         <td
                           key={cell.id}
-                          className="px-4 py-3 font-sans font-medium text-sm"
+                          className="px-4 py-3 font-sans font-medium text-sm max-w-full"
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
