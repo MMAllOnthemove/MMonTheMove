@@ -3,9 +3,9 @@ import { signIn, useSession } from "next-auth/react";
 function Login() {
   const { data: session } = useSession();
   return (
-    <section className="bg-gray-20 dark:bg-gray-900 flex justify-center flex-col h-screen text-center">
+    <section className="bg-gray-20 flex justify-center flex-col h-screen text-center">
       <div className="container mx-auto flex gap-3 flex-col">
-        <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+        <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl ">
           Login
         </h1>
         <button
