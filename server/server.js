@@ -96,7 +96,7 @@ app.post(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, async (req, res) => {
     res.status(201).json({
       status: "success",
       data: {
-        // restaurant: results.rows[0],
+        restaurant: results.rows[0],
       },
     });
   } catch (err) {
@@ -204,7 +204,7 @@ app.get(
       res.status(201).json({
         status: "success",
         data: {
-          // restaurant: results.rows[0],
+          restaurant: results.rows[0],
         },
       });
     } catch (err) {
@@ -219,12 +219,12 @@ app.get(
 // DISTINCT to filter out any duplicates
 
 app.get(
-  `${process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT}/in`,
+  `${process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT}/in/today`,
   async (req, res) => {
     try {
       const { rows } = await pool.query(
         // "SELECT COUNT(DISTINCT service_order_no) AS units_in FROM units"
-        "select count(1) AS units_in from UNITS where date_modified = current_date"
+        "select count(1) AS units_in_today from UNITS where (DATE(date_modified) = CURRENT_DATE)"
       );
       res.json(rows[0]);
     } catch (err) {
@@ -232,6 +232,35 @@ app.get(
     }
   }
 );
+app.get(
+  `${process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT}/in`,
+  async (req, res) => {
+    try {
+      const { rows } = await pool.query(
+        // "SELECT COUNT(DISTINCT service_order_no) AS units_in FROM units"
+        "select count(1) AS units_in from UNITS"
+      );
+      res.json(rows[0]);
+    } catch (err) {
+      // console.log(err);
+    }
+  }
+);
+
+app.get(
+  `${process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT}/pending/today`,
+  async (req, res) => {
+    try {
+      const { rows } = await pool.query(
+        "SELECT count(DISTINCT service_order_no) AS pending_today FROM units WHERE (in_house_status != 'Repair complete' AND in_house_status != 'Booked in') AND (DATE(date_modified) = CURRENT_DATE)"
+      );
+      res.json(rows[0]);
+    } catch (err) {
+      // console.log(err);
+    }
+  }
+);
+
 app.get(
   `${process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT}/pending`,
   async (req, res) => {
@@ -246,6 +275,20 @@ app.get(
   }
 );
 app.get(
+  `${process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT}/complete/today`,
+  async (req, res) => {
+    try {
+      const { rows } = await pool.query(
+        "SELECT count(DISTINCT service_order_no) AS complete_today FROM units WHERE (in_house_status != 'Repair complete' AND in_house_status != 'Booked in') AND (DATE(date_modified) = CURRENT_DATE)"
+      );
+
+      res.json(rows[0]);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+app.get(
   `${process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT}/complete`,
   async (req, res) => {
     try {
@@ -255,14 +298,71 @@ app.get(
 
       res.json(rows[0]);
     } catch (err) {
-      // console.log(err);
+      console.log(err);
     }
   }
 );
 
 // Filter by engineers
 
+// Engineer Jobs fixed for today
+
+app.get(
+  `${process.env.NEXT_PUBLIC_SERVER_ENGINEER_JOBS_COUNT_OVERVIEW}/today`,
+  async (req, res) => {
+    try {
+      const { rows } = await pool
+        .query(
+          "select COUNT(DISTINCT service_order_no) AS units, engineer from units WHERE (DATE(date_modified) = CURRENT_DATE) GROUP BY engineer"
+        )
+        .catch((e) => console.log("today overview error", e));
+
+      res.json(rows);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+
+// Engineer Jobs fixed for the past 30 days
+
+app.get(
+  `${process.env.NEXT_PUBLIC_SERVER_ENGINEER_JOBS_COUNT_OVERVIEW}/month`,
+  async (req, res) => {
+    try {
+      const { rows } = await pool
+        .query(
+          "select COUNT(DISTINCT service_order_no) AS units, engineer from units WHERE DATE(date_modified) >= date_trunc('month', CURRENT_TIMESTAMP - interval '1 month') GROUP BY engineer"
+        )
+        .catch((e) => console.log("Month overview error", e));
+
+      res.json(rows);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+
+// Engineer Jobs fixed for all time
+
+app.get(
+  `${process.env.NEXT_PUBLIC_SERVER_ENGINEER_JOBS_COUNT_OVERVIEW}/all-time`,
+  async (req, res) => {
+    try {
+      const { rows } = await pool
+        .query(
+          "select COUNT(DISTINCT service_order_no) AS units, engineer from units GROUP BY engineer"
+        )
+        .catch((e) => console.log("alltime overview error", e));
+
+      res.json(rows);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {
-  // console.log(`Server is up and listening on port localhost:${PORT}`);
+  console.log(`Server is up and listening on port localhost:${PORT}`);
 });

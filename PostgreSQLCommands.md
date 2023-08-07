@@ -1,6 +1,6 @@
 # Useful commands to remember
 
-### Install PostgreSQL
+## Install PostgreSQL
 
 ```
 sudo apt update
@@ -19,7 +19,7 @@ apt install postgresql postgresql-contrib
 
 `\conninfo`
 
-### List of all the databases that are available on a server,
+### List of all the databases that are available on a server
 
 `\l`
 
@@ -27,7 +27,7 @@ apt install postgresql postgresql-contrib
 
 `\du`
 
-### Since the default “postgres” user does not have a password, you should set it yourself.
+### Since the default “postgres” user does not have a password, you should set it yourself
 
 `\password postgres`
 
@@ -100,12 +100,11 @@ Double check connection details
 
 `\conninfo`
 
-
 Now you can start writing SQL queries to retrieve data from your database tables.
 
 ``` SELECT * FROM clients; ```
 
-###  Connect via GUI Client (pgAdmin)
+### Connect via GUI Client (pgAdmin)
 
 After installing pgAdmin 4 and running it you will get to a standard pgAdmin 4 dashboard.
 
@@ -125,7 +124,7 @@ Selecting date and formating from 6 digits
 ``` SELECT to_char(to_timestamp('310322', 'DDMMYY'),'YYYY-MM-DD') ```
 
 <!-- Calculate date_completed -->
-```  (repair_completed_date::date - created_date::date) AS completed_days ```
+``` (repair_completed_date::date - created_date::date) AS completed_days ```
 
 <!-- Count jobs done by specific engineer -->
 ``` SELECT count(DISTINCT service_order_no) FROM units WHERE engineer = '[name]' ```
@@ -152,4 +151,4 @@ Selecting date and formating from 6 digits
 ``` select distinct count( *) from units WHERE (DATE(created_date) >= date_trunc('week', CURRENT_TIMESTAMP - interval '1 week') and DATE(created_date) < date_trunc('week', CURRENT_TIMESTAMP)); ```
 
 <!-- Select all jobs for one month -->
-``` select distinct * from units WHERE (DATE(created_date) >= date_trunc('month', CURRENT_TIMESTAMP - interval '1 month') and DATE(created_date) < date_trunc('month', CURRENT_TIMESTAMP))```
+```select distinct * from units WHERE (DATE(created_date) >= date_trunc('month', CURRENT_TIMESTAMP - interval '1 month') and DATE(created_date) < date_trunc('month', CURRENT_TIMESTAMP))```
