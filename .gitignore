@@ -5,3 +5,5 @@ node_modules
 .env.local
 frontend/db/db.sql
 server.config
+frontend/cypress/support/e2e.ts
+frontend/cypress/e2e/spec.cy.ts
