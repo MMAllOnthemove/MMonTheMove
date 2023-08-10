@@ -90,3 +90,10 @@ unit_id BIGSERIAL
 -- ;
 
 );
+
+CREATE TABLE repairshpr_hhp (
+    id BIGSERIAL PRIMARY KEY,
+unique_id  uuid DEFAULT gen_random_uuid(), 
+repair_id BIGSERIAL REFERENCES units (id),
+
+)
