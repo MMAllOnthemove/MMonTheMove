@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, memo } from "react";
 import {
   BadgeDelta,
   BarChart,
@@ -12,8 +12,9 @@ import {
   Text,
   Title,
 } from "@tremor/react";
+import { ResponsiveContainer } from "recharts";
 
-function BarChartAlltime() {
+const BarChartAlltime = memo(() => {
   const [barGraphDataAllTime, setBarGraphDataAllTime] = useState<
     string[] | number[] | any[]
   >([]);
@@ -36,21 +37,21 @@ function BarChartAlltime() {
     alltimeJobsDashboardGraph();
   }, []);
 
+  // The width(0) and height(0) of chart should be greater than 0,
+  // please check the style of container, or the props width(100%) and height(100%),
+  //  or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the       height and width.
   return (
-    <Card className="my-5">
-      <div className="mt-10" style={{ width: "100%", height: "100%" }}>
-        <Title>Number of units added all time</Title>
-        <BarChart
-          className="mt-6"
-          data={barGraphDataAllTime}
-          index="engineer"
-          categories={["units"]}
-          colors={["orange"]}
-          yAxisWidth={40}
-        />
-      </div>
-    </Card>
+    <ResponsiveContainer width="100%" height={400}>
+      <BarChart
+        className="mt-6"
+        data={barGraphDataAllTime}
+        index="engineer"
+        categories={["units"]}
+        colors={["orange"]}
+        yAxisWidth={40}
+      />
+    </ResponsiveContainer>
   );
-}
+});
 
 export default BarChartAlltime;
