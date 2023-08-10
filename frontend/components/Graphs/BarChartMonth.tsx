@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, memo } from "react";
 import {
   BadgeDelta,
   BarChart,
@@ -12,8 +12,9 @@ import {
   Text,
   Title,
 } from "@tremor/react";
+import { ResponsiveContainer } from "recharts";
 
-function BarChartMonth() {
+const BarChartMonth = memo(() => {
   const [barGraphDataMonth, setBarGraphDataMonth] = useState<
     string[] | number[] | any[]
   >([]);
@@ -37,20 +38,17 @@ function BarChartMonth() {
   }, []);
 
   return (
-    <Card className="my-5">
-      <div className="mt-10" style={{ width: "100%", height: "100%" }}>
-        <Title>Number of units added for month</Title>
-        <BarChart
-          className="mt-6"
-          data={barGraphDataMonth}
-          index="engineer"
-          categories={["units"]}
-          colors={["orange"]}
-          yAxisWidth={40}
-        />
-      </div>
-    </Card>
+    <ResponsiveContainer width="100%" height={400}>
+      <BarChart
+        className="mt-6"
+        data={barGraphDataMonth}
+        index="engineer"
+        categories={["units"]}
+        colors={["orange"]}
+        yAxisWidth={40}
+      />
+    </ResponsiveContainer>
   );
-}
+});
 
 export default BarChartMonth;
