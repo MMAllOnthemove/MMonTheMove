@@ -12,10 +12,7 @@ require("dotenv").config();
 app.use(helmet());
 app.use(
   cors({
-    origin: [
-      process.env.NEXT_PUBLIC_MAIN_DOMAIN,
-      process.env.NEXT_PRODUCTION_SUBDOMAIN_REGEX,
-    ],
+    origin: ["http://localhost:3000"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
@@ -364,5 +361,5 @@ app.get(
 
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {
-  console.log(`Server is up and listening on port localhost:${PORT}`);
+  console.log(`Server is up`);
 });

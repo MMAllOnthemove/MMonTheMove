@@ -22,10 +22,7 @@ import {
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState, useCallback } from "react";
-import BarChartToday from "../../../components/Graphs/BarChartToday";
-import BarChartMonth from "../../../components/Graphs/BarChartMonth";
-import BarChartAlltime from "../../../components/Graphs/BarChartAllTime";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
   // Google auth session
@@ -40,6 +37,15 @@ export default function Dashboard() {
   const [unitsInCount, setUnitsInCount] = useState("");
 
   // Graph
+  const [barGraphDataToday, setBarGraphDataToday] = useState<
+    string[] | number[] | any[]
+  >([]);
+  const [barGraphDataMonth, setBarGraphDataMonth] = useState<
+    string[] | number[] | any[]
+  >([]);
+  const [barGraphDataAllTime, setBarGraphDataAllTime] = useState<
+    string[] | number[] | any[]
+  >([]);
 
   useEffect(() => {
     // Stats
@@ -49,6 +55,11 @@ export default function Dashboard() {
     dashboardCountUnitsPending();
     dashboardCountUnitsCompleteToday();
     dashboardCountUnitsComplete();
+
+    // Graphs
+    todaysJobsDashboardGraph();
+    monthlyJobsDashboardGraph();
+    alltimeJobsDashboardGraph();
   }, [
     unitsInCountToday,
     unitsInCount,
@@ -56,92 +67,138 @@ export default function Dashboard() {
     pendingCount,
     completeCount,
     completeCountToday,
+    barGraphDataToday,
+    barGraphDataMonth,
+    barGraphDataAllTime,
   ]);
 
-  const dashboardCountUnitsInToday = useCallback(async () => {
+  async function dashboardCountUnitsInToday() {
     await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT}/in/today`,
-
       {
-        method: "GET",
-        headers: { accept: "application/json" },
         cache: "default",
         next: { revalidate: 2 },
       }
     )
       .then((res) => res.json())
-      .then((data) => setUnitsInCountToday(data.units_in_today));
-  }, [unitsInCountToday]);
-
-  const dashboardCountUnitsIn = useCallback(async () => {
+      .then((data) => setUnitsInCountToday(data.units_in_today))
+      .catch((e) => console.log("Dashboard units in today error", e));
+  }
+  async function dashboardCountUnitsIn() {
     await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT}/in`,
       {
-        method: "GET",
-        headers: { accept: "application/json" },
         cache: "default",
         next: { revalidate: 2 },
       }
     )
       .then((res) => res.json())
-      .then((data) => setUnitsInCount(data.units_in));
-  }, [unitsInCount]);
+      .then((data) => setUnitsInCount(data.units_in))
+      .catch((e) => console.log("Dashboard units in error", e));
+  }
 
-  const dashboardCountUnitsPendingToday = useCallback(async () => {
+  async function dashboardCountUnitsPendingToday() {
     await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT}/pending/today`,
       {
-        method: "GET",
-        headers: { accept: "application/json" },
         cache: "default",
         next: { revalidate: 2 },
       }
     )
       .then((res) => res.json())
-      .then((data) => setPendingCountToday(data.pending_today));
-  }, [pendingCountToday]);
-
-  const dashboardCountUnitsPending = useCallback(async () => {
+      .then((data) => setPendingCountToday(data.pending_today))
+      .catch((e) => console.log("Dashboard units pending today error", e));
+  }
+  async function dashboardCountUnitsPending() {
     await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT}/pending`,
       {
-        method: "GET",
-        headers: { accept: "application/json" },
         cache: "default",
         next: { revalidate: 2 },
       }
     )
       .then((res) => res.json())
-      .then((data) => setPendingCount(data.pending));
-  }, [pendingCount]);
+      .then((data) => setPendingCount(data.pending))
+      .catch((e) => console.log("Dashboard units pending error", e));
+  }
 
-  const dashboardCountUnitsComplete = useCallback(async () => {
+  async function dashboardCountUnitsComplete() {
     await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT}/complete`,
       {
-        method: "GET",
-        headers: { accept: "application/json" },
         cache: "default",
         next: { revalidate: 2 },
       }
     )
       .then((res) => res.json())
-      .then((data) => setCompleteCount(data.complete));
-  }, [completeCount]);
+      .then((data) => setCompleteCount(data.complete))
+      .catch((e) => console.log("Dashboard units complete error", e));
+  }
 
-  const dashboardCountUnitsCompleteToday = useCallback(async () => {
+  async function dashboardCountUnitsCompleteToday() {
     await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT}/complete/today`,
       {
-        method: "GET",
-        headers: { accept: "application/json" },
         cache: "default",
         next: { revalidate: 2 },
       }
     )
       .then((res) => res.json())
-      .then((data) => setCompleteCountToday(data.complete_today));
-  }, [completeCountToday]);
+      .then((data) => setCompleteCountToday(data.complete_today))
+      .catch((e) => console.log("Dashboard units complete today error", e));
+  }
+
+  // Graphs
+  async function todaysJobsDashboardGraph() {
+    await fetch(
+      `http://localhost:8000/hhp/api/v1/engineer/jobs-count/overview/today`
+    )
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Data not ok");
+        }
+        res.json();
+      })
+      .then((data) => {
+        console.log("Today graph error", data);
+        setBarGraphDataToday(data);
+      })
+      .catch((e) => console.log("Today graph error", e));
+  }
+
+  async function monthlyJobsDashboardGraph() {
+    await fetch(
+      `http://localhost:8000/hhp/api/v1/engineer/jobs-count/overview/month`
+    )
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Data not ok");
+        }
+        res.json();
+      })
+      .then((data) => {
+        console.log("Monthly graph", data);
+        setBarGraphDataMonth(data);
+      })
+      .catch((e) => console.log("Monthly graph error", e));
+  }
+
+  async function alltimeJobsDashboardGraph() {
+    await fetch(
+      `http://localhost:8000/hhp/api/v1/engineer/jobs-count/overview/all-time`
+    )
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Data not ok");
+        }
+        res.json();
+      })
+      .then((data) => {
+        console.log("All-time graph", data);
+        setBarGraphDataAllTime(data);
+      })
+      .catch((e) => console.log("All-time graph error", e));
+  }
 
   const router = useRouter();
 
@@ -158,6 +215,7 @@ export default function Dashboard() {
             <h1 className="mb-4  font-semibold font-sans leading-none tracking-tight text-gray-900 ">
               Analytics overview
             </h1>
+
             <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-4 my-3 ">
               <article className=" flex flex-col justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer">
                 <div className="first_row flex  justify-between items-center">
@@ -251,13 +309,58 @@ export default function Dashboard() {
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  <BarChartToday />
+                  <Card className="my-5">
+                    <div
+                      className="mt-10"
+                      style={{ width: "100%", height: "100%" }}
+                    >
+                      <Title>Number of units added for today</Title>
+                      <BarChart
+                        className="mt-6"
+                        data={barGraphDataToday}
+                        index="engineer"
+                        categories={["units"]}
+                        colors={["orange"]}
+                        yAxisWidth={40}
+                      />
+                    </div>
+                  </Card>
                 </TabPanel>
                 <TabPanel>
-                  <BarChartMonth />
+                  <Card className="my-5">
+                    <div
+                      className="mt-10"
+                      style={{ width: "100%", height: "100%" }}
+                    >
+                      <Title>Number of units added for month</Title>
+                      <BarChart
+                        className="mt-6"
+                        data={barGraphDataMonth}
+                        index="engineer"
+                        categories={["units"]}
+                        colors={["orange"]}
+                        yAxisWidth={40}
+                      />
+                    </div>
+                  </Card>
                 </TabPanel>
                 <TabPanel>
-                  <BarChartAlltime />
+                  <Card className="my-5">
+                    <div
+                      className="mt-10"
+                      style={{ width: "100%", height: "100%" }}
+                    >
+                      <Title>Number of units added all time</Title>
+                      <BarChart
+                        className="mt-6"
+                        data={barGraphDataAllTime}
+                        index="engineer"
+                        categories={["units"]}
+                        colors={["orange"]}
+                        yAxisWidth={40}
+                      />
+                    </div>
+                  </Card>
                 </TabPanel>
               </TabPanels>
             </TabGroup>
