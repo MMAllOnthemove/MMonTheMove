@@ -362,6 +362,42 @@ app.get(
   }
 );
 
+// QC CHECKED ALL TODAY
+app.get(
+  `${process.env.NEXT_PUBLIC_SERVER_QC_CHECKED_JOBS_COUNT_OVERVIEW}`,
+  async (req, res) => {
+    try {
+      const { rows } = await pool
+        .query(
+          "SELECT count(DISTINCT service_order_no) AS qc_checked from units WHERE isqcchecked = true"
+        )
+        .catch((e) => console.log("qc all time overview error", e));
+
+      res.json(rows);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+
+// QC CHECKED ALL TODAY
+app.get(
+  `${process.env.NEXT_PUBLIC_SERVER_QC_CHECKED_JOBS_COUNT_OVERVIEW}/today`,
+  async (req, res) => {
+    try {
+      const { rows } = await pool
+        .query(
+          "SELECT count(DISTINCT service_order_no) AS qc_checked_today from units WHERE isqcchecked = true AND (DATE(date_modified) = CURRENT_DATE)"
+        )
+        .catch((e) => console.log("qc all time overview error", e));
+
+      res.json(rows);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {
   console.log(`Server is up`);
