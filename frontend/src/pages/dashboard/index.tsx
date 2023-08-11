@@ -38,6 +38,8 @@ export default function Dashboard() {
   const [pendingCount, setPendingCount] = useState("");
   const [unitsInCountToday, setUnitsInCountToday] = useState("");
   const [unitsInCount, setUnitsInCount] = useState("");
+  const [isQCChecked, setIsQCChecked] = useState("");
+  const [isQCCheckedToday, setIsQCCheckedToday] = useState("");
 
   // Graph
 
@@ -49,6 +51,7 @@ export default function Dashboard() {
     dashboardCountUnitsPending();
     dashboardCountUnitsCompleteToday();
     dashboardCountUnitsComplete();
+    qcCheckedUnits(), qcCheckedUnitsToday();
   }, [
     unitsInCountToday,
     unitsInCount,
@@ -56,6 +59,8 @@ export default function Dashboard() {
     pendingCount,
     completeCount,
     completeCountToday,
+    isQCChecked,
+    isQCCheckedToday,
   ]);
 
   const dashboardCountUnitsInToday = useCallback(async () => {
@@ -142,6 +147,31 @@ export default function Dashboard() {
       .then((res) => res.json())
       .then((data) => setCompleteCountToday(data.complete_today));
   }, [completeCountToday]);
+
+  // QC CHECKED
+  const qcCheckedUnitsToday = async () => {
+    await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_QC_CHECKED}/today`, {
+      method: "GET",
+      headers: { accept: "application/json" },
+      cache: "default",
+      next: { revalidate: 2 },
+    })
+      .then((res) => res.json())
+      .then((data) => setIsQCCheckedToday(data[0].qc_checked_today));
+  };
+
+  const qcCheckedUnits = useCallback(async () => {
+    await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_QC_CHECKED}`, {
+      method: "GET",
+      headers: { accept: "application/json" },
+      cache: "default",
+      next: { revalidate: 2 },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setIsQCChecked(data[0].qc_checked);
+      });
+  }, [isQCChecked]);
 
   const router = useRouter();
 
@@ -238,6 +268,28 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <UserGroupIcon className="h-6 w-6 text-gray-500" />
+                </div>
+              </article>
+              <article className=" flex flex-col justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer">
+                <div className="first_row flex  justify-between items-center">
+                  <div>
+                    <Text className="text-sm text-gray-400  font-medium font-sans">
+                      QC CHECKED
+                    </Text>
+                    <Metric className="text-xl lg:text-5xl font-bold text-indigo-500 ">
+                      {isQCChecked}
+                    </Metric>
+                  </div>
+                  <ArrowDownTrayIcon className="h-6 w-6 text-gray-500" />
+                </div>
+                <div className="second_row mt-3">
+                  <BadgeDelta
+                    deltaType="moderateIncrease"
+                    isIncreasePositive={true}
+                    size="md"
+                  >
+                    <span>Today</span> {isQCCheckedToday}
+                  </BadgeDelta>
                 </div>
               </article>
             </div>
