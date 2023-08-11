@@ -94,25 +94,24 @@ unit_id BIGSERIAL
 CREATE TABLE tests_repairshpr_hhp (
 id BIGSERIAL REFERENCES units (id),
 repair_id BIGSERIAL PRIMARY KEY,
-unique_id  uuid DEFAULT gen_random_uuid() REFERENCES units (uuid), 
-imei TEXT  REFERENCES units (imei),
-service_order_no VARCHAR(15) REFERENCES units (service_order_no),
-warranty text REFERENCES units (warranty),
+imei TEXT,
+service_order_no VARCHAR(15),
+warranty text,
 created_date text,
-model text REFERENCES units (model),
-engineer text REFERENCES units (engineer), -- DOUBT
+model text,
+engineer text, -- DOUBT
 fault text,
-serial_number text REFERENCES units (serial_number),
-in_house_status text REFERENCES units (in_house_status), --DOUBT
-engineer_assign_date text = created_date,
-engineer_assign_time text,
+serial_number text,
+in_house_status text, --DOUBT
+engineer_assign_date DATE NOT NULL DEFAULT CURRENT_DATE,
+engineer_assign_time TIME NOT NULL DEFAULT CURRENT_TIME,
 ticket text,
-engineer_analysis text REFERENCES units (engineer_analysis),
-parts_ordered_date text REFERENCES units (parts_ordered_date),
-parts_pending_date text REFERENCES units (parts_pending_date),
-parts_issued_date text REFERENCES units (parts_issued_date),
-qc_completed_date text REFERENCES units (qc_completed_date),
-repair_completed_date text REFERENCES units (repair_completed_date),
-department text REFERENCES units (department),
+engineer_analysis text,
+parts_ordered_date text,
+parts_pending_date text,
+parts_issued_date text,
+qc_completed_date text,
+repair_completed_date text,
+department text,
 date_modified DATE NOT NULL DEFAULT CURRENT_DATE
 )
