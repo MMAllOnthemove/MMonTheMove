@@ -14,7 +14,10 @@ import Container from "../../components/Container";
 import ToTopButton from "../../components/ToTopButton";
 import ManagementSearchForm from "../../components/table/ManagementSearchForm";
 import { HomepageModalTabOneContent } from "../../components/table/homepageModalTabOneContent";
+import { HomepageModalTabTwoContent } from "../../components/table/homepageModalTabTwoContent";
 import Login from "./auth/login";
+import moment from "moment";
+
 // Tanstack table functionality
 import {
   SortingState,
@@ -41,6 +44,8 @@ const Home = () => {
 
   // Not to be confused with 'setServiceOrder'
   const [searchServiceOrder, setSearchServiceOrder] = useState("");
+  // Search ticket for tab two
+  const [searchTicket, setSearchTicket] = useState("");
 
   // Chakra ui toast
   const toast = useToast();
@@ -71,10 +76,40 @@ const Home = () => {
   const [ticket, setTicket] = useState("");
   const [department, setDepartment] = useState("");
 
-  // GSPN DATA
-  useEffect(() => {
-    fetchDataFromDatabase();
-  }, []);
+  // Repairshpr states start here
+  const [repairServiceOrder, setRepairServiceOrder] = useState<
+    string | number | undefined
+  >("");
+  const [repairCreatedDate, setRepairCreatedDate] = useState<
+    string | number | undefined
+  >("");
+  const [repairCreatedTime, setRepairCreatedTime] = useState<
+    string | number | undefined
+  >("");
+  const [repairModel, setRepairModel] = useState<string | undefined>("");
+  const [repairWarranty, setRepairWarranty] = useState<string | undefined>("");
+  const [repairEngineer, setRepairEngineer] = useState<string | undefined>("");
+  const [repairFault, setRepairFault] = useState<string | undefined>("");
+  const [repairImei, setRepairImei] = useState<string | number | undefined>("");
+  const [repairSerialNumber, setRepairSerialNumber] = useState<
+    string | number | undefined
+  >("");
+  const [repairInHouseStatus, setRepairInHouseStatus] = useState<
+    string | undefined
+  >("");
+  const [repairEngineerAssignDate, setRepairEngineerAssignDate] = useState<
+    string | number | undefined
+  >("");
+  const [repairEngineerAssignTime, setRepairEngineerAssignTime] = useState<
+    string | number | undefined
+  >("");
+  const [repairTicket, setRepairTicket] = useState<string | number | undefined>(
+    ""
+  );
+  const [repairEngineerAnalysis, setRepairEngineerAnalysis] = useState<
+    string | number | undefined
+  >("");
+  const [repairDepartment, setRepairDepartment] = useState("HHP");
 
   useEffect(() => {
     getSOInfoAllFunction({
@@ -92,9 +127,34 @@ const Home = () => {
     });
   }, [searchServiceOrder]);
 
+  // Repair and gspn combined data
+  const urls = [
+    `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
+    `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/repair`,
+  ];
+  const fetchDataCombinedData = async () => {
+    try {
+      const response = await Promise.all(
+        urls.map((url) => fetch(url).then((res) => res.json()))
+      );
+      // console.log(response.flat());
+      setTableData(response.flat());
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+  useEffect(() => {
+    fetchDataCombinedData();
+  }, []);
+
+  useEffect(() => {
+    getRepair();
+  }, [searchTicket]);
+
   const user = session?.user?.email;
 
-  const postData = () => {
+  const postData = (e: React.SyntheticEvent) => {
+    e.preventDefault();
     const postThisInfo = {
       service_order,
       createdDate,
@@ -145,22 +205,95 @@ const Home = () => {
     // console.log("Response is", response);
   };
 
-  // For the table
-  const router = useRouter();
+  // Post repair data
+  const postRepairData = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    const postThisInfo = {
+      repairServiceOrder,
+      repairCreatedDate,
+      repairCreatedTime,
+      repairModel,
+      repairWarranty,
+      repairEngineer,
+      repairFault,
+      repairImei,
+      repairSerialNumber,
+      repairInHouseStatus,
+      repairEngineerAssignDate,
+      repairEngineerAssignTime,
+      repairEngineerAnalysis,
+      repairTicket,
+      repairDepartment,
+      user,
+    };
+    fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/repair`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(postThisInfo),
+    });
+    setManagementModalState({
+      open: false,
+      view: "/",
+    });
+    toast({
+      title: "Job added.",
+      description: "You've added a job to the table.",
+      status: "success",
+      duration: 9000,
+      isClosable: true,
+    });
+    window.location.reload();
+  };
 
-  // Fetch gspn data that's now stored in our database
-  async function fetchDataFromDatabase() {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
+  // Get repair data
+
+  async function getRepair() {
+    await fetch(
+      `https://allelectronics.repairshopr.com/api/v1/tickets?number=${searchTicket}`,
+
       {
+        method: "GET",
+        mode: "cors",
         cache: "default",
-        next: { revalidate: 2 }, // refetch every 3 seconds
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
+        },
       }
     )
       .then((res) => res.json())
-      .then((data) => setTableData(data))
-      .catch((e) => console.log("Fetch from db error", e));
+      .then((data) => {
+        setRepairFault(data?.tickets[0]?.subject);
+        setRepairCreatedDate(
+          moment(new Date(`${data?.tickets[0]?.created_at}`)).format(
+            "YYYY-MM-DD"
+          )
+        );
+        setRepairCreatedTime(
+          moment(`${data?.tickets[0]?.created_at}`).format("HH:MM:SS")
+        );
+        setRepairEngineerAssignDate(
+          moment(new Date(`${data?.tickets[0]?.created_at}`)).format(
+            "YYYY-MM-DD"
+          )
+        );
+        setRepairEngineerAssignTime(
+          moment(`${data?.tickets[0]?.created_at}`).format("HH:MM:SS")
+        );
+        setRepairImei(data?.tickets[0]?.properties["IMEI"]);
+        setRepairServiceOrder(
+          data?.tickets[0]?.properties["Service Order No. "]
+        );
+        setRepairTicket(data?.tickets[0]?.number);
+        setRepairEngineerAnalysis("");
+        setRepairDepartment("HHP");
+      });
   }
+
+  // For the table
+  const router = useRouter();
 
   // Redirects user to the edit table page
   const handleUpdate = (e: React.SyntheticEvent, id: string | number) => {
@@ -237,7 +370,7 @@ const Home = () => {
                       Use service order
                     </Tab>
 
-                    <Tab fontFamily="inherit" fontWeight="500" isDisabled>
+                    <Tab fontFamily="inherit" fontWeight="500">
                       Use ticket number
                     </Tab>
                   </TabList>
@@ -268,7 +401,32 @@ const Home = () => {
                       />
                     </TabPanel>
                     <TabPanel>
-                      <p>Please do not use this.</p>
+                      <HomepageModalTabTwoContent
+                        searchTicket={searchTicket}
+                        setSearchTicket={(e) => setSearchTicket(e.target.value)}
+                        repairFault={repairFault}
+                        repairWarranty={repairWarranty}
+                        setRepairWarranty={(e) =>
+                          setRepairWarranty(e.target.value)
+                        }
+                        repairImei={repairImei}
+                        setRepairImei={(e) => setRepairImei(e.target.value)}
+                        repairSerialNumber={repairSerialNumber}
+                        setRepairSerialNumber={(e) =>
+                          setRepairSerialNumber(e.target.value)
+                        }
+                        repairModel={repairModel}
+                        setRepairModel={(e) => setRepairModel(e.target.value)}
+                        repairInHouseStatus={repairInHouseStatus}
+                        setRepairInHouseStatus={(e) =>
+                          setRepairInHouseStatus(e.target.value)
+                        }
+                        repairEngineer={repairEngineer}
+                        setRepairEngineer={(e) =>
+                          setRepairEngineer(e.target.value)
+                        }
+                        postRepairData={postRepairData}
+                      />
                     </TabPanel>
                   </TabPanels>
                 </Tabs>
