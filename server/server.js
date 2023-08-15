@@ -26,11 +26,84 @@ app.set("trust proxy", 1); // trust first proxy
 app.disable("x-powered-by");
 // app.use(limiter);
 
+// Get repair information
+// It's at the top because we get an error when it is at the bottom
+app.get(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_REPAIR, async (req, res) => {
+  try {
+    const results = await pool.query(
+      "SELECT id, unique_id, service_order_no, to_char(DATE(created_date), 'YYYY-MM-DD') AS created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, to_char(DATE(engineer_assign_date), 'YYYY-MM-DD') AS engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, date_modified FROM units ORDER BY date_modified DESC"
+    );
+    res.json(results.rows);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Post repair information
+
+app.post(
+  process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_REPAIR,
+  async (req, res) => {
+    const {
+      repairServiceOrder,
+      repairCreatedDate,
+      repairCreatedTime,
+      repairModel,
+      repairWarranty,
+      repairEngineer,
+      repairFault,
+      repairImei,
+      repairSerialNumber,
+      repairInHouseStatus,
+      repairEngineerAssignDate,
+      repairEngineerAssignTime,
+      repairEngineerAnalysis,
+      repairTicket,
+      repairDepartment,
+      user,
+    } = req.body;
+    try {
+      const results = await pool
+        .query(
+          "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket, department, job_added_by) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) returning *",
+          [
+            repairServiceOrder,
+            repairCreatedDate,
+            repairCreatedTime,
+            repairModel,
+            repairWarranty,
+            repairEngineer,
+            repairFault,
+            repairImei,
+            repairSerialNumber,
+            repairInHouseStatus,
+            repairEngineerAssignDate,
+            repairEngineerAssignTime,
+            repairEngineerAnalysis,
+            repairTicket,
+            repairDepartment,
+            user,
+          ]
+        )
+        .catch((e) => console.log("post error", e));
+
+      res.status(201).json({
+        status: "success",
+        data: {
+          restaurant: results.rows,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+
 // GET all table info from database
 app.get(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, async (req, res) => {
   try {
     const { rows } = await pool.query(
-      "SELECT id, unique_id, service_order_no, to_char(to_timestamp(created_date, 'YYYYMMDD'),'YYYY-MM-DD') AS created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, to_char(to_timestamp(engineer_assign_date, 'YYYYMMDD'),'YYYY-MM-DD') AS engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment FROM units ORDER BY date_modified DESC"
+      "SELECT id, unique_id, service_order_no, to_char(to_timestamp(created_date, 'YYYYMMDD'),'YYYY-MM-DD') AS created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, to_char(to_timestamp(engineer_assign_date, 'YYYYMMDD'),'YYYY-MM-DD') AS engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, date_modified FROM units ORDER BY date_modified DESC"
     );
     res.json(rows);
   } catch (err) {
@@ -70,27 +143,29 @@ app.post(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, async (req, res) => {
     user,
   } = req.body;
   try {
-    const results = await pool.query(
-      "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket, department, job_added_by) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) returning *",
-      [
-        service_order,
-        createdDate,
-        createdTime,
-        model,
-        warranty,
-        engineer,
-        fault,
-        imei,
-        serial_number,
-        inHouseStatus,
-        engineerAssignDate,
-        engineerAssignTime,
-        engineerAnalysis,
-        ticket,
-        department,
-        user,
-      ]
-    );
+    const results = await pool
+      .query(
+        "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket, department, job_added_by) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) returning *",
+        [
+          service_order,
+          createdDate,
+          createdTime,
+          model,
+          warranty,
+          engineer,
+          fault,
+          imei,
+          serial_number,
+          inHouseStatus,
+          engineerAssignDate,
+          engineerAssignTime,
+          engineerAnalysis,
+          ticket,
+          department,
+          user,
+        ]
+      )
+      .catch((e) => console.log("post error", e));
     res.status(400).send("Bad Request");
 
     res.status(201).json({

@@ -14,13 +14,30 @@ interface IProps {
   setEngineer: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   department: string;
   setDepartment: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  postData: () => void;
+  postData: (e: React.SyntheticEvent) => void;
 }
 
 export function HomepageModalTabOneContent(props: IProps) {
+  const {
+    searchServiceOrder,
+    setSearchServiceOrder,
+    warranty,
+    inHouseStatus,
+    setInHouseStatus,
+    ticket,
+    setTicket,
+    engineerAnalysis,
+    setEngineerAnalysis,
+    engineer,
+    setEngineer,
+    department,
+    setDepartment,
+    postData,
+  } = props;
+
   return (
     <>
-      <section className="flex flex-col overflow-auto">
+      <form onSubmit={postData} className="flex flex-col overflow-auto">
         <label htmlFor="ServiceOrder" className="sr-only">
           Service Order No
         </label>
@@ -33,10 +50,27 @@ export function HomepageModalTabOneContent(props: IProps) {
           className="w-full outline-none py-2 px-2 border-2 font-sans font-semibold text-sm rounded-sm my-2"
           size={10}
           maxLength={10}
-          value={props.searchServiceOrder}
-          onChange={props.setSearchServiceOrder}
+          value={searchServiceOrder}
+          onChange={setSearchServiceOrder}
         />
-        <label htmlFor="Warranty" className="sr-only">
+        <label htmlFor="ticket" className="sr-only">
+          Set ticket no.
+        </label>
+        <input
+          aria-labelledby="ticket"
+          type="text"
+          name="ticket"
+          required
+          aria-required
+          placeholder="Ticket number"
+          id="ticket"
+          className="w-full outline-none py-2 px-2 border-2 font-sans font-semibold text-sm rounded-sm my-2"
+          size={10}
+          maxLength={10}
+          value={ticket}
+          onChange={setTicket}
+        />
+        <label htmlFor="warranty" className="sr-only">
           Warranty
         </label>
         <input
@@ -46,12 +80,14 @@ export function HomepageModalTabOneContent(props: IProps) {
           placeholder="Warranty"
           id="warranty"
           className="w-full disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none outline-none bg-white py-2 px-2 border-2 border-slate-400 font-sans font-semibold text-sm rounded-sm my-2"
-          value={props.warranty}
+          value={warranty}
           disabled
         />
         <select
-          value={props.inHouseStatus}
-          onChange={props.setInHouseStatus}
+          value={inHouseStatus}
+          onChange={setInHouseStatus}
+          required
+          aria-required
           className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
         >
           <option disabled value="">
@@ -85,20 +121,6 @@ export function HomepageModalTabOneContent(props: IProps) {
           <option value="For invoicing">For invoicing</option>
           <option value="Parts DNA">Parts DNA</option>
         </select>
-        <label htmlFor="ticketNumber" className="sr-only">
-          Ticket Number
-        </label>
-        <input
-          aria-labelledby="ticketNumber"
-          type="text"
-          name="ticketNumber"
-          placeholder="Ticket Number"
-          id="ticketNumber"
-          className="outline-none bg-white py-2 px-2 border-2 border-slate-400 font-sans font-semibold text-sm rounded-sm my-2"
-          value={props.ticket}
-          onChange={props.setTicket}
-          hidden
-        />
         <label htmlFor="engineerAnalysis" className="sr-only">
           Engineer Analysis
         </label>
@@ -109,19 +131,21 @@ export function HomepageModalTabOneContent(props: IProps) {
           placeholder="Engineer Analysis"
           id="engineerAnalysis"
           className="outline-none bg-white py-2 px-2 border-2 border-slate-400 font-sans font-semibold text-sm rounded-sm my-2"
-          value={props.engineerAnalysis}
-          onChange={props.setEngineerAnalysis}
+          value={engineerAnalysis}
+          onChange={setEngineerAnalysis}
           hidden
         />
-        <label htmlFor="engineerAnalysis" className="sr-only">
+        <label htmlFor="engineer" className="sr-only">
           Engineer
         </label>
         <select
           name="engineer"
           id="engineer"
           className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-          value={props.engineer}
-          onChange={props.setEngineer}
+          value={engineer}
+          onChange={setEngineer}
+          required
+          aria-required
         >
           <option value="" disabled>
             Select engineer
@@ -136,14 +160,13 @@ export function HomepageModalTabOneContent(props: IProps) {
 
         <div className="flex g-3 justify-between items-center">
           <button
-            onClick={props.postData}
-            type="button"
+            type="submit"
             className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus: text-white font-semibold font-sans rounded py-3 px-2 my-2 w-full"
           >
             Add
           </button>
         </div>
-      </section>
+      </form>
     </>
   );
 }

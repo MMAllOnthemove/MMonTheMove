@@ -152,3 +152,10 @@ Selecting date and formating from 6 digits
 
 <!-- Select all jobs for one month -->
 ```select distinct * from units WHERE (DATE(created_date) >= date_trunc('month', CURRENT_TIMESTAMP - interval '1 month') and DATE(created_date) < date_trunc('month', CURRENT_TIMESTAMP))```
+
+<!-- Added a constraint on so number -->
+<!-- ALTER TABLE units ADD CONSTRAINT service_order_no_unique UNIQUE (service_order_no); -->
+
+<!-- LEFT JOIN REPAIR TABLE WITH GSPN TABLE -->
+
+<!-- SELECT * FROM tests_repairshpr_hhp LEFT JOIN units ON tests_repairshpr_hhp.id = units.id; -->
