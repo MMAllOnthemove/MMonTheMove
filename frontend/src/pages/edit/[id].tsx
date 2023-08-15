@@ -7,6 +7,8 @@ import { useContext, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Login from "../auth/login";
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import Spinner from "../../../components/Spinner";
 
 function EditRow() {
   const { tableInfo, setTableInfo } = useContext(TableInfoContext);
@@ -48,10 +50,11 @@ function EditRow() {
 
   const fetchData = async () => {
     const response = await UnitFinder.get(`/${id}`);
-    setShowServiceOrderNumber(response.data[0].service_order_no);
-    setInHouseStatus(response.data[0].in_house_status);
-    setEngineerAnalysis(response.data[0].engineer_analysis);
-    setEngineer(response.data[0].engineer);
+    setShowServiceOrderNumber(response?.data[0]?.service_order_no);
+    setInHouseStatus(response?.data[0]?.in_house_status);
+    setEngineerAnalysis(response?.data[0]?.engineer_analysis);
+    setEngineer(response?.data[0]?.engineer);
+    setTicket(response?.data[0]?.ticket);
   };
   useEffect(() => {
     fetchData();
@@ -133,8 +136,13 @@ function EditRow() {
   };
 
   // console.log(partsList);
-
-  if (session) {
+  if (status === "loading") {
+    return <Spinner />;
+  }
+  if (status === "unauthenticated" || !session) {
+    return <Login />;
+  }
+  if (status == "authenticated") {
     return (
       <>
         <Head>
@@ -145,9 +153,16 @@ function EditRow() {
           <section className="section container mx-auto">
             <h1 className="text-center py-2 text-gray-900 font-sans font-semibold lg:text-2xl">
               Editing service order:{" "}
-              <span className="text-sky-700 font-sans font-bold">
-                {showServiceOrderNumber}
-              </span>
+              {showServiceOrderNumber === "" ||
+              showServiceOrderNumber === null ? (
+                <span className="text-slate-700 font-sans font-bold">
+                  Not available
+                </span>
+              ) : (
+                <span className="text-sky-700 font-sans font-bold">
+                  {showServiceOrderNumber}
+                </span>
+              )}
             </h1>
             <h3 className="text-center font-sans font-semibold">
               You are editing as:{" "}
@@ -157,20 +172,57 @@ function EditRow() {
 
             {/* {user === "katleho_m@allelectronics.co.za" ? <p>Admin</p> : ""} */}
             <form className="my-3" onSubmit={updateData}>
+              {showServiceOrderNumber === "" ||
+              showServiceOrderNumber === null ||
+              showServiceOrderNumber.length < 10 ? (
+                <span>
+                  <label
+                    htmlFor="showServiceOrderNumber"
+                    className="block mb-2 text-sm font-medium font-sans text-gray-900 "
+                  >
+                    Set Service Order No
+                  </label>
+                  <input
+                    type="text"
+                    name="showServiceOrderNumber"
+                    id="showServiceOrderNumber"
+                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    value={showServiceOrderNumber}
+                    onChange={(e) => setShowServiceOrderNumber(e.target.value)}
+                  />
+                </span>
+              ) : (
+                <span>
+                  <label
+                    htmlFor="showServiceOrderNumber"
+                    className="block mb-2 text-sm font-medium font-sans text-gray-900 "
+                  >
+                    Service Order No
+                  </label>
+                  <input
+                    type="text"
+                    name="showServiceOrderNumber"
+                    id="showServiceOrderNumber"
+                    className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                    value={showServiceOrderNumber}
+                    disabled
+                  />
+                </span>
+              )}
               <span>
                 <label
-                  htmlFor="showServiceOrderNumber"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 "
+                  htmlFor="ticket"
+                  className="block mb-2 text-sm font-medium font-sans text-gray-900"
                 >
-                  Service Order No
+                  Ticket number
                 </label>
                 <input
                   type="text"
-                  name="showServiceOrderNumber"
-                  id="showServiceOrderNumber"
-                  className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                  value={showServiceOrderNumber}
-                  disabled
+                  name="ticket"
+                  id="ticket"
+                  value={ticket}
+                  onChange={(e) => setTicket(e.target.value)}
+                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
               </span>
               <span>
@@ -448,22 +500,7 @@ function EditRow() {
                   className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
               </span>
-              <span>
-                <label
-                  htmlFor="ticket"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900"
-                >
-                  Set ticket number
-                </label>
-                <input
-                  type="text"
-                  name="ticket"
-                  id="ticket"
-                  value={ticket}
-                  onChange={(e) => setTicket(e.target.value)}
-                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                />
-              </span>
+
               <span>
                 <button
                   type="submit"
@@ -487,7 +524,7 @@ function EditRow() {
       </>
     );
   } else {
-    <Login />;
+    return <Login />;
   }
 }
 

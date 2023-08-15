@@ -8,8 +8,6 @@ import {
 } from "@heroicons/react/24/outline";
 import {
   BadgeDelta,
-  BarChart,
-  Card,
   Metric,
   Tab,
   TabGroup,
@@ -17,15 +15,14 @@ import {
   TabPanel,
   TabPanels,
   Text,
-  Title,
 } from "@tremor/react";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState, useCallback } from "react";
-import BarChartToday from "../../../components/Graphs/BarChartToday";
-import BarChartMonth from "../../../components/Graphs/BarChartMonth";
+import { useCallback, useEffect, useState } from "react";
 import BarChartAlltime from "../../../components/Graphs/BarChartAllTime";
+import BarChartMonth from "../../../components/Graphs/BarChartMonth";
+import BarChartToday from "../../../components/Graphs/BarChartToday";
 
 export default function Dashboard() {
   // Google auth session
