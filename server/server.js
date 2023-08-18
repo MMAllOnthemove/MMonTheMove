@@ -39,7 +39,10 @@ app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, managementJobs);
 app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_FEEDBACK, feedback);
 
 // Dashboard begins here
-app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_FEEDBACK, dashboard);
+app.use(
+  process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT,
+  dashboard
+);
 
 // Engineer graphs
 app.use(process.env.NEXT_PUBLIC_SERVER_ENGINEER_JOBS_COUNT_OVERVIEW, engineers);
