@@ -8,3 +8,4 @@ server.config
 frontend/cypress/support/e2e.ts
 frontend/cypress/e2e/spec.cy.ts
 frontend/db/db.sql
+.vscode/launch.json
