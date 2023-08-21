@@ -266,28 +266,28 @@ const Home = () => {
     )
       .then((res) => res.json())
       .then((data) => {
-        setRepairFault(data?.tickets[0]?.subject);
+        setRepairFault(data?.tickets[0]?.subject || "");
         setRepairCreatedDate(
           moment(new Date(`${data?.tickets[0]?.created_at}`)).format(
             "YYYY-MM-DD"
-          )
+          ) || ""
         );
         setRepairCreatedTime(
-          moment(`${data?.tickets[0]?.created_at}`).format("HH:MM:SS")
+          moment(`${data?.tickets[0]?.created_at}`).format("HH:MM:SS") || ""
         );
         setRepairEngineerAssignDate(
           moment(new Date(`${data?.tickets[0]?.created_at}`)).format(
             "YYYY-MM-DD"
-          )
+          ) || ""
         );
         setRepairEngineerAssignTime(
-          moment(`${data?.tickets[0]?.created_at}`).format("HH:MM:SS")
+          moment(`${data?.tickets[0]?.created_at}`).format("HH:MM:SS") || ""
         );
-        setRepairImei(data?.tickets[0]?.properties["IMEI"]);
+        setRepairImei(data?.tickets[0]?.properties["IMEI"] || "");
         setRepairServiceOrder(
-          data?.tickets[0]?.properties["Service Order No. "]
+          data?.tickets[0]?.properties["Service Order No. "] || ""
         );
-        setRepairTicket(data?.tickets[0]?.number);
+        setRepairTicket(data?.tickets[0]?.number || "");
         setRepairEngineerAnalysis("");
         setRepairDepartment("HHP");
       });
