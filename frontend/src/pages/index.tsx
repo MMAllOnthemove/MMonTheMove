@@ -148,9 +148,9 @@ const Home = () => {
     fetchDataCombinedData();
   }, []);
 
-  useEffect(() => {
-    getRepair();
-  }, [searchTicket]);
+  // useEffect(() => {
+  //   getRepair();
+  // }, [searchTicket]);
 
   const user = session?.user?.email;
 
@@ -250,48 +250,48 @@ const Home = () => {
 
   // Get repair data
 
-  async function getRepair() {
-    await fetch(
-      `https://allelectronics.repairshopr.com/api/v1/tickets?number=${searchTicket}`,
+  // async function getRepair() {
+  //   await fetch(
+  //     `https://allelectronics.repairshopr.com/api/v1/tickets?number=${searchTicket}`,
 
-      {
-        method: "GET",
-        mode: "cors",
-        cache: "default",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
-        },
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setRepairFault(data?.tickets[0]?.subject || "");
-        setRepairCreatedDate(
-          moment(new Date(`${data?.tickets[0]?.created_at}`)).format(
-            "YYYY-MM-DD"
-          ) || ""
-        );
-        setRepairCreatedTime(
-          moment(`${data?.tickets[0]?.created_at}`).format("HH:MM:SS") || ""
-        );
-        setRepairEngineerAssignDate(
-          moment(new Date(`${data?.tickets[0]?.created_at}`)).format(
-            "YYYY-MM-DD"
-          ) || ""
-        );
-        setRepairEngineerAssignTime(
-          moment(`${data?.tickets[0]?.created_at}`).format("HH:MM:SS") || ""
-        );
-        setRepairImei(data?.tickets[0]?.properties["IMEI"] || "");
-        setRepairServiceOrder(
-          data?.tickets[0]?.properties["Service Order No. "] || ""
-        );
-        setRepairTicket(data?.tickets[0]?.number || "");
-        setRepairEngineerAnalysis("");
-        setRepairDepartment("HHP");
-      });
-  }
+  //     {
+  //       method: "GET",
+  //       mode: "cors",
+  //       cache: "default",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
+  //       },
+  //     }
+  //   )
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setRepairFault(data?.tickets[0]?.subject || "");
+  //       setRepairCreatedDate(
+  //         moment(new Date(`${data?.tickets[0]?.created_at}`)).format(
+  //           "YYYY-MM-DD"
+  //         ) || ""
+  //       );
+  //       setRepairCreatedTime(
+  //         moment(`${data?.tickets[0]?.created_at}`).format("HH:MM:SS") || ""
+  //       );
+  //       setRepairEngineerAssignDate(
+  //         moment(new Date(`${data?.tickets[0]?.created_at}`)).format(
+  //           "YYYY-MM-DD"
+  //         ) || ""
+  //       );
+  //       setRepairEngineerAssignTime(
+  //         moment(`${data?.tickets[0]?.created_at}`).format("HH:MM:SS") || ""
+  //       );
+  //       setRepairImei(data?.tickets[0]?.properties["IMEI"] || "");
+  //       setRepairServiceOrder(
+  //         data?.tickets[0]?.properties["Service Order No. "] || ""
+  //       );
+  //       setRepairTicket(data?.tickets[0]?.number || "");
+  //       setRepairEngineerAnalysis("");
+  //       setRepairDepartment("HHP");
+  //     });
+  // }
 
   // For the table
   const router = useRouter();
@@ -371,7 +371,7 @@ const Home = () => {
                       Use service order
                     </Tab>
 
-                    <Tab fontFamily="inherit" fontWeight="500">
+                    <Tab fontFamily="inherit" fontWeight="500" isDisabled>
                       Use ticket number
                     </Tab>
                   </TabList>
