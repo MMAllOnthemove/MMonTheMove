@@ -25,7 +25,7 @@ router.get("/repair", async (req, res) => {
       newResults = JSON.parse(cacheResults);
     } else {
       newResults = await pool.query(
-        "SELECT id, unique_id, service_order_no, to_char(DATE(created_date), 'YYYY-MM-DD') AS created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, to_char(DATE(engineer_assign_date), 'YYYY-MM-DD') AS engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, date_modified FROM units ORDER BY date_modified DESC"
+        "SELECT id, unique_id, service_order_no, to_char(to_timestamp(created_date, 'YYYYMMDD'),'YYYY-MM-DD') AS created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, to_char(to_timestamp(engineer_assign_date, 'YYYYMMDD'),'YYYY-MM-DD') AS engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, date_modified FROM units ORDER BY date_modified DESC"
       );
       if (newResults.length === 0) {
         throw "API returned an empty array";
@@ -38,11 +38,11 @@ router.get("/repair", async (req, res) => {
         NX: true,
       });
     }
-    res.json(newResults.rows);
     // res.send({
     //   fromCache: isCached,
     //   data: newResults.rows,
     // });
+    res.json(newResults.rows);
   } catch (err) {
     // console.log(err);
   }
@@ -129,11 +129,11 @@ router.get("/", async (req, res) => {
         NX: true,
       });
     }
-    res.json(newResults.rows);
     // res.send({
     //   fromCache: isCached,
     //   data: newResults.rows,
     // });
+    res.json(newResults.rows);
   } catch (err) {
     // console.log(err);
   }
@@ -165,11 +165,10 @@ router.get("/:id", async (req, res) => {
       });
     }
 
-    res.json(newResults.rows);
-    // res.send({
-    //   fromCache: isCached,
-    //   data: newResults.rows,
-    // });
+    res.send({
+      fromCache: isCached,
+      data: newResults.rows,
+    });
   } catch (err) {
     // console.log(err);
   }
