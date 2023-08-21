@@ -1,48 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../db");
-const redis = require("redis");
-
-let redisClient;
-
-(async () => {
-  redisClient = redis.createClient();
-
-  redisClient.on("error", (error) => console.error(`Error : ${error}`));
-
-  await redisClient.connect();
-})();
 
 // Get repair information
 // It's at the top because we get an error when it is at the bottom
 router.get("/repair", async (req, res) => {
-  let newResults;
-  let isCached = false;
   try {
-    const cacheResults = await redisClient.get("/repair");
-    if (cacheResults) {
-      isCached = true;
-      newResults = JSON.parse(cacheResults);
-    } else {
-      newResults = await pool.query(
-        "SELECT id, unique_id, service_order_no, to_char(DATE(created_date), 'YYYY-MM-DD') AS created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, to_char(DATE(engineer_assign_date), 'YYYY-MM-DD') AS engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, date_modified FROM units ORDER BY date_modified DESC"
-      );
-      if (newResults.length === 0) {
-        throw "API returned an empty array";
-      }
-      // To store the data in the Redis cache, you need to use the node-redis module’s set() method to save it.
-      await redisClient.set("/repair", JSON.stringify(newResults), {
-        // EX is the cache expiring time and NX ensures that the set() method should only set a key that doesn’t already exist in Redis.
-        // In our case it expires after 30 seconds
-        EX: 30,
-        NX: true,
-      });
-    }
-
-    res.send({
-      fromCache: isCached,
-      data: newResults.rows,
-    });
+    const { rows } = await pool.query(
+      "SELECT id, unique_id, service_order_no, to_char(DATE(created_date), 'YYYY-MM-DD') AS created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, to_char(DATE(engineer_assign_date), 'YYYY-MM-DD') AS engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, date_modified FROM units ORDER BY date_modified DESC"
+    );
+    res.json(rows);
   } catch (err) {
     // console.log(err);
   }
@@ -110,29 +77,10 @@ router.get("/", async (req, res) => {
   let newResults;
   let isCached = false;
   try {
-    const cacheResults = await redisClient.get("/");
-    if (cacheResults) {
-      isCached = true;
-      newResults = JSON.parse(cacheResults);
-    } else {
-      newResults = await pool.query(
-        "SELECT id, unique_id, service_order_no, to_char(to_timestamp(created_date, 'YYYYMMDD'),'YYYY-MM-DD') AS created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, to_char(to_timestamp(engineer_assign_date, 'YYYYMMDD'),'YYYY-MM-DD') AS engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, date_modified FROM units ORDER BY date_modified DESC"
-      );
-      if (newResults.length === 0) {
-        throw "API returned an empty array";
-      }
-      // To store the data in the Redis cache, you need to use the node-redis module’s set() method to save it.
-      await redisClient.set("/", JSON.stringify(newResults), {
-        // EX is the cache expiring time and NX ensures that the set() method should only set a key that doesn’t already exist in Redis.
-        // In our case it expires after 30 seconds
-        EX: 30,
-        NX: true,
-      });
-    }
-    res.send({
-      fromCache: isCached,
-      data: newResults.rows,
-    });
+    const { rows } = await pool.query(
+      "SELECT id, unique_id, service_order_no, to_char(to_timestamp(created_date, 'YYYYMMDD'),'YYYY-MM-DD') AS created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, to_char(to_timestamp(engineer_assign_date, 'YYYYMMDD'),'YYYY-MM-DD') AS engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, date_modified FROM units ORDER BY date_modified DESC"
+    );
+    res.json(rows);
   } catch (err) {
     // console.log(err);
   }
@@ -140,34 +88,12 @@ router.get("/", async (req, res) => {
 
 // GET one row table info from database
 router.get("/:id", async (req, res) => {
-  let newResults;
-  let isCached = false;
   try {
-    const { id } = req.params;
-    const cacheResults = await redisClient.get(id);
-    if (cacheResults) {
-      isCached = true;
-      newResults = JSON.parse(cacheResults);
-    } else {
-      const newResults = await pool.query("SELECT * FROM units WHERE id = $1", [
-        id,
-      ]);
-      if (newResults.length === 0) {
-        throw "API returned an empty array";
-      }
-      // To store the data in the Redis cache, you need to use the node-redis module’s set() method to save it.
-      await redisClient.set(id, JSON.stringify(newResults), {
-        // EX is the cache expiring time and NX ensures that the set() method should only set a key that doesn’t already exist in Redis.
-        // In our case it expires after 30 seconds
-        EX: 30,
-        NX: true,
-      });
-    }
+    const { rows } = await pool.query("SELECT * FROM units WHERE id = $1", [
+      id,
+    ]);
 
-    res.send({
-      fromCache: isCached,
-      data: newResults.rows,
-    });
+    res.json(rows[0]);
   } catch (err) {
     // console.log(err);
   }
