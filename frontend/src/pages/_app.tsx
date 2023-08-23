@@ -5,14 +5,14 @@ import type { AppProps } from "next/app";
 import { RecoilRoot } from "recoil";
 import { Inter } from "next/font/google";
 
-import { SessionProvider } from "next-auth/react";
+
 
 const inter = Inter({ subsets: ["latin"] });
 // Instances of useSession will then have access to the session data and status. The <SessionProvider /> also takes care of keeping the session updated and synced between browser tabs and windows.
 
 export default function App({
   Component,
-  pageProps: { session, ...pageProps },
+  pageProps: {  ...pageProps },
 }: AppProps) {
 
   return (
@@ -22,13 +22,11 @@ export default function App({
           font-family: ${inter.style.fontFamily};
         }
       `}</style>
-      <SessionProvider session={session}>
           <RecoilRoot>
             <ChakraProvider>
               <Component {...pageProps} />
             </ChakraProvider>
           </RecoilRoot>
-      </SessionProvider>
     </>
   );
 }
