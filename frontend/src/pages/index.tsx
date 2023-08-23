@@ -15,8 +15,6 @@ import ToTopButton from "../../components/ToTopButton";
 import ManagementSearchForm from "../../components/table/ManagementSearchForm";
 import { HomepageModalTabOneContent } from "../../components/table/homepageModalTabOneContent";
 import { HomepageModalTabTwoContent } from "../../components/table/homepageModalTabTwoContent";
-import Login from "./auth/login";
-import moment from "moment";
 
 // Tanstack table functionality
 import {
@@ -29,16 +27,13 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-// Next auth session hook using google auth
-import { useSession } from "next-auth/react";
+
 
 // Management columns
-import Spinner from "../../components/Spinner";
 import { columns } from "../../components/table/homepageTableColumns";
 
 const Home = () => {
-  // Google auth session
-  const { data: session, status } = useSession();
+
 
   const [tableData, setTableData] = useState<string[]>([]);
 
@@ -74,7 +69,11 @@ const Home = () => {
   const [engineerAssignTime, setEngineerAssignTime] = useState("");
   const [inHouseStatus, setInHouseStatus] = useState("");
   const [ticket, setTicket] = useState("");
-  const [department, setDepartment] = useState("");
+  const [department, setDepartment] = useState("HHP");
+
+  // Settings the user to also be the engineer
+
+  let user = engineer;
 
   // Repairshpr states start here
   const [repairServiceOrder, setRepairServiceOrder] = useState<
@@ -152,7 +151,7 @@ const Home = () => {
   //   getRepair();
   // }, [searchTicket]);
 
-  const user = session?.user?.email;
+  // const user = session?.user?.email;
 
   const postData = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -174,6 +173,7 @@ const Home = () => {
       department,
       user,
     };
+    // console.log(postThisInfo)
     const response = fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
       {
@@ -319,250 +319,245 @@ const Home = () => {
     onGlobalFilterChange: setFiltering,
   });
 
-  if (status === "loading") {
-    return <Spinner />;
-  }
-  if (status === "unauthenticated" || !session) {
-    return <Login />;
-  }
-  if (status === "authenticated") {
-    return (
-      <>
-        <Head>
-          <title>HHPManagement</title>
-          <meta name="robots" content="noindex"></meta>
-        </Head>
-        <Navbar />
 
-        <main className="space-between-navbar-and-content">
-          <Container>
-            <section className="flex justify-center pt-5">
-              <h1 className="mb-4 text-3xl font-extrabold text-gray-900 md:text-5xl lg:text-6xl">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
-                  HHP
-                </span>{" "}
-                Management.
-              </h1>
-            </section>
-            <section className="flex justify-between items-center py-5">
-              <ManagementSearchForm
-                filtering={filtering}
-                setFiltering={(e) => setFiltering(e.target.value)}
-              />
 
-              <button
-                className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer font-sans rounded-md p-3 my-2"
-                type="button"
-                onClick={() =>
-                  setManagementModalState({
-                    open: true,
-                    view: "/",
-                  })
-                }
-              >
-                Add job
-              </button>
+  return (
+    <>
+      <Head>
+        <title>HHPManagement</title>
+        <meta name="robots" content="noindex"></meta>
+      </Head>
+      <Navbar />
 
-              {/* Called the modal here and added a post data prop that posts data on click */}
-              <ModalManagement>
-                <Tabs defaultIndex={0} isFitted>
-                  <TabList>
-                    <Tab fontFamily="inherit" fontWeight="500">
-                      Use service order
-                    </Tab>
+      <main className="space-between-navbar-and-content">
+        <Container>
+          <section className="flex justify-center pt-5">
+            <h1 className="mb-4 text-3xl font-extrabold text-gray-900 md:text-5xl lg:text-6xl">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
+                HHP
+              </span>{" "}
+              Management.
+            </h1>
+          </section>
+          <section className="flex justify-between items-center py-5">
+            <ManagementSearchForm
+              filtering={filtering}
+              setFiltering={(e) => setFiltering(e.target.value)}
+            />
 
-                    <Tab fontFamily="inherit" fontWeight="500" isDisabled>
-                      Use ticket number
-                    </Tab>
-                  </TabList>
+            <button
+              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer font-sans rounded-md p-3 my-2"
+              type="button"
+              onClick={() =>
+                setManagementModalState({
+                  open: true,
+                  view: "/",
+                })
+              }
+            >
+              Add job
+            </button>
 
-                  <TabPanels>
-                    <TabPanel>
-                      <HomepageModalTabOneContent
-                        searchServiceOrder={searchServiceOrder}
-                        setSearchServiceOrder={(e) =>
-                          setSearchServiceOrder(e.target.value)
-                        }
-                        warranty={warranty}
-                        inHouseStatus={inHouseStatus}
-                        setInHouseStatus={(e) =>
-                          setInHouseStatus(e.target.value)
-                        }
-                        ticket={ticket}
-                        setTicket={(e) => setTicket(e.target.value)}
-                        engineerAnalysis={engineerAnalysis}
-                        setEngineerAnalysis={(e) =>
-                          setEngineerAnalysis(e.target.value)
-                        }
-                        engineer={engineer}
-                        setEngineer={(e) => setEngineer(e.target.value)}
-                        department={department}
-                        setDepartment={(e) => setDepartment(e.target.value)}
-                        postData={postData}
-                      />
-                    </TabPanel>
-                    <TabPanel>
-                      <HomepageModalTabTwoContent
-                        searchTicket={searchTicket}
-                        setSearchTicket={(e) => setSearchTicket(e.target.value)}
-                        repairFault={repairFault}
-                        repairWarranty={repairWarranty}
-                        setRepairWarranty={(e) =>
-                          setRepairWarranty(e.target.value)
-                        }
-                        repairImei={repairImei}
-                        setRepairImei={(e) => setRepairImei(e.target.value)}
-                        repairSerialNumber={repairSerialNumber}
-                        setRepairSerialNumber={(e) =>
-                          setRepairSerialNumber(e.target.value)
-                        }
-                        repairModel={repairModel}
-                        setRepairModel={(e) => setRepairModel(e.target.value)}
-                        repairInHouseStatus={repairInHouseStatus}
-                        setRepairInHouseStatus={(e) =>
-                          setRepairInHouseStatus(e.target.value)
-                        }
-                        repairEngineer={repairEngineer}
-                        setRepairEngineer={(e) =>
-                          setRepairEngineer(e.target.value)
-                        }
-                        postRepairData={postRepairData}
-                      />
-                    </TabPanel>
-                  </TabPanels>
-                </Tabs>
-              </ModalManagement>
-            </section>
+            {/* Called the modal here and added a post data prop that posts data on click */}
+            <ModalManagement>
+              <Tabs defaultIndex={0} isFitted>
+                <TabList>
+                  <Tab fontFamily="inherit" fontWeight="500">
+                    Use service order
+                  </Tab>
 
-            <div className="row flex items-center justify-center">
-              <span className="flex mx-auto text-center font-medium font-sans py-1 text-gray-500">
-                To edit, double click on the row you want to edit
-              </span>
-            </div>
-            <div className="max-h-[540px] overflow-y-auto">
-              <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-                <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-sans text-sm uppercase font-semibold">
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <tr
-                      key={headerGroup.id}
-                      className="font-sans font-semibold"
-                    >
-                      {headerGroup.headers.map((header) => (
-                        <th
-                          key={header.id}
-                          onClick={header.column.getToggleSortingHandler()}
-                          className="px-4 py-3 cursor-pointer font-sans font-semibold"
-                        >
-                          <div>
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                            {{
-                              asc: " 🔼",
-                              desc: " 🔽",
-                            }[header.column.getIsSorted() as string] ?? null}
-                          </div>
-                        </th>
-                      ))}
-                    </tr>
-                  ))}
-                </thead>
-                <tbody className="z-0">
-                  {table.getRowModel().rows.map((row: any) => (
-                    <tr
-                      key={row.id}
-                      onDoubleClick={(e) => handleUpdate(e, row.original.id)}
-                      className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
-                    >
-                      {row.getVisibleCells().map((cell: any) => (
-                        <td
-                          key={cell.id}
-                          className="px-4 py-3 font-sans font-medium text-sm max-w-full"
-                        >
+                  <Tab fontFamily="inherit" fontWeight="500" isDisabled>
+                    Use ticket number
+                  </Tab>
+                </TabList>
+
+                <TabPanels>
+                  <TabPanel>
+                    <HomepageModalTabOneContent
+                      searchServiceOrder={searchServiceOrder}
+                      setSearchServiceOrder={(e) =>
+                        setSearchServiceOrder(e.target.value)
+                      }
+                      warranty={warranty}
+                      inHouseStatus={inHouseStatus}
+                      setInHouseStatus={(e) =>
+                        setInHouseStatus(e.target.value)
+                      }
+                      ticket={ticket}
+                      setTicket={(e) => setTicket(e.target.value)}
+                      engineerAnalysis={engineerAnalysis}
+                      setEngineerAnalysis={(e) =>
+                        setEngineerAnalysis(e.target.value)
+                      }
+                      engineer={engineer}
+                      setEngineer={(e) => setEngineer(e.target.value)}
+                      department={department}
+                      setDepartment={(e) => setDepartment(e.target.value)}
+                      postData={postData}
+                    />
+                  </TabPanel>
+                  <TabPanel>
+                    <HomepageModalTabTwoContent
+                      searchTicket={searchTicket}
+                      setSearchTicket={(e) => setSearchTicket(e.target.value)}
+                      repairFault={repairFault}
+                      repairWarranty={repairWarranty}
+                      setRepairWarranty={(e) =>
+                        setRepairWarranty(e.target.value)
+                      }
+                      repairImei={repairImei}
+                      setRepairImei={(e) => setRepairImei(e.target.value)}
+                      repairSerialNumber={repairSerialNumber}
+                      setRepairSerialNumber={(e) =>
+                        setRepairSerialNumber(e.target.value)
+                      }
+                      repairModel={repairModel}
+                      setRepairModel={(e) => setRepairModel(e.target.value)}
+                      repairInHouseStatus={repairInHouseStatus}
+                      setRepairInHouseStatus={(e) =>
+                        setRepairInHouseStatus(e.target.value)
+                      }
+                      repairEngineer={repairEngineer}
+                      setRepairEngineer={(e) =>
+                        setRepairEngineer(e.target.value)
+                      }
+                      postRepairData={postRepairData}
+                    />
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+            </ModalManagement>
+          </section>
+
+          <div className="row flex items-center justify-center">
+            <span className="flex mx-auto text-center font-medium font-sans py-1 text-gray-500">
+              To edit, double click on the row you want to edit
+            </span>
+          </div>
+          <div className="max-h-[540px] overflow-y-auto">
+            <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
+              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-sans text-sm uppercase font-semibold">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <tr
+                    key={headerGroup.id}
+                    className="font-sans font-semibold"
+                  >
+                    {headerGroup.headers.map((header) => (
+                      <th
+                        key={header.id}
+                        onClick={header.column.getToggleSortingHandler()}
+                        className="px-4 py-3 cursor-pointer font-sans font-semibold"
+                      >
+                        <div>
                           {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
+                            header.column.columnDef.header,
+                            header.getContext()
                           )}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="h-2" />
-            <div className="pagination flex gap-1">
-              <button
-                className="border rounded p-1"
-                onClick={() => table.setPageIndex(0)}
-                disabled={!table.getCanPreviousPage()}
-              >
-                {"<<"}
-              </button>
-              <button
-                className="border rounded p-1 font-sans font-medium"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                {"<"}
-              </button>
-              <button
-                className="border rounded p-1 font-sans font-medium"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                {">"}
-              </button>
-              <button
-                className="border rounded p-1 font-sans font-medium"
-                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                disabled={!table.getCanNextPage()}
-              >
-                {">>"}
-              </button>
-              <span className="flex items-center gap-1">
-                <div className="font-sans font-semibold text-[#0d0d0d]">
-                  Page
-                </div>
-                <strong>
-                  {table.getState().pagination.pageIndex + 1} of{" "}
-                  {table.getPageCount()}
-                </strong>
-              </span>
-              <span className="flex items-center gap-1 font-sans">
-                | Go to page:
-                <input
-                  type="number"
-                  defaultValue={table.getState().pagination.pageIndex + 1}
-                  onChange={(e) => {
-                    const page = e.target.value
-                      ? Number(e.target.value) - 1
-                      : 0;
-                    table.setPageIndex(page);
-                  }}
-                  className="border p-1 rounded w-16"
-                />
-              </span>
-              <select
-                value={table.getState().pagination.pageSize}
-                className="border border-[#eee] outline-none ring-0 font-sans font-medium cursor-pointer"
-                onChange={(e) => {
-                  table.setPageSize(Number(e.target.value));
-                }}
-              >
-                {[10, 20, 30, 40, 50].map((pageSize) => (
-                  <option key={pageSize} value={pageSize}>
-                    Show {pageSize}
-                  </option>
+                          {{
+                            asc: " 🔼",
+                            desc: " 🔽",
+                          }[header.column.getIsSorted() as string] ?? null}
+                        </div>
+                      </th>
+                    ))}
+                  </tr>
                 ))}
-              </select>
-            </div>
-            <ToTopButton />
-          </Container>
-        </main>
-      </>
-    );
-  }
+              </thead>
+              <tbody className="z-0">
+                {table.getRowModel().rows.map((row: any) => (
+                  <tr
+                    key={row.id}
+                    onDoubleClick={(e) => handleUpdate(e, row.original.id)}
+                    className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
+                  >
+                    {row.getVisibleCells().map((cell: any) => (
+                      <td
+                        key={cell.id}
+                        className="px-4 py-3 font-sans font-medium text-sm max-w-full"
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="h-2" />
+          <div className="pagination flex gap-1">
+            <button
+              className="border rounded p-1"
+              onClick={() => table.setPageIndex(0)}
+              disabled={!table.getCanPreviousPage()}
+            >
+              {"<<"}
+            </button>
+            <button
+              className="border rounded p-1 font-sans font-medium"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              {"<"}
+            </button>
+            <button
+              className="border rounded p-1 font-sans font-medium"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              {">"}
+            </button>
+            <button
+              className="border rounded p-1 font-sans font-medium"
+              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+              disabled={!table.getCanNextPage()}
+            >
+              {">>"}
+            </button>
+            <span className="flex items-center gap-1">
+              <div className="font-sans font-semibold text-[#0d0d0d]">
+                Page
+              </div>
+              <strong>
+                {table.getState().pagination.pageIndex + 1} of{" "}
+                {table.getPageCount()}
+              </strong>
+            </span>
+            <span className="flex items-center gap-1 font-sans">
+              | Go to page:
+              <input
+                type="number"
+                defaultValue={table.getState().pagination.pageIndex + 1}
+                onChange={(e) => {
+                  const page = e.target.value
+                    ? Number(e.target.value) - 1
+                    : 0;
+                  table.setPageIndex(page);
+                }}
+                className="border p-1 rounded w-16"
+              />
+            </span>
+            <select
+              value={table.getState().pagination.pageSize}
+              className="border border-[#eee] outline-none ring-0 font-sans font-medium cursor-pointer"
+              onChange={(e) => {
+                table.setPageSize(Number(e.target.value));
+              }}
+            >
+              {[10, 20, 30, 40, 50].map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  Show {pageSize}
+                </option>
+              ))}
+            </select>
+          </div>
+          <ToTopButton />
+        </Container>
+      </main>
+    </>
+  );
+
 };
 export default Home;

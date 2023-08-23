@@ -14,6 +14,8 @@ interface IProps {
   setEngineer: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   department: string;
   setDepartment: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  // user: string;
+  // setUser: (e: React.ChangeEvent<HTMLInputElement>) => void;
   postData: (e: React.SyntheticEvent) => void;
 }
 
@@ -43,7 +45,7 @@ export function HomepageModalTabOneContent(props: IProps) {
         </label>
         <input
           aria-labelledby="ServiceOrder"
-          type="text"
+          type="number"
           name="ServiceOrder"
           placeholder="Service Order"
           id="ServiceOrder"
@@ -58,7 +60,7 @@ export function HomepageModalTabOneContent(props: IProps) {
         </label>
         <input
           aria-labelledby="ticket"
-          type="text"
+          type="number"
           name="ticket"
           required
           aria-required
