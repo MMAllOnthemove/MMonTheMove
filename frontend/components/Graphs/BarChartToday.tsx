@@ -14,7 +14,7 @@ import {
 } from "@tremor/react";
 import { ResponsiveContainer } from "recharts";
 
-const BarChartToday = memo(() => {
+const BarChartToday = () => {
   const [barGraphDataToday, setBarGraphDataToday] = useState<
     string[] | number[] | any[]
   >([]);
@@ -49,6 +49,6 @@ const BarChartToday = memo(() => {
       />
     </ResponsiveContainer>
   );
-});
+}
 
 export default BarChartToday;
