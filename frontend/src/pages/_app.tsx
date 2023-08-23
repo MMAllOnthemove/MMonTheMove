@@ -3,7 +3,6 @@ import "@/styles/globals.css";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import type { AppProps } from "next/app";
 import { RecoilRoot } from "recoil";
-import { TableInfoContextProvider } from "../context/TableInfoContext";
 import { Inter } from "next/font/google";
 
 import { SessionProvider } from "next-auth/react";
@@ -15,7 +14,6 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps) {
-  // socket.connect();
 
   return (
     <>
@@ -25,13 +23,11 @@ export default function App({
         }
       `}</style>
       <SessionProvider session={session}>
-        <TableInfoContextProvider>
           <RecoilRoot>
             <ChakraProvider>
               <Component {...pageProps} />
             </ChakraProvider>
           </RecoilRoot>
-        </TableInfoContextProvider>
       </SessionProvider>
     </>
   );
