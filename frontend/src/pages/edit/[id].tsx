@@ -46,7 +46,6 @@ function EditRow() {
   const { id } = router.query;
   const toast = useToast();
 
-  // console.log(memo(inHouseStatus).type);
 
   const fetchData = async () => {
     const response = await UnitFinder.get(`/${id}`);
