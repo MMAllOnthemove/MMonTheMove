@@ -14,7 +14,7 @@ import {
 } from "@tremor/react";
 import { ResponsiveContainer } from "recharts";
 
-const BarChartAlltime = memo(() => {
+const BarChartAlltime = () => {
   const [barGraphDataAllTime, setBarGraphDataAllTime] = useState<
     string[] | number[] | any[]
   >([]);
@@ -52,6 +52,6 @@ const BarChartAlltime = memo(() => {
       />
     </ResponsiveContainer>
   );
-});
+}
 
 export default BarChartAlltime;
