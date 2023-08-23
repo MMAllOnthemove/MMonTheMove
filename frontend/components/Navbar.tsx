@@ -2,11 +2,12 @@ import { Menu } from "@headlessui/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import avi from "../public/images/4.jpg";
-import { useSession, signOut } from "next-auth/react";
+
+
+
 
 export default function Navbar() {
-  const { data: session } = useSession();
+
   return (
     <>
       {/* The navbar */}
@@ -52,15 +53,17 @@ export default function Navbar() {
           <Menu as="div" className="relative inline-block text-left z-10">
             <div>
               <Menu.Button className="inline-flex w-full justify-center avi">
-                <img
-                  src={`${session?.user?.image}`}
+                <Image
+                  src="/images/raoul-droog-yMSecCHsIBc-unsplash.jpg"
                   alt="user avatar"
-                  placeholder="blur"
+                  width={16}
+                  height={16}
+                  priority
                 />
               </Menu.Button>
             </div>
             <Menu.Items className="flex flex-col absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-md focus:outline-none">
-              <Menu.Item>
+              {/* <Menu.Item>
                 <span className="p-2 font-sans text-slate-900  text-left font-medium text-sm">
                   {session?.user?.name}
                 </span>
@@ -69,7 +72,7 @@ export default function Navbar() {
                 <span className="p-2 font-sans text-slate-900  text-left font-medium text-sm">
                   {session?.user?.email}
                 </span>
-              </Menu.Item>
+              </Menu.Item> */}
               <Menu.Item>
                 <Link
                   href="/dashboard"
@@ -86,14 +89,14 @@ export default function Navbar() {
                   Report a problem
                 </Link>
               </Menu.Item>
-              <Menu.Item>
+              {/* <Menu.Item>
                 <button
                   onClick={() => signOut()}
                   className="cursor-pointer p-2 font-sans text-slate-900 text-left font-medium text-sm"
                 >
                   Logout
                 </button>
-              </Menu.Item>
+              </Menu.Item> */}
             </Menu.Items>
           </Menu>
         </div>

@@ -16,7 +16,6 @@ import {
   TabPanels,
   Text,
 } from "@tremor/react";
-import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
@@ -25,9 +24,7 @@ import BarChartMonth from "../../../components/Graphs/BarChartMonth";
 import BarChartToday from "../../../components/Graphs/BarChartToday";
 
 export default function Dashboard() {
-  // Google auth session
-  const { data: session } = useSession();
-  // console.log("Repo", repo);
+
 
   const [completeCountToday, setCompleteCountToday] = useState("");
   const [completeCount, setCompleteCount] = useState("");
@@ -172,7 +169,7 @@ export default function Dashboard() {
 
   const router = useRouter();
 
-  if (session) {
+ 
     return (
       <>
         <Head>
@@ -314,5 +311,5 @@ export default function Dashboard() {
         </main>
       </>
     );
-  }
+  
 }
