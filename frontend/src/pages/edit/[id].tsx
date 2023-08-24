@@ -45,19 +45,25 @@ function EditRow() {
   const { id } = router.query;
   const toast = useToast();
 
-
-  const fetchData = async () => {
-    const response = await UnitFinder.get(`/${id}`);
-    setShowServiceOrderNumber(response?.data[0]?.service_order_no);
-    setInHouseStatus(response?.data[0]?.in_house_status);
-    setEngineerAnalysis(response?.data[0]?.engineer_analysis);
-    setEngineer(response?.data[0]?.engineer);
-    setTicket(response?.data[0]?.ticket);
-    setUser(response?.data[0].job_added_by);
-  };
   useEffect(() => {
-    fetchData();
+    getThis();
   }, []);
+
+  const getThis = async () => {
+    await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/` + id)
+      .then((res) => res.json())
+      .then((data) => {
+        setShowServiceOrderNumber(data[0]?.service_order_no);
+        setInHouseStatus(data[0]?.in_house_status);
+        setEngineerAnalysis(data[0]?.engineer_analysis);
+        setEngineer(data[0]?.engineer);
+        setTicket(data[0]?.ticket);
+        setUser(data[0]?.job_added_by);
+      })
+
+  }
+ 
+
 
 
 
