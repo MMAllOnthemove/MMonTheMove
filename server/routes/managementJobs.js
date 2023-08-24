@@ -140,35 +140,14 @@ router.get("/", async (req, res) => {
 });
 
 // GET one row table info from database
+
 router.get("/:id", async (req, res) => {
-  let newResults;
-  let isCached = false;
   try {
     const { id } = req.params;
-    const cacheResults = await redisClient.get(id);
-    if (cacheResults) {
-      isCached = true;
-      newResults = JSON.parse(cacheResults);
-    } else {
-      const newResults = await pool.query("SELECT * FROM units WHERE id = $1", [
-        id,
-      ]);
-      if (newResults.length === 0) {
-        throw "API returned an empty array";
-      }
-      // To store the data in the Redis cache, you need to use the node-redis module’s set() method to save it.
-      await redisClient.set(id, JSON.stringify(newResults), {
-        // EX is the cache expiring time and NX ensures that the set() method should only set a key that doesn’t already exist in Redis.
-        // In our case it expires after 30 seconds
-        EX: 30,
-        NX: true,
-      });
-    }
-
-    res.send({
-      fromCache: isCached,
-      data: newResults.rows,
-    });
+    const { rows } = await pool.query("SELECT * FROM units WHERE id = $1", [
+      id,
+    ]);
+    res.json(rows);
   } catch (err) {
     // console.log(err);
   }
