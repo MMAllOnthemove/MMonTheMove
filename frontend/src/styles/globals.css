@@ -69,47 +69,70 @@ img {
   overflow: hidden;
 }
 /* Sidebar */
+
 .sidebar {
-  width: 100%;
+  width: 280px;
   min-height: 100vh;
   box-shadow: 0px 4px 8px rgb(0 0 0 / 16%);
   background-color: #fff;
   position: fixed;
   /* Stay in place */
+
   /* Stay on top */
   top: 0;
   /* Stay at the top */
-  left: 0;
   left: -100%;
   z-index: 3;
   transition: 0.5s;
-  position: fixed;
 }
-
 .sidebar.active {
   left: 0;
 }
-
 .sd-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 15px 15px 5px 15px;
+  margin-top: 1rem;
 }
-
-/* Sidebar close button */
+.sd-header .logo {
+  width: 200px;
+  overflow: hidden;
+  margin: 0;
+}
+.sd-header .logo img {
+  width: 100%;
+  height: auto;
+  margin: 0;
+}
 button.close_button {
   background-color: transparent;
   border: none;
   padding: 0;
 }
 
-.sd-body {
-  padding: 15px;
-  max-height: calc(100vh - 5rem);
-  overflow-x: hidden;
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  transition: 0.5s;
+  opacity: 0;
+  visibility: hidden;
 }
 
+.sidebar-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 2;
+}
+.sd-body {
+  padding: 15px;
+  max-height: calc(100vh - 67px);
+  overflow-x: hidden;
+}
 .sd-body ul {
   display: flex;
   flex-direction: column;
@@ -119,12 +142,10 @@ button.close_button {
   margin-bottom: 0;
   padding: 0;
 }
-
-.sd-body ul li {
+.sd-body li {
   list-style: none;
   margin-bottom: 0;
 }
-
 .sd-link {
   display: flex;
   justify-content: flex-start;
@@ -132,11 +153,28 @@ button.close_button {
   gap: 1rem;
   width: 100%;
   padding: 10px 16px 10px 10px;
+  color: blue;
   font-size: 1.3rem;
   font-weight: 500;
   border-radius: 4px;
   cursor: pointer;
   text-decoration: none;
+}
+.sd-link:hover {
+  color: white;
+  background-color: green;
+  font-weight: 600;
+  transition: 0.3s all;
+}
+.sidebar-icon {
+  fill: white;
+}
+.sidebar-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: blue;
+  padding: 0;
+  margin: 0;
 }
 
 .link_btn {
