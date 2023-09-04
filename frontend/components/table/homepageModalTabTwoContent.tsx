@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "../Buttons";
 
 interface IProps {
   searchTicket: string | number;
@@ -39,7 +40,11 @@ export function HomepageModalTabTwoContent(props: IProps) {
     postRepairData,
   } = props;
   return (
-    <form onSubmit={postRepairData} className="flex flex-col overflow-auto">
+    <form
+      onSubmit={postRepairData}
+      className="flex flex-col overflow-auto"
+      id="repairshpr_api_form"
+    >
       <input
         type="text"
         name="searchTicket"
@@ -122,6 +127,7 @@ export function HomepageModalTabTwoContent(props: IProps) {
         onChange={setRepairInHouseStatus}
         required
         aria-required
+        id="repairInHouseStatus"
         className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
       >
         <option disabled value="">
@@ -177,12 +183,18 @@ export function HomepageModalTabTwoContent(props: IProps) {
         <option value="Pule Mokoena">Pule Mokoena</option>
         <option value="Sizwe Phungwayo">Sizwe Phungwayo</option>
       </select>
-      <button
+
+      <Button
+        type="submit"
+        text="Add"
+        className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus: text-white font-semibold font-sans rounded py-3 px-2 my-2 w-full"
+      />
+      {/* <button
         type="submit"
         className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus: text-white font-semibold font-sans rounded py-3 px-2 my-2 w-full"
       >
         Add
-      </button>
+      </button> */}
     </form>
   );
 }
