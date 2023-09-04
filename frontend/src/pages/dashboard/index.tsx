@@ -24,8 +24,6 @@ import BarChartMonth from "../../../components/Graphs/BarChartMonth";
 import BarChartToday from "../../../components/Graphs/BarChartToday";
 
 export default function Dashboard() {
-
-
   const [completeCountToday, setCompleteCountToday] = useState("");
   const [completeCount, setCompleteCount] = useState("");
   const [pendingCountToday, setPendingCountToday] = useState("");
@@ -69,7 +67,10 @@ export default function Dashboard() {
       }
     )
       .then((res) => res.json())
-      .then((data) => setUnitsInCountToday(data.units_in_today));
+      .then((data) => {
+        // console.log("dashboardCountUnitsInToday", data);
+        setUnitsInCountToday(data[0]?.units_in_today);
+      });
   }, [unitsInCountToday]);
 
   const dashboardCountUnitsIn = useCallback(async () => {
@@ -83,7 +84,7 @@ export default function Dashboard() {
       }
     )
       .then((res) => res.json())
-      .then((data) => setUnitsInCount(data.units_in));
+      .then((data) => setUnitsInCount(data[0]?.units_in));
   }, [unitsInCount]);
 
   const dashboardCountUnitsPendingToday = useCallback(async () => {
@@ -97,7 +98,7 @@ export default function Dashboard() {
       }
     )
       .then((res) => res.json())
-      .then((data) => setPendingCountToday(data.pending_today));
+      .then((data) => setPendingCountToday(data[0]?.pending_today));
   }, [pendingCountToday]);
 
   const dashboardCountUnitsPending = useCallback(async () => {
@@ -111,7 +112,7 @@ export default function Dashboard() {
       }
     )
       .then((res) => res.json())
-      .then((data) => setPendingCount(data.pending));
+      .then((data) => setPendingCount(data[0]?.pending));
   }, [pendingCount]);
 
   const dashboardCountUnitsComplete = useCallback(async () => {
@@ -125,7 +126,7 @@ export default function Dashboard() {
       }
     )
       .then((res) => res.json())
-      .then((data) => setCompleteCount(data.complete));
+      .then((data) => setCompleteCount(data[0]?.complete));
   }, [completeCount]);
 
   const dashboardCountUnitsCompleteToday = useCallback(async () => {
@@ -139,7 +140,7 @@ export default function Dashboard() {
       }
     )
       .then((res) => res.json())
-      .then((data) => setCompleteCountToday(data.complete_today));
+      .then((data) => setCompleteCountToday(data[0]?.complete_today));
   }, [completeCountToday]);
 
   // QC CHECKED
@@ -151,7 +152,7 @@ export default function Dashboard() {
       next: { revalidate: 2 },
     })
       .then((res) => res.json())
-      .then((data) => setIsQCCheckedToday(data[0].qc_checked_today));
+      .then((data) => setIsQCCheckedToday(data[0]?.qc_checked_today));
   };
 
   const qcCheckedUnits = useCallback(async () => {
@@ -163,153 +164,151 @@ export default function Dashboard() {
     })
       .then((res) => res.json())
       .then((data) => {
-        setIsQCChecked(data[0].qc_checked);
+        setIsQCChecked(data[0]?.qc_checked);
       });
   }, [isQCChecked]);
 
   const router = useRouter();
 
- 
-    return (
-      <>
-        <Head>
-          <title>Dashboard</title>
-          <meta name="robots" content="noindex, nofollow"></meta>
-        </Head>
-        <Navbar />
-        <main className="space-between-navbar-and-content">
-          <section className="container max-w-6xl px-5 mx-auto pt-5 mb-28">
-            <h1 className="mb-4  font-semibold font-sans leading-none tracking-tight text-gray-900 ">
-              Analytics overview
-            </h1>
-            <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-4 my-3 ">
-              <article className=" flex flex-col justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer">
-                <div className="first_row flex  justify-between items-center">
-                  <div>
-                    <Text className="text-sm text-gray-400  font-medium font-sans">
-                      Units in
-                    </Text>
-                    <Metric className="text-xl lg:text-5xl font-bold text-indigo-500 ">
-                      {unitsInCount}
-                    </Metric>
-                  </div>
-                  <ArrowUpTrayIcon className="h-6 w-6 text-gray-500" />
-                </div>
-                <div className="second_row mt-3">
-                  <BadgeDelta
-                    deltaType="moderateIncrease"
-                    isIncreasePositive={true}
-                    size="md"
-                  >
-                    <span>Today</span> {unitsInCountToday}
-                  </BadgeDelta>
-                </div>
-              </article>
-              <article className=" flex flex-col justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer">
-                <div className="first_row flex  justify-between items-center">
-                  <div>
-                    <Text className="text-sm text-gray-400  font-medium font-sans">
-                      Units pending
-                    </Text>
-                    <Metric className="text-xl lg:text-5xl font-bold text-indigo-500 ">
-                      {pendingCount}
-                    </Metric>
-                  </div>
-                  <ArrowPathIcon className="h-6 w-6 text-gray-500" />
-                </div>
-                <div className="second_row mt-3">
-                  <BadgeDelta
-                    deltaType="moderateIncrease"
-                    isIncreasePositive={true}
-                    size="md"
-                  >
-                    <span>Today</span> {pendingCountToday}
-                  </BadgeDelta>
-                </div>
-              </article>
-              <article className=" flex flex-col justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer">
-                <div className="first_row flex  justify-between items-center">
-                  <div>
-                    <Text className="text-sm text-gray-400  font-medium font-sans">
-                      Units repair complete
-                    </Text>
-                    <Metric className="text-xl lg:text-5xl font-bold text-indigo-500 ">
-                      {completeCount}
-                    </Metric>
-                  </div>
-                  <ArrowDownTrayIcon className="h-6 w-6 text-gray-500" />
-                </div>
-                <div className="second_row mt-3">
-                  <BadgeDelta
-                    deltaType="moderateIncrease"
-                    isIncreasePositive={true}
-                    size="md"
-                  >
-                    <span>Today</span> {completeCountToday}
-                  </BadgeDelta>
-                </div>
-              </article>
-              <article className="flex items-center justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer">
+  return (
+    <>
+      <Head>
+        <title>Dashboard</title>
+        <meta name="robots" content="noindex, nofollow"></meta>
+      </Head>
+      <Navbar />
+      <main className="space-between-navbar-and-content">
+        <section className="container max-w-6xl px-5 mx-auto pt-5 mb-28">
+          <h1 className="mb-4  font-semibold font-sans leading-none tracking-tight text-gray-900 ">
+            Analytics overview
+          </h1>
+          <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-4 my-3 ">
+            <article className=" flex flex-col justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer">
+              <div className="first_row flex  justify-between items-center">
                 <div>
-                  <div className="text-sm text-gray-400  font-medium font-sans">
-                    Engineers
-                  </div>
-                  <div className="flex items-center pt-1">
-                    <div className="text-xl lg:text-5xl font-bold text-indigo-500 ">
-                      6
-                    </div>
-                  </div>
+                  <Text className="text-sm text-gray-400  font-medium font-sans">
+                    Units in
+                  </Text>
+                  <Metric className="text-xl lg:text-5xl font-bold text-indigo-500 ">
+                    {unitsInCount}
+                  </Metric>
                 </div>
+                <ArrowUpTrayIcon className="h-6 w-6 text-gray-500" />
+              </div>
+              <div className="second_row mt-3">
+                <BadgeDelta
+                  deltaType="moderateIncrease"
+                  isIncreasePositive={true}
+                  size="md"
+                >
+                  <span>Today</span> {unitsInCountToday}
+                </BadgeDelta>
+              </div>
+            </article>
+            <article className=" flex flex-col justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer">
+              <div className="first_row flex  justify-between items-center">
                 <div>
-                  <UserGroupIcon className="h-6 w-6 text-gray-500" />
+                  <Text className="text-sm text-gray-400  font-medium font-sans">
+                    Units pending
+                  </Text>
+                  <Metric className="text-xl lg:text-5xl font-bold text-indigo-500 ">
+                    {pendingCount}
+                  </Metric>
                 </div>
-              </article>
-              <article className=" flex flex-col justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer">
-                <div className="first_row flex  justify-between items-center">
-                  <div>
-                    <Text className="text-sm text-gray-400  font-medium font-sans">
-                      QC CHECKED
-                    </Text>
-                    <Metric className="text-xl lg:text-5xl font-bold text-indigo-500 ">
-                      {isQCChecked}
-                    </Metric>
+                <ArrowPathIcon className="h-6 w-6 text-gray-500" />
+              </div>
+              <div className="second_row mt-3">
+                <BadgeDelta
+                  deltaType="moderateIncrease"
+                  isIncreasePositive={true}
+                  size="md"
+                >
+                  <span>Today</span> {pendingCountToday}
+                </BadgeDelta>
+              </div>
+            </article>
+            <article className=" flex flex-col justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer">
+              <div className="first_row flex  justify-between items-center">
+                <div>
+                  <Text className="text-sm text-gray-400  font-medium font-sans">
+                    Units repair complete
+                  </Text>
+                  <Metric className="text-xl lg:text-5xl font-bold text-indigo-500 ">
+                    {completeCount}
+                  </Metric>
+                </div>
+                <ArrowDownTrayIcon className="h-6 w-6 text-gray-500" />
+              </div>
+              <div className="second_row mt-3">
+                <BadgeDelta
+                  deltaType="moderateIncrease"
+                  isIncreasePositive={true}
+                  size="md"
+                >
+                  <span>Today</span> {completeCountToday}
+                </BadgeDelta>
+              </div>
+            </article>
+            <article className="flex items-center justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer">
+              <div>
+                <div className="text-sm text-gray-400  font-medium font-sans">
+                  Engineers
+                </div>
+                <div className="flex items-center pt-1">
+                  <div className="text-xl lg:text-5xl font-bold text-indigo-500 ">
+                    6
                   </div>
-                  <ArrowDownTrayIcon className="h-6 w-6 text-gray-500" />
                 </div>
-                <div className="second_row mt-3">
-                  <BadgeDelta
-                    deltaType="moderateIncrease"
-                    isIncreasePositive={true}
-                    size="md"
-                  >
-                    <span>Today</span> {isQCCheckedToday}
-                  </BadgeDelta>
+              </div>
+              <div>
+                <UserGroupIcon className="h-6 w-6 text-gray-500" />
+              </div>
+            </article>
+            <article className=" flex flex-col justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer">
+              <div className="first_row flex  justify-between items-center">
+                <div>
+                  <Text className="text-sm text-gray-400  font-medium font-sans">
+                    QC CHECKED
+                  </Text>
+                  <Metric className="text-xl lg:text-5xl font-bold text-indigo-500 ">
+                    {isQCChecked}
+                  </Metric>
                 </div>
-              </article>
-            </div>
-          </section>
-          <section className="container mx-auto">
-            <TabGroup>
-              <TabList className="mt-8">
-                <Tab>Today</Tab>
-                <Tab>Month</Tab>
-                <Tab>All time</Tab>
-              </TabList>
-              <TabPanels>
-                <TabPanel>
-                  <BarChartToday />
-                </TabPanel>
-                <TabPanel>
-                  <BarChartMonth />
-                </TabPanel>
-                <TabPanel>
-                  <BarChartAlltime />
-                </TabPanel>
-              </TabPanels>
-            </TabGroup>
-          </section>
-        </main>
-      </>
-    );
-  
+                <ArrowDownTrayIcon className="h-6 w-6 text-gray-500" />
+              </div>
+              <div className="second_row mt-3">
+                <BadgeDelta
+                  deltaType="moderateIncrease"
+                  isIncreasePositive={true}
+                  size="md"
+                >
+                  <span>Today</span> {isQCCheckedToday}
+                </BadgeDelta>
+              </div>
+            </article>
+          </div>
+        </section>
+        <section className="container mx-auto">
+          <TabGroup>
+            <TabList className="mt-8">
+              <Tab>Today</Tab>
+              <Tab>Month</Tab>
+              <Tab>All time</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <BarChartToday />
+              </TabPanel>
+              <TabPanel>
+                <BarChartMonth />
+              </TabPanel>
+              <TabPanel>
+                <BarChartAlltime />
+              </TabPanel>
+            </TabPanels>
+          </TabGroup>
+        </section>
+      </main>
+    </>
+  );
 }

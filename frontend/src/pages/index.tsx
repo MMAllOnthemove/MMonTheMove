@@ -27,14 +27,10 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-
-
 // Management columns
 import { columns } from "../../components/table/homepageTableColumns";
 
 const Home = () => {
-
-
   const [tableData, setTableData] = useState<string[]>([]);
 
   // Not to be confused with 'setServiceOrder'
@@ -319,8 +315,6 @@ const Home = () => {
     onGlobalFilterChange: setFiltering,
   });
 
-
-
   return (
     <>
       <Head>
@@ -380,9 +374,7 @@ const Home = () => {
                       }
                       warranty={warranty}
                       inHouseStatus={inHouseStatus}
-                      setInHouseStatus={(e) =>
-                        setInHouseStatus(e.target.value)
-                      }
+                      setInHouseStatus={(e) => setInHouseStatus(e.target.value)}
                       ticket={ticket}
                       setTicket={(e) => setTicket(e.target.value)}
                       engineerAnalysis={engineerAnalysis}
@@ -438,10 +430,7 @@ const Home = () => {
             <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
               <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-sans text-sm uppercase font-semibold">
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <tr
-                    key={headerGroup.id}
-                    className="font-sans font-semibold"
-                  >
+                  <tr key={headerGroup.id} className="font-sans font-semibold">
                     {headerGroup.headers.map((header) => (
                       <th
                         key={header.id}
@@ -517,9 +506,7 @@ const Home = () => {
               {">>"}
             </button>
             <span className="flex items-center gap-1">
-              <div className="font-sans font-semibold text-[#0d0d0d]">
-                Page
-              </div>
+              <div className="font-sans font-semibold text-[#0d0d0d]">Page</div>
               <strong>
                 {table.getState().pagination.pageIndex + 1} of{" "}
                 {table.getPageCount()}
@@ -531,9 +518,7 @@ const Home = () => {
                 type="number"
                 defaultValue={table.getState().pagination.pageIndex + 1}
                 onChange={(e) => {
-                  const page = e.target.value
-                    ? Number(e.target.value) - 1
-                    : 0;
+                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
                   table.setPageIndex(page);
                 }}
                 className="border p-1 rounded w-16"
@@ -558,6 +543,5 @@ const Home = () => {
       </main>
     </>
   );
-
 };
 export default Home;
