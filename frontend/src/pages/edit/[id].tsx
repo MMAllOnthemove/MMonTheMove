@@ -80,23 +80,36 @@ function EditRow() {
       duration: 9000,
       isClosable: true,
     });
-    const response = {
-      engineerAnalysis,
-      inHouseStatus,
-      partsPendingDate,
-      partsOrderedDate,
-      partsIssuedDate,
-      qcCompletedDate,
-      repairCompletedDate,
-      ticket,
-      reassignEngineer,
-      isQCchecked,
-      QCcomments,
-      partsArr,
-      id,
-      user,
+
+    const putMethod = {
+      method: "PUT", // Method itself
+      headers: {
+        "Content-type": "application/json; charset=UTF-8", // Indicates the content
+      },
+      body: JSON.stringify({
+        engineerAnalysis,
+        inHouseStatus,
+        partsPendingDate,
+        partsOrderedDate,
+        partsIssuedDate,
+        qcCompletedDate,
+        repairCompletedDate,
+        ticket,
+        reassignEngineer,
+        isQCchecked,
+        QCcomments,
+        partsArr,
+        id,
+        user,
+      }), // We send data in JSON format
     };
-    // console.log(response);
+    await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/` + id,
+      putMethod
+    )
+      .then((res) => res.json())
+      .then((data) => console.log("updated data", data))
+      .catch((e) => console.log("update error", e));
   }
 
   async function deleteData() {
