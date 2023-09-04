@@ -1,13 +1,11 @@
-
 import UnitFinder from "@/pages/api/UnitFinder";
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { unitStatus } from "../../../public/_data/statuses";
+import Button from "../../../components/Buttons";
 
 import Head from "next/head";
-import Login from "../auth/login";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
-import Spinner from "../../../components/Spinner";
 
 function EditRow() {
   // These are already handled in the table but for user experience
@@ -59,14 +57,8 @@ function EditRow() {
         setEngineer(data[0]?.engineer);
         setTicket(data[0]?.ticket);
         setUser(data[0]?.job_added_by);
-      })
-
-  }
- 
-
-
-
-
+      });
+  };
 
   // console.log(status);
   async function updateData(e: any) {
@@ -88,7 +80,7 @@ function EditRow() {
       duration: 9000,
       isClosable: true,
     });
-    const response = await UnitFinder.put(`/${id}`, {
+    const response = {
       engineerAnalysis,
       inHouseStatus,
       partsPendingDate,
@@ -103,7 +95,8 @@ function EditRow() {
       partsArr,
       id,
       user,
-    });
+    };
+    // console.log(response);
   }
 
   async function deleteData() {
@@ -151,7 +144,7 @@ function EditRow() {
           <h1 className="text-center py-2 text-gray-900 font-sans font-semibold lg:text-2xl">
             Editing service order:{" "}
             {showServiceOrderNumber === "" ||
-              showServiceOrderNumber === null ? (
+            showServiceOrderNumber === null ? (
               <span className="text-slate-700 font-sans font-bold">
                 Not available
               </span>
@@ -170,7 +163,7 @@ function EditRow() {
           {/* {user === "katleho_m@allelectronics.co.za" ? <p>Admin</p> : ""} */}
           <form className="my-3" onSubmit={updateData}>
             {showServiceOrderNumber === "" ||
-              showServiceOrderNumber === null ? (
+            showServiceOrderNumber === null ? (
               <span>
                 <label
                   htmlFor="showServiceOrderNumber"
@@ -304,24 +297,36 @@ function EditRow() {
                     />
                     {partsList.length - 1 === index &&
                       partsList.length < 10 && (
-                        <button
+                        <Button
                           className="my-2 bg-[#082f49]  font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
                           type="button"
                           onClick={handleServiceAdd}
-                        >
-                          Add a part
-                        </button>
+                          text="Add a part"
+                        />
+                        // <button
+                        //   className="my-2 bg-[#082f49]  font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
+                        //   type="button"
+                        //   onClick={handleServiceAdd}
+                        // >
+                        //   Add a part
+                        // </button>
                       )}
                   </div>
                   <div className="second-division">
                     {partsList.length !== 1 && (
-                      <button
+                      <Button
                         type="button"
                         onClick={() => handleServiceRemove(index)}
                         className="bg-red-500 font-sans font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center remove-btn"
-                      >
-                        <span>Remove</span>
-                      </button>
+                        text="Remove"
+                      />
+                      // <button
+                      //   type="button"
+                      //   onClick={() => handleServiceRemove(index)}
+                      //   className="bg-red-500 font-sans font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center remove-btn"
+                      // >
+                      //   <span>Remove</span>
+                      // </button>
                     )}
                   </div>
                 </div>
@@ -337,47 +342,20 @@ function EditRow() {
               <select
                 value={inHouseStatus}
                 onChange={(e) => setInHouseStatus(e.target.value)}
+                id="inHouseStatus"
                 className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               >
                 <option disabled value="">
                   Choose status
                 </option>
                 <option value="Booked in">Booked in</option>
-                <option value="Repair in progress">Repair in progress</option>
-                <option value="Waiting for parts">Waiting for parts</option>
-                <option value="Waiting for customer">
-                  Waiting for customer
-                </option>
-                <option value="Scheduled">Scheduled</option>
-                <option value="Customer reply">Customer reply</option>
-                <option value="Assigned to tech">Assigned to tech</option>
-                <option value="Parts request 1st approval">
-                  Parts request 1st approval
-                </option>
-                <option value="Quote pending">Quote pending</option>
-                <option value="Quote approved">Quote approved</option>
-                <option value="Quality Control (QC)">Quality Control</option>
-                <option value="Parts issued">Parts issued</option>
-                <option value="Parts to be ordered">
-                  Parts to be ordered
-                </option>
-                <option value="Quote pending">Quote pending</option>
-                <option value="Waiting for customer">
-                  Waiting for customer
-                </option>
-                <option value="Waiting SAW">Waiting SAW</option>
-                <option value="Repair complete">Repair completed</option>
-                <option value="QC failed">QC failed</option>
-                <option value="QC completed">QC completed</option>
-                <option value="Pending Q&A">Pending Q&A</option>
-                <option value="SO cancel">SO cancel</option>
-                <option value="Scrap approved">Scrap approved</option>
-                <option value="Quote rejected">Quote rejected</option>
-                <option value="For invoicing">For invoicing</option>
-                <option value="Parts DNA">Parts DNA</option>
+                {unitStatus.map((stat) => (
+                  <option key={stat.id} value={`${stat._status}`}>
+                    {stat?._status}
+                  </option>
+                ))}
               </select>
             </span>
-
 
             <>
               <span>
@@ -412,7 +390,6 @@ function EditRow() {
                 ></textarea>
               </span>
             </>
-
 
             <span>
               <label
@@ -496,28 +473,38 @@ function EditRow() {
             </span>
 
             <span>
-              <button
+              {/* <button
                 type="submit"
                 className="bg-[#082f49] w-full font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
               >
                 Update
-              </button>
+              </button> */}
+              <Button
+                type="submit"
+                className="bg-[#082f49] w-full font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
+                text="Update"
+              />
             </span>
           </form>
           <span>
-            <button
+            {/* <button
               onClick={deleteData}
               type="button"
               className="bg-red-500 w-full font-sans font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center my-3"
             >
               Delete
-            </button>
+            </button> */}
+            <Button
+              type="button"
+              className="bg-red-500 w-full font-sans font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center my-3"
+              text="Delete"
+              onClick={deleteData}
+            />
           </span>
         </section>
       </main>
     </>
   );
-
 }
 
 export default EditRow;

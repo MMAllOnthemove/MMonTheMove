@@ -2,6 +2,15 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db");
 const redis = require("redis");
+const limiter = require("../controllers/rateLimiter");
+const {
+  countAllJobsIn,
+  countAllJobsInToday,
+  countAllJobsPendingToday,
+  countAllPendingJobs,
+  countAllCompleteJobs,
+  countAllCompleteToday,
+} = require("../controllers/analytics");
 
 let redisClient;
 
@@ -13,205 +22,11 @@ let redisClient;
   await redisClient.connect();
 })();
 
-// Calculate total jobs in
-// DISTINCT to filter out any duplicates
-
-router.get("/in/today", async (req, res) => {
-  let newResults;
-  let isCached = false;
-  try {
-    const cacheResults = await redisClient.get("/in/today");
-    if (cacheResults) {
-      isCached = true;
-      newResults = JSON.parse(cacheResults);
-    } else {
-      newResults = await pool.query(
-        // "SELECT COUNT(DISTINCT service_order_no) AS units_in FROM units"
-        "select count(1) AS units_in_today from UNITS where (DATE(date_modified) = CURRENT_DATE)"
-      );
-      if (newResults.length === 0) {
-        throw "API returned an empty array";
-      }
-      // To store the data in the Redis cache, you need to use the node-redis module’s set() method to save it.
-      await redisClient.set("/in/today", JSON.stringify(newResults), {
-        // EX is the cache expiring time and NX ensures that the set() method should only set a key that doesn’t already exist in Redis.
-        // In our case it expires after 30 seconds
-        EX: 30,
-        NX: true,
-      });
-    }
-
-    res.json(newResults.rows);
-    // res.send({
-    //   fromCache: isCached,
-    //   data: newResults.rows,
-    // });
-  } catch (err) {
-    console.log(err);
-  }
-});
-router.get("/in", async (req, res) => {
-  let newResults;
-  let isCached = false;
-  try {
-    const cacheResults = await redisClient.get("/in");
-    if (cacheResults) {
-      isCached = true;
-      newResults = JSON.parse(cacheResults);
-    } else {
-      newResults = await pool.query(
-        // "SELECT COUNT(DISTINCT service_order_no) AS units_in FROM units"
-        "select count(1) AS units_in from UNITS"
-      );
-      if (newResults.length === 0) {
-        throw "API returned an empty array";
-      }
-      // To store the data in the Redis cache, you need to use the node-redis module’s set() method to save it.
-      await redisClient.set("/in", JSON.stringify(newResults), {
-        // EX is the cache expiring time and NX ensures that the set() method should only set a key that doesn’t already exist in Redis.
-        // In our case it expires after 30 seconds
-        EX: 30,
-        NX: true,
-      });
-    }
-    res.json(newResults.rows);
-    // res.send({
-    //   fromCache: isCached,
-    //   data: newResults.rows,
-    // });
-  } catch (err) {
-    // console.log(err);
-  }
-});
-
-router.get("/pending/today", async (req, res) => {
-  let newResults;
-  let isCached = false;
-  try {
-    const cacheResults = await redisClient.get("/pending/today");
-    if (cacheResults) {
-      isCached = true;
-      newResults = JSON.parse(cacheResults);
-    } else {
-      newResults = await pool.query(
-        "SELECT count(DISTINCT service_order_no) AS pending_today FROM units WHERE (in_house_status != 'Repair complete' AND in_house_status != 'Booked in') AND (DATE(date_modified) = CURRENT_DATE)"
-      );
-      if (newResults.length === 0) {
-        throw "API returned an empty array";
-      }
-      // To store the data in the Redis cache, you need to use the node-redis module’s set() method to save it.
-      await redisClient.set("/pending/today", JSON.stringify(newResults), {
-        // EX is the cache expiring time and NX ensures that the set() method should only set a key that doesn’t already exist in Redis.
-        // In our case it expires after 30 seconds
-        EX: 30,
-        NX: true,
-      });
-    }
-    res.json(newResults.rows);
-    // res.send({
-    //   fromCache: isCached,
-    //   data: newResults.rows,
-    // });
-  } catch (err) {
-    // console.log(err);
-  }
-});
-
-router.get("/pending", async (req, res) => {
-  let newResults;
-  let isCached = false;
-  try {
-    const cacheResults = await redisClient.get("/pending");
-    if (cacheResults) {
-      isCached = true;
-      newResults = JSON.parse(cacheResults);
-    } else {
-      newResults = await pool.query(
-        "SELECT count(DISTINCT service_order_no) AS pending FROM units WHERE (in_house_status != 'Repair complete' AND in_house_status != 'Booked in') "
-      );
-      if (newResults.length === 0) {
-        throw "API returned an empty array";
-      }
-      // To store the data in the Redis cache, you need to use the node-redis module’s set() method to save it.
-      await redisClient.set("/pending", JSON.stringify(newResults), {
-        // EX is the cache expiring time and NX ensures that the set() method should only set a key that doesn’t already exist in Redis.
-        // In our case it expires after 30 seconds
-        EX: 30,
-        NX: true,
-      });
-    }
-    res.json(newResults.rows);
-    // res.send({
-    //   fromCache: isCached,
-    //   data: newResults.rows,
-    // });
-  } catch (err) {
-    // console.log(err);
-  }
-});
-router.get("/complete/today", async (req, res) => {
-  let newResults;
-  let isCached = false;
-  try {
-    const cacheResults = await redisClient.get("/complete/today");
-    if (cacheResults) {
-      isCached = true;
-      newResults = JSON.parse(cacheResults);
-    } else {
-      newResults = await pool.query(
-        "SELECT count(DISTINCT service_order_no) AS complete_today FROM units WHERE (in_house_status != 'Repair complete' AND in_house_status != 'Booked in') AND (DATE(date_modified) = CURRENT_DATE)"
-      );
-      if (newResults.length === 0) {
-        throw "API returned an empty array";
-      }
-      // To store the data in the Redis cache, you need to use the node-redis module’s set() method to save it.
-      await redisClient.set("/complete/today", JSON.stringify(newResults), {
-        // EX is the cache expiring time and NX ensures that the set() method should only set a key that doesn’t already exist in Redis.
-        // In our case it expires after 30 seconds
-        EX: 30,
-        NX: true,
-      });
-    }
-    res.json(newResults.rows);
-    // res.send({
-    //   fromCache: isCached,
-    //   data: newResults.rows,
-    // });
-  } catch (err) {
-    console.log(err);
-  }
-});
-router.get("/complete", async (req, res) => {
-  let newResults;
-  let isCached = false;
-  try {
-    const cacheResults = await redisClient.get("/complete");
-    if (cacheResults) {
-      isCached = true;
-      newResults = JSON.parse(cacheResults);
-    } else {
-      newResults = await pool.query(
-        "SELECT count(DISTINCT service_order_no) AS complete FROM units WHERE in_house_status = 'Repair complete'"
-      );
-      if (newResults.length === 0) {
-        throw "API returned an empty array";
-      }
-      // To store the data in the Redis cache, you need to use the node-redis module’s set() method to save it.
-      await redisClient.set("/complete", JSON.stringify(newResults), {
-        // EX is the cache expiring time and NX ensures that the set() method should only set a key that doesn’t already exist in Redis.
-        // In our case it expires after 30 seconds
-        EX: 30,
-        NX: true,
-      });
-    }
-    res.json(newResults.rows);
-    // res.send({
-    //   fromCache: isCached,
-    //   data: newResults.rows,
-    // });
-  } catch (err) {
-    // console.log(err);
-  }
-});
+router.get("/in/today", limiter, countAllJobsIn);
+router.get("/in", limiter, countAllJobsInToday);
+router.get("/pending/today", limiter, countAllJobsPendingToday);
+router.get("/pending", limiter, countAllPendingJobs);
+router.get("/complete/today", limiter, countAllCompleteToday);
+router.get("/complete", limiter, countAllCompleteJobs);
 
 module.exports = router;

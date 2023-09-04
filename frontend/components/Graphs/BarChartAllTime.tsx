@@ -1,17 +1,5 @@
-import { useEffect, useState, useCallback, memo } from "react";
-import {
-  BadgeDelta,
-  BarChart,
-  Card,
-  Metric,
-  Tab,
-  TabGroup,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Text,
-  Title,
-} from "@tremor/react";
+import { BarChart } from "@tremor/react";
+import { useCallback, useEffect, useState } from "react";
 import { ResponsiveContainer } from "recharts";
 
 const BarChartAlltime = () => {
@@ -52,6 +40,6 @@ const BarChartAlltime = () => {
       />
     </ResponsiveContainer>
   );
-}
+};
 
 export default BarChartAlltime;
