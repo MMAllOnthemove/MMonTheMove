@@ -46,7 +46,7 @@ const countAllJobsIn = async (req, res) => {
     //   data: newResults.rows,
     // });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   }
 };
 
