@@ -152,11 +152,12 @@ const postJobs = async (req, res) => {
     ticket,
     department,
     user,
+    GSPNStatusGetLastElement,
   } = req.body;
   try {
     const results = await pool
       .query(
-        "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket, department, job_added_by) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) returning *",
+        "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket, department, job_added_by, gspn_status) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) returning *",
         [
           service_order,
           createdDate,
@@ -174,6 +175,7 @@ const postJobs = async (req, res) => {
           ticket,
           department,
           user,
+          GSPNStatusGetLastElement,
         ]
       )
       .catch((e) => console.log("post error", e));
@@ -209,10 +211,11 @@ const updateJob = async (req, res) => {
       QCcomments,
       partsArr,
       user,
+      GSPNStatusGetLastElement,
     } = req.body;
     const editQuery = await pool
       .query(
-        "UPDATE units SET engineer_analysis = $1, in_house_status = $2, parts_pending_date = $3, parts_ordered_date = $4, parts_issued_date = $5, qc_completed_date = $6, repair_completed_date = $7, ticket = $8, reassignengineer = $9, isqcchecked = $10, qc_comment = $11, partslist = $12, modified_by_who = $13 WHERE id = $14 returning *",
+        "UPDATE units SET engineer_analysis = $1, in_house_status = $2, parts_pending_date = $3, parts_ordered_date = $4, parts_issued_date = $5, qc_completed_date = $6, repair_completed_date = $7, ticket = $8, reassignengineer = $9, isqcchecked = $10, qc_comment = $11, partslist = $12, modified_by_who = $13, GSPNStatusGetLastElement = $14 WHERE id = $15 returning *",
         [
           engineerAnalysis,
           inHouseStatus,
@@ -228,6 +231,7 @@ const updateJob = async (req, res) => {
           partsArr,
           user,
           id,
+          GSPNStatusGetLastElement,
         ]
       )
       .catch((e) => console.log("err", e));
