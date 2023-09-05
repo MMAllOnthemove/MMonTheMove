@@ -67,6 +67,10 @@ const Home = () => {
   const [ticket, setTicket] = useState("");
   const [department, setDepartment] = useState("HHP");
 
+  const [GSPNStatus, setGSPNStatus] = useState("");
+  // We want to get the Status Desc from the last object element of this array
+  let GSPNStatusGetLastElement = GSPNStatus?.slice(-1);
+
   // Settings the user to also be the engineer
 
   let user = engineer;
@@ -119,6 +123,7 @@ const Home = () => {
       setSerialNumber,
       setEngineerAssignDate,
       setEngineerAssignTime,
+      setGSPNStatus,
     });
   }, [searchServiceOrder]);
 
@@ -168,8 +173,9 @@ const Home = () => {
       ticket,
       department,
       user,
+      GSPNStatusGetLastElement,
     };
-    // console.log(postThisInfo)
+    // console.log(postThisInfo);
     const response = fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
       {

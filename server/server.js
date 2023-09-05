@@ -18,10 +18,7 @@ require("dotenv").config();
 app.use(helmet());
 app.use(
   cors({
-    origin: [
-      process.env.NEXT_PUBLIC_MAIN_DOMAIN,
-      process.env.NEXT_PRODUCTION_SUBDOMAIN_REGEX,
-    ],
+    origin: ["http://localhost:3000"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
