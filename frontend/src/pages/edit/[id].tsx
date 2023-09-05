@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { unitStatus } from "../../../public/_data/statuses";
 import Button from "../../../components/Buttons";
+import { getSOStatusDescLatest } from "@/functions/ipass_api";
 
 import Head from "next/head";
 
@@ -19,6 +20,12 @@ function EditRow() {
   const [engineerAnalysis, setEngineerAnalysis] = useState("");
   const [engineer, setEngineer] = useState("");
   const [reassignEngineer, setReassignEngineer] = useState("");
+
+  // Not to be confused with 'setServiceOrder'
+  const [searchServiceOrder, setSearchServiceOrder] = useState("");
+  const [GSPNStatus, setGSPNStatus] = useState("");
+  // We want to get the Status Desc from the last object element of this array
+  let GSPNStatusGetLastElement = GSPNStatus?.slice(-1);
 
   const [ticket, setTicket] = useState("");
   const [hasValue, setHasValue] = useState(false);
@@ -59,8 +66,14 @@ function EditRow() {
         setUser(data[0]?.job_added_by);
       });
   };
-
+  useEffect(() => {
+    getSOStatusDescLatest({
+      showServiceOrderNumber,
+      setGSPNStatus,
+    });
+  }, [showServiceOrderNumber]);
   // console.log(status);
+
   async function updateData(e: any) {
     e.preventDefault();
     // Get the date input values when selected
@@ -101,6 +114,7 @@ function EditRow() {
         partsArr,
         id,
         user,
+        GSPNStatusGetLastElement,
       }), // We send data in JSON format
     };
     await fetch(

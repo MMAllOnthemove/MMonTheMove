@@ -1,4 +1,6 @@
 import React from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import Button from "../Buttons";
 
 interface IProps {
@@ -21,6 +23,15 @@ interface IProps {
 }
 
 export function HomepageModalTabOneContent(props: IProps) {
+  const validateSchema = Yup.object().shape({
+    searchServiceOrder: Yup.string().notRequired(),
+    ticket: Yup.string().required("This field is required"),
+    email: Yup.string()
+      .email("Please enter a valid email")
+      .required("This field is required"),
+    password: Yup.string(),
+  });
+
   const {
     searchServiceOrder,
     setSearchServiceOrder,
