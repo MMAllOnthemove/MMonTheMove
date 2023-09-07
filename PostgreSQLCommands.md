@@ -159,3 +159,7 @@ Selecting date and formating from 6 digits
 <!-- LEFT JOIN REPAIR TABLE WITH GSPN TABLE -->
 
 <!-- SELECT * FROM tests_repairshpr_hhp LEFT JOIN units ON tests_repairshpr_hhp.id = units.id; -->
+<!-- For month -->
+<!-- SELECT id, unique_id, (SELECT DISTINCT service_order_no) AS service_order_no, created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, date_modified, gspn_status FROM units
+WHERE date_modified >= date_trunc('month', current_date - interval '1' month)
+AND date_modified < date_trunc('month', current_date); -->

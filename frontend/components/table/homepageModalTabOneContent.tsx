@@ -2,6 +2,7 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "../Buttons";
+import { unitStatus } from "../../public/_data/statuses";
 
 interface IProps {
   searchServiceOrder: string;
@@ -112,33 +113,11 @@ export function HomepageModalTabOneContent(props: IProps) {
           <option disabled value="">
             Choose status
           </option>
-          <option value="Booked in">Booked in</option>
-          <option value="Repair in progress">Repair in progress</option>
-          <option value="Waiting for parts">Waiting for parts</option>
-          <option value="Waiting for customer">Waiting for customer</option>
-          <option value="Scheduled">Scheduled</option>
-          <option value="Customer reply">Customer reply</option>
-          <option value="Assigned to tech">Assigned to tech</option>
-          <option value="Parts request 1st approval">
-            Parts request 1st approval
-          </option>
-          <option value="Quote pending">Quote pending</option>
-          <option value="Quote approved">Quote approved</option>
-          <option value="Quality Control (QC)">Quality Control</option>
-          <option value="Parts issued">Parts issued</option>
-          <option value="Parts to be ordered">Parts to be ordered</option>
-          <option value="Quote pending">Quote pending</option>
-          <option value="Waiting for customer">Waiting for customer</option>
-          <option value="Waiting SAW">Waiting SAW</option>
-          <option value="Repair complete">Repair completed</option>
-          <option value="QC failed">QC failed</option>
-          <option value="QC completed">QC completed</option>
-          <option value="Pending Q&A">Pending Q&A</option>
-          <option value="SO cancel">SO cancel</option>
-          <option value="Scrap approved">Scrap approved</option>
-          <option value="Quote rejected">Quote rejected</option>
-          <option value="For invoicing">For invoicing</option>
-          <option value="Parts DNA">Parts DNA</option>
+          {unitStatus.map((stat) => (
+            <option key={stat.id} value={`${stat._status}`}>
+              {stat?._status}
+            </option>
+          ))}
         </select>
         <label htmlFor="engineerAnalysis" className="sr-only">
           Engineer Analysis
