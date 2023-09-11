@@ -86,7 +86,7 @@ export async function getSOStatusDescLatest(props: IgetSOStatusDescLatest) {
     }
   );
   const data = await response.json();
-  props.setGSPNStatus(data?.EtFlowInfo?.results?.map((x: any) => x.StatusDesc));
+  props.setGSPNStatus(data?.EtLogInfo?.results?.map((x: any) => x.StatusDesc));
 }
 
 export async function getPartsInfoFunction(props: IgetPartsInfo) {

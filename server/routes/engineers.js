@@ -46,7 +46,9 @@ router.get("/today", async (req, res) => {
     //   data: newResults.rows,
     // });
   } catch (err) {
-    console.log(err);
+    {
+      //
+    }
   }
 });
 
@@ -82,7 +84,7 @@ router.get("/month", async (req, res) => {
     //   data: newResults.rows,
     // });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   }
 });
 

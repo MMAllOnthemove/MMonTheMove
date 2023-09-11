@@ -68,7 +68,9 @@ const postRepairJobs = async (req, res) => {
           repairUser,
         ]
       )
-      .catch((e) => console.log("post error", e));
+      .catch((e) => {
+        //
+      });
 
     res.status(201).json({
       status: "success",
@@ -77,7 +79,7 @@ const postRepairJobs = async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   }
 };
 
@@ -216,8 +218,6 @@ const updateJob = async (req, res) => {
       )
       .catch((e) => console.log("err", e));
     res.send(editQuery.rows);
-
-    // console.log(editQuery.rows);
   } catch (error) {
     // console.log(error);
   }

@@ -82,7 +82,7 @@ export default function Dashboard() {
     )
       .then((res) => res.json())
       .then((data) => setUnitsInCountToday(data.units_in_today))
-      .catch((e) => console.log("Dashboard units in today error", e));
+      .catch((e) =>{ console.log("Dashboard units in today error", e)});
   }
   async function dashboardCountUnitsIn() {
     await fetch(
