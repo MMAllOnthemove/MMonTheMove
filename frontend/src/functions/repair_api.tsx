@@ -15,6 +15,10 @@ export async function getRepairTicketInfo(props: IRepairTicketInfo) {
     },
   })
     .then((res) => res.json())
-    .then((data) => console.log("data"))
-    .catch((e) => console.log("repair errors", e));
+    .then((data) => {
+      //
+    })
+    .catch((e) => {
+      //
+    });
 }
