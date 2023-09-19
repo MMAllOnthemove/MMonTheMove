@@ -12,13 +12,17 @@ const feedback = require("../server/routes/feedback");
 const dashboard = require("../server/routes/dashboard");
 const engineers = require("../server/routes/engineers");
 const qc = require("../server/routes/qc");
+const countEngineers = require("../server/routes/engineer_count_route");
 
 require("dotenv").config();
 
 app.use(helmet());
 app.use(
   cors({
-    origin: [],
+    origin: [
+      process.env.NEXT_PUBLIC_MAIN_DOMAIN,
+      process.env.NEXT_PRODUCTION_SUBDOMAIN_REGEX,
+    ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
@@ -46,6 +50,9 @@ app.use(process.env.NEXT_PUBLIC_SERVER_ENGINEER_JOBS_COUNT_OVERVIEW, engineers);
 
 // QC graphs
 app.use(process.env.NEXT_PUBLIC_SERVER_QC_CHECKED_JOBS_COUNT_OVERVIEW, qc);
+
+// Count engineers
+app.use(process.env.NEXT_PUBLIC_SERVER_COUNT_ALL_ENGINEERS, countEngineers);
 
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {

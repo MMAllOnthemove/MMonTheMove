@@ -163,3 +163,9 @@ Selecting date and formating from 6 digits
 <!-- SELECT id, unique_id, (SELECT DISTINCT service_order_no) AS service_order_no, created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, date_modified, gspn_status FROM units
 WHERE date_modified >= date_trunc('month', current_date - interval '1' month)
 AND date_modified < date_trunc('month', current_date); -->
+
+
+
+<!-- Select data for previous day -->
+<!-- SELECT 
+(service_order_no) AS yesterday, date_modified FROM units WHERE date_modified ::date = current_date - 1; -->

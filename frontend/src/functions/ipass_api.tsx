@@ -46,6 +46,7 @@ export async function getSOInfoAllFunction(props: IgetSOInfoAll) {
       body: JSON.stringify(options),
     }
   );
+
   const data = await response.json();
 
   props.setServiceOrder(data?.Return.EsHeaderInfo.SvcOrderNo);
