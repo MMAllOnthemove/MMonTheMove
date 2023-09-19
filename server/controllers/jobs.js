@@ -17,7 +17,7 @@ const getRepairJobs = async (req, res) => {
   let isCached = false;
   try {
     const newResults = await pool.query(
-      "SELECT id, unique_id, service_order_no, created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, date_modified, gspn_status FROM units ORDER BY date_modified DESC"
+      "SELECT id, unique_id,  (SELECT DISTINCT(service_order_no)) AS service_order_no, created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, TO_CHAR(date_modified, 'YYYY-MM-DD') AS date_modified, gspn_status FROM units ORDER BY date_modified DESC"
     );
     res.json(newResults.rows);
   } catch (err) {
@@ -46,8 +46,15 @@ const postRepairJobs = async (req, res) => {
     repairUser,
   } = req.body;
   try {
-    const results = await pool
-      .query(
+    const findIfExists = await pool.query(
+      "SELECT id from units WHERE ticket = $1",
+      [repairTicket]
+    );
+    if (findIfExists.rowCount > 0) {
+      res.status(400).json("Ticket already exists!");
+      console.log("Cell exists");
+    } else {
+      const results = await pool.query(
         "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket, department, job_added_by) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) returning *",
         [
           repairServiceOrder,
@@ -67,19 +74,11 @@ const postRepairJobs = async (req, res) => {
           repairDepartment,
           repairUser,
         ]
-      )
-      .catch((e) => {
-        //
-      });
-
-    res.status(201).json({
-      status: "success",
-      data: {
-        restaurant: results.rows,
-      },
-    });
+      );
+      res.status(200).json("Job added, thank you!");
+    }
   } catch (err) {
-    // console.log(err);
+    console.log("Create task error: ", err);
   }
 };
 
@@ -89,13 +88,8 @@ const getAllJobs = async (req, res) => {
   let isCached = false;
   try {
     const newResults = await pool.query(
-      "SELECT id, unique_id, service_order_no, created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, date_modified, gspn_status FROM units ORDER BY date_modified DESC"
+      "SELECT id, unique_id, (SELECT DISTINCT(service_order_no)) AS service_order_no, created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, TO_CHAR(date_modified, 'YYYY-MM-DD') AS date_modified, gspn_status FROM units ORDER BY date_modified DESC"
     );
-    // res.send({
-    //   fromCache: isCached,
-    //   data: newResults.rows,
-    // });
-    // console.log(newResults.rows);
     res.json(newResults.rows);
   } catch (err) {
     // console.log(err);
@@ -137,8 +131,15 @@ const postJobs = async (req, res) => {
     GSPNStatusGetLastElement,
   } = req.body;
   try {
-    const results = await pool
-      .query(
+    const findIfExists = await pool.query(
+      "SELECT id from units WHERE service_order_no = $1",
+      [service_order]
+    );
+    if (findIfExists.rowCount > 0) {
+      res.status(400).json("Service order already exists!");
+      console.log("Cell exists");
+    } else {
+      const results = await pool.query(
         "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket, department, job_added_by, gspn_status) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) returning *",
         [
           service_order,
@@ -159,18 +160,12 @@ const postJobs = async (req, res) => {
           user,
           GSPNStatusGetLastElement,
         ]
-      )
-      .catch((e) => console.log("post error", e));
-    res.status(400).send("Bad Request");
+      );
 
-    res.status(201).json({
-      status: "success",
-      data: {
-        restaurant: results.rows[0],
-      },
-    });
+      res.status(201).json("Job added, thank you!");
+    }
   } catch (err) {
-    // console.log(err);
+    console.log("Create task error: ", err);
   }
 };
 
@@ -223,6 +218,23 @@ const updateJob = async (req, res) => {
   }
 };
 
+// Update only one job gspn status
+const updateJobclaimsGSPNStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { claimsGSPNStatus } = req.body;
+    const editQuery = await pool
+      .query("UPDATE units SET gspn_status = $1  WHERE id = $2 returning *", [
+        claimsGSPNStatus,
+        id,
+      ])
+      .catch((e) => console.log("claimsGSPNStatus err", e));
+    res.send(editQuery.rows);
+  } catch (error) {
+    // console.log(error);
+  }
+};
+
 // Delete job by id
 const deleteJob = async (req, res) => {
   try {
@@ -248,5 +260,6 @@ module.exports = {
   getJobById,
   postJobs,
   updateJob,
+  updateJobclaimsGSPNStatus,
   deleteJob,
 };
