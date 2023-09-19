@@ -1,7 +1,7 @@
 import UnitFinder from "@/pages/api/UnitFinder";
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { unitStatus } from "../../../public/_data/statuses";
 import Button from "../../../components/Buttons";
 import { getSOStatusDescLatest } from "@/functions/ipass_api";
@@ -23,12 +23,18 @@ function EditRow() {
 
   // Not to be confused with 'setServiceOrder'
   const [searchServiceOrder, setSearchServiceOrder] = useState("");
-  const [GSPNStatus, setGSPNStatus] = useState("");
+  const [GSPNStatus, setGSPNStatus] = useState<string | number | any>("");
   // We want to get the Status Desc from the last object element of this array
-  let GSPNStatusGetLastElement = GSPNStatus?.slice(-1);
+  let GSPNStatusGetLastElement = JSON.stringify(GSPNStatus?.slice(-1));
 
   const [ticket, setTicket] = useState("");
   const [hasValue, setHasValue] = useState(false);
+
+  const [partsPendingDate, setPartsPendingDate] = useState("");
+  const [partsOrderedDate, setPartsOrderedDate] = useState("");
+  const [partsIssuedDate, setPartsIssuedDate] = useState("");
+  const [qcCompletedDate, setQCCompletedDate] = useState("");
+  const [repairCompletedDate, setRepairCompletedDate] = useState("");
 
   // QC CHECKED RADIO
   const [isQCchecked, setIsQCchecked] = useState(false);
@@ -54,7 +60,7 @@ function EditRow() {
     getThis();
   }, []);
 
-  const getThis = async () => {
+  const getThis = useCallback(async () => {
     await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/` + id)
       .then((res) => res.json())
       .then((data) => {
@@ -64,8 +70,15 @@ function EditRow() {
         setEngineer(data[0]?.engineer);
         setTicket(data[0]?.ticket);
         setUser(data[0]?.job_added_by);
+        setQCcomments(data[0]?.qc_comment);
+        setPartsPendingDate(data[0]?.parts_pending_date);
+        setPartsOrderedDate(data[0]?.parts_ordered_date);
+        setPartsIssuedDate(data[0]?.parts_issued_date);
+        setQCCompletedDate(data[0]?.qc_completed_date);
+        setRepairCompletedDate(data[0]?.repair_completed_date);
       });
-  };
+  }, []);
+
   useEffect(() => {
     getSOStatusDescLatest({
       showServiceOrderNumber,
@@ -76,14 +89,6 @@ function EditRow() {
 
   async function updateData(e: any) {
     e.preventDefault();
-    // Get the date input values when selected
-    const formData = new FormData(e.target);
-    // These are all out status dates
-    const partsPendingDate = formData.get("partsPendingDate");
-    const partsOrderedDate = formData.get("partsOrderedDate");
-    const partsIssuedDate = formData.get("partsIssuedDate");
-    const qcCompletedDate = formData.get("qcCompletedDate");
-    const repairCompletedDate = formData.get("repairCompletedDate");
 
     router.push("/");
     toast({
@@ -94,36 +99,42 @@ function EditRow() {
       isClosable: true,
     });
 
+    const putThisInfo = {
+      engineerAnalysis,
+      inHouseStatus,
+      partsPendingDate,
+      partsOrderedDate,
+      partsIssuedDate,
+      qcCompletedDate,
+      repairCompletedDate,
+      ticket,
+      reassignEngineer,
+      isQCchecked,
+      QCcomments,
+      partsArr,
+      id,
+      user,
+      GSPNStatusGetLastElement,
+    };
+    // console.log(putThisInfo);
     const putMethod = {
       method: "PUT", // Method itself
       headers: {
         "Content-type": "application/json; charset=UTF-8", // Indicates the content
       },
-      body: JSON.stringify({
-        engineerAnalysis,
-        inHouseStatus,
-        partsPendingDate,
-        partsOrderedDate,
-        partsIssuedDate,
-        qcCompletedDate,
-        repairCompletedDate,
-        ticket,
-        reassignEngineer,
-        isQCchecked,
-        QCcomments,
-        partsArr,
-        id,
-        user,
-        GSPNStatusGetLastElement,
-      }), // We send data in JSON format
+      body: JSON.stringify(putThisInfo), // We send data in JSON format
     };
     await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/` + id,
       putMethod
     )
       .then((res) => res.json())
-      .then((data) => console.log("updated data", data))
-      .catch((e) => console.log("update error", e));
+      .then((data) => {
+        //
+      })
+      .catch((e) => {
+        //
+      });
   }
 
   async function deleteData() {
@@ -188,7 +199,7 @@ function EditRow() {
           <hr />
 
           {/* {user === "katleho_m@allelectronics.co.za" ? <p>Admin</p> : ""} */}
-          <form className="my-3" onSubmit={updateData}>
+          <form className="my-3" onSubmit={updateData} id="updateJobForm">
             {showServiceOrderNumber === "" ||
             showServiceOrderNumber === null ? (
               <span>
@@ -431,6 +442,8 @@ function EditRow() {
                 min={today}
                 max={today}
                 id="partsPendingDate"
+                value={partsPendingDate}
+                onChange={(e) => setPartsPendingDate(e.target.value)}
                 className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               />
             </span>
@@ -446,6 +459,8 @@ function EditRow() {
                 name="partsOrderedDate"
                 min={today}
                 max={today}
+                value={partsOrderedDate}
+                onChange={(e) => setPartsOrderedDate(e.target.value)}
                 id="partsOrderedDate"
                 className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               />
@@ -462,6 +477,8 @@ function EditRow() {
                 name="partsIssuedDate"
                 min={today}
                 max={today}
+                value={partsIssuedDate}
+                onChange={(e) => setPartsIssuedDate(e.target.value)}
                 id="partsIssuedDate"
                 className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               />
@@ -478,6 +495,8 @@ function EditRow() {
                 name="qcCompletedDate"
                 min={today}
                 max={today}
+                value={qcCompletedDate}
+                onChange={(e) => setQCCompletedDate(e.target.value)}
                 id="qcCompletedDate"
                 className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               />
@@ -494,6 +513,8 @@ function EditRow() {
                 name="repairCompletedDate"
                 min={today}
                 max={today}
+                value={repairCompletedDate}
+                onChange={(e) => setRepairCompletedDate(e.target.value)}
                 id="repairCompletedDate"
                 className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               />

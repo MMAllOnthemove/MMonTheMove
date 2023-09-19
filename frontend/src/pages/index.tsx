@@ -15,6 +15,7 @@ import ToTopButton from "../../components/ToTopButton";
 import ManagementSearchForm from "../../components/table/ManagementSearchForm";
 import { HomepageModalTabOneContent } from "../../components/table/homepageModalTabOneContent";
 import { HomepageModalTabTwoContent } from "../../components/table/homepageModalTabTwoContent";
+import moment from "moment";
 
 // Tanstack table functionality
 import {
@@ -67,7 +68,7 @@ const Home = () => {
   const [ticket, setTicket] = useState("");
   const [department, setDepartment] = useState("HHP");
 
-  const [GSPNStatus, setGSPNStatus] = useState("");
+  const [GSPNStatus, setGSPNStatus] = useState<string | null>("");
   // We want to get the Status Desc from the last object element of this array
   let GSPNStatusGetLastElement = GSPNStatus?.slice(-1);
 
@@ -109,7 +110,10 @@ const Home = () => {
     string | number | undefined
   >("");
   const [repairDepartment, setRepairDepartment] = useState("HHP");
+  const [repairAPILoading, setRepairAPILoading] = useState(true);
 
+  // For the repair API
+  let repairUser = repairEngineer;
   useEffect(() => {
     getSOInfoAllFunction({
       searchServiceOrder,
@@ -148,9 +152,55 @@ const Home = () => {
     fetchDataCombinedData();
   }, []);
 
-  // useEffect(() => {
-  //   getRepair();
-  // }, [searchTicket]);
+  useEffect(() => {
+    getRepair();
+  }, [searchTicket]);
+
+  // Get repair data
+
+  async function getRepair() {
+    await fetch(
+      `https://allelectronics.repairshopr.com/api/v1/tickets?number=${searchTicket}`,
+
+      {
+        method: "GET",
+        mode: "cors",
+        cache: "default",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
+        },
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setRepairFault(data?.tickets[0]?.subject || "");
+        setRepairCreatedDate(
+          moment(new Date(`${data?.tickets[0]?.created_at}`)).format(
+            "YYYYMMDD"
+          ) || ""
+        );
+        setRepairCreatedTime(
+          moment(`${data?.tickets[0]?.created_at}`).format("HHMMSS") || ""
+        );
+        setRepairEngineerAssignDate(
+          moment(new Date(`${data?.tickets[0]?.created_at}`)).format(
+            "YYYYMMDD"
+          ) || ""
+        );
+        setRepairEngineerAssignTime(
+          moment(`${data?.tickets[0]?.created_at}`).format("HHMMSS") || ""
+        );
+        setRepairImei(data?.tickets[0]?.properties["IMEI"] || "");
+        setRepairServiceOrder(
+          data?.tickets[0]?.properties["Service Order No."] || ""
+        );
+        setRepairTicket(data?.tickets[0]?.number || "");
+        setRepairEngineerAnalysis("");
+        setRepairDepartment("HHP");
+        setRepairAPILoading(false);
+      });
+  }
 
   // const user = session?.user?.email;
 
@@ -227,8 +277,10 @@ const Home = () => {
       repairEngineerAnalysis,
       repairTicket,
       repairDepartment,
-      user,
+      repairUser,
+      GSPNStatusGetLastElement,
     };
+    // console.log(postThisInfo);
     fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/repair`, {
       method: "POST",
       headers: {
@@ -249,51 +301,6 @@ const Home = () => {
     });
     window.location.reload();
   };
-
-  // Get repair data
-
-  // async function getRepair() {
-  //   await fetch(
-  //     `https://allelectronics.repairshopr.com/api/v1/tickets?number=${searchTicket}`,
-
-  //     {
-  //       method: "GET",
-  //       mode: "cors",
-  //       cache: "default",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
-  //       },
-  //     }
-  //   )
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setRepairFault(data?.tickets[0]?.subject || "");
-  //       setRepairCreatedDate(
-  //         moment(new Date(`${data?.tickets[0]?.created_at}`)).format(
-  //           "YYYY-MM-DD"
-  //         ) || ""
-  //       );
-  //       setRepairCreatedTime(
-  //         moment(`${data?.tickets[0]?.created_at}`).format("HH:MM:SS") || ""
-  //       );
-  //       setRepairEngineerAssignDate(
-  //         moment(new Date(`${data?.tickets[0]?.created_at}`)).format(
-  //           "YYYY-MM-DD"
-  //         ) || ""
-  //       );
-  //       setRepairEngineerAssignTime(
-  //         moment(`${data?.tickets[0]?.created_at}`).format("HH:MM:SS") || ""
-  //       );
-  //       setRepairImei(data?.tickets[0]?.properties["IMEI"] || "");
-  //       setRepairServiceOrder(
-  //         data?.tickets[0]?.properties["Service Order No. "] || ""
-  //       );
-  //       setRepairTicket(data?.tickets[0]?.number || "");
-  //       setRepairEngineerAnalysis("");
-  //       setRepairDepartment("HHP");
-  //     });
-  // }
 
   // For the table
   const router = useRouter();
@@ -366,7 +373,7 @@ const Home = () => {
                     Use service order
                   </Tab>
 
-                  <Tab fontFamily="inherit" fontWeight="500" isDisabled>
+                  <Tab fontFamily="inherit" fontWeight="500">
                     Use ticket number
                   </Tab>
                 </TabList>
@@ -396,6 +403,7 @@ const Home = () => {
                   </TabPanel>
                   <TabPanel>
                     <HomepageModalTabTwoContent
+                      repairAPILoading={repairAPILoading}
                       searchTicket={searchTicket}
                       setSearchTicket={(e) => setSearchTicket(e.target.value)}
                       repairFault={repairFault}

@@ -16,29 +16,9 @@ const getRepairJobs = async (req, res) => {
   let newResults;
   let isCached = false;
   try {
-    const cacheResults = await redisClient.get("/repair");
-    if (cacheResults) {
-      isCached = true;
-      newResults = JSON.parse(cacheResults);
-    } else {
-      newResults = await pool.query(
-        "SELECT id, unique_id, service_order_no, created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, date_modified FROM units ORDER BY date_modified DESC"
-      );
-      if (newResults.length === 0) {
-        throw "API returned an empty array";
-      }
-      // To store the data in the Redis cache, you need to use the node-redis module’s set() method to save it.
-      await redisClient.set("/repair", JSON.stringify(newResults), {
-        // EX is the cache expiring time and NX ensures that the set() method should only set a key that doesn’t already exist in Redis.
-        // In our case it expires after 30 seconds
-        EX: 30,
-        NX: true,
-      });
-    }
-    // res.send({
-    //   fromCache: isCached,
-    //   data: newResults.rows,
-    // });
+    const newResults = await pool.query(
+      "SELECT id, unique_id, service_order_no, created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, date_modified, gspn_status FROM units ORDER BY date_modified DESC"
+    );
     res.json(newResults.rows);
   } catch (err) {
     // console.log(err);
@@ -63,7 +43,7 @@ const postRepairJobs = async (req, res) => {
     repairEngineerAnalysis,
     repairTicket,
     repairDepartment,
-    user,
+    repairUser,
   } = req.body;
   try {
     const results = await pool
@@ -85,10 +65,12 @@ const postRepairJobs = async (req, res) => {
           repairEngineerAnalysis,
           repairTicket,
           repairDepartment,
-          user,
+          repairUser,
         ]
       )
-      .catch((e) => console.log("post error", e));
+      .catch((e) => {
+        //
+      });
 
     res.status(201).json({
       status: "success",
@@ -97,7 +79,7 @@ const postRepairJobs = async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   }
 };
 
@@ -107,7 +89,7 @@ const getAllJobs = async (req, res) => {
   let isCached = false;
   try {
     const newResults = await pool.query(
-      "SELECT id, unique_id, service_order_no, created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, date_modified FROM units ORDER BY date_modified DESC"
+      "SELECT id, unique_id, service_order_no, created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, date_modified, gspn_status FROM units ORDER BY date_modified DESC"
     );
     // res.send({
     //   fromCache: isCached,
@@ -215,7 +197,7 @@ const updateJob = async (req, res) => {
     } = req.body;
     const editQuery = await pool
       .query(
-        "UPDATE units SET engineer_analysis = $1, in_house_status = $2, parts_pending_date = $3, parts_ordered_date = $4, parts_issued_date = $5, qc_completed_date = $6, repair_completed_date = $7, ticket = $8, reassignengineer = $9, isqcchecked = $10, qc_comment = $11, partslist = $12, modified_by_who = $13, GSPNStatusGetLastElement = $14 WHERE id = $15 returning *",
+        "UPDATE units SET engineer_analysis = $1, in_house_status = $2, parts_pending_date = $3, parts_ordered_date = $4, parts_issued_date = $5, qc_completed_date = $6, repair_completed_date = $7, ticket = $8, reassignengineer = $9, isqcchecked = $10, qc_comment = $11, partslist = $12, modified_by_who = $13, gspn_status = $14 WHERE id = $15 returning *",
         [
           engineerAnalysis,
           inHouseStatus,
@@ -230,14 +212,12 @@ const updateJob = async (req, res) => {
           QCcomments,
           partsArr,
           user,
-          id,
           GSPNStatusGetLastElement,
+          id,
         ]
       )
       .catch((e) => console.log("err", e));
     res.send(editQuery.rows);
-
-    // console.log(editQuery.rows);
   } catch (error) {
     // console.log(error);
   }
