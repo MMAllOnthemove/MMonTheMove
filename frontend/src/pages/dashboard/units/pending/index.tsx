@@ -39,13 +39,6 @@ function Pending() {
     fetchDataCombinedData();
   }, []);
 
-  // let filteredTableData = fetchAlldata.filter(
-  //   (item) =>
-  //     new Date(
-  //       moment(item.date_modified).utc().utcOffset(24).format("YYYY-MM-DD") // offset by 24 hours
-  //     ).getTime() === new Date(dateFilter).getTime()
-  // );
-
   let getBookedin = fetchAlldata.filter(
     (item) =>
       item.date_modified === dateFilter && item.in_house_status === "Booked in"

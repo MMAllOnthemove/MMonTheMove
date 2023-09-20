@@ -1,10 +1,8 @@
-import Head from "next/head";
-import { useCallback, useEffect, useState } from "react";
-import Navbar from "../../../components/Navbar";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
-import Link from "next/link";
+import Head from "next/head";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import Navbar from "../../../components/Navbar";
 
 export default function Claims() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -35,11 +33,7 @@ export default function Claims() {
           <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl text-center">
             Claims
           </h1>
-          <form
-            className="flex flex-col justify-center gap-3 py-4"
-            id="searchServiceOrderForm"
-            name="searchServiceOrderForm"
-          >
+          <section className="flex flex-col justify-center gap-3 py-4">
             <label htmlFor="searchServiceOrder" className="text-center sr-only">
               Search Service Order
             </label>
@@ -52,25 +46,28 @@ export default function Claims() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-          </form>
+          </section>
           <div className="max-h-[540px] overflow-y-auto">
             <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
               <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-sans text-sm uppercase font-semibold">
-                <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
-                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                <tr className="font-sans font-semibold">
+                  <th className="px-4 py-3 cursor-pointer font-sans font-semibold">
                     Service Order
-                  </td>
-                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                  </th>
+                  <th className="px-4 py-3 cursor-pointer font-sans font-semibold">
                     GSPN Status
-                  </td>
-                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                  </th>
+                  <th className="px-4 py-3 cursor-pointer font-sans font-semibold">
                     Edit
-                  </td>
+                  </th>
                 </tr>
               </thead>
               <tbody className="z-0">
                 {filteredSearch.map((item, index) => (
-                  <tr key={index}>
+                  <tr
+                    key={index}
+                    className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
+                  >
                     <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
                       {item?.service_order_no}
                     </td>

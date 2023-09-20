@@ -1,7 +1,9 @@
 interface IfetchDataCombinedData {
   setTableData: (order: string | any) => void;
 }
-
+interface IgetBookingAgentJobs {
+  setGetBookingAgentJobsData: (order: string | any) => void;
+}
 // Repair and gspn combined data
 const urls = [
   `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
@@ -27,4 +29,18 @@ export const fetchDataCombinedData = async (props: IfetchDataCombinedData) => {
   } catch (error) {
     // console.log("Error", error);
   }
+};
+
+export const getBookingAgentJobs = async (props: IgetBookingAgentJobs) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_AGENTS}/booking-agents/jobs/get`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    const json = await response.json();
+    props.setGetBookingAgentJobsData(json);
+  } catch (error) {}
 };

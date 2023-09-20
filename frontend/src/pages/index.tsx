@@ -169,7 +169,7 @@ const Home = () => {
 
   // const user = session?.user?.email;
 
-  const postData = (e: React.SyntheticEvent) => {
+  const postData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const postThisInfo = {
       service_order,
@@ -191,40 +191,39 @@ const Home = () => {
       GSPNStatusGetLastElement,
     };
     // console.log(postThisInfo);
-    const response = fetch(
+    const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(postThisInfo),
       }
-    )
-      .then((data: any) => {
-        if (!data.ok) {
-          // console.log(data.status);
-        }
-        return data.json();
-      })
-      .then((update) => {
-        // console.log(update);
+    );
+    if (!response.ok) {
+      toast({
+        title: "Job failed.",
+        description: "Job already exists.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
       });
-    setManagementModalState({
-      open: false,
-      view: "/",
-    });
-    toast({
-      title: "Job added.",
-      description: "You've added a job to the table.",
-      status: "success",
-      duration: 9000,
-      isClosable: true,
-    });
-    window.location.reload();
-    // console.log("Response is", response);
+    } else {
+      toast({
+        title: "Job added.",
+        description: "You've added a job to the table.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+      await response.json();
+      // window.location.reload();
+
+      fetchDataCombinedData({ setTableData });
+    }
   };
 
   // Post repair data
-  const postRepairData = (e: React.SyntheticEvent) => {
+  const postRepairData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const postThisInfo = {
       repairServiceOrder,
@@ -246,25 +245,35 @@ const Home = () => {
       GSPNStatusGetLastElement,
     };
     // console.log(postThisInfo);
-    fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/repair`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(postThisInfo),
-    });
-    setManagementModalState({
-      open: false,
-      view: "/",
-    });
-    toast({
-      title: "Job added.",
-      description: "You've added a job to the table.",
-      status: "success",
-      duration: 9000,
-      isClosable: true,
-    });
-    window.location.reload();
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/repair`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(postThisInfo),
+      }
+    );
+    if (!response.ok) {
+      toast({
+        title: "Job failed.",
+        description: "Job already exists.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: "Job added.",
+        description: "You've added a job to the table.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+      await response.json();
+      window.location.reload();
+    }
   };
 
   // For the table

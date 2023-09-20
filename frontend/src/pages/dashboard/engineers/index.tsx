@@ -1,10 +1,9 @@
-import Head from "next/head";
-import React, { useEffect, useState } from "react";
-import Navbar from "../../../../components/Navbar";
-import { unitStatus } from "../../../../public/_data/statuses";
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
-import { engineers } from "../../../../public/_data/engineers";
+import Head from "next/head";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import Navbar from "../../../../components/Navbar";
+import { engineers } from "../../../../public/_data/engineers";
 
 function Engineers() {
   const [engineerFilter, setEngineerFilter] = useState("");
@@ -28,6 +27,7 @@ function Engineers() {
       item.in_house_status === "Repair in progress" &&
       item.engineer === engineerFilter
   ).length;
+
   let waitingForParts = tableData.filter(
     (item) =>
       item.date_modified === dateFilter &&

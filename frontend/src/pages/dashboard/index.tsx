@@ -141,15 +141,6 @@ export default function Dashboard() {
                 </div>
                 <ArrowPathIcon className="h-6 w-6 text-gray-500" />
               </div>
-              {/* <div className="second_row mt-3">
-                <BadgeDelta
-                  deltaType="moderateIncrease"
-                  isIncreasePositive={true}
-                  size="md"
-                >
-                  <span>Today</span> {pendingCountToday}
-                </BadgeDelta>
-              </div> */}
             </article>
 
             <article
