@@ -121,6 +121,7 @@ button.close_button {
   transition: 0.5s;
   opacity: 0;
   visibility: hidden;
+  z-index: 1;
 }
 
 .sidebar-overlay.active {
@@ -141,6 +142,7 @@ button.close_button {
   width: 100%;
   margin-bottom: 0;
   padding: 0;
+  gap:1.2rem;
 }
 .sd-body li {
   list-style: none;
@@ -152,29 +154,19 @@ button.close_button {
   align-items: center;
   gap: 1rem;
   width: 100%;
-  padding: 10px 16px 10px 10px;
-  color: blue;
-  font-size: 1.3rem;
+  color: #0d0d0d;
+  font-size: 1rem;
   font-weight: 500;
   border-radius: 4px;
   cursor: pointer;
   text-decoration: none;
+  padding: .6rem 1.4rem .6rem .6rem;
 }
-.sd-link:hover {
+.sd-link:hover,.sd-link:active,.sd-link:focus {
   color: white;
-  background-color: green;
+  background-color: #075985;
   font-weight: 600;
   transition: 0.3s all;
-}
-.sidebar-icon {
-  fill: white;
-}
-.sidebar-icon {
-  width: 1.5rem;
-  height: 1.5rem;
-  fill: blue;
-  padding: 0;
-  margin: 0;
 }
 
 .link_btn {

@@ -3,14 +3,7 @@ const router = express.Router();
 const pool = require("../db");
 const redis = require("redis");
 const limiter = require("../controllers/rateLimiter");
-const {
-  countAllJobsIn,
-  countAllJobsInToday,
-  countAllJobsPendingToday,
-  countAllPendingJobs,
-  countAllCompleteJobs,
-  countAllCompleteToday,
-} = require("../controllers/analytics");
+const { countAllTimeCompleteJobsAllTime } = require("../controllers/analytics");
 
 let redisClient;
 
@@ -22,11 +15,6 @@ let redisClient;
   await redisClient.connect();
 })();
 
-router.get("/in/today", limiter, countAllJobsIn);
-router.get("/in", limiter, countAllJobsInToday);
-router.get("/pending/today", limiter, countAllJobsPendingToday);
-router.get("/pending", limiter, countAllPendingJobs);
-router.get("/complete/today", limiter, countAllCompleteToday);
-router.get("/complete", limiter, countAllCompleteJobs);
+router.get("/complete/all-time", limiter, countAllTimeCompleteJobsAllTime);
 
 module.exports = router;

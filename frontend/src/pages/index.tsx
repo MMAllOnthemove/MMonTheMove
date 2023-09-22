@@ -1,21 +1,28 @@
+import {
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  useToast,
+} from "@chakra-ui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-// import Modal from "../../../components/Modals/Modal";
-import { managementModalState } from "@/atoms/managementModalAtom";
-import { useToast } from "@chakra-ui/react";
 import { useSetRecoilState } from "recoil";
+
+// Custom imports
+import { managementModalState } from "@/atoms/managementModalAtom";
+import { getRepair } from "@/functions/getRepairJobs";
+import { getSOInfoAllFunction } from "@/functions/ipass_api";
+import Container from "../../components/Container";
 import ModalManagement from "../../components/Modals/modal.management";
 import Navbar from "../../components/Navbar";
-// This is the axios instance
-import { getSOInfoAllFunction } from "@/functions/ipass_api";
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
-import Container from "../../components/Container";
 import ToTopButton from "../../components/ToTopButton";
 import ManagementSearchForm from "../../components/table/ManagementSearchForm";
 import { HomepageModalTabOneContent } from "../../components/table/homepageModalTabOneContent";
 import { HomepageModalTabTwoContent } from "../../components/table/homepageModalTabTwoContent";
-import moment from "moment";
+import { getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
 
 // Tanstack table functionality
 import {
@@ -29,6 +36,7 @@ import {
 } from "@tanstack/react-table";
 
 // Management columns
+import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
 import { columns } from "../../components/table/homepageTableColumns";
 
 const Home = () => {
@@ -131,80 +139,37 @@ const Home = () => {
     });
   }, [searchServiceOrder]);
 
-  // Repair and gspn combined data
-  const urls = [
-    `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
-    `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/repair`,
-  ];
-  const fetchDataCombinedData = async () => {
-    try {
-      const response = await Promise.all(
-        urls.map((url) => fetch(url).then((res) => res.json()))
-      );
-      // console.log(response.flat());
-
-      setTableData(response.flat());
-    } catch (error) {
-      // console.log("Error", error);
-    }
-  };
   useEffect(() => {
-    fetchDataCombinedData();
+    fetchDataCombinedData({ setTableData });
   }, []);
 
   useEffect(() => {
-    getRepair();
+    getRepair({
+      searchTicket,
+      setRepairFault,
+      setRepairCreatedDate,
+      setRepairCreatedTime,
+      setRepairEngineerAssignDate,
+      setRepairEngineerAssignTime,
+      setRepairImei,
+      setRepairServiceOrder,
+      setRepairTicket,
+      setRepairEngineerAnalysis,
+      setRepairDepartment,
+      setRepairAPILoading,
+    });
   }, [searchTicket]);
 
-  // Get repair data
-
-  async function getRepair() {
-    await fetch(
-      `https://allelectronics.repairshopr.com/api/v1/tickets?number=${searchTicket}`,
-
-      {
-        method: "GET",
-        mode: "cors",
-        cache: "default",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
-        },
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setRepairFault(data?.tickets[0]?.subject || "");
-        setRepairCreatedDate(
-          moment(new Date(`${data?.tickets[0]?.created_at}`)).format(
-            "YYYYMMDD"
-          ) || ""
-        );
-        setRepairCreatedTime(
-          moment(`${data?.tickets[0]?.created_at}`).format("HHMMSS") || ""
-        );
-        setRepairEngineerAssignDate(
-          moment(new Date(`${data?.tickets[0]?.created_at}`)).format(
-            "YYYYMMDD"
-          ) || ""
-        );
-        setRepairEngineerAssignTime(
-          moment(`${data?.tickets[0]?.created_at}`).format("HHMMSS") || ""
-        );
-        setRepairImei(data?.tickets[0]?.properties["IMEI"] || "");
-        setRepairServiceOrder(
-          data?.tickets[0]?.properties["Service Order No."] || ""
-        );
-        setRepairTicket(data?.tickets[0]?.number || "");
-        setRepairEngineerAnalysis("");
-        setRepairDepartment("HHP");
-        setRepairAPILoading(false);
-      });
-  }
+  useEffect(() => {
+    getTicketNumberOnJobAdd({
+      searchServiceOrder,
+      setTicket,
+    });
+  }, [searchServiceOrder]);
 
   // const user = session?.user?.email;
 
-  const postData = (e: React.SyntheticEvent) => {
+  const postData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const postThisInfo = {
       service_order,
@@ -226,40 +191,39 @@ const Home = () => {
       GSPNStatusGetLastElement,
     };
     // console.log(postThisInfo);
-    const response = fetch(
+    const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(postThisInfo),
       }
-    )
-      .then((data: any) => {
-        if (!data.ok) {
-          // console.log(data.status);
-        }
-        return data.json();
-      })
-      .then((update) => {
-        // console.log(update);
+    );
+    if (!response.ok) {
+      toast({
+        title: "Job failed.",
+        description: "Job already exists.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
       });
-    setManagementModalState({
-      open: false,
-      view: "/",
-    });
-    toast({
-      title: "Job added.",
-      description: "You've added a job to the table.",
-      status: "success",
-      duration: 9000,
-      isClosable: true,
-    });
-    window.location.reload();
-    // console.log("Response is", response);
+    } else {
+      toast({
+        title: "Job added.",
+        description: "You've added a job to the table.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+      await response.json();
+      // window.location.reload();
+
+      fetchDataCombinedData({ setTableData });
+    }
   };
 
   // Post repair data
-  const postRepairData = (e: React.SyntheticEvent) => {
+  const postRepairData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const postThisInfo = {
       repairServiceOrder,
@@ -281,25 +245,35 @@ const Home = () => {
       GSPNStatusGetLastElement,
     };
     // console.log(postThisInfo);
-    fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/repair`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(postThisInfo),
-    });
-    setManagementModalState({
-      open: false,
-      view: "/",
-    });
-    toast({
-      title: "Job added.",
-      description: "You've added a job to the table.",
-      status: "success",
-      duration: 9000,
-      isClosable: true,
-    });
-    window.location.reload();
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/repair`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(postThisInfo),
+      }
+    );
+    if (!response.ok) {
+      toast({
+        title: "Job failed.",
+        description: "Job already exists.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: "Job added.",
+        description: "You've added a job to the table.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+      await response.json();
+      window.location.reload();
+    }
   };
 
   // For the table
@@ -473,6 +447,15 @@ const Home = () => {
                     onDoubleClick={(e) => handleUpdate(e, row.original.id)}
                     className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
                   >
+                    <td>
+                      <button
+                        type="button"
+                        onClick={(e) => handleUpdate(e, row.original.id)}
+                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        Edit
+                      </button>
+                    </td>
                     {row.getVisibleCells().map((cell: any) => (
                       <td
                         key={cell.id}

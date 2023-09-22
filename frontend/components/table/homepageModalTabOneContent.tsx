@@ -1,8 +1,7 @@
 import React from "react";
-import { useFormik } from "formik";
 import * as Yup from "yup";
-import Button from "../Buttons";
 import { unitStatus } from "../../public/_data/statuses";
+import Button from "../Buttons";
 
 interface IProps {
   searchServiceOrder: string;
@@ -86,7 +85,7 @@ export function HomepageModalTabOneContent(props: IProps) {
           className="w-full outline-none py-2 px-2 border-2 font-sans font-semibold text-sm rounded-sm my-2"
           size={10}
           maxLength={10}
-          value={ticket}
+          defaultValue={ticket}
           onChange={setTicket}
         />
         <label htmlFor="warranty" className="sr-only">

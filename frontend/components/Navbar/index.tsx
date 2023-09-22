@@ -1,16 +1,69 @@
-import { Menu } from "@headlessui/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useState } from "react";
+import { navitems } from "../../public/_data/navbar";
+// import InputField from "../InputField";
+// import logo from "../../../public/images/Partake_logo.png";
+// import NotificationsDropdown from "../NotificationsDropdown";
+// import Dropdown from "../Dropdown";
 
-export default function Navbar() {
+function Navbar() {
+  const [isOpen, setIsopen] = useState(false);
+  const ToggleSidebar = () => {
+    isOpen === true ? setIsopen(false) : setIsopen(true);
+  };
+
   return (
     <>
-      {/* The navbar */}
-
-      <header className="flex justify-between items-center px-3 py-4 border-b border-b-slate-100 fixed top-0 w-full bg-white z-10 h-24">
-        <div className="flex lg:flex-1">
-          <Link href="/" className="-m-1.5 p-1.5">
+      <nav className="navbar flex justify-between items-center">
+        <button className="burger_menu" onClick={ToggleSidebar}>
+          <svg
+            className="burger_icon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+          >
+            <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" />
+          </svg>
+        </button>
+        <Link className="logo" href="/">
+          <span className="sr-only">Logo</span>
+          <svg
+            id="logo-15"
+            width="49"
+            height="48"
+            viewBox="0 0 49 48"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            {" "}
+            <path
+              d="M24.5 12.75C24.5 18.9632 19.4632 24 13.25 24H2V12.75C2 6.53679 7.03679 1.5 13.25 1.5C19.4632 1.5 24.5 6.53679 24.5 12.75Z"
+              className="ccustom"
+              fill="#17CF97"
+            ></path>{" "}
+            <path
+              d="M24.5 35.25C24.5 29.0368 29.5368 24 35.75 24H47V35.25C47 41.4632 41.9632 46.5 35.75 46.5C29.5368 46.5 24.5 41.4632 24.5 35.25Z"
+              className="ccustom"
+              fill="#17CF97"
+            ></path>{" "}
+            <path
+              d="M2 35.25C2 41.4632 7.03679 46.5 13.25 46.5H24.5V35.25C24.5 29.0368 19.4632 24 13.25 24C7.03679 24 2 29.0368 2 35.25Z"
+              className="ccustom"
+              fill="#17CF97"
+            ></path>{" "}
+            <path
+              d="M47 12.75C47 6.53679 41.9632 1.5 35.75 1.5H24.5V12.75C24.5 18.9632 29.5368 24 35.75 24C41.9632 24 47 18.9632 47 12.75Z"
+              className="ccustom"
+              fill="#17CF97"
+            ></path>{" "}
+          </svg>
+        </Link>
+      </nav>
+      <aside className={`sidebar ${isOpen === true ? "active" : ""}`}>
+        <div className="sd-header">
+          <Link className="logo" href="/">
             <span className="sr-only">Logo</span>
             <svg
               id="logo-15"
@@ -43,60 +96,36 @@ export default function Navbar() {
               ></path>{" "}
             </svg>
           </Link>
+          <button className="btn close_button" onClick={ToggleSidebar}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+              <path d="M0 0h24v24H0z" fill="none" />
+            </svg>
+          </button>
         </div>
-        {/* Profile dropdown */}
-        <div className="profile_dropdown w-56 text-right">
-          <Menu as="div" className="relative inline-block text-left z-10">
-            <div>
-              <Menu.Button className="inline-flex w-full justify-center avi">
-                <Image
-                  src="/images/raoul-droog-yMSecCHsIBc-unsplash.jpg"
-                  alt="user avatar"
-                  width={16}
-                  height={16}
-                  priority
-                />
-              </Menu.Button>
-            </div>
-            <Menu.Items className="flex flex-col absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-md focus:outline-none">
-              {/* <Menu.Item>
-                <span className="p-2 font-sans text-slate-900  text-left font-medium text-sm">
-                  {session?.user?.name}
-                </span>
-              </Menu.Item>
-              <Menu.Item>
-                <span className="p-2 font-sans text-slate-900  text-left font-medium text-sm">
-                  {session?.user?.email}
-                </span>
-              </Menu.Item> */}
-              <Menu.Item>
-                <Link
-                  href="/dashboard"
-                  className="cursor-pointer p-2 font-sans text-slate-900 text-left font-medium text-sm"
-                >
-                  Dashboard
+        <div className="sd-body">
+          <ul>
+            {navitems.map((item) => (
+              <li key={item?.id}>
+                <Link href={item?.pageRoute} className={`sd-link`}>
+                  {item?.item}
                 </Link>
-              </Menu.Item>
-              <Menu.Item>
-                <Link
-                  href="/report"
-                  className="cursor-pointer p-2 font-sans text-slate-900 text-left font-medium text-sm"
-                >
-                  Report a problem
-                </Link>
-              </Menu.Item>
-              {/* <Menu.Item>
-                <button
-                  onClick={() => signOut()}
-                  className="cursor-pointer p-2 font-sans text-slate-900 text-left font-medium text-sm"
-                >
-                  Logout
-                </button>
-              </Menu.Item> */}
-            </Menu.Items>
-          </Menu>
+              </li>
+            ))}
+          </ul>
         </div>
-      </header>
+      </aside>
+      <div
+        className={`sidebar-overlay ${isOpen === true ? "active" : ""}`}
+        onClick={ToggleSidebar}
+      ></div>
     </>
   );
 }
+
+export default Navbar;

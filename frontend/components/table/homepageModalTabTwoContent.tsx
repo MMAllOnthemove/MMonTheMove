@@ -168,7 +168,6 @@ export function HomepageModalTabTwoContent(props: IProps) {
             <option value="Pule Mokoena">Pule Mokoena</option>
             <option value="Sizwe Phungwayo">Sizwe Phungwayo</option>
           </select>
-
           <Button
             type="submit"
             text="Add"
