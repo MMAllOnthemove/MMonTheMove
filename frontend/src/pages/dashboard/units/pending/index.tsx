@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import Navbar from "../../../../../components/Navbar";
 import Link from "next/link";
+import UnitsPendingCard from "../../../../../components/UnitsPendingCard";
 
 function Pending() {
   const [dateFilter, setDateFilter] = useState("");
@@ -43,11 +44,13 @@ function Pending() {
     (item) =>
       item.date_modified === dateFilter && item.in_house_status === "Booked in"
   );
+
   let repairInProgress = fetchAlldata.filter(
     (item) =>
       item.date_modified === dateFilter &&
       item.in_house_status === "Repair in progress"
   );
+
   let waitingForParts = fetchAlldata.filter(
     (item) =>
       item.date_modified === dateFilter &&
@@ -60,6 +63,7 @@ function Pending() {
       item.date_modified === dateFilter &&
       item.in_house_status === "Waiting for customer"
   );
+
   let partsIssued = fetchAlldata.filter(
     (item) =>
       item.date_modified === dateFilter &&
@@ -76,20 +80,22 @@ function Pending() {
     (item) =>
       item.date_modified === dateFilter && item.in_house_status === "Scheduled"
   );
+
   let customerReply = fetchAlldata.filter(
     (item) =>
       item.date_modified === dateFilter &&
       item.in_house_status === "Customer reply"
   );
+
   let qualityControl = fetchAlldata.filter(
     (item) =>
       item.date_modified === dateFilter &&
       item.in_house_status === "Quality Control (QC)"
   );
+
   let repairComplete = fetchAlldata.filter(
     (item) =>
-      (item.date_modified.toString() === dateFilter &&
-        item.in_house_status === "Repair Complete") ||
+      item.date_modified.toString() === dateFilter &&
       item.in_house_status === "Repair complete"
   );
   // console.log(repairComplete);
@@ -98,15 +104,17 @@ function Pending() {
       item.date_modified === dateFilter &&
       item.in_house_status === "Assigned to tech"
   );
+
   let firstApproval = fetchAlldata.filter(
     (item) =>
       item.date_modified === dateFilter &&
       item.in_house_status === "Parts request 1st approval"
   );
+
   let quotePending = fetchAlldata.filter(
     (item) =>
       item.date_modified === dateFilter && // offset by 24 hours
-      item.in_house_status === "Quote Pending"
+      item.in_house_status === "Quote pending"
   );
   // console.log(quotePending);
   let quoteApproved = fetchAlldata.filter(
@@ -114,57 +122,57 @@ function Pending() {
       item.date_modified === dateFilter &&
       item.in_house_status === "Quote approved"
   );
+
   let qcFailed = fetchAlldata.filter(
     (item) =>
       item.date_modified === dateFilter && item.in_house_status === "QC failed"
   );
+
   let qcCompleted = fetchAlldata.filter(
     (item) =>
       item.date_modified === dateFilter &&
       item.in_house_status === "QC completed"
   );
+
   let pendingQandA = fetchAlldata.filter(
     (item) =>
       item.date_modified === dateFilter &&
       item.in_house_status === "Pending Q&A"
   );
+
   let soCancel = fetchAlldata.filter(
     (item) =>
       item.date_modified === dateFilter && item.in_house_status === "SO cancel"
   );
+
   let scrapApproved = fetchAlldata.filter(
     (item) =>
       item.date_modified === dateFilter &&
       item.in_house_status === "Scrap approved"
   );
+
   let quoteRejected = fetchAlldata.filter(
     (item) =>
       item.date_modified === dateFilter &&
       item.in_house_status === "Quote rejected"
   );
+
   let forInvoicing = fetchAlldata.filter(
     (item) =>
       item.date_modified === dateFilter &&
       item.in_house_status === "For invoicing"
   );
+
   let partsDNA = fetchAlldata.filter(
     (item) =>
       item.date_modified === dateFilter && item.in_house_status === "Parts DNA"
   );
+
   let waitingSAW = fetchAlldata.filter(
     (item) =>
       item.date_modified === dateFilter &&
       item.in_house_status === "Waiting SAW"
   );
-
-  // console.log("Date", dateFilter);
-  // console.log(
-  //   fetchAlldata.filter(
-  //     (x) =>
-  //       x.date_modified === dateFilter && x.in_house_status === "Quote Pending"
-  //   ).length
-  // );
-  // console.log(waitingForParts);
 
   return (
     <>
@@ -241,198 +249,118 @@ function Pending() {
           </div>
 
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3 my-3">
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
+            {/* <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
               <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
                 Booked in
               </p>
               <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
                 {getBookedin.length}
               </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Repair in progress
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {repairInProgress.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Waiting for parts
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {waitingForParts.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Waiting for customer
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {waitingForCustomer.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Parts issued
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {partsIssued.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Parts to be ordered
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {partsToBeOrdered.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Scheduled
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {scheduled.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Customer reply
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {customerReply.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Quality Control (QC)
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {qualityControl.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Assigned to tech
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {assignedTotech.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Parts request 1st approval
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {firstApproval.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Quote pending
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {quotePending.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Quote approved
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {quoteApproved.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Waiting for customer
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {waitingForCustomer.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Waiting SAW
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {waitingSAW.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                QC failed
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {qcFailed.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                QC completed
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {qcCompleted.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Pending Q&A
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {pendingQandA.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                SO cancel
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {soCancel.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Scrap approved
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {scrapApproved.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Quote rejected
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {quoteRejected.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                For invoicing
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {forInvoicing.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Parts DNA
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {partsDNA.length}
-              </h3>
-            </article>
-            <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Repair Complete
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {repairComplete.length}
-              </h3>
-            </article>
+            </article> */}
+            <UnitsPendingCard
+              cardParagraph={"Booked in"}
+              cardHeading={getBookedin.length}
+            />
+            <UnitsPendingCard
+              cardParagraph={"Repair in progress"}
+              cardHeading={repairInProgress.length}
+            />
+            <UnitsPendingCard
+              cardParagraph={"Waiting for parts"}
+              cardHeading={waitingForParts.length}
+            />
+            <UnitsPendingCard
+              cardParagraph={"Waiting for customer"}
+              cardHeading={waitingForCustomer.length}
+            />
+
+            <UnitsPendingCard
+              cardParagraph={"Parts issued"}
+              cardHeading={partsIssued.length}
+            />
+
+            <UnitsPendingCard
+              cardParagraph={"Parts to be ordered"}
+              cardHeading={partsToBeOrdered.length}
+            />
+
+            <UnitsPendingCard
+              cardParagraph={"Scheduled"}
+              cardHeading={scheduled.length}
+            />
+
+            <UnitsPendingCard
+              cardParagraph={"Customer reply"}
+              cardHeading={customerReply.length}
+            />
+
+            <UnitsPendingCard
+              cardParagraph={"Quality Control (QC)"}
+              cardHeading={qualityControl.length}
+            />
+
+            <UnitsPendingCard
+              cardParagraph={"Assigned to tech"}
+              cardHeading={assignedTotech.length}
+            />
+
+            <UnitsPendingCard
+              cardParagraph={"Parts request 1st approval"}
+              cardHeading={firstApproval.length}
+            />
+
+            <UnitsPendingCard
+              cardParagraph={"Quote pending"}
+              cardHeading={quotePending.length}
+            />
+            <UnitsPendingCard
+              cardParagraph={"Quote approved"}
+              cardHeading={quoteApproved.length}
+            />
+            <UnitsPendingCard
+              cardParagraph={"Waiting for customer"}
+              cardHeading={waitingForCustomer.length}
+            />
+            <UnitsPendingCard
+              cardParagraph={"Waiting SAW"}
+              cardHeading={waitingSAW.length}
+            />
+            <UnitsPendingCard
+              cardParagraph={"QC failed"}
+              cardHeading={qcFailed.length}
+            />
+            <UnitsPendingCard
+              cardParagraph={"QC completed"}
+              cardHeading={qcCompleted.length}
+            />
+            <UnitsPendingCard
+              cardParagraph={"Pending Q&A"}
+              cardHeading={pendingQandA.length}
+            />
+            <UnitsPendingCard
+              cardParagraph={"SO cancel"}
+              cardHeading={soCancel.length}
+            />
+            <UnitsPendingCard
+              cardParagraph={"Scrap approved"}
+              cardHeading={scrapApproved.length}
+            />
+            <UnitsPendingCard
+              cardParagraph={"Quote rejected"}
+              cardHeading={quoteRejected.length}
+            />
+            <UnitsPendingCard
+              cardParagraph={"For invoicing"}
+              cardHeading={forInvoicing.length}
+            />
+            <UnitsPendingCard
+              cardParagraph={"Parts DNA"}
+              cardHeading={partsDNA.length}
+            />
+            <UnitsPendingCard
+              cardParagraph={"Repair Complete"}
+              cardHeading={repairComplete.length}
+            />
           </div>
         </section>
       </main>

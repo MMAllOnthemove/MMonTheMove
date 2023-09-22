@@ -5,5 +5,6 @@ export const navitems = [
   { id: 2, item: "Dashboard", pageRoute: "/dashboard" },
   { id: 3, item: "Bookings report", pageRoute: "/reports" },
   { id: 4, item: "Claims", pageRoute: "/claims" },
+  { id: 5, item: "Part search", pageRoute: "/parts" },
 
 ];

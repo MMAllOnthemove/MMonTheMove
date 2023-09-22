@@ -386,7 +386,6 @@ function EditRow() {
                 <option disabled value="">
                   Choose status
                 </option>
-                <option value="Booked in">Booked in</option>
                 {unitStatus.map((stat) => (
                   <option key={stat.id} value={`${stat._status}`}>
                     {stat?._status}

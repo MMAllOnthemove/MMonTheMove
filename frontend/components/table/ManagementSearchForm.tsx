@@ -7,7 +7,7 @@ interface ISearchForm {
 
 function ManagementSearchForm({ filtering, setFiltering }: ISearchForm) {
   return (
-    <form className="flex items-center">
+    <form className="flex items-center" id="management-search-form">
       <label htmlFor="simple-search" className="sr-only">
         Search
       </label>

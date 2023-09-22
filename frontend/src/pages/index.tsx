@@ -200,6 +200,10 @@ const Home = () => {
       }
     );
     if (!response.ok) {
+      setManagementModalState({
+        open: false,
+        view: "/",
+      });
       toast({
         title: "Job failed.",
         description: "Job already exists.",
@@ -208,6 +212,11 @@ const Home = () => {
         isClosable: true,
       });
     } else {
+      setManagementModalState({
+        open: false,
+        view: "/",
+      });
+      await response.json();
       toast({
         title: "Job added.",
         description: "You've added a job to the table.",
@@ -215,7 +224,7 @@ const Home = () => {
         duration: 9000,
         isClosable: true,
       });
-      await response.json();
+
       // window.location.reload();
 
       fetchDataCombinedData({ setTableData });
@@ -256,6 +265,10 @@ const Home = () => {
       }
     );
     if (!response.ok) {
+      setManagementModalState({
+        open: false,
+        view: "/",
+      });
       toast({
         title: "Job failed.",
         description: "Job already exists.",
@@ -264,6 +277,11 @@ const Home = () => {
         isClosable: true,
       });
     } else {
+      await response.json();
+      setManagementModalState({
+        open: false,
+        view: "/",
+      });
       toast({
         title: "Job added.",
         description: "You've added a job to the table.",
@@ -271,8 +289,8 @@ const Home = () => {
         duration: 9000,
         isClosable: true,
       });
-      await response.json();
-      window.location.reload();
+      // window.location.reload();
+      fetchDataCombinedData({ setTableData });
     }
   };
 
@@ -307,6 +325,7 @@ const Home = () => {
       <Head>
         <title>HHPManagement</title>
         <meta name="robots" content="noindex"></meta>
+        <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
       <Navbar />
 
@@ -329,6 +348,7 @@ const Home = () => {
             <button
               className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer font-sans rounded-md p-3 my-2"
               type="button"
+              role="button"
               onClick={() =>
                 setManagementModalState({
                   open: true,
@@ -419,23 +439,28 @@ const Home = () => {
               <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-sans text-sm uppercase font-semibold">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id} className="font-sans font-semibold">
+                    <th className="px-4 py-3 cursor-pointer font-sans font-semibold">
+                      Action
+                    </th>
                     {headerGroup.headers.map((header) => (
-                      <th
-                        key={header.id}
-                        onClick={header.column.getToggleSortingHandler()}
-                        className="px-4 py-3 cursor-pointer font-sans font-semibold"
-                      >
-                        <div>
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                          {{
-                            asc: " 🔼",
-                            desc: " 🔽",
-                          }[header.column.getIsSorted() as string] ?? null}
-                        </div>
-                      </th>
+                      <>
+                        <th
+                          key={header.id}
+                          onClick={header.column.getToggleSortingHandler()}
+                          className="px-4 py-3 cursor-pointer font-sans font-semibold"
+                        >
+                          <div>
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                            {{
+                              asc: " 🔼",
+                              desc: " 🔽",
+                            }[header.column.getIsSorted() as string] ?? null}
+                          </div>
+                        </th>
+                      </>
                     ))}
                   </tr>
                 ))}
@@ -447,9 +472,10 @@ const Home = () => {
                     onDoubleClick={(e) => handleUpdate(e, row.original.id)}
                     className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
                   >
-                    <td>
+                    <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
                       <button
                         type="button"
+                        role="button"
                         onClick={(e) => handleUpdate(e, row.original.id)}
                         className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                       >
@@ -473,15 +499,17 @@ const Home = () => {
             </table>
           </div>
           <div className="h-2" />
-          <div className="pagination flex gap-1">
+          <div className="pagination flex gap-1 p-2">
             <button
-              className="border rounded p-1"
+              role="button"
+              className="border rounded p-1 font-sans font-medium page-index-button hidden md:visible"
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
             >
               {"<<"}
             </button>
             <button
+              role="button"
               className="border rounded p-1 font-sans font-medium"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
@@ -489,6 +517,7 @@ const Home = () => {
               {"<"}
             </button>
             <button
+              role="button"
               className="border rounded p-1 font-sans font-medium"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
@@ -496,7 +525,8 @@ const Home = () => {
               {">"}
             </button>
             <button
-              className="border rounded p-1 font-sans font-medium"
+              role="button"
+              className="border rounded p-1 font-sans font-medium page-index-button hidden md:visible"
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
             >
@@ -511,7 +541,12 @@ const Home = () => {
             </span>
             <span className="flex items-center gap-1 font-sans">
               | Go to page:
+              <label htmlFor="search-page-number" className="sr-only">
+                {" "}
+                Go to page:
+              </label>
               <input
+                name="search-page-number"
                 type="number"
                 defaultValue={table.getState().pagination.pageIndex + 1}
                 onChange={(e) => {
@@ -521,6 +556,9 @@ const Home = () => {
                 className="border p-1 rounded w-16"
               />
             </span>
+            <label htmlFor="showPageSize" className="sr-only">
+              Show Page Size
+            </label>
             <select
               value={table.getState().pagination.pageSize}
               className="border border-[#eee] outline-none ring-0 font-sans font-medium cursor-pointer"

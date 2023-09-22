@@ -77,6 +77,8 @@ export default function Claims() {
                     <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
                       {searchTerm.length > 0 && (
                         <button
+                          role="button"
+                          id="update-button"
                           type="button"
                           onClick={(e) => handleUpdate(e, item.id)}
                           className="font-medium text-blue-600 dark:text-blue-500 hover:underline"

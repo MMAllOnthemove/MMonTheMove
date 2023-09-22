@@ -17,7 +17,7 @@ const getRepairJobs = async (req, res) => {
   let isCached = false;
   try {
     const newResults = await pool.query(
-      "SELECT id, unique_id,  (SELECT DISTINCT(service_order_no)) AS service_order_no, created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, TO_CHAR(date_modified, 'YYYY-MM-DD') AS date_modified, gspn_status FROM units ORDER BY date_modified DESC"
+      "SELECT id, unique_id,  (SELECT DISTINCT(service_order_no)) AS service_order_no, created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, in_house_status, engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, TO_CHAR(date_modified, 'YYYY-MM-DD') AS date_modified, gspn_status FROM units ORDER BY date_modified DESC"
     );
     res.json(newResults.rows);
   } catch (err) {
@@ -88,7 +88,7 @@ const getAllJobs = async (req, res) => {
   let isCached = false;
   try {
     const newResults = await pool.query(
-      "SELECT id, unique_id, (SELECT DISTINCT(service_order_no)) AS service_order_no, created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, INITCAP(in_house_status) AS in_house_status, engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, TO_CHAR(date_modified, 'YYYY-MM-DD') AS date_modified, gspn_status FROM units ORDER BY date_modified DESC"
+      "SELECT id, unique_id, (SELECT DISTINCT(service_order_no)) AS service_order_no, created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, in_house_status, engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, parts_ordered_date, parts_pending_date, parts_issued_date, qc_completed_date, repair_completed_date, department, reassignengineer, partslist, UPPER(isqcchecked::text) AS isqcchecked, qc_comment, TO_CHAR(date_modified, 'YYYY-MM-DD') AS date_modified, gspn_status FROM units ORDER BY date_modified DESC"
     );
     res.json(newResults.rows);
   } catch (err) {
