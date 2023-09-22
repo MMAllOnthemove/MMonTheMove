@@ -98,6 +98,13 @@ function Reports() {
       moment(agent.created_date).format("YYYY-MM-DD") === dateFilter
   ).length;
 
+  // Booking agent Livonna
+  let getJobsByAgentLavona = getBookingAgentJobsData.filter(
+    (agent) =>
+      agent.booking_agent === "lavonaj01" &&
+      moment(agent.created_date).format("YYYY-MM-DD") === dateFilter
+  ).length;
+
   return (
     <>
       <Head>
@@ -173,6 +180,7 @@ function Reports() {
                     <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
                       <button
                         type="button"
+                        role="button"
                         onClick={postData}
                         className="font-medium bg-[#082f49] hover:bg-[#075985] active:bg-[#075985]  text-white font-sans rounded py-1 px-2"
                       >
@@ -220,6 +228,14 @@ function Reports() {
                   </td>
                   <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
                     {getJobsByAgentSherry}
+                  </td>
+                </tr>
+                <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
+                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                    Lavona
+                  </td>
+                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                    {getJobsByAgentLavona}
                   </td>
                 </tr>
               </tbody>

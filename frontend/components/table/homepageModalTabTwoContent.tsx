@@ -129,6 +129,9 @@ export function HomepageModalTabTwoContent(props: IProps) {
             value={repairModel}
             onChange={setRepairModel}
           />
+          <label htmlFor="repairInHouseStatus" className="sr-only">
+            Choose status
+          </label>
           <select
             value={repairInHouseStatus || ""}
             onChange={setRepairInHouseStatus}
