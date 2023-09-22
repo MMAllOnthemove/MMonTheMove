@@ -7,6 +7,7 @@ const {
   getJobById,
   postJobs,
   updateJob,
+  updateJobclaimsGSPNStatus,
   deleteJob,
 } = require("../controllers/jobs");
 
@@ -30,6 +31,7 @@ router.post("/", postJobs);
 // Update single row on database
 // Using COALESCE to prevent null values when updating
 router.put("/:id", updateJob);
+router.put("/claims/:id", updateJobclaimsGSPNStatus);
 
 // Delete single row on database
 router.delete("/:id", deleteJob);

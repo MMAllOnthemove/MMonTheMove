@@ -12,7 +12,8 @@ const feedback = require("../server/routes/feedback");
 const dashboard = require("../server/routes/dashboard");
 const engineers = require("../server/routes/engineers");
 const qc = require("../server/routes/qc");
-
+const countEngineers = require("../server/routes/engineer_count_route");
+const bookingAgents = require("../server/routes/booking_agent_jobs_route");
 require("dotenv").config();
 
 app.use(helmet());
@@ -46,6 +47,12 @@ app.use(process.env.NEXT_PUBLIC_SERVER_ENGINEER_JOBS_COUNT_OVERVIEW, engineers);
 
 // QC graphs
 app.use(process.env.NEXT_PUBLIC_SERVER_QC_CHECKED_JOBS_COUNT_OVERVIEW, qc);
+
+// Count engineers
+app.use(process.env.NEXT_PUBLIC_SERVER_COUNT_ALL_ENGINEERS, countEngineers);
+
+// Booking agents
+app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_AGENTS, bookingAgents);
 
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {
