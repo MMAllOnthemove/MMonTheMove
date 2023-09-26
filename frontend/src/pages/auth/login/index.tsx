@@ -1,7 +1,4 @@
-
-
 function Login() {
-
   return (
     <section className="bg-gray-20 flex justify-center flex-col h-screen text-center">
       <div className="container mx-auto flex gap-3 flex-col">
@@ -9,7 +6,8 @@ function Login() {
           Signin
         </h1>
         <button
-
+          id="google-signin-button"
+          role="button"
           type="button"
           className="flex items-center mx-auto bg-white font-sans font-medium text-slate-500 px-6 py-4 rounded-sm shadow-md gap-2"
         >

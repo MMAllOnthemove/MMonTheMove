@@ -47,9 +47,15 @@ function EditClaim() {
     );
     let json = await response.json();
     if (!response.ok) {
-      alert("Data not ok");
+      toast({
+        title: "Failed to edit the job.",
+        description: "Please try again",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
     } else if (response.ok) {
-      router.push("/");
+      router.push("/claims");
       toast({
         title: "Job edited.",
         description: "You've successfully edited the job.",
@@ -99,12 +105,6 @@ function EditClaim() {
               </select>
             </span>
             <span>
-              {/* <button
-                type="submit"
-                className="bg-[#082f49] w-full font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
-              >
-                Update
-              </button> */}
               <Button
                 type="submit"
                 className="bg-[#082f49] w-full font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"

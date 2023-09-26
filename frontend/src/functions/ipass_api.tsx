@@ -110,7 +110,7 @@ export async function getPartsInfoFunction(props: IgetPartsInfo) {
     IvPartsNo: props.debouncedSearch,
   };
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_IPAAS_API_GETSOINFOALL}`,
+    `${process.env.NEXT_PUBLIC_IPAAS_API_SEARCH_PARTS}`,
     {
       method: "POST",
       mode: "cors",
