@@ -26,7 +26,7 @@ const countAllTimeCompleteJobsAllTime = async (req, res) => {
     } else {
       newResults = await pool.query(
         // "SELECT COUNT(DISTINCT service_order_no) AS units_in FROM units"
-        "select engineer, COUNT(DISTINCT service_order_no) AS units_complete_all_time from units GROUP BY engineer"
+        "select engineer, COUNT(DISTINCT service_order_no) AS units_added from units GROUP BY engineer ORDER BY units_added DESC"
       );
       if (newResults.length === 0) {
         throw "API returned an empty array";

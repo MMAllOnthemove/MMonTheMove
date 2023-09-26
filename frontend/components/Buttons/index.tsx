@@ -11,7 +11,7 @@ interface IButton {
 function Button(props: IButton) {
   const { onClick, type, className, text, color } = props;
   return (
-    <button onClick={onClick} type={type} className={className}>
+    <button role="button" onClick={onClick} type={type} className={className}>
       {text}
     </button>
   );

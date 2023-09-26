@@ -14,7 +14,7 @@ import { useState, useEffect, useCallback } from "react";
 
 export default function Dashboard() {
   const [tableData, setTableData] = useState<string[] | any[]>([]);
-  const [engineerRepairJobsCount, setEngineerRepairJobsCount] = useState<
+  const [engineerUnitsAdded, setEngineerUnitsAdded] = useState<
     string[] | any[]
   >([]);
   const router = useRouter();
@@ -31,15 +31,11 @@ export default function Dashboard() {
     ).length;
 
   const getPendingJobs = tableData.filter(
-    (item) =>
-      item.in_house_status !== "Repair Complete" ||
-      item.in_house_status !== "Repair complete"
+    (item) => item.in_house_status !== "Repair complete"
   ).length;
 
   const getCompleteJobs = tableData.filter(
-    (item) =>
-      item.in_house_status === "Repair Complete" ||
-      item.in_house_status === "Repair complete"
+    (item) => item.in_house_status === "Repair complete"
   ).length;
 
   const getQCChecked = tableData.filter(
@@ -58,16 +54,16 @@ export default function Dashboard() {
       .then((res) => res.json())
       .then((data) => {
         // console.log("all-time graph", data);
-        setEngineerRepairJobsCount(data);
+        setEngineerUnitsAdded(data);
       });
-  }, [engineerRepairJobsCount]);
+  }, [engineerUnitsAdded]);
 
   useEffect(() => {
     countEngineerRepairCompleteAlltimeJobs();
   }, []);
 
   // Sort the count descending
-  engineerRepairJobsCount.sort((a, b) => b - a);
+  engineerUnitsAdded.sort((a, b) => b - a);
 
   return (
     <>
@@ -185,18 +181,18 @@ export default function Dashboard() {
                     Engineer
                   </td>
                   <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
-                    Repair Complete
+                    Jobs added
                   </td>
                 </tr>
               </thead>
               <tbody className="z-0">
-                {engineerRepairJobsCount.map((item, index) => (
+                {engineerUnitsAdded.map((item, index) => (
                   <tr key={index}>
                     <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
                       {item?.engineer}
                     </td>
                     <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
-                      {item?.units_complete_all_time}
+                      {item?.units_added}
                     </td>
                   </tr>
                 ))}

@@ -101,6 +101,9 @@ export function HomepageModalTabOneContent(props: IProps) {
           value={warranty}
           disabled
         />
+        <label htmlFor="inHouseStatus" className="sr-only">
+          Choose status
+        </label>
         <select
           value={inHouseStatus}
           onChange={setInHouseStatus}
