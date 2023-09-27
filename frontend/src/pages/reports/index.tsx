@@ -5,6 +5,7 @@ import moment from "moment";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
+import { minDate } from "../../../utils/datemin";
 
 function Reports() {
   const [searchServiceOrder, setSearchServiceOrder] = useState("");
@@ -19,6 +20,11 @@ function Reports() {
 
   const [bookingAgentFilter, setBookingAgentFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
+
+  const [dateFrom, setDateFrom] = useState<string | number | Date | any>("");
+  const [dateTo, setDateTo] = useState<string | number | Date | any>("");
+
+  var today = new Date().toISOString().split("T")[0].toString();
 
   // Chakra ui toast
   const toast = useToast();
@@ -77,33 +83,112 @@ function Reports() {
     getBookingAgentJobs({ setGetBookingAgentJobsData });
   }, []);
 
+  let testDate = getBookingAgentJobsData.filter((agent) => {
+    let d = "20230927";
+    let apiDate = moment(d).format("YYYY-MM-DD") === dateFrom;
+    // console.log(apiDate);
+
+    // console.log("Test1", new Date(moment(d).format("YYYY-MM-DD")));
+    // console.log("Test 2", new Date(dateFrom));
+    // console.log(apiDate);
+    // let test1 =
+    //   apiDate.setMinutes(apiDate.getMinutes() + apiDate.getTimezoneOffset()) ===
+    //   new Date(dateFrom).setMinutes(
+    //     new Date(dateFrom).getMinutes() + new Date(dateFrom).getTimezoneOffset()
+    //   );
+    // console.log(test1);
+  });
+  // console.log(dateFrom, dateTo);
   // Booking agent Shane
-  let getJobsByAgentShane = getBookingAgentJobsData.filter(
-    (agent) =>
-      agent.booking_agent === "shanes300123" &&
-      moment(agent.created_date).format("YYYY-MM-DD") === dateFilter
-  ).length;
+  let getJobsByAgentShane =
+    dateFrom.length > 0 && dateTo.length > 0
+      ? getBookingAgentJobsData.filter((agent) => {
+          let filterPass = true;
+          let date = new Date(moment(agent.created_date).format("YYYY-MM-DD"));
+          if (dateFrom) {
+            filterPass =
+              filterPass &&
+              new Date(dateFrom) < date &&
+              agent.booking_agent === "shanes300123";
+          }
+          if (dateTo) {
+            filterPass =
+              filterPass &&
+              new Date(dateTo) > date &&
+              agent.booking_agent === "shanes300123";
+          }
+          return filterPass;
+        })
+      : [];
+  // console.log(getJobsByAgentShane);
 
   // Booking agent Sherry
-  let getJobsByAgentSherry = getBookingAgentJobsData.filter(
-    (agent) =>
-      agent.booking_agent === "sherryl060223" &&
-      moment(agent.created_date).format("YYYY-MM-DD") === dateFilter
-  ).length;
+  let getJobsByAgentSherry =
+    dateFrom.length > 0 && dateTo.length > 0
+      ? getBookingAgentJobsData.filter((agent) => {
+          let filterPass = true;
+          let date = new Date(moment(agent.created_date).format("YYYY-MM-DD"));
+          if (dateFrom) {
+            filterPass =
+              filterPass &&
+              new Date(dateFrom) < date &&
+              agent.booking_agent === "sherryl060223";
+          }
+          if (dateTo) {
+            filterPass =
+              filterPass &&
+              new Date(dateTo) > date &&
+              agent.booking_agent === "sherryl060223";
+          }
+          return filterPass;
+        })
+      : [];
+
+  // console.log(getJobsByAgentSherry);
 
   // Booking agent Nigel
-  let getJobsByAgentNigel = getBookingAgentJobsData.filter(
-    (agent) =>
-      agent.booking_agent === "nigelc01" &&
-      moment(agent.created_date).format("YYYY-MM-DD") === dateFilter
-  ).length;
+  let getJobsByAgentNigel =
+    dateFrom.length > 0 && dateTo.length > 0
+      ? getBookingAgentJobsData.filter((agent) => {
+          let filterPass = true;
+          let date = new Date(moment(agent.created_date).format("YYYY-MM-DD"));
+          if (dateFrom) {
+            filterPass =
+              filterPass &&
+              new Date(dateFrom) < date &&
+              agent.booking_agent === "nigelc01";
+          }
+          if (dateTo) {
+            filterPass =
+              filterPass &&
+              new Date(dateTo) > date &&
+              agent.booking_agent === "nigelc01";
+          }
+          return filterPass;
+        })
+      : [];
 
   // Booking agent Livonna
-  let getJobsByAgentLavona = getBookingAgentJobsData.filter(
-    (agent) =>
-      agent.booking_agent === "lavonaj01" &&
-      moment(agent.created_date).format("YYYY-MM-DD") === dateFilter
-  ).length;
+  let getJobsByAgentLavona =
+    dateFrom.length > 0 && dateTo.length > 0
+      ? getBookingAgentJobsData.filter((agent) => {
+          let filterPass = true;
+          let date = new Date(moment(agent.created_date).format("YYYY-MM-DD"));
+          if (dateFrom) {
+            filterPass =
+              filterPass &&
+              new Date(dateFrom) < date &&
+              agent.booking_agent === "lavonaj01";
+          }
+          if (dateTo) {
+            filterPass =
+              filterPass &&
+              new Date(dateTo) > date &&
+              agent.booking_agent === "lavonaj01";
+          }
+          return filterPass;
+        })
+      : [];
 
   return (
     <>
@@ -118,20 +203,39 @@ function Reports() {
           </h1>
           <section className="flex flex-col justify-center gap-3 py-4">
             <div className="flex gap-3 items-center justify-between">
-              <span>
-                <label htmlFor="date" className="sr-only">
-                  Filter by date
-                </label>
-                <input
-                  type="date"
-                  name="date"
-                  value={dateFilter}
-                  placeholder="Hello"
-                  onChange={(e) => setDateFilter(e.target.value)}
-                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
-                  id="date"
-                />
-              </span>
+              <div className="flex gap-3 items-center">
+                <span>
+                  <label htmlFor="dateFrom" className="sr-only">
+                    Date from
+                  </label>
+                  <input
+                    type="date"
+                    name="dateFrom"
+                    min={minDate}
+                    max={today}
+                    value={dateFrom}
+                    onChange={(e) => setDateFrom(e.target.value)}
+                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                    id="dateFrom"
+                  />
+                </span>
+                <span>-</span>
+                <span>
+                  <label htmlFor="dateTo" className="sr-only">
+                    Date to
+                  </label>
+                  <input
+                    type="date"
+                    name="dateTo"
+                    min={minDate}
+                    max={today}
+                    value={dateTo}
+                    onChange={(e) => setDateTo(e.target.value)}
+                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                    id="dateTo"
+                  />
+                </span>
+              </div>
               <span>
                 <label
                   htmlFor="searchServiceOrder"
@@ -201,7 +305,7 @@ function Reports() {
                     Booking Agent
                   </th>
                   <th className="px-4 py-3 cursor-pointer font-sans font-semibold">
-                    Jobs added
+                    Jobs booked
                   </th>
                 </tr>
               </thead>
@@ -211,7 +315,7 @@ function Reports() {
                     Shane
                   </td>
                   <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
-                    {getJobsByAgentShane}
+                    {getJobsByAgentShane.length}
                   </td>
                 </tr>
                 <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
@@ -219,7 +323,7 @@ function Reports() {
                     Nigel
                   </td>
                   <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
-                    {getJobsByAgentNigel}
+                    {getJobsByAgentNigel.length}
                   </td>
                 </tr>
                 <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
@@ -227,7 +331,7 @@ function Reports() {
                     Sherry
                   </td>
                   <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
-                    {getJobsByAgentSherry}
+                    {getJobsByAgentSherry.length}
                   </td>
                 </tr>
                 <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
@@ -235,7 +339,7 @@ function Reports() {
                     Lavona
                   </td>
                   <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
-                    {getJobsByAgentLavona}
+                    {getJobsByAgentLavona.length}
                   </td>
                 </tr>
               </tbody>
