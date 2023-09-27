@@ -181,7 +181,7 @@ export default function Dashboard() {
                     Engineer
                   </td>
                   <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
-                    Jobs added
+                    Jobs complete
                   </td>
                 </tr>
               </thead>
