@@ -13,7 +13,7 @@ import { useSetRecoilState } from "recoil";
 
 // Custom imports
 import { managementModalState } from "@/atoms/managementModalAtom";
-import { getRepair } from "@/functions/getRepairJobs";
+import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
 import Container from "../../components/Container";
 import ModalManagement from "../../components/Modals/modal.management";
@@ -22,7 +22,6 @@ import ToTopButton from "../../components/ToTopButton";
 import ManagementSearchForm from "../../components/table/ManagementSearchForm";
 import { HomepageModalTabOneContent } from "../../components/table/homepageModalTabOneContent";
 import { HomepageModalTabTwoContent } from "../../components/table/homepageModalTabTwoContent";
-import { getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
 
 // Tanstack table functionality
 import {
@@ -442,10 +441,10 @@ const Home = () => {
                     <th className="px-4 py-3 cursor-pointer font-sans font-semibold">
                       Action
                     </th>
-                    {headerGroup.headers.map((header) => (
+                    {headerGroup.headers.map((header, index) => (
                       <>
                         <th
-                          key={header.id}
+                          key={index}
                           onClick={header.column.getToggleSortingHandler()}
                           className="px-4 py-3 cursor-pointer font-sans font-semibold"
                         >

@@ -1,10 +1,13 @@
-import Spinner from "../../components/Spinner";
-import Button from "../../components/Buttons";
+import Dashboard from "@/pages/dashboard";
+import Home from "@/pages";
 
-describe("<Button/>", () => {
-  it('finds the content "element"', () => {
-    // cy.visit("https://example.cypress.io");
-
-    cy.get("<button>").click();
+describe("<Home/>", () => {
+  it("has Page title", () => {
+    cy.mount(<Home />);
+    cy.get("input").should(
+      "have.attr",
+      "placeholder",
+      "Subscribe to our newsletter"
+    );
   });
 });
