@@ -83,6 +83,7 @@ function Navbar() {
             id="close_button"
             className="btn close_button"
             onClick={ToggleSidebar}
+            aria-label="close button"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
