@@ -83,41 +83,17 @@ function Reports() {
     getBookingAgentJobs({ setGetBookingAgentJobsData });
   }, []);
 
-  let testDate = getBookingAgentJobsData.filter((agent) => {
-    let d = "20230927";
-    let apiDate = moment(d).format("YYYY-MM-DD") === dateFrom;
-    // console.log(apiDate);
-
-    // console.log("Test1", new Date(moment(d).format("YYYY-MM-DD")));
-    // console.log("Test 2", new Date(dateFrom));
-    // console.log(apiDate);
-    // let test1 =
-    //   apiDate.setMinutes(apiDate.getMinutes() + apiDate.getTimezoneOffset()) ===
-    //   new Date(dateFrom).setMinutes(
-    //     new Date(dateFrom).getMinutes() + new Date(dateFrom).getTimezoneOffset()
-    //   );
-    // console.log(test1);
-  });
-  // console.log(dateFrom, dateTo);
   // Booking agent Shane
   let getJobsByAgentShane =
     dateFrom.length > 0 && dateTo.length > 0
       ? getBookingAgentJobsData.filter((agent) => {
-          let filterPass = true;
-          let date = new Date(moment(agent.created_date).format("YYYY-MM-DD"));
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              agent.booking_agent === "shanes300123";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              agent.booking_agent === "shanes300123";
-          }
-          return filterPass;
+          let date = moment(agent.created_date).format("YYYY-MM-DD");
+          return (
+            date >= dateFrom &&
+            agent.booking_agent === "shanes300123" &&
+            date <= dateTo &&
+            agent.booking_agent === "shanes300123"
+          );
         })
       : [];
   // console.log(getJobsByAgentShane);
@@ -126,21 +102,13 @@ function Reports() {
   let getJobsByAgentSherry =
     dateFrom.length > 0 && dateTo.length > 0
       ? getBookingAgentJobsData.filter((agent) => {
-          let filterPass = true;
-          let date = new Date(moment(agent.created_date).format("YYYY-MM-DD"));
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              agent.booking_agent === "sherryl060223";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              agent.booking_agent === "sherryl060223";
-          }
-          return filterPass;
+          let date = moment(agent.created_date).format("YYYY-MM-DD");
+          return (
+            date >= dateFrom &&
+            agent.booking_agent === "sherryl060223" &&
+            date <= dateTo &&
+            agent.booking_agent === "sherryl060223"
+          );
         })
       : [];
 
@@ -150,21 +118,13 @@ function Reports() {
   let getJobsByAgentNigel =
     dateFrom.length > 0 && dateTo.length > 0
       ? getBookingAgentJobsData.filter((agent) => {
-          let filterPass = true;
-          let date = new Date(moment(agent.created_date).format("YYYY-MM-DD"));
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              agent.booking_agent === "nigelc01";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              agent.booking_agent === "nigelc01";
-          }
-          return filterPass;
+          let date = moment(agent.created_date).format("YYYY-MM-DD");
+          return (
+            date >= dateFrom &&
+            agent.booking_agent === "nigelc01" &&
+            date <= dateTo &&
+            agent.booking_agent === "nigelc01"
+          );
         })
       : [];
 
@@ -172,21 +132,13 @@ function Reports() {
   let getJobsByAgentLavona =
     dateFrom.length > 0 && dateTo.length > 0
       ? getBookingAgentJobsData.filter((agent) => {
-          let filterPass = true;
-          let date = new Date(moment(agent.created_date).format("YYYY-MM-DD"));
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              agent.booking_agent === "lavonaj01";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              agent.booking_agent === "lavonaj01";
-          }
-          return filterPass;
+          let date = moment(agent.created_date).format("YYYY-MM-DD");
+          return (
+            date >= dateFrom &&
+            agent.booking_agent === "lavonaj01" &&
+            date <= dateTo &&
+            agent.booking_agent === "lavonaj01"
+          );
         })
       : [];
 

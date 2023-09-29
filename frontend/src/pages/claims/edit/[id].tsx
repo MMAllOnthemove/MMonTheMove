@@ -1,6 +1,6 @@
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React, { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Button from "../../../../components/Buttons";
 
 function EditClaim() {

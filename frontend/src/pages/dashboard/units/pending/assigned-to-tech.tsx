@@ -4,6 +4,7 @@ import Link from "next/link";
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
 import { minDate, maxDate } from "../../../../../utils/datemin";
 import Head from "next/head";
+import moment from "moment";
 
 function AssignedTotech() {
   const [fetchAlldata, setFetchAlldata] = useState<any[]>([]);
@@ -44,23 +45,36 @@ function AssignedTotech() {
 
   var today = new Date().toISOString().split("T")[0].toString();
 
-  let assignedTotech = fetchAlldata.filter((item) => {
-    let filterPass = true;
-    let date = new Date(item.date_modified);
-    if (dateFrom) {
-      filterPass =
-        filterPass &&
-        new Date(dateFrom) < date &&
-        item.in_house_status === "Assigned to tech";
-    }
-    if (dateTo) {
-      filterPass =
-        filterPass &&
-        new Date(dateTo) > date &&
-        item.in_house_status === "Assigned to tech";
-    }
-    return filterPass;
-  });
+  let assignedTotech =
+    dateFrom.length > 0 && dateTo.length > 0
+      ? fetchAlldata.filter((item) => {
+          let date = moment(item.date_modified).format("YYYY-MM-DD");
+          return (
+            date >= dateFrom &&
+            item.in_house_status === "Assigned to tech" &&
+            date >= dateTo &&
+            item.in_house_status === "Assigned to tech"
+          );
+        })
+      : [];
+
+  // let assignedTotech = fetchAlldata.filter((item) => {
+  //   let filterPass = true;
+  //   let date = new Date(item.date_modified);
+  //   if (dateFrom) {
+  //     filterPass =
+  //       filterPass &&
+  //       new Date(dateFrom) < date &&
+  //       item.in_house_status === "Assigned to tech";
+  //   }
+  //   if (dateTo) {
+  //     filterPass =
+  //       filterPass &&
+  //       new Date(dateTo) > date &&
+  //       item.in_house_status === "Assigned to tech";
+  //   }
+  //   return filterPass;
+  // });
   return (
     <>
       <Head>
