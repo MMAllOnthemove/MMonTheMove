@@ -2,36 +2,9 @@ import React from "react";
 import * as Yup from "yup";
 import { unitStatus } from "../../public/_data/statuses";
 import Button from "../Buttons";
+import { IHomepageModalTabOneContent } from "../../utils/interfaces";
 
-interface IProps {
-  searchServiceOrder: string;
-  setSearchServiceOrder: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  warranty: string;
-  inHouseStatus: string;
-  setInHouseStatus: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  ticket: string;
-  setTicket: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  engineerAnalysis: string;
-  setEngineerAnalysis: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  engineer: string;
-  setEngineer: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  department: string;
-  setDepartment: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  // user: string;
-  // setUser: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  postData: (e: React.SyntheticEvent) => void;
-}
-
-export function HomepageModalTabOneContent(props: IProps) {
-  const validateSchema = Yup.object().shape({
-    searchServiceOrder: Yup.string().notRequired(),
-    ticket: Yup.string().required("This field is required"),
-    email: Yup.string()
-      .email("Please enter a valid email")
-      .required("This field is required"),
-    password: Yup.string(),
-  });
-
+export function HomepageModalTabOneContent(props: IHomepageModalTabOneContent) {
   const {
     searchServiceOrder,
     setSearchServiceOrder,

@@ -87,7 +87,7 @@ function Reports() {
   let getJobsByAgentShane =
     dateFrom.length > 0 && dateTo.length > 0
       ? getBookingAgentJobsData.filter((agent) => {
-          let date = moment(agent.created_date).format("YYYY-MM-DD");
+          let date = moment(agent.created_date, 'YYMMDD').format("YYYY-MM-DD");
           return (
             date >= dateFrom &&
             agent.booking_agent === "shanes300123" &&
@@ -102,7 +102,7 @@ function Reports() {
   let getJobsByAgentSherry =
     dateFrom.length > 0 && dateTo.length > 0
       ? getBookingAgentJobsData.filter((agent) => {
-          let date = moment(agent.created_date).format("YYYY-MM-DD");
+          let date = moment(agent.created_date, 'YYMMDD').format("YYYY-MM-DD");
           return (
             date >= dateFrom &&
             agent.booking_agent === "sherryl060223" &&
@@ -118,7 +118,7 @@ function Reports() {
   let getJobsByAgentNigel =
     dateFrom.length > 0 && dateTo.length > 0
       ? getBookingAgentJobsData.filter((agent) => {
-          let date = moment(agent.created_date).format("YYYY-MM-DD");
+          let date = moment(agent.created_date, 'YYMMDD').format("YYYY-MM-DD");
           return (
             date >= dateFrom &&
             agent.booking_agent === "nigelc01" &&
@@ -132,7 +132,7 @@ function Reports() {
   let getJobsByAgentLavona =
     dateFrom.length > 0 && dateTo.length > 0
       ? getBookingAgentJobsData.filter((agent) => {
-          let date = moment(agent.created_date).format("YYYY-MM-DD");
+          let date = moment(agent.created_date, 'YYMMDD').format("YYYY-MM-DD");
           return (
             date >= dateFrom &&
             agent.booking_agent === "lavonaj01" &&

@@ -1,28 +1,9 @@
 import React from "react";
 import Button from "../Buttons";
 import { unitStatus } from "../../public/_data/statuses";
+import { IHomepageModalTabTwoContent } from "../../utils/interfaces";
 
-interface IProps {
-  searchTicket: string | number;
-  setSearchTicket: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  repairFault: string | undefined;
-  repairWarranty: string | undefined;
-  setRepairWarranty: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  repairImei: string | number | undefined;
-  setRepairImei: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  repairSerialNumber: string | number | undefined;
-  setRepairSerialNumber: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  repairModel: string | undefined;
-  setRepairModel: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  repairInHouseStatus: string | undefined;
-  setRepairInHouseStatus: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  repairEngineer: string | undefined;
-  setRepairEngineer: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  postRepairData: (e: React.SyntheticEvent) => void;
-  repairAPILoading: boolean;
-}
-
-export function HomepageModalTabTwoContent(props: IProps) {
+export function HomepageModalTabTwoContent(props: IHomepageModalTabTwoContent) {
   const {
     searchTicket,
     setSearchTicket,

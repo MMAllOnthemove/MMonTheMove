@@ -48,7 +48,9 @@ function AssignedTotech() {
   let assignedTotech =
     dateFrom.length > 0 && dateTo.length > 0
       ? fetchAlldata.filter((item) => {
-          let date = moment(item.date_modified).format("YYYY-MM-DD");
+          let date = moment(item.date_modified, "YYYYMMDD").format(
+            "YYYY-MM-DD"
+          );
           return (
             date >= dateFrom &&
             item.in_house_status === "Assigned to tech" &&

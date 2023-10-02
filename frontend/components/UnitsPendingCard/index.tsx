@@ -1,10 +1,5 @@
 import React from "react";
-
-interface IUnitsPendingCard {
-  cardParagraph: string | number;
-  cardHeading: string | number | string[] | number[];
-  onClick?: () => void;
-}
+import { IUnitsPendingCard } from "../../utils/interfaces";
 
 function UnitsPendingCard(props: IUnitsPendingCard) {
   return (
