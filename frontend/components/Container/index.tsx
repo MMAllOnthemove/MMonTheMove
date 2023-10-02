@@ -1,9 +1,7 @@
 import React from "react";
+import { IContainerWrapper } from "../../utils/interfaces";
 
-interface IProps {
-  children: React.ReactNode;
-}
-function Container(props: IProps) {
+function Container(props: IContainerWrapper) {
   const { children } = props;
   return <div className="container mx-auto p-2">{children}</div>;
 }

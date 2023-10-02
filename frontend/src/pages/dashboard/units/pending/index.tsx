@@ -18,27 +18,17 @@ function Pending() {
   const [dateTo, setDateTo] = useState("");
 
   // Repair and gspn combined data
-  const urls = [
-    `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
-    `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/repair`,
-  ];
   const fetchDataCombinedData = async () => {
     try {
-      const response = await Promise.all(
-        urls.map((url) => fetch(url).then((res) => res.json()))
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
+        {
+          method: "GET",
+        }
       );
-      // console.log(response.flat());
-      let filterOutDups = response
-        .flat()
-        .filter(
-          (obj, index) =>
-            response
-              .flat()
-              .findIndex(
-                (item) => item.service_order_no === obj.service_order_no
-              ) === index
-        );
-      setFetchAlldata(filterOutDups);
+      const data = await response.json();
+      // console.log(data);
+      setFetchAlldata(data);
     } catch (error) {
       // console.log("Error", error);
     }

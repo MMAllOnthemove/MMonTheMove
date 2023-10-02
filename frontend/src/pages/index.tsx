@@ -17,6 +17,7 @@ import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
 import Container from "../../components/Container";
 import ModalManagement from "../../components/Modals/modal.management";
+
 import Navbar from "../../components/Navbar";
 import ToTopButton from "../../components/ToTopButton";
 import ManagementSearchForm from "../../components/table/ManagementSearchForm";
@@ -33,13 +34,14 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { Itable } from "../../utils/interfaces";
 
 // Management columns
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
 import { columns } from "../../components/table/homepageTableColumns";
 
 const Home = () => {
-  const [tableData, setTableData] = useState<string[]>([]);
+  const [tableData, setTableData] = useState<Itable[]>([]);
 
   // Not to be confused with 'setServiceOrder'
   const [searchServiceOrder, setSearchServiceOrder] = useState("");
@@ -138,8 +140,24 @@ const Home = () => {
     });
   }, [searchServiceOrder]);
 
+  const fetchTableData = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`
+      );
+      const data = await response.json();
+      // console.log(
+      //   [...data]
+      //     .filter((g) => [...data].includes(g.id))
+      //     .map((g) => g.service_order_no)
+      // );
+      setTableData(data);
+    } catch (error) {
+      // console.log("Error", error);
+    }
+  };
   useEffect(() => {
-    fetchDataCombinedData({ setTableData });
+    fetchTableData();
   }, []);
 
   useEffect(() => {
@@ -318,7 +336,9 @@ const Home = () => {
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
   });
+  // console.log("table", table);
 
+  // console.log(table.getHeaderGroups().map((headerGroup) => headerGroup.id));
   return (
     <>
       <Head>
@@ -441,26 +461,35 @@ const Home = () => {
                     <th className="px-4 py-3 cursor-pointer font-sans font-semibold">
                       Action
                     </th>
-                    {headerGroup.headers.map((header, index) => (
-                      <>
+                    {headerGroup.headers.map((header) => {
+                      return (
                         <th
-                          key={index}
-                          onClick={header.column.getToggleSortingHandler()}
+                          key={header.id}
                           className="px-4 py-3 cursor-pointer font-sans font-semibold"
                         >
-                          <div>
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                            {{
-                              asc: " 🔼",
-                              desc: " 🔽",
-                            }[header.column.getIsSorted() as string] ?? null}
-                          </div>
+                          {header.isPlaceholder ? null : (
+                            <div
+                              {...{
+                                className: header.column.getCanSort()
+                                  ? "cursor-pointer select-none"
+                                  : "",
+                                onClick:
+                                  header.column.getToggleSortingHandler(),
+                              }}
+                            >
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                              {{
+                                asc: " ▽",
+                                desc: " △",
+                              }[header.column.getIsSorted() as string] ?? null}
+                            </div>
+                          )}
                         </th>
-                      </>
-                    ))}
+                      );
+                    })}
                   </tr>
                 ))}
               </thead>
@@ -545,6 +574,7 @@ const Home = () => {
                 Go to page:
               </label>
               <input
+                id="search-page-number"
                 name="search-page-number"
                 type="number"
                 defaultValue={table.getState().pagination.pageIndex + 1}
@@ -559,6 +589,8 @@ const Home = () => {
               Show Page Size
             </label>
             <select
+              id="showPageSize"
+              name="showPageSize"
               value={table.getState().pagination.pageSize}
               className="border border-[#eee] outline-none ring-0 font-sans font-medium cursor-pointer"
               onChange={(e) => {
