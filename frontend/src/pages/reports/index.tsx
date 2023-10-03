@@ -6,6 +6,7 @@ import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
 import { minDate } from "../../../utils/datemin";
+import { bookingAgentFunc } from "../../../components/Reports";
 
 function Reports() {
   const [searchServiceOrder, setSearchServiceOrder] = useState("");
@@ -84,63 +85,65 @@ function Reports() {
   }, []);
 
   // Booking agent Shane
-  let getJobsByAgentShane =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? getBookingAgentJobsData.filter((agent) => {
-          let date = moment(agent.created_date, 'YYMMDD').format("YYYY-MM-DD");
-          return (
-            date >= dateFrom &&
-            agent.booking_agent === "shanes300123" &&
-            date <= dateTo &&
-            agent.booking_agent === "shanes300123"
-          );
-        })
-      : [];
+  // let getJobsByAgentShane =
+  //   dateFrom.length > 0 && dateTo.length > 0
+  //     ? getBookingAgentJobsData.filter((agent) => {
+  //         let date = moment(agent.created_date).format("YYYY-MM-DD");
+  //         return (
+  //           date >= dateFrom &&
+  //           agent.booking_agent === "shanes300123" &&
+  //           date <= dateTo &&
+  //           agent.booking_agent === "shanes300123"
+  //         );
+  //       })
+  //     : [];
+  // let getJobsByAgentShane;
+  // bookingAgentFunc(getBookingAgentJobsData, dateFrom, dateTo, "shanes300123");
   // console.log(getJobsByAgentShane);
 
   // Booking agent Sherry
-  let getJobsByAgentSherry =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? getBookingAgentJobsData.filter((agent) => {
-          let date = moment(agent.created_date, 'YYMMDD').format("YYYY-MM-DD");
-          return (
-            date >= dateFrom &&
-            agent.booking_agent === "sherryl060223" &&
-            date <= dateTo &&
-            agent.booking_agent === "sherryl060223"
-          );
-        })
-      : [];
+  // let getJobsByAgentSherry =
+  //   dateFrom.length > 0 && dateTo.length > 0
+  //     ? getBookingAgentJobsData.filter((agent) => {
+  //         let date = moment(agent.created_date).format("YYYY-MM-DD");
+  //         return (
+  //           date >= dateFrom &&
+  //           agent.booking_agent === "sherryl060223" &&
+  //           date <= dateTo &&
+  //           agent.booking_agent === "sherryl060223"
+  //         );
+  //       })
+  //     : [];
 
   // console.log(getJobsByAgentSherry);
 
   // Booking agent Nigel
-  let getJobsByAgentNigel =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? getBookingAgentJobsData.filter((agent) => {
-          let date = moment(agent.created_date, 'YYMMDD').format("YYYY-MM-DD");
-          return (
-            date >= dateFrom &&
-            agent.booking_agent === "nigelc01" &&
-            date <= dateTo &&
-            agent.booking_agent === "nigelc01"
-          );
-        })
-      : [];
+  // let getJobsByAgentNigel =
+  //   dateFrom.length > 0 && dateTo.length > 0
+  //     ? getBookingAgentJobsData.filter((agent) => {
+  //         let date = moment(agent.created_date).format("YYYY-MM-DD");
+  //         return (
+  //           date >= dateFrom &&
+  //           agent.booking_agent === "nigelc01" &&
+  //           date <= dateTo &&
+  //           agent.booking_agent === "nigelc01"
+  //         );
+  //       })
+  //     : [];
 
   // Booking agent Livonna
-  let getJobsByAgentLavona =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? getBookingAgentJobsData.filter((agent) => {
-          let date = moment(agent.created_date, 'YYMMDD').format("YYYY-MM-DD");
-          return (
-            date >= dateFrom &&
-            agent.booking_agent === "lavonaj01" &&
-            date <= dateTo &&
-            agent.booking_agent === "lavonaj01"
-          );
-        })
-      : [];
+  // let getJobsByAgentLavona =
+  //   dateFrom.length > 0 && dateTo.length > 0
+  //     ? getBookingAgentJobsData.filter((agent) => {
+  //         let date = moment(agent.created_date).format("YYYY-MM-DD");
+  //         return (
+  //           date >= dateFrom &&
+  //           agent.booking_agent === "lavonaj01" &&
+  //           date <= dateTo &&
+  //           agent.booking_agent === "lavonaj01"
+  //         );
+  //       })
+  //     : [];
 
   return (
     <>
@@ -267,7 +270,12 @@ function Reports() {
                     Shane
                   </td>
                   <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
-                    {getJobsByAgentShane.length}
+                    {bookingAgentFunc(
+                      getBookingAgentJobsData,
+                      dateFrom,
+                      dateTo,
+                      "shanes300123"
+                    )}
                   </td>
                 </tr>
                 <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
@@ -275,7 +283,12 @@ function Reports() {
                     Nigel
                   </td>
                   <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
-                    {getJobsByAgentNigel.length}
+                    {bookingAgentFunc(
+                      getBookingAgentJobsData,
+                      dateFrom,
+                      dateTo,
+                      "nigelc01"
+                    )}
                   </td>
                 </tr>
                 <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
@@ -283,7 +296,12 @@ function Reports() {
                     Sherry
                   </td>
                   <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
-                    {getJobsByAgentSherry.length}
+                    {bookingAgentFunc(
+                      getBookingAgentJobsData,
+                      dateFrom,
+                      dateTo,
+                      "sherryl060223"
+                    )}
                   </td>
                 </tr>
                 <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
@@ -291,7 +309,12 @@ function Reports() {
                     Lavona
                   </td>
                   <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
-                    {getJobsByAgentLavona.length}
+                    {bookingAgentFunc(
+                      getBookingAgentJobsData,
+                      dateFrom,
+                      dateTo,
+                      "lavonaj01"
+                    )}
                   </td>
                 </tr>
               </tbody>

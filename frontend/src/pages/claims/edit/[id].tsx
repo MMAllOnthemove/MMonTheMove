@@ -1,7 +1,10 @@
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
-import Button from "../../../../components/Buttons";
+// import Button from "../../../../components/Buttons";
+import dynamic from "next/dynamic";
+
+const Button = dynamic(() => import("../../../../components/Buttons"));
 
 function EditClaim() {
   // These are already handled in the table but for user experience

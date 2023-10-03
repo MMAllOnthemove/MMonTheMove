@@ -1,16 +1,16 @@
 import Navbar from "../../../components/Navbar";
 // Next auth session hook
+import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
 import {
   ArrowDownTrayIcon,
   ArrowPathIcon,
   UserGroupIcon,
 } from "@heroicons/react/24/outline";
-import { BadgeDelta, Metric, Text } from "@tremor/react";
+import { Metric, Text } from "@tremor/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function Dashboard() {
   const [tableData, setTableData] = useState<string[] | any[]>([]);

@@ -12,14 +12,26 @@ import { useEffect, useState } from "react";
 import { useSetRecoilState } from "recoil";
 
 // Custom imports
+import dynamic from "next/dynamic";
+const ModalManagement = dynamic(
+  () => import("../../components/Modals/modal.management"),
+  {
+    loading: () => <p>Loading modal...</p>,
+  }
+);
 import { managementModalState } from "@/atoms/managementModalAtom";
 import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
 import Container from "../../components/Container";
-import ModalManagement from "../../components/Modals/modal.management";
-
-import Navbar from "../../components/Navbar";
-import ToTopButton from "../../components/ToTopButton";
+// import ModalManagement from "../../components/Modals/modal.management";
+const Navbar = dynamic(() => import("../../components/Navbar"), {
+  loading: () => <p>Loading Navbar...</p>,
+});
+// import Navbar from "../../components/Navbar";
+const ToTopButton = dynamic(() => import("../../components/ToTopButton"), {
+  loading: () => <p>Loading ToTopButton...</p>,
+});
+// import ToTopButton from "../../components/ToTopButton";
 import ManagementSearchForm from "../../components/table/ManagementSearchForm";
 import { HomepageModalTabOneContent } from "../../components/table/homepageModalTabOneContent";
 import { HomepageModalTabTwoContent } from "../../components/table/homepageModalTabTwoContent";
@@ -146,11 +158,6 @@ const Home = () => {
         `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`
       );
       const data = await response.json();
-      // console.log(
-      //   [...data]
-      //     .filter((g) => [...data].includes(g.id))
-      //     .map((g) => g.service_order_no)
-      // );
       setTableData(data);
     } catch (error) {
       // console.log("Error", error);
@@ -208,6 +215,7 @@ const Home = () => {
       GSPNStatusGetLastElement,
     };
     // console.log(postThisInfo);
+    let regexNumber = /^[0-9]+$/;
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
       {
@@ -216,7 +224,35 @@ const Home = () => {
         body: JSON.stringify(postThisInfo),
       }
     );
-    if (!response.ok) {
+    if (
+      searchServiceOrder.length < 10 ||
+      searchServiceOrder.length < 0 ||
+      searchServiceOrder.length === 0
+    ) {
+      setManagementModalState({
+        open: false,
+        view: "/",
+      });
+      toast({
+        title: "Job failed.",
+        description: "Not enough characters.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else if (!searchServiceOrder.match(regexNumber)) {
+      setManagementModalState({
+        open: false,
+        view: "/",
+      });
+      toast({
+        title: "Job failed.",
+        description: "Only enter numeric characters.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else if (!response.ok) {
       setManagementModalState({
         open: false,
         view: "/",

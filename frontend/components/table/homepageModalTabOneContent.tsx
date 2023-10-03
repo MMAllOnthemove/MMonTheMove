@@ -51,8 +51,8 @@ export function HomepageModalTabOneContent(props: IHomepageModalTabOneContent) {
           aria-labelledby="ticket"
           type="number"
           name="ticket"
-          required
-          aria-required
+          // required
+          // aria-required
           placeholder="Ticket number"
           id="ticket"
           className="w-full outline-none py-2 px-2 border-2 font-sans font-semibold text-sm rounded-sm my-2"
@@ -80,8 +80,8 @@ export function HomepageModalTabOneContent(props: IHomepageModalTabOneContent) {
         <select
           value={inHouseStatus}
           onChange={setInHouseStatus}
-          required
-          aria-required
+          // required
+          // aria-required
           id="inHouseStatus"
           className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
         >
@@ -117,8 +117,8 @@ export function HomepageModalTabOneContent(props: IHomepageModalTabOneContent) {
           className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
           value={engineer}
           onChange={setEngineer}
-          required
-          aria-required
+          // required
+          // aria-required
         >
           <option value="" disabled>
             Select engineer

@@ -29,6 +29,7 @@ export const getBookingAgentJobs = async (props: IgetBookingAgentJobs) => {
       }
     );
     const json = await response.json();
+    // console.log(json)
     props.setGetBookingAgentJobsData(json);
   } catch (error) {}
 };
