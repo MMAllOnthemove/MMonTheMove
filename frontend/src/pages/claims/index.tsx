@@ -2,7 +2,10 @@ import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Navbar from "../../../components/Navbar";
+import dynamic from "next/dynamic";
+
+const Navbar = dynamic(() => import("../../../components/Navbar"));
+// import Navbar from "../../../components/Navbar";
 
 export default function Claims() {
   const [searchTerm, setSearchTerm] = useState("");
