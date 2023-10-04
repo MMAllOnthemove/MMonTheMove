@@ -140,7 +140,6 @@ export async function postBookingAgentsJobs(props: IpostBookingAgentsJobs) {
   props.setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
   props.setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
   props.setWarranty(data?.Return?.EsModelInfo?.WtyType);
-  props.setBookingAgent(data?.EtLogInfo?.results[0]?.ChangedBy);
 }
 
 export async function getStockOverviewInfo(props: IgetStockOverviewInfo) {
@@ -160,24 +159,21 @@ export async function getStockOverviewInfo(props: IgetStockOverviewInfo) {
       Msgid: "",
     },
   };
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_IPAAS_API_GetBranchStockOverview}`,
-    {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
-      },
-      body: JSON.stringify(options),
-    }
-  );
-  if (response.ok) {
-    const data = await response.json();
-    props.setStockData(data);
-  } else {
-    return <p>Loading...</p>;
-  }
+  await fetch(`${process.env.NEXT_PUBLIC_IPAAS_API_GetBranchStockOverview}`, {
+    method: "POST",
+    mode: "cors",
+    cache: "force-cache",
+    next: { revalidate: 10 },
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
+    },
+    body: JSON.stringify(options),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      props.setStockData(data);
+      // console.log(data);
+    });
 }

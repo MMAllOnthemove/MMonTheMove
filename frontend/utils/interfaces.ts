@@ -119,7 +119,6 @@ export interface IpostBookingAgentsJobs {
     setCreatedDate: (order: string) => void;
     setCreatedTime: (order: string) => void;
     setWarranty: (order: string) => void;
-    setBookingAgent: (order: string) => void;
 }
 
 export interface IgetRepair {

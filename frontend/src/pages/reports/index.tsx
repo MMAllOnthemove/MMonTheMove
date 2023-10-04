@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
 import { minDate } from "../../../utils/datemin";
 import { bookingAgentFunc } from "../../../components/Reports";
+import { bookingAgents } from "../../../public/_data/booking_agents";
 
 function Reports() {
   const [searchServiceOrder, setSearchServiceOrder] = useState("");
@@ -33,7 +34,6 @@ function Reports() {
   useEffect(() => {
     postBookingAgentsJobs({
       searchServiceOrder,
-      setBookingAgent,
       setCreatedDate,
       setCreatedTime,
       setWarranty,
@@ -50,6 +50,7 @@ function Reports() {
       warranty,
       bookingAgent,
     };
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_AGENTS}/booking-agents/jobs/add`,
       {
@@ -58,10 +59,10 @@ function Reports() {
         body: JSON.stringify(postThisInfo),
       }
     );
-    if (!response.ok) {
+    if (!response.ok || bookingAgent === "") {
       toast({
         title: "Job failed.",
-        description: "Job already exists.",
+        description: "Job already exists or no agent name.",
         status: "error",
         duration: 9000,
         isClosable: true,
@@ -157,7 +158,7 @@ function Reports() {
             Booking Agents
           </h1>
           <section className="flex flex-col justify-center gap-3 py-4">
-            <div className="flex gap-3 items-center justify-between">
+            <div className="flex gap-3 items-center justify-between flex-col lg:flex-row">
               <div className="flex gap-3 items-center">
                 <span>
                   <label htmlFor="dateFrom" className="sr-only">
@@ -203,7 +204,7 @@ function Reports() {
                   id="searchServiceOrder"
                   name="searchServiceOrder"
                   placeholder="Search service order"
-                  className="w-max-lg outline-none py-2 px-2 border-2 font-sans font-semibold text-sm rounded-sm my-2 mx-auto"
+                  className="w-full outline-none py-2 px-2 border-2 font-sans font-semibold text-sm rounded-sm my-2 mx-auto"
                   value={searchServiceOrder}
                   onChange={(e) => setSearchServiceOrder(e.target.value)}
                   maxLength={10}
@@ -212,7 +213,7 @@ function Reports() {
             </div>
           </section>
 
-          {searchServiceOrder.length === 10 && (
+          {searchServiceOrder.length === 10 ? (
             <div className="max-h-[540px] overflow-y-auto my-5">
               <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
                 <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-sans text-sm uppercase font-semibold">
@@ -234,7 +235,29 @@ function Reports() {
                       {serviceOrder}
                     </td>
                     <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
-                      {bookingAgent}
+                      <span>
+                        <label
+                          htmlFor="bookingAgent"
+                          className="block mb-2 text-sm font-medium font-sans text-gray-900 sr-only"
+                        >
+                          Booking agent
+                        </label>
+                        <select
+                          value={bookingAgent}
+                          onChange={(e) => setBookingAgent(e.target.value)}
+                          id="bookingAgent"
+                          className="mb-2 bg-white border cursor-pointer border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-sm p-2.5"
+                        >
+                          <option disabled value="">
+                            Select agent
+                          </option>
+                          {bookingAgents.map((stat) => (
+                            <option key={stat.id} value={`${stat.agentName}`}>
+                              {stat?.agentName}
+                            </option>
+                          ))}
+                        </select>
+                      </span>
                     </td>
                     <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
                       <button
@@ -250,6 +273,8 @@ function Reports() {
                 </tbody>
               </table>
             </div>
+          ) : (
+            ""
           )}
 
           <div className="max-h-[540px] overflow-y-auto">
