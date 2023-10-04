@@ -32,9 +32,9 @@ const ToTopButton = dynamic(() => import("../../components/ToTopButton"), {
   loading: () => <p>Loading ToTopButton...</p>,
 });
 // import ToTopButton from "../../components/ToTopButton";
-import ManagementSearchForm from "../../components/table/ManagementSearchForm";
-import { HomepageModalTabOneContent } from "../../components/table/homepageModalTabOneContent";
-import { HomepageModalTabTwoContent } from "../../components/table/homepageModalTabTwoContent";
+import ManagementSearchForm from "../../components/Table/ManagementSearchForm";
+import { HomepageModalTabOneContent } from "../../components/Table/homepageModalTabOneContent";
+import { HomepageModalTabTwoContent } from "../../components/Table/homepageModalTabTwoContent";
 
 // Tanstack table functionality
 import {
@@ -50,7 +50,7 @@ import { Itable } from "../../utils/interfaces";
 
 // Management columns
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
-import { columns } from "../../components/table/homepageTableColumns";
+import { columns } from "../../components/Table/homepageTableColumns";
 
 const Home = () => {
   const [tableData, setTableData] = useState<Itable[]>([]);

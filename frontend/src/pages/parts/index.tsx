@@ -120,6 +120,7 @@ function Parts() {
                           {data?.Return.EsPartsInfo.Division}
                         </span>
                       </p>
+
                       <p className="text-gray-800 font-sans  flex items-center justify-between font-medium text-base border-b border-[#eee} py-2">
                         Division Name:{" "}
                         <span className="text-slate-700 text-base capitalize font-semibold">
@@ -184,6 +185,15 @@ function Parts() {
                         Core B Price:{" "}
                         <span className="text-slate-700 text-base capitalize font-semibold">
                           {data?.Return.EsPartsInfo.CoreBPrice}
+                        </span>
+                      </p>
+                      <p className="text-gray-800 font-sans  flex items-center justify-between font-medium text-base border-b border-[#eee} py-2">
+                        WhStockQty:{" "}
+                        <span className="text-slate-700 text-base capitalize font-semibold">
+                          {stockData?.EtStockInfo?.results[0]?.PartsCode !==
+                          search
+                            ? ""
+                            : stockData?.EtStockInfo?.results[0]?.WhStockQty}
                         </span>
                       </p>
                     </section>

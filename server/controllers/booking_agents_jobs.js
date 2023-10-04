@@ -1,5 +1,6 @@
 const pool = require("../db");
 const redis = require("redis");
+const Yup = require("yup");
 
 let redisClient;
 
@@ -30,14 +31,15 @@ const postBookingAgentsJobs = async (req, res) => {
   let isCached = false;
   const { serviceOrder, createdDate, createdTime, warranty, bookingAgent } =
     req.body;
+
   try {
     const findIfExists = await pool.query(
       "SELECT id from booking_agents_jobs where service_order_no = $1",
       [serviceOrder]
     );
-    if (findIfExists.rowCount > 0) {
-      res.status(400).json("Ticket already exists!");
-      console.log("Cell exists");
+    if (findIfExists.rowCount > 0 || bookingAgent === "") {
+      res.status(400).json("Job already exists! or no agent name");
+      console.log("Cell exists or no agent name");
     } else {
       const newResults = await pool.query(
         "INSERT INTO booking_agents_jobs (service_order_no, created_date, created_time, warranty, booking_agent) values ($1, $2, $3, $4, $5) returning *",
