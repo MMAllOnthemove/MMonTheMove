@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "../Buttons";
-import { unitStatus } from "../../public/_data/statuses";
-import { IHomepageModalTabTwoContent } from "../../utils/interfaces";
+import { unitStatus } from "../../../public/_data/statuses";
+import { IHomepageModalTabTwoContent } from "../../../utils/interfaces";
 
 export function HomepageModalTabTwoContent(props: IHomepageModalTabTwoContent) {
   const {

@@ -5,8 +5,8 @@ import {
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import Navbar from "../../../components/Navbar";
-import useDebounce from "../../../components/useDebounce";
+import Navbar from "@/components/Navbar";
+import useDebounce from "@/components/useDebounce";
 
 function Parts() {
   const [data, setData] = useState<null | any>(null);

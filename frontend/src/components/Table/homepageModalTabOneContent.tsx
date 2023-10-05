@@ -1,8 +1,8 @@
 import React from "react";
 import * as Yup from "yup";
-import { unitStatus } from "../../public/_data/statuses";
+import { unitStatus } from "../../../public/_data/statuses";
 import Button from "../Buttons";
-import { IHomepageModalTabOneContent } from "../../utils/interfaces";
+import { IHomepageModalTabOneContent } from "../../../utils/interfaces";
 
 export function HomepageModalTabOneContent(props: IHomepageModalTabOneContent) {
   const {

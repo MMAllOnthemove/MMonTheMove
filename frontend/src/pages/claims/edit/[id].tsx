@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 // import Button from "../../../../components/Buttons";
 import dynamic from "next/dynamic";
 
-const Button = dynamic(() => import("../../../../components/Buttons"));
+const Button = dynamic(() => import("@/components/Buttons"));
 
 function EditClaim() {
   // These are already handled in the table but for user experience
