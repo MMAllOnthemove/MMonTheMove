@@ -3,8 +3,8 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Navbar from "../../../../../components/Navbar";
-import UnitsPendingCard from "../../../../../components/UnitsPendingCard";
+import Navbar from "@/components/Navbar";
+import UnitsPendingCard from "@/components/UnitsPendingCard";
 import { minDate } from "../../../../../utils/datemin";
 
 function Pending() {

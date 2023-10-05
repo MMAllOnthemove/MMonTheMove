@@ -1,5 +1,5 @@
 import React from "react";
-import { IContainerWrapper } from "../../utils/interfaces";
+import { IContainerWrapper } from "../../../utils/interfaces";
 
 function Container(props: IContainerWrapper) {
   const { children } = props;

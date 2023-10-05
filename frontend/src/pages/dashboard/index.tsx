@@ -1,4 +1,4 @@
-import Navbar from "../../../components/Navbar";
+import Navbar from "@/components/Navbar";
 // Next auth session hook
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
 import {

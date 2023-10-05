@@ -4,9 +4,9 @@ import { useToast } from "@chakra-ui/react";
 import moment from "moment";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
-import Navbar from "../../../components/Navbar";
+import Navbar from "@/components/Navbar";
 import { minDate } from "../../../utils/datemin";
-import { bookingAgentFunc } from "../../../components/Reports";
+import { bookingAgentFunc } from "@/components/Reports";
 import { bookingAgents } from "../../../public/_data/booking_agents";
 
 function Reports() {

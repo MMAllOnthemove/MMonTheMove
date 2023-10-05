@@ -3,8 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-
-const Navbar = dynamic(() => import("../../../components/Navbar"));
+const Navbar = dynamic(() => import("@/components/Navbar"));
 // import Navbar from "../../../components/Navbar";
 
 export default function Claims() {

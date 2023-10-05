@@ -3,7 +3,7 @@ import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useEffect, useState, useCallback } from "react";
 import { unitStatus } from "../../../public/_data/statuses";
-import Button from "../../../components/Buttons";
+import Button from "@/components/Buttons";
 import { getSOStatusDescLatest } from "@/functions/ipass_api";
 
 import Head from "next/head";

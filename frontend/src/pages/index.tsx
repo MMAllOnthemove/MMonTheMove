@@ -14,7 +14,7 @@ import { useSetRecoilState } from "recoil";
 // Custom imports
 import dynamic from "next/dynamic";
 const ModalManagement = dynamic(
-  () => import("../../components/Modals/modal.management"),
+  () => import("@/components/Modals/modal.management"),
   {
     loading: () => <p>Loading modal...</p>,
   }
@@ -22,21 +22,17 @@ const ModalManagement = dynamic(
 import { managementModalState } from "@/atoms/managementModalAtom";
 import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
-import Container from "../../components/Container";
-// import ModalManagement from "../../components/Modals/modal.management";
-const Navbar = dynamic(() => import("../../components/Navbar"), {
+import Container from "@/components/Container";
+const Navbar = dynamic(() => import("@/components/Navbar"), {
   loading: () => <p>Loading Navbar...</p>,
 });
-// import Navbar from "../../components/Navbar";
-const ToTopButton = dynamic(() => import("../../components/ToTopButton"), {
+const ToTopButton = dynamic(() => import("@/components/ToTopButton"), {
   loading: () => <p>Loading ToTopButton...</p>,
 });
-// import ToTopButton from "../../components/ToTopButton";
-// import ManagementSearchForm from "../../components/Table/ManagementSearchForm";
-import ManagementSearchForm from "../../components/Table/ManagementSearchForm";
+import ManagementSearchForm from "@/components/Table/managementSearchForm";
 
-import { HomepageModalTabOneContent } from "../../components/Table/homepageModalTabOneContent";
-import { HomepageModalTabTwoContent } from "../../components/Table/homepageModalTabTwoContent";
+import { HomepageModalTabOneContent } from "@/components/Table/homepageModalTabOneContent";
+import { HomepageModalTabTwoContent } from "@/components/Table/homepageModalTabTwoContent";
 
 // Tanstack table functionality
 import {
@@ -52,7 +48,8 @@ import { Itable } from "../../utils/interfaces";
 
 // Management columns
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
-import { columns } from "../../components/Table/homepageTableColumns";
+// import { columns } from "../../components/Table/homepageTableColumns";
+import { columns } from "@/components/Table/homepageTableColumns";
 
 const Home = () => {
   const [tableData, setTableData] = useState<Itable[]>([]);
@@ -397,11 +394,40 @@ const Home = () => {
             </h1>
           </section>
           <section className="flex justify-between items-center py-5">
-            <ManagementSearchForm
+            {/* <ManagementSearchForm
               filtering={filtering}
               setFiltering={(e) => setFiltering(e.target.value)}
-            />
-
+            /> */}
+            <form className="flex items-center" id="management-search-form">
+              <label htmlFor="simple-search" className="sr-only">
+                Search
+              </label>
+              <div className="relative w-full">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <svg
+                    aria-hidden="true"
+                    className="w-5 h-5 text-gray-500"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  id="simple-search"
+                  className="bg-gray-50 font-sans border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-primary-500 block w-full pl-10 p-2"
+                  placeholder="Search"
+                  value={filtering}
+                  onChange={(e) => setFiltering(e.target.value)}
+                />
+              </div>
+            </form>
             <button
               className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer font-sans rounded-md p-3 my-2"
               type="button"
