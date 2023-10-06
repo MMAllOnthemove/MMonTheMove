@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useState } from "react";
-import { navitems } from "../../public/_data/navbar";
-import logo from "../../public/mmlogo.png";
+import { navitems } from "../../../public/_data/navbar";
+import logo from "../../../public/mmlogo.png";
 import Image from "next/image";
 
 function Navbar() {
@@ -17,6 +17,7 @@ function Navbar() {
           role="button"
           id="burger_menu"
           className="burger_menu"
+          aria-label="burger_menu"
           onClick={ToggleSidebar}
         >
           <svg

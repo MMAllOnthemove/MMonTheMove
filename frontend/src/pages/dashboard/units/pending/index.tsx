@@ -1,9 +1,10 @@
+import moment from "moment";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Navbar from "../../../../../components/Navbar";
-import UnitsPendingCard from "../../../../../components/UnitsPendingCard";
+import Navbar from "@/components/Navbar";
+import UnitsPendingCard from "@/components/UnitsPendingCard";
 import { minDate } from "../../../../../utils/datemin";
 
 function Pending() {
@@ -18,27 +19,17 @@ function Pending() {
   const [dateTo, setDateTo] = useState("");
 
   // Repair and gspn combined data
-  const urls = [
-    `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
-    `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/repair`,
-  ];
   const fetchDataCombinedData = async () => {
     try {
-      const response = await Promise.all(
-        urls.map((url) => fetch(url).then((res) => res.json()))
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
+        {
+          method: "GET",
+        }
       );
-      // console.log(response.flat());
-      let filterOutDups = response
-        .flat()
-        .filter(
-          (obj, index) =>
-            response
-              .flat()
-              .findIndex(
-                (item) => item.service_order_no === obj.service_order_no
-              ) === index
-        );
-      setFetchAlldata(filterOutDups);
+      const data = await response.json();
+      // console.log(data);
+      setFetchAlldata(data);
     } catch (error) {
       // console.log("Error", error);
     }
@@ -52,6 +43,13 @@ function Pending() {
   //   (item) =>
   //     item.date_modified === dateFilter && item.in_house_status === "Booked in"
   // );
+
+  // console.log(pendingStatusFunc(
+  //   fetchAlldata,
+  //   dateFrom,
+  //   dateTo,
+  //   "Waiting for parts"
+  // ))
   let getBookedin =
     dateFrom.length > 0 && dateTo.length > 0
       ? fetchAlldata.filter((item) => {
@@ -98,17 +96,17 @@ function Pending() {
     dateFrom.length > 0 && dateTo.length > 0
       ? fetchAlldata.filter((item) => {
           let filterPass = true;
-          let date = new Date(item.date_modified);
+          let date = moment(item.date_modified).format("YYYY-MM-DD");
           if (dateFrom) {
             filterPass =
               filterPass &&
-              new Date(dateFrom) < date &&
+              dateFrom <= date &&
               item.in_house_status === "Waiting for parts";
           }
           if (dateTo) {
             filterPass =
               filterPass &&
-              new Date(dateTo) > date &&
+              dateTo >= date &&
               item.in_house_status === "Waiting for parts";
           }
           return filterPass;

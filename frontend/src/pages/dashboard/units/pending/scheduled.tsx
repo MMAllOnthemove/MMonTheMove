@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Container from "../../../../../components/Container";
+import Container from "@/components/Container";
 import Link from "next/link";
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
 import { minDate, maxDate } from "../../../../../utils/datemin";
