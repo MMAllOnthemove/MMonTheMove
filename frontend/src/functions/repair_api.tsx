@@ -1,7 +1,4 @@
-interface IRepairTicketInfo {
-  searchTicketNumber: string;
-  setTicketNumber: (order: string) => void;
-}
+import { IRepairTicketInfo } from "../../utils/interfaces";
 
 export async function getRepairTicketInfo(props: IRepairTicketInfo) {
   await fetch(`${process.env.NEXT_PUBLIC_REPAIRSHOPR_LINK}`, {

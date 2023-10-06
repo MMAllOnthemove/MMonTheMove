@@ -1,33 +1,10 @@
-interface IgetSOInfoAll {
-  searchServiceOrder: string;
-  setServiceOrder: (order: string) => void;
-  setCreatedDate: (order: string) => void;
-  setCreatedTime: (order: string) => void;
-  setModel: (order: string) => void;
-  setWarranty: (order: string) => void;
-  setFault: (order: string) => void;
-  setImei: (order: string) => void;
-  setSerialNumber: (order: string) => void;
-  setEngineerAssignDate: (order: string) => void;
-  setEngineerAssignTime: (order: string) => void;
-  setGSPNStatus: (order: string) => void;
-}
-interface IgetSOStatusDescLatest {
-  showServiceOrderNumber: string;
-  setGSPNStatus: (order: string) => void;
-}
-interface IgetPartsInfo {
-  debouncedSearch: string | any;
-  setData: (data: any) => void;
-}
-interface IpostBookingAgentsJobs {
-  searchServiceOrder: string;
-  setServiceOrder: (order: string) => void;
-  setCreatedDate: (order: string) => void;
-  setCreatedTime: (order: string) => void;
-  setWarranty: (order: string) => void;
-  setBookingAgent: (order: string) => void;
-}
+import {
+  IgetSOInfoAll,
+  IgetSOStatusDescLatest,
+  IgetPartsInfo,
+  IpostBookingAgentsJobs,
+  IgetStockOverviewInfo,
+} from "../../utils/interfaces";
 
 export async function getSOInfoAllFunction(props: IgetSOInfoAll) {
   const options = {
@@ -123,8 +100,12 @@ export async function getPartsInfoFunction(props: IgetPartsInfo) {
       body: JSON.stringify(options),
     }
   );
-  const data = await response.json();
-  props.setData(data);
+  if (response.ok) {
+    const data = await response.json();
+    props.setData(data);
+  } else {
+    return <p>Loading...</p>;
+  }
   // console.log(data);
 }
 
@@ -159,5 +140,40 @@ export async function postBookingAgentsJobs(props: IpostBookingAgentsJobs) {
   props.setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
   props.setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
   props.setWarranty(data?.Return?.EsModelInfo?.WtyType);
-  props.setBookingAgent(data?.EtLogInfo?.results[0]?.ChangedBy);
+}
+
+export async function getStockOverviewInfo(props: IgetStockOverviewInfo) {
+  const options = {
+    IvCompany: `${process.env.NEXT_PUBLIC_COMPANY}`,
+    IvLanguage: `${process.env.NEXT_PUBLIC_LANG}`,
+    IvAscAcctno: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
+    IvAscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
+    IvPartsCode: props.debouncedSearch,
+    IsCommonHeader: {
+      Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
+      AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
+      Lang: `${process.env.NEXT_PUBLIC_LANG}`,
+      Country: `${process.env.NEXT_PUBLIC_COUNTRY}`,
+      Pac: `${process.env.NEXT_PUBLIC_PAC}`,
+      Systemkey: "",
+      Msgid: "",
+    },
+  };
+  await fetch(`${process.env.NEXT_PUBLIC_IPAAS_API_GetBranchStockOverview}`, {
+    method: "POST",
+    mode: "cors",
+    cache: "force-cache",
+    next: { revalidate: 10 },
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
+    },
+    body: JSON.stringify(options),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      props.setStockData(data);
+      // console.log(data);
+    });
 }

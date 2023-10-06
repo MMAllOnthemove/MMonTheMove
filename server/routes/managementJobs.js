@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getRepairJobs,
   postRepairJobs,
   getAllJobs,
   getJobById,
@@ -13,7 +12,7 @@ const {
 
 // Get repair information
 // It's at the top because we get an error when it is at the bottom
-router.get("/repair", getRepairJobs);
+// router.get("/repair", getRepairJobs);
 
 // Post repair information
 router.post("/repair", postRepairJobs);

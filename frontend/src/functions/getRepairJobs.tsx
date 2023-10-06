@@ -1,19 +1,5 @@
 import moment from "moment";
-
-interface IgetRepair {
-  searchTicket: string | number;
-  setRepairFault: (order: string) => void;
-  setRepairCreatedDate: (order: string) => void;
-  setRepairCreatedTime: (order: string) => void;
-  setRepairEngineerAssignDate: (order: string) => void;
-  setRepairEngineerAssignTime: (order: string) => void;
-  setRepairImei: (order: string) => void;
-  setRepairServiceOrder: (order: string) => void;
-  setRepairTicket: (order: string) => void;
-  setRepairEngineerAnalysis: (order: string) => void;
-  setRepairDepartment: (order: string) => void;
-  setRepairAPILoading: (order: boolean) => void;
-}
+import { IgetRepair, IgetTicketNumberOnJobAdd } from "../../utils/interfaces";
 
 export async function getRepair(props: IgetRepair) {
   await fetch(
@@ -33,13 +19,12 @@ export async function getRepair(props: IgetRepair) {
     .then((data) => {
       props.setRepairFault(data?.tickets[0]?.subject || "");
       props.setRepairCreatedDate(
-        moment(new Date(`${data?.tickets[0]?.created_at}`)).format(
-          "YYYYMMDD"
-        ) || ""
+        moment(
+          new Date(`${data?.tickets[0]?.created_at}`),
+          moment.ISO_8601
+        ).format("YYYYMMDD") || ""
       );
-      props.setRepairCreatedTime(
-        moment(`${data?.tickets[0]?.created_at}`).format("HHMMSS") || ""
-      );
+      props.setRepairCreatedTime("");
       props.setRepairEngineerAssignDate("");
       props.setRepairEngineerAssignTime("");
       props.setRepairImei(data?.tickets[0]?.properties["IMEI"] || "");
@@ -53,10 +38,6 @@ export async function getRepair(props: IgetRepair) {
     });
 }
 
-interface IgetTicketNumberOnJobAdd {
-  searchServiceOrder: string;
-  setTicket: (order: string) => void;
-}
 export async function getTicketNumberOnJobAdd(props: IgetTicketNumberOnJobAdd) {
   await fetch(
     `https://allelectronics.repairshopr.com/api/v1/tickets?number=${props.searchServiceOrder}`,
@@ -73,6 +54,13 @@ export async function getTicketNumberOnJobAdd(props: IgetTicketNumberOnJobAdd) {
   )
     .then((res) => res.json())
     .then((data) => {
-      props.setTicket(data?.tickets[0]?.number || "");
+      if (
+        props.searchServiceOrder ===
+        data?.tickets[0]?.properties["Service Order No."]
+      ) {
+        props.setTicket(data?.tickets[0]?.number || "");
+      } else {
+        props.setTicket("");
+      }
     });
 }
