@@ -1,9 +1,5 @@
 import React from "react";
-
-interface ISearchForm {
-  filtering: string;
-  setFiltering: (e: any) => string | any;
-}
+import { ISearchForm } from "../../../utils/interfaces";
 
 function ManagementSearchForm({ filtering, setFiltering }: ISearchForm) {
   return (
