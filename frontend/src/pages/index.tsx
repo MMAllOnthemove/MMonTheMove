@@ -12,16 +12,27 @@ import { useEffect, useState } from "react";
 import { useSetRecoilState } from "recoil";
 
 // Custom imports
+import dynamic from "next/dynamic";
+const ModalManagement = dynamic(
+  () => import("@/components/Modals/modal.management"),
+  {
+    loading: () => <p>Loading modal...</p>,
+  }
+);
 import { managementModalState } from "@/atoms/managementModalAtom";
 import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
-import Container from "../../components/Container";
-import ModalManagement from "../../components/Modals/modal.management";
-import Navbar from "../../components/Navbar";
-import ToTopButton from "../../components/ToTopButton";
-import ManagementSearchForm from "../../components/table/ManagementSearchForm";
-import { HomepageModalTabOneContent } from "../../components/table/homepageModalTabOneContent";
-import { HomepageModalTabTwoContent } from "../../components/table/homepageModalTabTwoContent";
+import Container from "@/components/Container";
+const Navbar = dynamic(() => import("@/components/Navbar"), {
+  loading: () => <p>Loading Navbar...</p>,
+});
+const ToTopButton = dynamic(() => import("@/components/ToTopButton"), {
+  loading: () => <p>Loading ToTopButton...</p>,
+});
+import ManagementSearchForm from "@/components/Table/managementSearchForm";
+
+import { HomepageModalTabOneContent } from "@/components/Table/homepageModalTabOneContent";
+import { HomepageModalTabTwoContent } from "@/components/Table/homepageModalTabTwoContent";
 
 // Tanstack table functionality
 import {
@@ -33,13 +44,15 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { Itable } from "../../utils/interfaces";
 
 // Management columns
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
-import { columns } from "../../components/table/homepageTableColumns";
+// import { columns } from "../../components/Table/homepageTableColumns";
+import { columns } from "@/components/Table/homepageTableColumns";
 
 const Home = () => {
-  const [tableData, setTableData] = useState<string[]>([]);
+  const [tableData, setTableData] = useState<Itable[]>([]);
 
   // Not to be confused with 'setServiceOrder'
   const [searchServiceOrder, setSearchServiceOrder] = useState("");
@@ -138,8 +151,19 @@ const Home = () => {
     });
   }, [searchServiceOrder]);
 
+  const fetchTableData = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`
+      );
+      const data = await response.json();
+      setTableData(data);
+    } catch (error) {
+      // console.log("Error", error);
+    }
+  };
   useEffect(() => {
-    fetchDataCombinedData({ setTableData });
+    fetchTableData();
   }, []);
 
   useEffect(() => {
@@ -190,6 +214,7 @@ const Home = () => {
       GSPNStatusGetLastElement,
     };
     // console.log(postThisInfo);
+    let regexNumber = /^[0-9]+$/;
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
       {
@@ -198,7 +223,35 @@ const Home = () => {
         body: JSON.stringify(postThisInfo),
       }
     );
-    if (!response.ok) {
+    if (
+      searchServiceOrder.length < 10 ||
+      searchServiceOrder.length < 0 ||
+      searchServiceOrder.length === 0
+    ) {
+      setManagementModalState({
+        open: false,
+        view: "/",
+      });
+      toast({
+        title: "Job failed.",
+        description: "Not enough characters.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else if (!searchServiceOrder.match(regexNumber)) {
+      setManagementModalState({
+        open: false,
+        view: "/",
+      });
+      toast({
+        title: "Job failed.",
+        description: "Only enter numeric characters.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else if (!response.ok) {
       setManagementModalState({
         open: false,
         view: "/",
@@ -318,7 +371,9 @@ const Home = () => {
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
   });
+  // console.log("table", table);
 
+  // console.log(table.getHeaderGroups().map((headerGroup) => headerGroup.id));
   return (
     <>
       <Head>
@@ -339,11 +394,40 @@ const Home = () => {
             </h1>
           </section>
           <section className="flex justify-between items-center py-5">
-            <ManagementSearchForm
+            {/* <ManagementSearchForm
               filtering={filtering}
               setFiltering={(e) => setFiltering(e.target.value)}
-            />
-
+            /> */}
+            <form className="flex items-center" id="management-search-form">
+              <label htmlFor="simple-search" className="sr-only">
+                Search
+              </label>
+              <div className="relative w-full">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <svg
+                    aria-hidden="true"
+                    className="w-5 h-5 text-gray-500"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  id="simple-search"
+                  className="bg-gray-50 font-sans border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-primary-500 block w-full pl-10 p-2"
+                  placeholder="Search"
+                  value={filtering}
+                  onChange={(e) => setFiltering(e.target.value)}
+                />
+              </div>
+            </form>
             <button
               className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer font-sans rounded-md p-3 my-2"
               type="button"
@@ -441,26 +525,35 @@ const Home = () => {
                     <th className="px-4 py-3 cursor-pointer font-sans font-semibold">
                       Action
                     </th>
-                    {headerGroup.headers.map((header, index) => (
-                      <>
+                    {headerGroup.headers.map((header) => {
+                      return (
                         <th
-                          key={index}
-                          onClick={header.column.getToggleSortingHandler()}
+                          key={header.id}
                           className="px-4 py-3 cursor-pointer font-sans font-semibold"
                         >
-                          <div>
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                            {{
-                              asc: " 🔼",
-                              desc: " 🔽",
-                            }[header.column.getIsSorted() as string] ?? null}
-                          </div>
+                          {header.isPlaceholder ? null : (
+                            <div
+                              {...{
+                                className: header.column.getCanSort()
+                                  ? "cursor-pointer select-none"
+                                  : "",
+                                onClick:
+                                  header.column.getToggleSortingHandler(),
+                              }}
+                            >
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                              {{
+                                asc: " ▽",
+                                desc: " △",
+                              }[header.column.getIsSorted() as string] ?? null}
+                            </div>
+                          )}
                         </th>
-                      </>
-                    ))}
+                      );
+                    })}
                   </tr>
                 ))}
               </thead>
@@ -545,6 +638,7 @@ const Home = () => {
                 Go to page:
               </label>
               <input
+                id="search-page-number"
                 name="search-page-number"
                 type="number"
                 defaultValue={table.getState().pagination.pageIndex + 1}
@@ -559,6 +653,8 @@ const Home = () => {
               Show Page Size
             </label>
             <select
+              id="showPageSize"
+              name="showPageSize"
               value={table.getState().pagination.pageSize}
               className="border border-[#eee] outline-none ring-0 font-sans font-medium cursor-pointer"
               onChange={(e) => {

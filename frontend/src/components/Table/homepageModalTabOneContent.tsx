@@ -1,37 +1,10 @@
 import React from "react";
 import * as Yup from "yup";
-import { unitStatus } from "../../public/_data/statuses";
+import { unitStatus } from "../../../public/_data/statuses";
 import Button from "../Buttons";
+import { IHomepageModalTabOneContent } from "../../../utils/interfaces";
 
-interface IProps {
-  searchServiceOrder: string;
-  setSearchServiceOrder: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  warranty: string;
-  inHouseStatus: string;
-  setInHouseStatus: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  ticket: string;
-  setTicket: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  engineerAnalysis: string;
-  setEngineerAnalysis: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  engineer: string;
-  setEngineer: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  department: string;
-  setDepartment: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  // user: string;
-  // setUser: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  postData: (e: React.SyntheticEvent) => void;
-}
-
-export function HomepageModalTabOneContent(props: IProps) {
-  const validateSchema = Yup.object().shape({
-    searchServiceOrder: Yup.string().notRequired(),
-    ticket: Yup.string().required("This field is required"),
-    email: Yup.string()
-      .email("Please enter a valid email")
-      .required("This field is required"),
-    password: Yup.string(),
-  });
-
+export function HomepageModalTabOneContent(props: IHomepageModalTabOneContent) {
   const {
     searchServiceOrder,
     setSearchServiceOrder,
@@ -78,8 +51,8 @@ export function HomepageModalTabOneContent(props: IProps) {
           aria-labelledby="ticket"
           type="number"
           name="ticket"
-          required
-          aria-required
+          // required
+          // aria-required
           placeholder="Ticket number"
           id="ticket"
           className="w-full outline-none py-2 px-2 border-2 font-sans font-semibold text-sm rounded-sm my-2"
@@ -107,8 +80,8 @@ export function HomepageModalTabOneContent(props: IProps) {
         <select
           value={inHouseStatus}
           onChange={setInHouseStatus}
-          required
-          aria-required
+          // required
+          // aria-required
           id="inHouseStatus"
           className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
         >
@@ -144,8 +117,8 @@ export function HomepageModalTabOneContent(props: IProps) {
           className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
           value={engineer}
           onChange={setEngineer}
-          required
-          aria-required
+          // required
+          // aria-required
         >
           <option value="" disabled>
             Select engineer
