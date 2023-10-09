@@ -4,6 +4,7 @@ import {
   IgetPartsInfo,
   IpostBookingAgentsJobs,
   IgetStockOverviewInfo,
+  IgetSOInfoAllParts,
 } from "../../utils/interfaces";
 
 export async function getSOInfoAllFunction(props: IgetSOInfoAll) {
@@ -36,7 +37,7 @@ export async function getSOInfoAllFunction(props: IgetSOInfoAll) {
 
   props.setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
   props.setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
-  props.setCreatedTime(data?.Return?.EsHeaderInfo.CreateTime);
+  props.setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
   props.setModel(data?.Return?.EsModelInfo?.Model);
   props.setWarranty(data?.Return?.EsModelInfo?.WtyType);
   props.setFault(data?.Return?.EsModelInfo?.DefectDesc);
@@ -176,4 +177,39 @@ export async function getStockOverviewInfo(props: IgetStockOverviewInfo) {
       props.setStockData(data);
       // console.log(data);
     });
+}
+export async function getSOInfoAllFunctionForParts(props: IgetSOInfoAllParts) {
+  const options = {
+    IvSvcOrderNo: props.searchServiceOrder,
+    IsCommonHeader: {
+      Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
+      AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
+      Lang: `${process.env.NEXT_PUBLIC_LANG}`,
+      Country: `${process.env.NEXT_PUBLIC_COUNTRY}`,
+      Pac: `${process.env.NEXT_PUBLIC_PAC}`,
+    },
+  };
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_IPAAS_API_GETSOINFOALL}`,
+    {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
+      },
+      body: JSON.stringify(options),
+    }
+  );
+
+  const data = await response.json();
+
+  props.setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
+  props.setModel(data?.Return?.EsModelInfo?.Model);
+  props.setWarranty(data?.Return?.EsModelInfo?.WtyType);
+  props.setFault(data?.Return?.EsModelInfo?.DefectDesc);
+  props.setImei(data?.Return?.EsModelInfo?.IMEI);
+  props.setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
 }

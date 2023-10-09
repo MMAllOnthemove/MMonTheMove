@@ -14,6 +14,8 @@ const engineers = require("../server/routes/engineers");
 const qc = require("../server/routes/qc");
 const countEngineers = require("../server/routes/engineer_count_route");
 const bookingAgents = require("../server/routes/booking_agent_jobs_route");
+const partsDept = require("../server/routes/parts_dept_routes");
+const partsHistory = require("../server/routes/history/parts_dept_routes");
 require("dotenv").config();
 
 app.use(helmet());
@@ -53,6 +55,9 @@ app.use(process.env.NEXT_PUBLIC_SERVER_COUNT_ALL_ENGINEERS, countEngineers);
 
 // Booking agents
 app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_AGENTS, bookingAgents);
+
+app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_PARTS, partsDept);
+app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_PARTS_HISTORY, partsHistory);
 
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {

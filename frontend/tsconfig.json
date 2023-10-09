@@ -28,7 +28,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "src/context/TableInfoContext.js"
+    "src/context/TableInfoContext.js",
+    "src/components/PartsTable/PartsTableColumns.tsx"
   ],
   "exclude": [
     "node_modules"

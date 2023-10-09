@@ -573,7 +573,7 @@ function Pending() {
                   >
                     <Link
                       href="/dashboard/units/pending"
-                      className="text-gray-600 hover:text-blue-500 "
+                      className="text-gray-600 hover:text-blue-500 font-sans"
                     >
                       Units pending
                     </Link>
@@ -610,7 +610,7 @@ function Pending() {
                     id="dateFrom"
                   />
                 </span>
-                <span>-</span>
+                <span className="font-sans">-</span>
                 <span>
                   <label htmlFor="dateTo" className="sr-only">
                     Date to
