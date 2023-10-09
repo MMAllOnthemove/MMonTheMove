@@ -42,8 +42,8 @@ export interface IHomepageModalTabOneContent {
     setInHouseStatus: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     ticket: string;
     setTicket: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    engineerAnalysis: string;
-    setEngineerAnalysis: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    engineerAnalysis?: string;
+    setEngineerAnalysis?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     engineer: string;
     setEngineer: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     department: string;
@@ -51,6 +51,13 @@ export interface IHomepageModalTabOneContent {
     // user: string;
     // setUser: (e: React.ChangeEvent<HTMLInputElement>) => void;
     postData: (e: React.SyntheticEvent) => void;
+}
+export interface IPartsModalTabOneContent extends IHomepageModalTabOneContent {
+    dispatchAnalysis?: string;
+    setDispatchAnalysis?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    dispatchBy: string;
+    setDispatch: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    children: React.ReactNode;
 }
 
 export interface IContainerWrapper {
@@ -104,6 +111,16 @@ export interface IgetSOInfoAll {
     setEngineerAssignDate: (order: string) => void;
     setEngineerAssignTime: (order: string) => void;
     setGSPNStatus: (order: string) => void;
+}
+
+export interface IgetSOInfoAllParts {
+    searchServiceOrder: string;
+    setServiceOrder: (order: string) => void;
+    setModel: (order: string) => void;
+    setWarranty: (order: string) => void;
+    setFault: (order: string) => void;
+    setImei: (order: string) => void;
+    setSerialNumber: (order: string) => void;
 }
 export interface IgetSOStatusDescLatest {
     showServiceOrderNumber: string;

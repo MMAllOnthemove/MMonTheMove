@@ -50,7 +50,7 @@ function EditRow() {
   ]);
 
   // This is the parts list arr mapped from the partslist
-  let partsArr = [...partsList].map((x) => x.partNumber);
+  let partsArr = [...partsList].map((x) => x.partNumber.toUpperCase());
 
   const router = useRouter();
   const { id } = router.query;
@@ -174,7 +174,7 @@ function EditRow() {
   return (
     <>
       <Head>
-        <title>Edit {showServiceOrderNumber}</title>
+        <title>Edit HHP{showServiceOrderNumber}</title>
         <meta name="robots" content="noindex, nofollow"></meta>
       </Head>
       <main>
@@ -328,6 +328,7 @@ function EditRow() {
                       name="partNumber"
                       type="text"
                       id="partNumber"
+                      placeholder="Part number"
                       defaultValue={singleService?.partNumber.toUpperCase()}
                       onChange={(e) => handleServiceChange(e, index)}
                       maxLength={10}
