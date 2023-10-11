@@ -10,6 +10,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useSetRecoilState } from "recoil";
+import TableBody from "@/components/Table/TableBody";
 
 // Custom imports
 import dynamic from "next/dynamic";
@@ -50,6 +51,7 @@ import { Itable } from "../../utils/interfaces";
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
 // import { columns } from "../../components/Table/homepageTableColumns";
 import { columns } from "@/components/Table/homepageTableColumns";
+import Pagination from "@/components/Table/Pagination";
 
 const Home = () => {
   const [tableData, setTableData] = useState<Itable[]>([]);
@@ -192,6 +194,8 @@ const Home = () => {
 
   // const user = session?.user?.email;
 
+  let dateAdded = new Date();
+
   const postData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const postThisInfo = {
@@ -212,6 +216,7 @@ const Home = () => {
       department,
       user,
       GSPNStatusGetLastElement,
+      dateAdded,
     };
     // console.log(postThisInfo);
     let regexNumber = /^[0-9]+$/;
@@ -281,6 +286,19 @@ const Home = () => {
 
       fetchDataCombinedData({ setTableData });
     }
+
+    // // This part will deposit the same data into our history table
+    // For some reason it's not reading this function initially, only when user updates job
+    const response2 = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/units/history/post`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(postThisInfo),
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => console.log("data2", data));
   };
 
   // Post repair data
@@ -304,6 +322,7 @@ const Home = () => {
       repairDepartment,
       repairUser,
       GSPNStatusGetLastElement,
+      dateAdded,
     };
     // console.log(postThisInfo);
     const response = await fetch(
@@ -344,6 +363,20 @@ const Home = () => {
       // window.location.reload();
       fetchDataCombinedData({ setTableData });
     }
+
+    // This part will deposit the same data into our history table
+    const response2 = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/repair/units/history/post`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(postThisInfo),
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("data2", data);
+      });
   };
 
   // For the table
@@ -483,11 +516,6 @@ const Home = () => {
             </ModalManagement>
           </section>
 
-          <div className="row flex items-center justify-center">
-            <span className="flex mx-auto text-center font-medium font-sans py-1 text-gray-500">
-              To edit, double click on the row you want to edit
-            </span>
-          </div>
           <div className="max-h-[540px] overflow-y-auto">
             <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
               <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-sans text-sm uppercase font-semibold">
@@ -528,7 +556,7 @@ const Home = () => {
                   </tr>
                 ))}
               </thead>
-              <tbody className="z-0">
+              <TableBody>
                 {table.getRowModel().rows.map((row: any) => (
                   <tr
                     key={row.id}
@@ -558,87 +586,11 @@ const Home = () => {
                     ))}
                   </tr>
                 ))}
-              </tbody>
+              </TableBody>
             </table>
           </div>
           <div className="h-2" />
-          <div className="pagination flex gap-1 p-2">
-            <button
-              role="button"
-              className="border rounded p-1 font-sans font-medium page-index-button hidden md:visible"
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-            >
-              {"<<"}
-            </button>
-            <button
-              role="button"
-              className="border rounded p-1 font-sans font-medium"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              {"<"}
-            </button>
-            <button
-              role="button"
-              className="border rounded p-1 font-sans font-medium"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              {">"}
-            </button>
-            <button
-              role="button"
-              className="border rounded p-1 font-sans font-medium page-index-button hidden md:visible"
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-            >
-              {">>"}
-            </button>
-            <span className="flex items-center gap-1">
-              <div className="font-sans font-semibold text-[#0d0d0d]">Page</div>
-              <strong>
-                {table.getState().pagination.pageIndex + 1} of{" "}
-                {table.getPageCount()}
-              </strong>
-            </span>
-            <span className="flex items-center gap-1 font-sans">
-              | Go to page:
-              <label htmlFor="search-page-number" className="sr-only">
-                {" "}
-                Go to page:
-              </label>
-              <input
-                id="search-page-number"
-                name="search-page-number"
-                type="number"
-                defaultValue={table.getState().pagination.pageIndex + 1}
-                onChange={(e) => {
-                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                  table.setPageIndex(page);
-                }}
-                className="border p-1 rounded w-16"
-              />
-            </span>
-            <label htmlFor="showPageSize" className="sr-only">
-              Show Page Size
-            </label>
-            <select
-              id="showPageSize"
-              name="showPageSize"
-              value={table.getState().pagination.pageSize}
-              className="border border-[#eee] outline-none ring-0 font-sans font-medium cursor-pointer"
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-              }}
-            >
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Pagination table={table} />
           <ToTopButton />
         </Container>
       </main>

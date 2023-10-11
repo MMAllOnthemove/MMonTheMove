@@ -4,6 +4,7 @@ import Link from "next/link";
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
 import { minDate, maxDate } from "../../../../../utils/datemin";
 import Head from "next/head";
+import Navbar from "@/components/Navbar";
 
 function BookedIn() {
   const [fetchAlldata, setFetchAlldata] = useState<any[]>([]);

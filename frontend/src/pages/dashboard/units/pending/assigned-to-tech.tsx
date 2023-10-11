@@ -5,6 +5,7 @@ import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
 import { minDate, maxDate } from "../../../../../utils/datemin";
 import Head from "next/head";
 import moment from "moment";
+import Navbar from "@/components/Navbar";
 
 function AssignedTotech() {
   const [fetchAlldata, setFetchAlldata] = useState<any[]>([]);
@@ -82,7 +83,7 @@ function AssignedTotech() {
       <Head>
         <title>Assigned to tech | Breakdown</title>
       </Head>
-
+      <Navbar />
       <main className="space-between-navbar-and-content">
         <Container>
           <section className="flex justify-center pt-5">

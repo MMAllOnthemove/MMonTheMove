@@ -12,7 +12,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import ModalManagement from "@/components/Modals/bookings_report.modal";
 import { bookingsReportModalState } from "@/atoms/bookingsReport";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 
 function Reports() {
   const [searchServiceOrder, setSearchServiceOrder] = useState("");
@@ -26,9 +26,6 @@ function Reports() {
   >([]);
 
   const setBookingsReportModalState = useSetRecoilState(
-    bookingsReportModalState
-  );
-  const getBookingsReportModalStateValue = useRecoilState(
     bookingsReportModalState
   );
 
@@ -304,11 +301,13 @@ function Reports() {
                 </tr>
               </thead>
               <tbody className="z-0">
+                {
+}
                 <tr
                   onClick={() =>
                     setBookingsReportModalState({
                       open: true,
-                      view: "shanes300123",
+                      view: "/reports",
                     })
                   }
                   className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
@@ -325,15 +324,7 @@ function Reports() {
                     )}
                   </td>
                 </tr>
-                <tr
-                  onClick={() =>
-                    setBookingsReportModalState({
-                      open: true,
-                      view: "nigelc01",
-                    })
-                  }
-                  className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
-                >
+                <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
                   <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
                     Nigel
                   </td>
@@ -346,15 +337,7 @@ function Reports() {
                     )}
                   </td>
                 </tr>
-                <tr
-                  onClick={() =>
-                    setBookingsReportModalState({
-                      open: true,
-                      view: "sherryl060223",
-                    })
-                  }
-                  className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
-                >
+                <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
                   <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
                     Sherry
                   </td>
@@ -364,27 +347,6 @@ function Reports() {
                       dateFrom,
                       dateTo,
                       "sherryl060223"
-                    )}
-                  </td>
-                </tr>
-                <tr
-                  onClick={() =>
-                    setBookingsReportModalState({
-                      open: true,
-                      view: "lavonaj01",
-                    })
-                  }
-                  className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
-                >
-                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
-                    Lavona
-                  </td>
-                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
-                    {bookingAgentFunc(
-                      getBookingAgentJobsData,
-                      dateFrom,
-                      dateTo,
-                      "lavonaj01"
                     )}
                   </td>
                 </tr>
@@ -400,13 +362,11 @@ function Reports() {
                     )}
                   </td>
                 </tr>
+                <ModalManagement>
+                  <p>Hello</p>
+                </ModalManagement>
               </tbody>
             </table>
-            <ModalManagement
-              getBookingAgentJobsData={getBookingAgentJobsData}
-              dateFrom={dateFrom}
-              dateTo={dateTo}
-            />
           </div>
         </section>
       </main>

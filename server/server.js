@@ -7,7 +7,8 @@ const pool = require("./db");
 const limiter = require("../server/controllers/rateLimiter");
 const { v4: uuidv4 } = require("uuid");
 
-const managementJobs = require("../server/routes/managementJobs");
+const hhpJobs = require("../server/routes/hhp_jobs_route");
+const hhpJobsHistory = require("../server/routes/history/hhp_jobs_history_routes");
 const feedback = require("../server/routes/feedback");
 const dashboard = require("../server/routes/dashboard");
 const engineers = require("../server/routes/engineers");
@@ -33,7 +34,8 @@ app.disable("x-powered-by");
 // app.use(limiter);
 
 // All jobs
-app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, managementJobs);
+app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, hhpJobs);
+app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, hhpJobsHistory);
 
 // Feedback
 app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_FEEDBACK, feedback);
