@@ -4,6 +4,7 @@ import Link from "next/link";
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
 import { minDate, maxDate } from "../../../../../utils/datemin";
 import Head from "next/head";
+import Navbar from "@/components/Navbar";
 
 function ForInvoicing() {
   const [fetchAlldata, setFetchAlldata] = useState<any[]>([]);
@@ -66,7 +67,7 @@ function ForInvoicing() {
       <Head>
         <title>For invoicing | Breakdown</title>
       </Head>
-
+      <Navbar />
       <main className="space-between-navbar-and-content">
         <Container>
           <section className="flex justify-center pt-5">
