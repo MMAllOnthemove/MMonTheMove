@@ -1,18 +1,4 @@
 import moment from "moment";
-import { getBookingAgentJobs } from "@/functions/getCombinedFlatData";
-import { useEffect } from "react";
-
-type TBookingsProps = {
-  dateFrom: string;
-  dateTo: string;
-  getBookingAgentJobsData: string[];
-  setGetBookingAgentJobsData: string;
-  booking_agent: string;
-  created_date: string;
-  agent: string;
-};
-
-// Booking agent Shane
 
 export function bookingAgentFunc(
   arr: string[] | any[],

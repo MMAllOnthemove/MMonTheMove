@@ -85,6 +85,7 @@ const postRepairJobs = async (req, res) => {
 };
 
 // GET all table info from database
+
 const getAllJobs = async (req, res) => {
   let newResults;
   let isCached = false;

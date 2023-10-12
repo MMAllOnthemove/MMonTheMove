@@ -66,35 +66,35 @@ CREATE TABLE units (
     job_added_by text,
     modified_by_who text,
     reassign_engineer text,
-    qc_checked boolean,
     qc_comment text,
     is_qc_checked boolean,
     parts_list text [],
-    gspn_status text
+    gspn_status text -
 );
 
 ALTER TABLE
-    units
-ALTER COLUMN
-    date_modified TYPE text;
-
-ALTER TABLE
-    units_history
-ALTER COLUMN
-    date_modified TYPE text;
-
-ALTER TABLE
-    units_history DROP COLUMN qc_checked;
-
-ALTER TABLE
-    units_history
-ALTER COLUMN
-    service_order_no TYPE text;
+    units DROP COLUMN parts_ordered_date,
+    DROP COLUMN parts_pending_date,
+    DROP COLUMN parts_issued_date,
+    DROP COLUMN qc_completed_date,
+    DROP COLUMN repair_completed_date,
+    DROP COLUMN qccomments,
+    DROP COLUMN qc_checked;
 
 ALTER TABLE
     units
 ALTER COLUMN
-    service_order_no TYPE text;
+    date_modified TYPE text,
+ALTER COLUMN
+    service_order_no TYPE text,
+    RENAME COLUMN partslist TO parts_list,
+    RENAME COLUMN isqcchecked TO is_qc_checked,
+    RENAME COLUMN reassignengineer TO reassign_engineer;
+
+ALTER TABLE
+    units
+ADD
+    COLUMN date_added text;
 
 CREATE TABLE units_history (
     id BIGSERIAL PRIMARY KEY UNIQUE,
@@ -119,7 +119,6 @@ CREATE TABLE units_history (
     job_added_by text,
     modified_by_who text,
     reassign_engineer text,
-    qc_checked boolean,
     qc_comment text,
     is_qc_checked boolean,
     parts_list text [],
