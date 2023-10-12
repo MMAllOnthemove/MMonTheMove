@@ -28,12 +28,6 @@ function Reports() {
   const setBookingsReportModalState = useSetRecoilState(
     bookingsReportModalState
   );
-  const getBookingsReportModalStateValue = useRecoilState(
-    bookingsReportModalState
-  );
-
-  const [bookingAgentFilter, setBookingAgentFilter] = useState("");
-  const [dateFilter, setDateFilter] = useState("");
 
   const [dateFrom, setDateFrom] = useState<string | number | Date | any>("");
   const [dateTo, setDateTo] = useState<string | number | Date | any>("");

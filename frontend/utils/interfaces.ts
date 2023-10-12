@@ -89,7 +89,7 @@ export interface ISearchForm {
 }
 export interface IUnitsPendingCard {
     cardParagraph: string | number;
-    cardHeading: string | number | string[] | number[];
+    cardHeading: string | number | string[] | number[] | any;
     onClick?: () => void;
 }
 export interface IfetchDataCombinedData {

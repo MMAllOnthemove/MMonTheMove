@@ -1,17 +1,24 @@
+import Navbar from "@/components/Navbar";
+import UnitsPendingCard from "@/components/UnitsPendingCard";
 import moment from "moment";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
-import UnitsPendingCard from "@/components/UnitsPendingCard";
 import { minDate } from "../../../../../utils/datemin";
+import {
+  getFilteredBookedInJobs,
+  getFilteredJobsByStatusCount,
+} from "@/functions/pendingUnitsFunc";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { unitsPendingReportModalState } from "@/atoms/unitspendingAtom";
+import ModalManagement from "@/components/Modals/unitspending.modal";
 
 function Pending() {
-  const [dateFilter, setDateFilter] = useState("");
   const [fetchAlldata, setFetchAlldata] = useState<any[]>([]);
-  const [inHouseStatusFilter, setinHouseStatusFilter] = useState("");
-
+  const setPendingUnitsModalState = useSetRecoilState(
+    unitsPendingReportModalState
+  );
   const router = useRouter();
   var today = new Date().toISOString().split("T")[0].toString();
 
@@ -28,7 +35,6 @@ function Pending() {
         }
       );
       const data = await response.json();
-      // console.log(data);
       setFetchAlldata(data);
     } catch (error) {
       // console.log("Error", error);
@@ -38,501 +44,6 @@ function Pending() {
   useEffect(() => {
     fetchDataCombinedData();
   }, []);
-
-  // let getBookedin = fetchAlldata.filter(
-  //   (item) =>
-  //     item.date_modified === dateFilter && item.in_house_status === "Booked in"
-  // );
-
-  // console.log(pendingStatusFunc(
-  //   fetchAlldata,
-  //   dateFrom,
-  //   dateTo,
-  //   "Waiting for parts"
-  // ))
-  let getBookedin =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Booked in";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Booked in";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let repairInProgress =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Repair in progress";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Repair in progress";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let waitingForParts =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = moment(item.date_modified).format("YYYY-MM-DD");
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              dateFrom <= date &&
-              item.in_house_status === "Waiting for parts";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              dateTo >= date &&
-              item.in_house_status === "Waiting for parts";
-          }
-          return filterPass;
-        })
-      : [];
-  // console.log(waitingForParts);
-
-  let waitingForCustomer =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Waiting for customer";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Waiting for customer";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let partsIssued =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Parts issued";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Parts issued";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let partsToBeOrdered =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Parts to be ordered";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Parts to be ordered";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let scheduled =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Scheduled";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Scheduled";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let customerReply =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Customer reply";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Customer reply";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let qualityControl =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Quality Control (QC)";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Quality Control (QC)";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let repairComplete =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Repair complete";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Repair complete";
-          }
-          return filterPass;
-        })
-      : [];
-  // console.log("repairComplete", repairComplete);
-  let assignedTotech =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Assigned to tech";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Assigned to tech";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let firstApproval =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Parts request 1st approval";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Parts request 1st approval";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let quotePending =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Quote pending";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Quote pending";
-          }
-          return filterPass;
-        })
-      : [];
-  // console.log("quotePending", quotePending);
-  let quoteApproved =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Quote approved";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Quote approved";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let qcFailed =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "QC failed";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "QC failed";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let qcCompleted =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "QC completed";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "QC completed";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let pendingQandA =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Pending Q&A";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Pending Q&A";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let soCancel =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "SO cancel";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "SO cancel";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let scrapApproved =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Scrap approved";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Scrap approved";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let quoteRejected =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Quote rejected";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Quote rejected";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let forInvoicing =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "For invoicing";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "For invoicing";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let partsDNA =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Parts DNA";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Parts DNA";
-          }
-          return filterPass;
-        })
-      : [];
-
-  let waitingSAW =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? fetchAlldata.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Waiting SAW";
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Waiting SAW";
-          }
-          return filterPass;
-        })
-      : [];
 
   return (
     <>
@@ -630,173 +141,364 @@ function Pending() {
             </div>
           </div>
 
+          {/* The modal, we are putting it here because it won't matter */}
+          <ModalManagement
+            fetchAlldata={fetchAlldata}
+            dateFrom={dateFrom}
+            dateTo={dateTo}
+          />
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3 my-3">
-            {/* <article className="card  max-w-md  cursor-pointer p-6 bg-white border border-gray-200 rounded-lg  flex flex-col justify-center text-center">
-              <p className="font-sans  text-slate-700 font-semibold text-md leading-none tracking-tight capitalize">
-                Booked in
-              </p>
-              <h3 className="font-sans text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
-                {getBookedin.length}
-              </h3>
-            </article> */}
             <UnitsPendingCard
-              onClick={() => router.push("/dashboard/units/pending/booked-in")}
+              onClick={() =>
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "booked-in",
+                })
+              }
               cardParagraph={"Booked in"}
-              cardHeading={getBookedin.length}
+              cardHeading={getFilteredBookedInJobs(
+                fetchAlldata,
+                dateFrom,
+                dateTo
+              )}
             />
             <UnitsPendingCard
               onClick={() =>
-                router.push("/dashboard/units/pending/repair-in-progress")
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "repair-in-progress",
+                })
               }
               cardParagraph={"Repair in progress"}
-              cardHeading={repairInProgress.length}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "Repair in progress"
+              )}
             />
             <UnitsPendingCard
               onClick={() =>
-                router.push("/dashboard/units/pending/waiting-for-parts")
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "waiting-for-parts",
+                })
               }
               cardParagraph={"Waiting for parts"}
-              cardHeading={waitingForParts.length}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "Waiting for parts"
+              )}
             />
 
             <UnitsPendingCard
               onClick={() =>
-                router.push("/dashboard/units/pending/parts-issued")
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "parts-issued",
+                })
               }
               cardParagraph={"Parts issued"}
-              cardHeading={partsIssued.length}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "Parts issued"
+              )}
             />
 
             <UnitsPendingCard
               onClick={() =>
-                router.push("/dashboard/units/pending/parts-to-be-ordered")
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "parts-to-be-ordered",
+                })
               }
               cardParagraph={"Parts to be ordered"}
-              cardHeading={partsToBeOrdered.length}
-            />
-
-            <UnitsPendingCard
-              onClick={() => router.push("/dashboard/units/pending/scheduled")}
-              cardParagraph={"Scheduled"}
-              cardHeading={scheduled.length}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "Parts to be ordered"
+              )}
             />
 
             <UnitsPendingCard
               onClick={() =>
-                router.push("/dashboard/units/pending/customer-reply")
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "scheduled",
+                })
+              }
+              cardParagraph={"Scheduled"}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "Scheduled"
+              )}
+            />
+
+            <UnitsPendingCard
+              onClick={() =>
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "customer-reply",
+                })
               }
               cardParagraph={"Customer reply"}
-              cardHeading={customerReply.length}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "Customer reply"
+              )}
             />
 
             <UnitsPendingCard
               onClick={() =>
-                router.push("/dashboard/units/pending/quality-control")
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "quality-control",
+                })
               }
               cardParagraph={"Quality Control (QC)"}
-              cardHeading={qualityControl.length}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "Quality Control (QC)"
+              )}
             />
 
             <UnitsPendingCard
               onClick={() =>
-                router.push("/dashboard/units/pending/assigned-to-tech")
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "assigned-to-tech",
+                })
               }
               cardParagraph={"Assigned to tech"}
-              cardHeading={assignedTotech.length}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "Assigned to tech"
+              )}
             />
 
             <UnitsPendingCard
               onClick={() =>
-                router.push("/dashboard/units/pending/first-approval")
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "first-approval",
+                })
               }
               cardParagraph={"Parts request 1st approval"}
-              cardHeading={firstApproval.length}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "Parts request 1st approval"
+              )}
             />
 
             <UnitsPendingCard
               onClick={() =>
-                router.push("/dashboard/units/pending/quote-pending")
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "quote-pending",
+                })
               }
               cardParagraph={"Quote pending"}
-              cardHeading={quotePending.length}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "Quote pending"
+              )}
             />
             <UnitsPendingCard
               onClick={() =>
-                router.push("/dashboard/units/pending/quote-approved")
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "quote-approved",
+                })
               }
               cardParagraph={"Quote approved"}
-              cardHeading={quoteApproved.length}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "Quote approved"
+              )}
             />
             <UnitsPendingCard
               onClick={() =>
-                router.push("/dashboard/units/pending/waiting-for-customer")
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "waiting-for-customer",
+                })
               }
               cardParagraph={"Waiting for customer"}
-              cardHeading={waitingForCustomer.length}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "Waiting for customer"
+              )}
             />
             <UnitsPendingCard
               onClick={() =>
-                router.push("/dashboard/units/pending/waiting-saw")
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "waiting-saw",
+                })
               }
               cardParagraph={"Waiting SAW"}
-              cardHeading={waitingSAW.length}
-            />
-            <UnitsPendingCard
-              onClick={() => router.push("/dashboard/units/pending/qc-failed")}
-              cardParagraph={"QC failed"}
-              cardHeading={qcFailed.length}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "Waiting SAW"
+              )}
             />
             <UnitsPendingCard
               onClick={() =>
-                router.push("/dashboard/units/pending/qc-completed")
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "qc-failed",
+                })
+              }
+              cardParagraph={"QC failed"}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "QC failed"
+              )}
+            />
+            <UnitsPendingCard
+              onClick={() =>
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "qc-completed",
+                })
               }
               cardParagraph={"QC completed"}
-              cardHeading={qcCompleted.length}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "QC completed"
+              )}
             />
             <UnitsPendingCard
               onClick={() =>
-                router.push("/dashboard/units/pending/pending-q-and-a")
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "pending-q-and-a",
+                })
               }
               cardParagraph={"Pending Q&A"}
-              cardHeading={pendingQandA.length}
-            />
-            <UnitsPendingCard
-              onClick={() => router.push("/dashboard/units/pending/so-cancel")}
-              cardParagraph={"SO cancel"}
-              cardHeading={soCancel.length}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "Pending Q&A"
+              )}
             />
             <UnitsPendingCard
               onClick={() =>
-                router.push("/dashboard/units/pending/scrap-approved")
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "so-cancel",
+                })
+              }
+              cardParagraph={"SO cancel"}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "SO cancel"
+              )}
+            />
+            <UnitsPendingCard
+              onClick={() =>
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "scrap-approved",
+                })
               }
               cardParagraph={"Scrap approved"}
-              cardHeading={scrapApproved.length}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "Scrap approved"
+              )}
             />
             <UnitsPendingCard
               onClick={() =>
-                router.push("/dashboard/units/pending/quote-rejected")
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "quote-rejected",
+                })
               }
               cardParagraph={"Quote rejected"}
-              cardHeading={quoteRejected.length}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "Quote rejected"
+              )}
             />
             <UnitsPendingCard
               onClick={() =>
-                router.push("/dashboard/units/pending/for-invoicing")
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "for-invoicing",
+                })
               }
               cardParagraph={"For invoicing"}
-              cardHeading={forInvoicing.length}
-            />
-            <UnitsPendingCard
-              onClick={() => router.push("/dashboard/units/pending/parts-dna")}
-              cardParagraph={"Parts DNA"}
-              cardHeading={partsDNA.length}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "For invoicing"
+              )}
             />
             <UnitsPendingCard
               onClick={() =>
-                router.push("/dashboard/units/pending/repair-complete")
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "parts-dna",
+                })
+              }
+              cardParagraph={"Parts DNA"}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "Parts DNA"
+              )}
+            />
+            <UnitsPendingCard
+              onClick={() =>
+                setPendingUnitsModalState({
+                  open: true,
+                  view: "repair-complete",
+                })
               }
               cardParagraph={"Repair complete"}
-              cardHeading={repairComplete.length}
+              cardHeading={getFilteredJobsByStatusCount(
+                fetchAlldata,
+                dateFrom,
+                dateTo,
+                "Repair complete"
+              )}
             />
           </div>
         </section>
