@@ -8,7 +8,7 @@ const {
   updateJob,
   updateJobclaimsGSPNStatus,
   deleteJob,
-} = require("../controllers/jobs");
+} = require("../controllers/hhp_jobs");
 
 // Get repair information
 // It's at the top because we get an error when it is at the bottom

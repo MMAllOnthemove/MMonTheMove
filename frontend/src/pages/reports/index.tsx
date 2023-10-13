@@ -6,8 +6,13 @@ import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { minDate } from "../../../utils/datemin";
-import { bookingAgentFunc } from "@/components/Reports";
+import { bookingAgentFunc, bookingAgentFuncTotal } from "@/components/Reports";
 import { bookingAgents } from "../../../public/_data/booking_agents";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import ModalManagement from "@/components/Modals/bookings_report.modal";
+import { bookingsReportModalState } from "@/atoms/bookingsReport";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 function Reports() {
   const [searchServiceOrder, setSearchServiceOrder] = useState("");
@@ -20,13 +25,16 @@ function Reports() {
     string[] | any[]
   >([]);
 
-  const [bookingAgentFilter, setBookingAgentFilter] = useState("");
-  const [dateFilter, setDateFilter] = useState("");
+  const setBookingsReportModalState = useSetRecoilState(
+    bookingsReportModalState
+  );
 
   const [dateFrom, setDateFrom] = useState<string | number | Date | any>("");
   const [dateTo, setDateTo] = useState<string | number | Date | any>("");
 
   var today = new Date().toISOString().split("T")[0].toString();
+  var addTwoMoreDays = new Date().getDate() + 2; // does not work
+  const router = useRouter();
 
   // Chakra ui toast
   const toast = useToast();
@@ -168,7 +176,7 @@ function Reports() {
                     type="date"
                     name="dateFrom"
                     min={minDate}
-                    max={today}
+                    max={addTwoMoreDays}
                     value={dateFrom}
                     onChange={(e) => setDateFrom(e.target.value)}
                     className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
@@ -184,7 +192,7 @@ function Reports() {
                     type="date"
                     name="dateTo"
                     min={minDate}
-                    max={today}
+                    max={addTwoMoreDays}
                     value={dateTo}
                     onChange={(e) => setDateTo(e.target.value)}
                     className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
@@ -290,7 +298,15 @@ function Reports() {
                 </tr>
               </thead>
               <tbody className="z-0">
-                <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
+                <tr
+                  onClick={() =>
+                    setBookingsReportModalState({
+                      open: true,
+                      view: "shanes300123",
+                    })
+                  }
+                  className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
+                >
                   <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
                     Shane
                   </td>
@@ -303,7 +319,15 @@ function Reports() {
                     )}
                   </td>
                 </tr>
-                <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
+                <tr
+                  onClick={() =>
+                    setBookingsReportModalState({
+                      open: true,
+                      view: "nigelc01",
+                    })
+                  }
+                  className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
+                >
                   <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
                     Nigel
                   </td>
@@ -316,7 +340,15 @@ function Reports() {
                     )}
                   </td>
                 </tr>
-                <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
+                <tr
+                  onClick={() =>
+                    setBookingsReportModalState({
+                      open: true,
+                      view: "sherryl060223",
+                    })
+                  }
+                  className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
+                >
                   <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
                     Sherry
                   </td>
@@ -329,7 +361,15 @@ function Reports() {
                     )}
                   </td>
                 </tr>
-                <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
+                <tr
+                  onClick={() =>
+                    setBookingsReportModalState({
+                      open: true,
+                      view: "lavonaj01",
+                    })
+                  }
+                  className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
+                >
                   <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
                     Lavona
                   </td>
@@ -342,8 +382,25 @@ function Reports() {
                     )}
                   </td>
                 </tr>
+                <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
+                  <td className="px-4 py-3 font-sans font-bold text-sm max-w-full">
+                    Total
+                  </td>
+                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                    {bookingAgentFuncTotal(
+                      getBookingAgentJobsData,
+                      dateFrom,
+                      dateTo
+                    )}
+                  </td>
+                </tr>
               </tbody>
             </table>
+            <ModalManagement
+              getBookingAgentJobsData={getBookingAgentJobsData}
+              dateFrom={dateFrom}
+              dateTo={dateTo}
+            />
           </div>
         </section>
       </main>

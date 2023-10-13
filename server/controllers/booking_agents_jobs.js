@@ -18,7 +18,7 @@ const getBookingAgentsJobs = async (req, res) => {
   let isCached = false;
   try {
     const newResults = await pool.query(
-      "SELECT id, unique_id, (SELECT DISTINCT(service_order_no)) AS service_order_no, created_date, created_time, booking_agent, date_added, warranty from booking_agents_jobs"
+      "SELECT DISTINCT booking_agent, id, created_date, service_order_no from booking_agents_jobs"
     );
     res.json(newResults.rows);
   } catch (err) {
