@@ -11,3 +11,4 @@ frontend/db/db.sql
 .vscode/launch.json
 so.md
 frontend/db/draft.sql
+db.sql
