@@ -11,4 +11,8 @@ export const bookingAgents = [
         id: 3,
         agentName: "nigelc01",
     },
+    {
+        id: 4,
+        agentName: "lavonaj01",
+    },
 ]

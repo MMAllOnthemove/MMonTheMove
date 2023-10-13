@@ -7,42 +7,43 @@ import Button from "@/components/Buttons";
 import { getSOStatusDescLatest } from "@/functions/ipass_api";
 
 import Head from "next/head";
+import Container from "@/components/Container";
 
 function EditRow() {
   // These are already handled in the table but for user experience
   // We just show them and make their inputs disabled
   const [showServiceOrderNumber, setShowServiceOrderNumber] = useState("");
-
-  // Allow user to select only today's date
-  var today = new Date().toISOString().split("T")[0];
+  const [getPartsJobHistory, setGetPartsJobHistory] = useState<
+    string[] | any[]
+  >([]);
   // These are the ones use has to update
   const [inHouseStatus, setInHouseStatus] = useState("");
   const [engineerAnalysis, setEngineerAnalysis] = useState("");
   const [engineer, setEngineer] = useState("");
   const [reassignEngineer, setReassignEngineer] = useState("");
-
-  // Not to be confused with 'setServiceOrder'
-  const [searchServiceOrder, setSearchServiceOrder] = useState("");
+  const [service_order, setServiceOrder] = useState("");
   const [GSPNStatus, setGSPNStatus] = useState<string | number | any>("");
+  const [serial_number, setSerialNumber] = useState("");
   // We want to get the Status Desc from the last object element of this array
   let GSPNStatusGetLastElement = JSON.stringify(GSPNStatus?.slice(-1));
-
   const [ticket, setTicket] = useState("");
-  const [hasValue, setHasValue] = useState(false);
-
-  const [partsPendingDate, setPartsPendingDate] = useState("");
-  const [partsOrderedDate, setPartsOrderedDate] = useState("");
-  const [partsIssuedDate, setPartsIssuedDate] = useState("");
-  const [qcCompletedDate, setQCCompletedDate] = useState("");
-  const [repairCompletedDate, setRepairCompletedDate] = useState("");
-
   // QC CHECKED RADIO
   const [isQCchecked, setIsQCchecked] = useState(false);
+  const [QCcomments, setQCcomments] = useState("");
+  const [model, setModel] = useState("");
+  const [warranty, setWarranty] = useState("");
+  const [fault, setFault] = useState("");
+  const [imei, setImei] = useState("");
+  const [createdDate, setCreatedDate] = useState("");
+  const [createdTime, setCreatedTime] = useState("");
+  const [engineerAssignDate, setEngineerAssignDate] = useState("");
+  const [engineerAssignTime, setEngineerAssignTime] = useState("");
+  const [department, setDepartment] = useState("");
+  const [dateAdded, setDateAdded] = useState("");
 
   const handleQCisCheckedChange = () => {
     setIsQCchecked(!isQCchecked);
   };
-  const [QCcomments, setQCcomments] = useState("");
   const [user, setUser] = useState("");
   // Add and remove fields via button
   const [partsList, setPartsList] = useState<string[] | any[]>([
@@ -50,7 +51,7 @@ function EditRow() {
   ]);
 
   // This is the parts list arr mapped from the partslist
-  let partsArr = [...partsList].map((x) => x.partNumber);
+  let partsArr = [...partsList].map((x) => x.partNumber.toUpperCase());
 
   const router = useRouter();
   const { id } = router.query;
@@ -65,17 +66,24 @@ function EditRow() {
       .then((res) => res.json())
       .then((data) => {
         setShowServiceOrderNumber(data[0]?.service_order_no);
+        setServiceOrder(data[0]?.service_order_no);
+        setCreatedDate(data[0]?.created_date);
+        setCreatedTime(data[0]?.created_time);
+        setModel(data[0]?.model);
+        setWarranty(data[0]?.warranty);
         setInHouseStatus(data[0]?.in_house_status);
+        setImei(data[0]?.imei);
+        setSerialNumber(data[0]?.serial_number);
         setEngineerAnalysis(data[0]?.engineer_analysis);
+        setFault(data[0]?.fault);
         setEngineer(data[0]?.engineer);
+        setEngineerAssignDate(data[0]?.engineer_assign_date);
+        setEngineerAssignTime(data[0]?.engineer_assign_time);
         setTicket(data[0]?.ticket);
         setUser(data[0]?.job_added_by);
         setQCcomments(data[0]?.qc_comment);
-        setPartsPendingDate(data[0]?.parts_pending_date);
-        setPartsOrderedDate(data[0]?.parts_ordered_date);
-        setPartsIssuedDate(data[0]?.parts_issued_date);
-        setQCCompletedDate(data[0]?.qc_completed_date);
-        setRepairCompletedDate(data[0]?.repair_completed_date);
+        setDepartment(data[0]?.department);
+        setDateAdded(data[0]?.date_added);
       });
   }, []);
 
@@ -87,9 +95,10 @@ function EditRow() {
   }, [showServiceOrderNumber]);
   // console.log(status);
 
+  let dateModified = new Date();
+
   async function updateData(e: any) {
     e.preventDefault();
-
     router.push("/");
     toast({
       title: "Job edited.",
@@ -102,11 +111,6 @@ function EditRow() {
     const putThisInfo = {
       engineerAnalysis,
       inHouseStatus,
-      partsPendingDate,
-      partsOrderedDate,
-      partsIssuedDate,
-      qcCompletedDate,
-      repairCompletedDate,
       ticket,
       reassignEngineer,
       isQCchecked,
@@ -115,8 +119,9 @@ function EditRow() {
       id,
       user,
       GSPNStatusGetLastElement,
+      dateModified,
     };
-    // console.log(putThisInfo);
+    // console.log("Update", putThisInfo);
     const putMethod = {
       method: "PUT", // Method itself
       headers: {
@@ -133,6 +138,43 @@ function EditRow() {
         //
       })
       .catch((e) => {
+        //
+      });
+    let dateAdded = "";
+    const postThisInfo = {
+      service_order,
+      createdDate,
+      createdTime,
+      model,
+      warranty,
+      engineer,
+      fault,
+      imei,
+      serial_number,
+      inHouseStatus,
+      engineerAssignDate,
+      engineerAssignTime,
+      ticket,
+      engineerAnalysis,
+      department,
+      dateModified,
+      user,
+      QCcomments,
+      isQCchecked,
+      partsArr,
+      GSPNStatusGetLastElement,
+      dateAdded,
+    };
+    const response2 = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/units/history/post`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(postThisInfo),
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
         //
       });
   }
@@ -169,106 +211,129 @@ function EditRow() {
     setPartsList([...partsList, { partNumber: "" }]);
   };
 
-  // console.log(partsList);
+  useEffect(() => {
+    getThisJobsDataHistory();
+  }, [getPartsJobHistory]);
+
+  const getThisJobsDataHistory = useCallback(async () => {
+    await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/units/history/get`,
+      {
+        method: "GET",
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setGetPartsJobHistory(data);
+      });
+  }, []);
+
+  // Sort history cards by latest
+  getPartsJobHistory.sort((a: any, b: any) => {
+    return (
+      new Date(b.date_modified).getTime() - new Date(a.date_modified).getTime()
+    );
+  });
 
   return (
     <>
       <Head>
-        <title>Edit {showServiceOrderNumber}</title>
+        <title>Edit HHP{showServiceOrderNumber}</title>
         <meta name="robots" content="noindex, nofollow"></meta>
       </Head>
       <main>
-        <section className="section container mx-auto">
-          <h1 className="text-center py-2 text-gray-900 font-sans font-semibold lg:text-2xl">
-            Editing service order:{" "}
-            {showServiceOrderNumber === "" ||
-            showServiceOrderNumber === null ? (
-              <span className="text-slate-700 font-sans font-bold">
-                Not available
-              </span>
-            ) : (
-              <span className="text-sky-700 font-sans font-bold">
-                {showServiceOrderNumber}
-              </span>
-            )}
-          </h1>
-          <h3 className="text-center font-sans font-semibold">
-            You are editing as:{" "}
-            <span className="text-sky-700 font-sans font-bold">{user}</span>
-          </h3>
-          <hr />
+        <Container>
+          <section className="section">
+            <h1 className="text-center py-2 text-gray-900 font-sans font-semibold lg:text-2xl">
+              Editing service order:{" "}
+              {showServiceOrderNumber === "" ||
+              showServiceOrderNumber === null ? (
+                <span className="text-slate-700 font-sans font-bold">
+                  Not available
+                </span>
+              ) : (
+                <span className="text-sky-700 font-sans font-bold">
+                  {showServiceOrderNumber}
+                </span>
+              )}
+            </h1>
+            <h3 className="text-center font-sans font-semibold">
+              You are editing as:{" "}
+              <span className="text-sky-700 font-sans font-bold">{user}</span>
+            </h3>
+            <hr />
 
-          {/* {user === "katleho_m@allelectronics.co.za" ? <p>Admin</p> : ""} */}
-          <form className="my-3" onSubmit={updateData} id="updateJobForm">
-            {showServiceOrderNumber === "" ||
-            showServiceOrderNumber === null ? (
+            {/* {user === "katleho_m@allelectronics.co.za" ? <p>Admin</p> : ""} */}
+            <form className="my-3" onSubmit={updateData} id="updateJobForm">
+              {showServiceOrderNumber === "" ||
+              showServiceOrderNumber === null ? (
+                <span>
+                  <label
+                    htmlFor="showServiceOrderNumber"
+                    className="block mb-2 text-sm font-medium font-sans text-gray-900 "
+                  >
+                    Set Service Order No
+                  </label>
+                  <input
+                    type="text"
+                    name="showServiceOrderNumber"
+                    id="showServiceOrderNumber"
+                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    value={showServiceOrderNumber}
+                    onChange={(e) => setShowServiceOrderNumber(e.target.value)}
+                  />
+                </span>
+              ) : (
+                <span>
+                  <label
+                    htmlFor="showServiceOrderNumber"
+                    className="block mb-2 text-sm font-medium font-sans text-gray-900 "
+                  >
+                    Service Order No
+                  </label>
+                  <input
+                    type="text"
+                    name="showServiceOrderNumber"
+                    id="showServiceOrderNumber"
+                    className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                    value={showServiceOrderNumber}
+                    disabled
+                  />
+                </span>
+              )}
               <span>
                 <label
-                  htmlFor="showServiceOrderNumber"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 "
+                  htmlFor="ticket"
+                  className="block mb-2 text-sm font-medium font-sans text-gray-900"
                 >
-                  Set Service Order No
+                  Ticket number
                 </label>
                 <input
                   type="text"
-                  name="showServiceOrderNumber"
-                  id="showServiceOrderNumber"
+                  name="ticket"
+                  id="ticket"
+                  value={ticket}
+                  onChange={(e) => setTicket(e.target.value)}
                   className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  value={showServiceOrderNumber}
-                  onChange={(e) => setShowServiceOrderNumber(e.target.value)}
                 />
               </span>
-            ) : (
               <span>
                 <label
-                  htmlFor="showServiceOrderNumber"
+                  htmlFor="engineer"
                   className="block mb-2 text-sm font-medium font-sans text-gray-900 "
                 >
-                  Service Order No
+                  Engineer
                 </label>
                 <input
                   type="text"
-                  name="showServiceOrderNumber"
-                  id="showServiceOrderNumber"
-                  className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                  value={showServiceOrderNumber}
+                  name="engineer"
+                  id="engineer"
+                  className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  defaultValue={engineer}
                   disabled
                 />
               </span>
-            )}
-            <span>
-              <label
-                htmlFor="ticket"
-                className="block mb-2 text-sm font-medium font-sans text-gray-900"
-              >
-                Ticket number
-              </label>
-              <input
-                type="text"
-                name="ticket"
-                id="ticket"
-                value={ticket}
-                onChange={(e) => setTicket(e.target.value)}
-                className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              />
-            </span>
-            <span>
-              <label
-                htmlFor="engineer"
-                className="block mb-2 text-sm font-medium font-sans text-gray-900 "
-              >
-                Engineer
-              </label>
-              <input
-                type="text"
-                name="engineer"
-                id="engineer"
-                className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                defaultValue={engineer}
-                disabled
-              />
-            </span>
-            {/* {user === process.env.NEXT_PUBLIC_ADMIN_EMAIL ? (
+              {/* {user === process.env.NEXT_PUBLIC_ADMIN_EMAIL ? (
                 <span>
                   <label htmlFor="reassignEngineer" className="sr-only">
                     Ressign to another engineer
@@ -296,259 +361,215 @@ function EditRow() {
               ) : (
                 ""
               )} */}
-            <span>
-              <label
-                htmlFor="engineerAnalysis"
-                className="block mb-2 text-sm font-medium font-sans text-gray-900 "
-              >
-                Engineer Analysis
-              </label>
-              <textarea
-                name="engineerAnalysis"
-                id="engineerAnalysis"
-                className="mb-2 bg-white border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5 "
-                value={engineerAnalysis}
-                onChange={(event) => setEngineerAnalysis(event.target.value)}
-              ></textarea>
-            </span>
-            <span>
-              <label
-                htmlFor="partNumber"
-                className="block mb-2 text-sm font-medium font-sans text-gray-900 "
-              >
-                Parts you are ordering. <small>Max = 10</small>
-                <br />
-                <small>e.g. LED - GHS7-0000..</small>
-              </label>
-              {partsList.map((singleService, index) => (
-                <div key={index} className="services">
-                  <div className="first-division flex justify-space-between items-center gap-2">
-                    <input
-                      className="my-2 border w-auto border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
-                      name="partNumber"
-                      type="text"
-                      id="partNumber"
-                      defaultValue={singleService?.partNumber.toUpperCase()}
-                      onChange={(e) => handleServiceChange(e, index)}
-                      maxLength={10}
-                      minLength={7}
-                    />
-                    {partsList.length - 1 === index &&
-                      partsList.length < 10 && (
-                        <Button
-                          className="my-2 bg-[#082f49]  font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
-                          type="button"
-                          onClick={handleServiceAdd}
-                          text="Add a part"
-                        />
-                        // <button
-                        //   className="my-2 bg-[#082f49]  font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
-                        //   type="button"
-                        //   onClick={handleServiceAdd}
-                        // >
-                        //   Add a part
-                        // </button>
-                      )}
-                  </div>
-                  <div className="second-division">
-                    {partsList.length !== 1 && (
-                      <Button
-                        type="button"
-                        onClick={() => handleServiceRemove(index)}
-                        className="bg-red-500 font-sans font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center remove-btn"
-                        text="Remove"
-                      />
-                      // <button
-                      //   type="button"
-                      //   onClick={() => handleServiceRemove(index)}
-                      //   className="bg-red-500 font-sans font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center remove-btn"
-                      // >
-                      //   <span>Remove</span>
-                      // </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </span>
-            <span>
-              <label
-                htmlFor="inHouseStatus"
-                className="block mb-2 text-sm font-medium font-sans text-gray-900"
-              >
-                In house status
-              </label>
-              <select
-                value={inHouseStatus}
-                onChange={(e) => setInHouseStatus(e.target.value)}
-                id="inHouseStatus"
-                className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              >
-                <option disabled value="">
-                  Choose status
-                </option>
-                {unitStatus.map((stat) => (
-                  <option key={stat.id} value={`${stat._status}`}>
-                    {stat?._status}
-                  </option>
-                ))}
-              </select>
-            </span>
-
-            <>
-              <span>
-                <input
-                  type="checkbox"
-                  id="QcChecked"
-                  name="QcChecked"
-                  className="mr-2 cursor-pointer accent-sky-700"
-                  checked={isQCchecked}
-                  onChange={handleQCisCheckedChange}
-                />
-                <label
-                  htmlFor="QcChecked"
-                  className="cursor-pointer mb-2 text-sm font-medium font-sans text-gray-900"
-                >
-                  QC checked? (Only QC engineer can select this)
-                </label>
-              </span>
               <span>
                 <label
-                  htmlFor="QCcomments"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900"
+                  htmlFor="engineerAnalysis"
+                  className="block mb-2 text-sm font-medium font-sans text-gray-900 "
                 >
-                  QC comments (Only QC engineer can input here)
+                  Engineer Analysis
                 </label>
                 <textarea
-                  name="QCcomments"
-                  id="QCcomments"
-                  value={QCcomments}
-                  onChange={(e) => setQCcomments(e.target.value)}
-                  className="mb-2 bg-white border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5"
+                  name="engineerAnalysis"
+                  id="engineerAnalysis"
+                  className="mb-2 bg-white border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5 "
+                  value={engineerAnalysis}
+                  onChange={(event) => setEngineerAnalysis(event.target.value)}
                 ></textarea>
               </span>
-            </>
+              <span>
+                <label
+                  htmlFor="partNumber"
+                  className="block mb-2 text-sm font-medium font-sans text-gray-900 "
+                >
+                  Parts you are ordering. <small>Max = 10</small>
+                  <br />
+                  <small>e.g. LED - GHS7-0000..</small>
+                </label>
+                {partsList.map((singleService, index) => (
+                  <div key={index} className="services">
+                    <div className="first-division flex justify-space-between items-center gap-2">
+                      <input
+                        className="my-2 border w-auto border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                        name="partNumber"
+                        type="text"
+                        id="partNumber"
+                        placeholder="Part number"
+                        defaultValue={singleService?.partNumber.toUpperCase()}
+                        onChange={(e) => handleServiceChange(e, index)}
+                        maxLength={10}
+                        minLength={7}
+                      />
+                      {partsList.length - 1 === index &&
+                        partsList.length < 10 && (
+                          <Button
+                            className="my-2 bg-[#082f49]  font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
+                            type="button"
+                            onClick={handleServiceAdd}
+                            text="Add a part"
+                          />
+                          // <button
+                          //   className="my-2 bg-[#082f49]  font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
+                          //   type="button"
+                          //   onClick={handleServiceAdd}
+                          // >
+                          //   Add a part
+                          // </button>
+                        )}
+                    </div>
+                    <div className="second-division">
+                      {partsList.length !== 1 && (
+                        <Button
+                          type="button"
+                          onClick={() => handleServiceRemove(index)}
+                          className="bg-red-500 font-sans font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center remove-btn"
+                          text="Remove"
+                        />
+                        // <button
+                        //   type="button"
+                        //   onClick={() => handleServiceRemove(index)}
+                        //   className="bg-red-500 font-sans font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center remove-btn"
+                        // >
+                        //   <span>Remove</span>
+                        // </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </span>
+              <span>
+                <label
+                  htmlFor="inHouseStatus"
+                  className="block mb-2 text-sm font-medium font-sans text-gray-900"
+                >
+                  In house status
+                </label>
+                <select
+                  value={inHouseStatus}
+                  onChange={(e) => setInHouseStatus(e.target.value)}
+                  id="inHouseStatus"
+                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                >
+                  <option disabled value="">
+                    Choose status
+                  </option>
+                  {unitStatus.map((stat) => (
+                    <option key={stat.id} value={`${stat._status}`}>
+                      {stat?._status}
+                    </option>
+                  ))}
+                </select>
+              </span>
 
-            <span>
-              <label
-                htmlFor="partsPendingDate"
-                className="block mb-2 text-sm font-medium font-sans text-gray-900"
-              >
-                Waiting for parts date
-              </label>
-              <input
-                type="date"
-                name="partsPendingDate"
-                min={today}
-                max={today}
-                id="partsPendingDate"
-                value={partsPendingDate}
-                onChange={(e) => setPartsPendingDate(e.target.value)}
-                className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              />
-            </span>
-            <span>
-              <label
-                htmlFor="partsOrderedDate"
-                className="block mb-2 text-sm font-medium font-sans text-gray-900"
-              >
-                Parts ordered date
-              </label>
-              <input
-                type="date"
-                name="partsOrderedDate"
-                min={today}
-                max={today}
-                value={partsOrderedDate}
-                onChange={(e) => setPartsOrderedDate(e.target.value)}
-                id="partsOrderedDate"
-                className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              />
-            </span>
-            <span>
-              <label
-                htmlFor="partsIssuedDate"
-                className="block mb-2 text-sm font-medium font-sans text-gray-900"
-              >
-                Parts issued date
-              </label>
-              <input
-                type="date"
-                name="partsIssuedDate"
-                min={today}
-                max={today}
-                value={partsIssuedDate}
-                onChange={(e) => setPartsIssuedDate(e.target.value)}
-                id="partsIssuedDate"
-                className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              />
-            </span>
-            <span>
-              <label
-                htmlFor="qcCompletedDate"
-                className="block mb-2 text-sm font-medium font-sans text-gray-900"
-              >
-                QC completed date
-              </label>
-              <input
-                type="date"
-                name="qcCompletedDate"
-                min={today}
-                max={today}
-                value={qcCompletedDate}
-                onChange={(e) => setQCCompletedDate(e.target.value)}
-                id="qcCompletedDate"
-                className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              />
-            </span>
-            <span>
-              <label
-                htmlFor="repairCompletedDate"
-                className="block mb-2 text-sm font-medium font-sans text-gray-900"
-              >
-                Repair completed date
-              </label>
-              <input
-                type="date"
-                name="repairCompletedDate"
-                min={today}
-                max={today}
-                value={repairCompletedDate}
-                onChange={(e) => setRepairCompletedDate(e.target.value)}
-                id="repairCompletedDate"
-                className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              />
-            </span>
+              <>
+                <span>
+                  <input
+                    type="checkbox"
+                    id="QcChecked"
+                    name="QcChecked"
+                    className="mr-2 cursor-pointer accent-sky-700"
+                    checked={isQCchecked}
+                    onChange={handleQCisCheckedChange}
+                  />
+                  <label
+                    htmlFor="QcChecked"
+                    className="cursor-pointer mb-2 text-sm font-medium font-sans text-gray-900"
+                  >
+                    QC checked? (Only QC engineer can select this)
+                  </label>
+                </span>
+                <span>
+                  <label
+                    htmlFor="QCcomments"
+                    className="block mb-2 text-sm font-medium font-sans text-gray-900"
+                  >
+                    QC comments (Only QC engineer can input here)
+                  </label>
+                  <textarea
+                    name="QCcomments"
+                    id="QCcomments"
+                    value={QCcomments}
+                    onChange={(e) => setQCcomments(e.target.value)}
+                    className="mb-2 bg-white border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5"
+                  ></textarea>
+                </span>
+              </>
 
+              <span>
+                <Button
+                  type="submit"
+                  className="bg-[#082f49] w-full font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
+                  text="Update"
+                />
+              </span>
+            </form>
             <span>
-              {/* <button
-                type="submit"
-                className="bg-[#082f49] w-full font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
-              >
-                Update
-              </button> */}
               <Button
-                type="submit"
-                className="bg-[#082f49] w-full font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
-                text="Update"
+                type="button"
+                className="bg-red-500 w-full font-sans font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center my-3"
+                text="Delete"
+                onClick={deleteData}
               />
             </span>
-          </form>
-          <span>
-            {/* <button
-              onClick={deleteData}
-              type="button"
-              className="bg-red-500 w-full font-sans font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center my-3"
-            >
-              Delete
-            </button> */}
-            <Button
-              type="button"
-              className="bg-red-500 w-full font-sans font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center my-3"
-              text="Delete"
-              onClick={deleteData}
-            />
-          </span>
-        </section>
+          </section>
+          <hr />
+          <section className="my-4 flex flex-col gap-5 py-4">
+            <p className="font-sans font-semibold text-slate-700">History</p>
+            {getPartsJobHistory.length > 0
+              ? getPartsJobHistory
+                  .filter(
+                    (onlyThisJob) =>
+                      onlyThisJob.service_order_no === service_order
+                  )
+                  .map((jobHistory: string | any) => (
+                    <article
+                      className="job_history_card border rounded-sm padding border-[#eee] p-2 flex flex-col gap-4"
+                      key={jobHistory?.id}
+                    >
+                      <div className="top_row flex items-center justify-between">
+                        <h3 className=" text-slate-800 font-semibold">
+                          {jobHistory?.engineer}
+                        </h3>
+                        <p className="font-sans text-slate-800  font-semibold">
+                          {jobHistory?.service_order_no}
+                        </p>
+                        <p className="font-sans text-slate-800  font-semibold">
+                          {new Date(
+                            jobHistory?.date_modified
+                          ).toDateString() === null
+                            ? ""
+                            : new Date(
+                                jobHistory?.date_modified
+                              ).toDateString()}
+                        </p>
+                      </div>
+                      <hr />
+                      <div className="rounded-sm flex justify-between items-center">
+                        <h5 className="font-sans text-slate-800 font-medium">
+                          Assigned to:{" "}
+                        </h5>
+                        <h5 className="font-sans text-slate-800 font-medium">
+                          {jobHistory?.engineer}
+                        </h5>
+                      </div>
+                      <div className="rounded-sm flex justify-between items-center">
+                        <h5 className="font-sans text-slate-800 font-medium">
+                          In house status:{" "}
+                        </h5>
+                        <h5 className="font-sans text-slate-800 font-medium">
+                          {jobHistory?.in_house_status}
+                        </h5>
+                      </div>
+
+                      <div className="bg-[#f8f9fa]">
+                        <p className="font-sans text-slate-800">
+                          {jobHistory?.engineer_analysis.toUpperCase()}
+                        </p>
+                      </div>
+                    </article>
+                  ))
+              : "History not available"}
+          </section>
+        </Container>
       </main>
     </>
   );
