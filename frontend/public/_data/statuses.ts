@@ -23,3 +23,15 @@ export const unitStatus = [
     { id: 23, _status: "For invoicing" },
     { id: 24, _status: "Parts DNA" },
 ]
+
+export const partsStatus = [
+    { id: 1, _status: "Parts to be ordered" },
+    { id: 2, _status: "Parts allocated" },
+    { id: 3, _status: "Parts issued" },
+    { id: 4, _status: "Parts returned to stock" },
+    { id: 5, _status: "Old parts returned" },
+    { id: 6, _status: "Returned for credit" },
+    { id: 7, _status: "Waiting for parts" },
+    { id: 8, _status: "Customer reply" },
+
+]
