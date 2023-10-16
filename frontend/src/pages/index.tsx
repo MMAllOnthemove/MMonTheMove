@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import TableBody from "@/components/Table/TableBody";
 
@@ -20,6 +20,7 @@ const ModalManagement = dynamic(
     loading: () => <p>Loading modal...</p>,
   }
 );
+
 import { managementModalState } from "@/atoms/managementModalAtom";
 import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
@@ -556,6 +557,7 @@ const Home = () => {
                   </tr>
                 ))}
               </thead>
+
               <TableBody>
                 {table.getRowModel().rows.map((row: any) => (
                   <tr

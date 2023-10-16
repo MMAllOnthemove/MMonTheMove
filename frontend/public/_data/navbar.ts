@@ -10,5 +10,5 @@ export const hhpNavItems = [
 export const partsNavItems = [
 
   { id: 1, item: "Part search", pageRoute: "/parts/parts-search" },
-  { id: 1, item: "Parts", pageRoute: "/parts" },
+  { id: 2, item: "Parts", pageRoute: "/parts" },
 ]

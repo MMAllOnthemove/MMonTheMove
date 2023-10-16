@@ -63,6 +63,7 @@ const postPartsJob = async (req, res) => {
         ]
       );
       res.status(201).json("Job added, thank you!");
+      console.log(results.rows);
     }
   } catch (e) {
     console.log("parts post error", e);
@@ -75,7 +76,7 @@ const getPartsJobs = async (req, res) => {
     );
     res.json(newResults.rows);
   } catch (error) {
-    // console.log(error);
+    console.log(error);
   }
 };
 
