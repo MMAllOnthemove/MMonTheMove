@@ -17,11 +17,17 @@ import {
 interface Props {
   children?: React.ReactNode;
   fetchAlldata: string[] | any;
+  fetchJobsApprovedAndRejected: string[] | any;
   dateFrom: string | any;
   dateTo: string | any;
 }
 
-function ModalManagement({ fetchAlldata, dateFrom, dateTo }: Props) {
+function ModalManagement({
+  fetchAlldata,
+  fetchJobsApprovedAndRejected,
+  dateFrom,
+  dateTo,
+}: Props) {
   //   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalState, setModalState] = useRecoilState(
     unitsPendingReportModalState
@@ -197,7 +203,7 @@ function ModalManagement({ fetchAlldata, dateFrom, dateTo }: Props) {
                 )}
               {modalState.view === "quote-approved" &&
                 getMappedJobsByStatusCount(
-                  fetchAlldata,
+                  fetchJobsApprovedAndRejected,
                   dateFrom,
                   dateTo,
                   "Quote approved"
@@ -211,7 +217,7 @@ function ModalManagement({ fetchAlldata, dateFrom, dateTo }: Props) {
                 )}
               {modalState.view === "quote-rejected" &&
                 getMappedJobsByStatusCount(
-                  fetchAlldata,
+                  fetchJobsApprovedAndRejected,
                   dateFrom,
                   dateTo,
                   "Quote rejected"
