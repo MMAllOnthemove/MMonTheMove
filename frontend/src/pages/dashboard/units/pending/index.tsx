@@ -1,24 +1,26 @@
+import { unitsPendingReportModalState } from "@/atoms/unitspendingAtom";
+import ModalManagement from "@/components/Modals/unitspending.modal";
 import Navbar from "@/components/Navbar";
 import UnitsPendingCard from "@/components/UnitsPendingCard";
-import moment from "moment";
+import {
+  getFilteredBookedInJobs,
+  getFilteredJobsByStatusCount,
+  getMappedJobsByApprovedOrRejectedStatusCount,
+} from "@/functions/pendingUnitsFunc";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useSetRecoilState } from "recoil";
 import { minDate } from "../../../../../utils/datemin";
-import {
-  getFilteredBookedInJobs,
-  getFilteredJobsByStatusCount,
-} from "@/functions/pendingUnitsFunc";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { unitsPendingReportModalState } from "@/atoms/unitspendingAtom";
-import ModalManagement from "@/components/Modals/unitspending.modal";
 
 function Pending() {
   const [fetchAlldata, setFetchAlldata] = useState<any[]>([]);
   const setPendingUnitsModalState = useSetRecoilState(
     unitsPendingReportModalState
   );
+  const [fetchJobsApprovedAndRejected, setFetchJobsApprovedAndRejected] =
+    useState<any[]>([]);
   const router = useRouter();
   var today = new Date().toISOString().split("T")[0].toString();
 
@@ -40,11 +42,38 @@ function Pending() {
       // console.log("Error", error);
     }
   };
+  const countJobsApprovedAndRejected = async () => {
+    // Get these from the history table
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/units/history/get`,
+        {
+          method: "GET",
+        }
+      );
+      const data = await response.json();
+      // console.log(data.length);
+      // console.log(data);
+      setFetchJobsApprovedAndRejected(data);
+    } catch (error) {
+      // console.log("Error", error);
+    }
+  };
 
+  useEffect(() => {
+    countJobsApprovedAndRejected();
+  }, [fetchJobsApprovedAndRejected]);
   useEffect(() => {
     fetchDataCombinedData();
   }, []);
-
+  // console.log(
+  //   getMappedJobsByApprovedOrRejectedStatusCount(
+  //     fetchJobsApprovedAndRejected,
+  //     dateFrom,
+  //     dateTo,
+  //     "Quote approved"
+  //   )
+  // );
   return (
     <>
       <Head>
@@ -144,6 +173,7 @@ function Pending() {
           {/* The modal, we are putting it here because it won't matter */}
           <ModalManagement
             fetchAlldata={fetchAlldata}
+            fetchJobsApprovedAndRejected={fetchJobsApprovedAndRejected}
             dateFrom={dateFrom}
             dateTo={dateTo}
           />
@@ -328,8 +358,8 @@ function Pending() {
                 })
               }
               cardParagraph={"Quote approved"}
-              cardHeading={getFilteredJobsByStatusCount(
-                fetchAlldata,
+              cardHeading={getMappedJobsByApprovedOrRejectedStatusCount(
+                fetchJobsApprovedAndRejected,
                 dateFrom,
                 dateTo,
                 "Quote approved"
@@ -448,8 +478,8 @@ function Pending() {
                 })
               }
               cardParagraph={"Quote rejected"}
-              cardHeading={getFilteredJobsByStatusCount(
-                fetchAlldata,
+              cardHeading={getMappedJobsByApprovedOrRejectedStatusCount(
+                fetchJobsApprovedAndRejected,
                 dateFrom,
                 dateTo,
                 "Quote rejected"

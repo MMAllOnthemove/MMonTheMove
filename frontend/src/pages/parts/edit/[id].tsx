@@ -182,11 +182,23 @@ function PartsEdit() {
       <main>
         <Container>
           <section className="section">
-            <h1 className="text-center py-2 text-gray-900 font-sans font-semibold lg:text-2xl">
-              {" "}
-              Editing service order: {showServiceOrderNumber}
-            </h1>
-            <hr />
+            <span className="flex items-center justify-between">
+              <Button
+                type="button"
+                onClick={() => history.back()}
+                className="bg-[#082f49]  font-sans font-semibold text-white hover:bg-blue-800 rounded-sm text-sm p-2.5 text-center"
+                text="Back"
+              />
+              <div>
+                <h1 className="text-center py-2 text-gray-900 font-sans font-semibold lg:text-2xl">
+                  {" "}
+                  Editing service order: {showServiceOrderNumber}
+                </h1>
+                <hr />
+              </div>
+              <div />
+            </span>
+
             <form className="my-3" onSubmit={updateData} id="updateJobForm">
               <span>
                 <label
@@ -331,14 +343,14 @@ function PartsEdit() {
                 />
               </span>
             </form>
-            <span>
+            {/* <span>
               <Button
                 type="button"
                 className="bg-red-500 w-full font-sans font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center my-3"
                 text="Delete"
                 onClick={deleteData}
               />
-            </span>
+            </span> */}
             <section className="my-4 flex flex-col gap-5 py-4">
               <p className="font-sans font-semibold text-slate-700">History</p>
               {getPartsJobHistory.length > 0
@@ -360,9 +372,7 @@ function PartsEdit() {
                             {jobHistory?.service_order}
                           </p>
                           <p className="font-sans text-slate-800  font-semibold">
-                            {new Date(
-                              jobHistory?.job_modified_date
-                            ).toDateString() === null
+                            {jobHistory?.job_modified_date === null || ""
                               ? ""
                               : new Date(
                                   jobHistory?.job_modified_date
