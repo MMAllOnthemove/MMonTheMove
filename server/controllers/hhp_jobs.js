@@ -191,10 +191,11 @@ const updateJob = async (req, res) => {
       user,
       GSPNStatusGetLastElement,
       dateModified,
+      warranty,
     } = req.body;
     const editQuery = await pool
       .query(
-        "UPDATE units SET engineer_analysis = $1, in_house_status = $2, ticket = $3, reassign_engineer = $4, is_qc_checked = $5, qc_comment = $6, parts_list = $7, modified_by_who = $8, gspn_status = $9, date_modified = $10 WHERE id = $11 returning *",
+        "UPDATE units SET engineer_analysis = $1, in_house_status = $2, ticket = $3, reassign_engineer = $4, is_qc_checked = $5, qc_comment = $6, parts_list = $7, modified_by_who = $8, gspn_status = $9, date_modified = $10, warranty = $11 WHERE id = $12 returning *",
         [
           engineerAnalysis,
           inHouseStatus,
@@ -206,6 +207,7 @@ const updateJob = async (req, res) => {
           user,
           GSPNStatusGetLastElement,
           dateModified,
+          warranty,
           id,
         ]
       )

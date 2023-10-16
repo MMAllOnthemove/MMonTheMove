@@ -49,6 +49,26 @@ export function getMappedJobsByStatusCount(
       : [];
   return arr;
 }
+export function getMappedJobsByApprovedOrRejectedStatusCount(
+  arr: string[] | any,
+  dateFrom: string,
+  dateTo: string,
+  statusName: string
+) {
+  arr =
+    dateFrom.length > 0 && dateTo.length > 0
+      ? arr.filter((item: any, index: number) => {
+          let date = moment(item.date_modified).format("YYYY-MM-DD");
+          return (
+            date >= dateFrom &&
+            item.in_house_status === statusName &&
+            date <= dateTo &&
+            item.in_house_status === statusName
+          );
+        })
+      : [];
+  return arr.length;
+}
 // Get all jobs per date
 export function getMappedBookedInJobs(
   arr: string[] | any,
@@ -88,3 +108,25 @@ export function getFilteredBookedInJobs(
       : [];
   return arr.length;
 }
+
+// // Pulls from our db history table
+// export function getFilteredQuoteApprovedOrRejectedJobs(
+//   arr: string[] | any,
+//   dateFrom: string,
+//   dateTo: string,
+//   statusName: string
+// ) {
+//   arr =
+//     dateFrom.length > 0 && dateTo.length > 0
+//       ? arr.filter((item: any) => {
+//         let date = moment(item.date_modified).format("YYYY-MM-DD");
+//         return (
+//           date >= dateFrom &&
+//           item.service_order_no === statusName &&
+//           date <= dateTo &&
+//           item.service_order_no === statusName
+//         );
+//         })
+//       : [];
+//   return arr.length;
+// }

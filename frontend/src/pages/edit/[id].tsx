@@ -107,7 +107,7 @@ function EditRow() {
       duration: 9000,
       isClosable: true,
     });
-
+    dateAdded;
     const putThisInfo = {
       engineerAnalysis,
       inHouseStatus,
@@ -120,6 +120,7 @@ function EditRow() {
       user,
       GSPNStatusGetLastElement,
       dateModified,
+      warranty,
     };
     // console.log("Update", putThisInfo);
     const putMethod = {
@@ -140,7 +141,7 @@ function EditRow() {
       .catch((e) => {
         //
       });
-    let dateAdded = "";
+
     const postThisInfo = {
       service_order,
       createdDate,
@@ -244,23 +245,37 @@ function EditRow() {
       <main>
         <Container>
           <section className="section">
-            <h1 className="text-center py-2 text-gray-900 font-sans font-semibold lg:text-2xl">
-              Editing service order:{" "}
-              {showServiceOrderNumber === "" ||
-              showServiceOrderNumber === null ? (
-                <span className="text-slate-700 font-sans font-bold">
-                  Not available
-                </span>
-              ) : (
-                <span className="text-sky-700 font-sans font-bold">
-                  {showServiceOrderNumber}
-                </span>
-              )}
-            </h1>
-            <h3 className="text-center font-sans font-semibold">
-              You are editing as:{" "}
-              <span className="text-sky-700 font-sans font-bold">{user}</span>
-            </h3>
+            <span className="flex items-center justify-between">
+              <Button
+                type="button"
+                onClick={() => history.back()}
+                className="bg-[#082f49]  font-sans font-semibold text-white hover:bg-blue-800 rounded-sm text-sm p-2.5 text-center"
+                text="Back"
+              />
+
+              <div>
+                <h1 className="text-center py-2 text-gray-900 font-sans font-semibold lg:text-2xl">
+                  Editing service order:{" "}
+                  {showServiceOrderNumber === "" ||
+                  showServiceOrderNumber === null ? (
+                    <span className="text-slate-700 font-sans font-bold">
+                      Not available
+                    </span>
+                  ) : (
+                    <span className="text-sky-700 font-sans font-bold">
+                      {showServiceOrderNumber}
+                    </span>
+                  )}
+                </h1>
+                <h3 className="text-center font-sans font-semibold">
+                  You are editing as:{" "}
+                  <span className="text-sky-700 font-sans font-bold">
+                    {user}
+                  </span>
+                </h3>
+              </div>
+              <div />
+            </span>
             <hr />
 
             {/* {user === "katleho_m@allelectronics.co.za" ? <p>Admin</p> : ""} */}
@@ -316,6 +331,30 @@ function EditRow() {
                   onChange={(e) => setTicket(e.target.value)}
                   className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
+              </span>
+              <span>
+                <label
+                  htmlFor="warranty"
+                  className="block mb-2 text-sm font-medium font-sans text-gray-900"
+                >
+                  Void warranty{" "}
+                  <small className="font-sans font-semibold text-red-600">
+                    Please do not select this unless authorized!
+                  </small>
+                </label>
+                <select
+                  name="warranty"
+                  id="warranty"
+                  className="mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  value={warranty}
+                  onChange={(e) => setWarranty(e.target.value)}
+                >
+                  <option value="" disabled>
+                    Warranty void
+                  </option>
+                  <option value="LP">LP</option>
+                  <option value="OW">OW</option>
+                </select>
               </span>
               <span>
                 <label
@@ -502,14 +541,14 @@ function EditRow() {
                 />
               </span>
             </form>
-            <span>
+            {/* <span>
               <Button
                 type="button"
                 className="bg-red-500 w-full font-sans font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center my-3"
                 text="Delete"
                 onClick={deleteData}
               />
-            </span>
+            </span> */}
           </section>
           <hr />
           <section className="my-4 flex flex-col gap-5 py-4">
@@ -533,9 +572,7 @@ function EditRow() {
                           {jobHistory?.service_order_no}
                         </p>
                         <p className="font-sans text-slate-800  font-semibold">
-                          {new Date(
-                            jobHistory?.date_modified
-                          ).toDateString() === null
+                          {jobHistory?.date_modified === null || ""
                             ? ""
                             : new Date(
                                 jobHistory?.date_modified

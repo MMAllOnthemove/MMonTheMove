@@ -177,23 +177,8 @@ function Parts() {
         body: JSON.stringify(postThisInfo),
       }
     );
-    if (
-      searchServiceOrder.length < 10 ||
-      searchServiceOrder.length < 0 ||
-      searchServiceOrder.length === 0
-    ) {
-      setPartsManagementModalState({
-        open: false,
-        view: "/parts",
-      });
-      toast({
-        title: "Job failed.",
-        description: "Not enough characters.",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-    } else if (!response1.ok) {
+    // console.log("Post parts response", response1);
+    if (!response1.ok) {
       setPartsManagementModalState({
         open: false,
         view: "/parts",
@@ -223,7 +208,7 @@ function Parts() {
 
       fetchTableData();
     }
-    
+
     const response2 = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/parts/history/post`,
       {
@@ -316,9 +301,8 @@ function Parts() {
                           placeholder="Part no."
                           defaultValue={singleService?.partNumber}
                           onChange={(e) => handleServiceChange(e, index)}
-                          size={10}
-                          maxLength={10}
-                          minLength={7}
+                          size={12}
+                          maxLength={12}
                           aria-required
                           required
                         />
@@ -330,9 +314,8 @@ function Parts() {
                           placeholder="Seal no."
                           defaultValue={singleService?.sealNumber}
                           onChange={(e) => handleServiceChange(e, index)}
-                          size={10}
+                          size={12}
                           maxLength={10}
-                          minLength={7}
                         />
                         {partsList.length - 1 === index &&
                           partsList.length < 10 && (
@@ -364,6 +347,9 @@ function Parts() {
                     </div>
                   ))}
                 </span>
+                <p className="font-sans font-semibold my-2">
+                  <small> Parts being handed out complete?</small>
+                </p>
                 <span className="flex items-center gap-3">
                   <span className="flex items-center">
                     <input
