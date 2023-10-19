@@ -82,7 +82,7 @@ function Navbar() {
         </div>
         <div className="sd-body">
           <button
-            className={`open-submenu-btn font-sans text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
+            className={`open-submenu-btn  text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
             onClick={() => setHHPSubMenuOpen(!hhpSubMenuOpen)}
           >
             <span>HHP</span>
@@ -98,7 +98,7 @@ function Navbar() {
             <ul className="">
               {hhpNavItems.map((item) => (
                 <li key={item?.id}>
-                  <Link href={item?.pageRoute} className={`sd-link font-sans`}>
+                  <Link href={item?.pageRoute} className={`sd-link `}>
                     {item?.item}
                   </Link>
                 </li>
@@ -106,7 +106,7 @@ function Navbar() {
             </ul>
           )}
           <button
-            className={`open-submenu-btn font-sans text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
+            className={`open-submenu-btn  text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
             onClick={() => sePartsSubMenuOpen(!partsSubMenuOpen)}
           >
             <span>Parts</span>
@@ -122,7 +122,7 @@ function Navbar() {
             <ul className="">
               {partsNavItems.map((item) => (
                 <li key={item?.id}>
-                  <Link href={item?.pageRoute} className={`sd-link font-sans`}>
+                  <Link href={item?.pageRoute} className={`sd-link `}>
                     {item?.item}
                   </Link>
                 </li>

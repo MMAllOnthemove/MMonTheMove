@@ -1,12 +1,10 @@
-import Navbar from "@/components/Navbar";
+import dynamic from "next/dynamic";
+const Navbar = dynamic(() => import("@/components/Navbar"));
+const DashboardStatCards = dynamic(
+  () => import("@/components/DashboardStatCards")
+);
 // Next auth session hook
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
-import {
-  ArrowDownTrayIcon,
-  ArrowPathIcon,
-  UserGroupIcon,
-} from "@heroicons/react/24/outline";
-import { Metric, Text } from "@tremor/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -39,7 +37,7 @@ export default function Dashboard() {
   ).length;
 
   const getQCChecked = tableData.filter(
-    (item) => item.isqcchecked === "TRUE" || item.isqcchecked === "true"
+    (item) => item.is_qc_checked === "TRUE" || item.is_qc_checked === "true"
   ).length;
 
   // Get the engineers and repaired jobs from api
@@ -96,7 +94,7 @@ export default function Dashboard() {
                 </li>
 
                 <li
-                  className="inline-flex items-center px-4 text-gray-700 font-sans"
+                  className="inline-flex items-center px-4 text-gray-700 "
                   aria-current="page"
                 >
                   <Link
@@ -113,7 +111,7 @@ export default function Dashboard() {
                 >
                   <Link
                     href="/dashboard/engineers"
-                    className="text-gray-600 hover:text-blue-500 font-sans"
+                    className="text-gray-600 hover:text-blue-500 "
                   >
                     Engineers
                   </Link>
@@ -122,65 +120,28 @@ export default function Dashboard() {
             </nav>
           </div>
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3 my-3">
-            <article
-              className=" flex flex-col justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer"
+            <DashboardStatCards
+              title="Units pending"
+              stat={getPendingJobs}
               onClick={() => router.push("/dashboard/units/pending")}
-            >
-              <div className="first_row flex justify-between items-center">
-                <div>
-                  <Text className="text-sm text-gray-400 font-medium font-sans">
-                    Units pending
-                  </Text>
-                  <Metric className="text-xl lg:text-5xl font-bold text-indigo-500 ">
-                    {getPendingJobs}
-                  </Metric>
-                </div>
-                <ArrowPathIcon className="h-6 w-6 text-gray-500" />
-              </div>
-            </article>
-
-            <article
-              className="flex items-center justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer"
+            />
+            <DashboardStatCards
+              title="Engineers"
+              stat={getEngineers}
               onClick={() => router.push("/dashboard/engineers")}
-            >
-              <div>
-                <div className="text-sm text-gray-400  font-medium font-sans">
-                  Engineers
-                </div>
-                <div className="flex items-center pt-1">
-                  <div className="text-xl lg:text-5xl font-bold text-indigo-500 ">
-                    {getEngineers}
-                  </div>
-                </div>
-              </div>
-              <div>
-                <UserGroupIcon className="h-6 w-6 text-gray-500" />
-              </div>
-            </article>
-            <article className=" flex flex-col justify-between p-5 border border-[#eee] bg-white rounded cursor-pointer">
-              <div className="first_row flex  justify-between items-center">
-                <div>
-                  <Text className="text-sm text-gray-400  font-medium font-sans">
-                    QC CHECKED
-                  </Text>
-                  <Metric className="text-xl lg:text-5xl font-bold text-indigo-500 ">
-                    {getQCChecked}
-                  </Metric>
-                </div>
-                <ArrowDownTrayIcon className="h-6 w-6 text-gray-500" />
-              </div>
-            </article>
+            />
+            <DashboardStatCards title="QC CHECKED" stat={getQCChecked} />
           </div>
         </section>
         <section className="container mx-auto">
           <div className="max-h-[540px] overflow-y-auto">
             <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-sans text-sm uppercase font-semibold">
+              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white  text-sm uppercase font-semibold">
                 <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
-                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
                     Engineer
                   </td>
-                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
                     Jobs complete
                   </td>
                 </tr>
@@ -188,10 +149,10 @@ export default function Dashboard() {
               <tbody className="z-0">
                 {engineerUnitsAdded.map((item, index) => (
                   <tr key={index}>
-                    <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                    <td className="px-4 py-3  font-medium text-sm max-w-full">
                       {item?.engineer}
                     </td>
-                    <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                    <td className="px-4 py-3  font-medium text-sm max-w-full">
                       {item?.units_added}
                     </td>
                   </tr>

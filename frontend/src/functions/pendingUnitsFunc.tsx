@@ -40,7 +40,7 @@ export function getMappedJobsByStatusCount(
           })
           .map((i: any, index: number) => (
             <p
-              className="font-sans font-semibold border-b border-t border-[#eee] py-1"
+              className=" font-semibold border-b border-t border-[#eee] py-1"
               key={i.id}
             >
               {index + 1 + ")."} {i?.service_order_no} - {i.engineer}
@@ -84,7 +84,7 @@ export function getMappedBookedInJobs(
           })
           .map((i: any, index: number) => (
             <p
-              className="font-sans font-semibold border-b border-t border-[#eee] py-1"
+              className=" font-semibold border-b border-t border-[#eee] py-1"
               key={i.id}
             >
               {index + 1 + ")."} {i?.service_order_no} - {i.engineer}
@@ -108,25 +108,27 @@ export function getFilteredBookedInJobs(
       : [];
   return arr.length;
 }
-
-// // Pulls from our db history table
-// export function getFilteredQuoteApprovedOrRejectedJobs(
-//   arr: string[] | any,
-//   dateFrom: string,
-//   dateTo: string,
-//   statusName: string
-// ) {
-//   arr =
-//     dateFrom.length > 0 && dateTo.length > 0
-//       ? arr.filter((item: any) => {
-//         let date = moment(item.date_modified).format("YYYY-MM-DD");
-//         return (
-//           date >= dateFrom &&
-//           item.service_order_no === statusName &&
-//           date <= dateTo &&
-//           item.service_order_no === statusName
-//         );
-//         })
-//       : [];
-//   return arr.length;
-// }
+// Pull job counts for each engineer
+export function getEngineerJobsByStatusCount(
+  arr: string[] | any,
+  dateFrom: string,
+  dateTo: string,
+  statusName: string,
+  engineerFilter: string
+) {
+  arr =
+    dateFrom.length > 0 && dateTo.length > 0
+      ? arr.filter((item: string | any) => {
+          let date = moment(item.date_modified).format("YYYY-MM-DD");
+          return (
+            date >= dateFrom &&
+            item.in_house_status === statusName &&
+            item.engineer === engineerFilter &&
+            date <= dateTo &&
+            item.in_house_status === statusName &&
+            item.engineer === engineerFilter
+          );
+        })
+      : [];
+  return arr.length;
+}

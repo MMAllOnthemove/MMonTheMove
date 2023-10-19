@@ -73,9 +73,9 @@ function EditClaim() {
     <>
       <main>
         <section className="section container mx-auto">
-          <h1 className="text-center py-2 text-gray-900 font-sans font-semibold lg:text-2xl">
+          <h1 className="text-center py-2 text-gray-900  font-semibold lg:text-2xl">
             Editing service order:{" "}
-            <span className="text-sky-700 font-sans font-bold">
+            <span className="text-sky-700  font-bold">
               {showServiceOrderNumber}
             </span>
           </h1>
@@ -88,7 +88,7 @@ function EditClaim() {
             <span>
               <label
                 htmlFor="inHouseStatus"
-                className="block mb-2 text-sm font-medium font-sans text-gray-900"
+                className="block mb-2 text-sm font-medium  text-gray-900"
               >
                 In house status
               </label>
@@ -110,7 +110,7 @@ function EditClaim() {
             <span>
               <Button
                 type="submit"
-                className="bg-[#082f49] w-full font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
+                className="bg-[#082f49] w-full  font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
                 text="Update"
               />
             </span>

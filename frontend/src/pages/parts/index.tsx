@@ -1,18 +1,26 @@
 import { useToast } from "@chakra-ui/react";
-
+import dynamic from "next/dynamic";
 import { partsModalState } from "@/atoms/partsModalAtom";
-import Container from "@/components/Container";
-import Navbar from "@/components/Navbar";
-import ManagementSearchForm from "@/components/Table/managementSearchForm";
-import Head from "next/head";
-import React, { memo, useCallback, useEffect, useState } from "react";
-import { useSetRecoilState } from "recoil";
-import ToTopButton from "@/components/ToTopButton";
-import { columns } from "@/components/PartsTable/PartsTableColumns";
-import ModalManagement from "@/components/Modals/parts.modal";
+
+const Button = dynamic(() => import("@/components/Buttons"));
+const Container = dynamic(() => import("@/components/Container"));
+const ModalManagement = dynamic(
+  () => import("@/components/Modals/parts.modal")
+);
+
 import { PartsModalTabOneContent } from "@/components/PartsTable/PartsModalTableContent";
+import { columns } from "@/components/PartsTable/PartsTableColumns";
+const ToTopButton = dynamic(() => import("@/components/ToTopButton"));
 import { getSOInfoAllFunctionForParts } from "@/functions/ipass_api";
-import Button from "@/components/Buttons";
+import Head from "next/head";
+import React, { useEffect, useState } from "react";
+import { useSetRecoilState } from "recoil";
+const Navbar = dynamic(() => import("@/components/Navbar"));
+const ManagementSearchForm = dynamic(
+  () => import("@/components/Table/managementSearchForm")
+);
+const Spinner = dynamic(() => import("@/components/Spinner"));
+
 // Tanstack table functionality
 import {
   SortingState,
@@ -27,6 +35,7 @@ import { useRouter } from "next/router";
 
 function Parts() {
   const [tableData, setTableData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Not to be confused with 'setServiceOrder'
   const [searchServiceOrder, setSearchServiceOrder] = useState("");
@@ -146,7 +155,6 @@ function Parts() {
     setPartsList([...partsList, { partNumber: "", sealNumber: "" }]);
   };
 
-  const urls = ["", ""];
   let dateAdded = new Date(); // this will ensure we post using our exact timezone instead of the one from the db
   const postData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -220,7 +228,7 @@ function Parts() {
       .then((res) => res.json())
       .then((data) => console.log("data2", data));
   };
-
+  if (isLoading) return <Spinner />;
   return (
     <>
       <Head>
@@ -246,7 +254,7 @@ function Parts() {
             />
 
             <button
-              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer font-sans rounded-md p-3 my-2"
+              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer  rounded-md p-3 my-2"
               type="button"
               role="button"
               onClick={() =>
@@ -284,7 +292,7 @@ function Parts() {
                 <span>
                   <label
                     htmlFor="partNumber"
-                    className="block mb-2 text-sm font-medium font-sans text-gray-900 "
+                    className="block mb-2 text-sm font-medium  text-gray-900 "
                   >
                     Parts you are issuing. <small>Max = 10</small>
                     <br />
@@ -320,13 +328,13 @@ function Parts() {
                         {partsList.length - 1 === index &&
                           partsList.length < 10 && (
                             <Button
-                              className="my-2 bg-[#082f49]  font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
+                              className="my-2 bg-[#082f49]   font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
                               type="button"
                               onClick={handleServiceAdd}
                               text="Add part"
                             />
                             // <button
-                            //   className="my-2 bg-[#082f49]  font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
+                            //   className="my-2 bg-[#082f49]   font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
                             //   type="button"
                             //   onClick={handleServiceAdd}
                             // >
@@ -339,7 +347,7 @@ function Parts() {
                           <Button
                             type="button"
                             onClick={() => handleServiceRemove(index)}
-                            className="bg-red-500 font-sans font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center remove-btn"
+                            className="bg-red-500  font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center remove-btn"
                             text="Remove"
                           />
                         )}
@@ -347,7 +355,7 @@ function Parts() {
                     </div>
                   ))}
                 </span>
-                <p className="font-sans font-semibold my-2">
+                <p className=" font-semibold my-2">
                   <small> Parts being handed out complete?</small>
                 </p>
                 <span className="flex items-center gap-3">
@@ -365,7 +373,7 @@ function Parts() {
                     />
                     <label
                       htmlFor="partsCheckedYes"
-                      className="cursor-pointer text-sm font-medium font-sans text-gray-900"
+                      className="cursor-pointer text-sm font-medium  text-gray-900"
                     >
                       Yes
                     </label>
@@ -382,7 +390,7 @@ function Parts() {
                     />
                     <label
                       htmlFor="partsCheckedNo"
-                      className="cursor-pointer text-sm font-medium font-sans text-gray-900"
+                      className="cursor-pointer text-sm font-medium  text-gray-900"
                     >
                       No
                     </label>
@@ -392,7 +400,7 @@ function Parts() {
                   <span>
                     <label
                       htmlFor="reasonForIncompleteParts"
-                      className="block mb-2 text-sm font-medium font-sans text-gray-900"
+                      className="block mb-2 text-sm font-medium  text-gray-900"
                     >
                       Reason for incomplete parts
                     </label>
@@ -413,24 +421,19 @@ function Parts() {
             </ModalManagement>
           </section>
 
-          <div className="row flex items-center justify-center">
-            <span className="flex mx-auto text-center font-medium font-sans py-1 text-gray-500">
-              To edit, double click on the row you want to edit
-            </span>
-          </div>
           <div className="max-h-[540px] overflow-y-auto">
             <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-sans text-sm uppercase font-semibold">
+              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white  text-sm uppercase font-semibold">
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id} className="font-sans font-semibold">
-                    <th className="px-4 py-3 cursor-pointer font-sans font-semibold">
+                  <tr key={headerGroup.id} className=" font-semibold">
+                    <th className="px-4 py-3 cursor-pointer  font-semibold">
                       Action
                     </th>
                     {headerGroup.headers.map((header) => {
                       return (
                         <th
                           key={header.id}
-                          className="px-4 py-3 cursor-pointer font-sans font-semibold"
+                          className="px-4 py-3 cursor-pointer  font-semibold"
                         >
                           {header.isPlaceholder ? null : (
                             <div
@@ -465,7 +468,7 @@ function Parts() {
                     onDoubleClick={(e) => handleUpdate(e, row.original.id)}
                     className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
                   >
-                    <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                    <td className="px-4 py-3  font-medium text-sm max-w-full">
                       <button
                         type="button"
                         role="button"
@@ -478,7 +481,7 @@ function Parts() {
                     {row.getVisibleCells().map((cell: any) => (
                       <td
                         key={cell.id}
-                        className="px-4 py-3 font-sans font-medium text-sm max-w-full"
+                        className="px-4 py-3  font-medium text-sm max-w-full"
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
@@ -495,7 +498,7 @@ function Parts() {
           <div className="pagination flex gap-1 p-2">
             <button
               role="button"
-              className="border rounded p-1 font-sans font-medium page-index-button hidden md:visible"
+              className="border rounded p-1  font-medium page-index-button hidden md:visible"
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
             >
@@ -503,7 +506,7 @@ function Parts() {
             </button>
             <button
               role="button"
-              className="border rounded p-1 font-sans font-medium"
+              className="border rounded p-1  font-medium"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
@@ -511,7 +514,7 @@ function Parts() {
             </button>
             <button
               role="button"
-              className="border rounded p-1 font-sans font-medium"
+              className="border rounded p-1  font-medium"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
@@ -519,20 +522,20 @@ function Parts() {
             </button>
             <button
               role="button"
-              className="border rounded p-1 font-sans font-medium page-index-button hidden md:visible"
+              className="border rounded p-1  font-medium page-index-button hidden md:visible"
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
             >
               {">>"}
             </button>
             <span className="flex items-center gap-1">
-              <div className="font-sans font-semibold text-[#0d0d0d]">Page</div>
+              <div className=" font-semibold text-[#0d0d0d]">Page</div>
               <strong>
                 {table.getState().pagination.pageIndex + 1} of{" "}
                 {table.getPageCount()}
               </strong>
             </span>
-            <span className="flex items-center gap-1 font-sans">
+            <span className="flex items-center gap-1 ">
               | Go to page:
               <label htmlFor="search-page-number" className="sr-only">
                 {" "}
@@ -557,7 +560,7 @@ function Parts() {
               id="showPageSize"
               name="showPageSize"
               value={table.getState().pagination.pageSize}
-              className="border border-[#eee] outline-none ring-0 font-sans font-medium cursor-pointer"
+              className="border border-[#eee] outline-none ring-0  font-medium cursor-pointer"
               onChange={(e) => {
                 table.setPageSize(Number(e.target.value));
               }}

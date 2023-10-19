@@ -30,9 +30,7 @@ function ModalManagement(props: Props) {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
-            <h2 className="font-sans text-slate-800">
-              Fields will auto populate
-            </h2>
+            <h2 className=" text-slate-800">Fields will auto populate</h2>
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>{props.children}</ModalBody>
@@ -40,7 +38,7 @@ function ModalManagement(props: Props) {
           {/* <ModalFooter>
             <button
               type="button"
-              className="bg-green-900 text-white font-semibold font-sans rounded py-3 px-2 my-2"
+              className="bg-green-900 text-white font-semibold  rounded py-3 px-2 my-2"
               onClick={handleClose}
             >
               Close
