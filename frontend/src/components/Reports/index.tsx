@@ -56,7 +56,7 @@ export function bookingAgentMapOverJobs(
             );
           })
           .map((item) => (
-            <p className="font-sans font-semibold" key={item.id}>
+            <p className=" font-semibold" key={item.id}>
               {item?.service_order_no}
             </p>
           )) // we will map over it on the page we need

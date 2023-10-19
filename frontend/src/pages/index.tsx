@@ -1,3 +1,4 @@
+import TableBody from "@/components/Table/TableBody";
 import {
   Tab,
   TabList,
@@ -8,9 +9,8 @@ import {
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSetRecoilState } from "recoil";
-import TableBody from "@/components/Table/TableBody";
 
 // Custom imports
 import dynamic from "next/dynamic";
@@ -22,16 +22,19 @@ const ModalManagement = dynamic(
 );
 
 import { managementModalState } from "@/atoms/managementModalAtom";
+const Container = dynamic(() => import("@/components/Container"), {
+  loading: () => <p>Loading wrapper...</p>,
+});
+// import Container from "@/components/Container";
+import ManagementSearchForm from "@/components/Table/managementSearchForm";
 import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
-import Container from "@/components/Container";
 const Navbar = dynamic(() => import("@/components/Navbar"), {
   loading: () => <p>Loading Navbar...</p>,
 });
 const ToTopButton = dynamic(() => import("@/components/ToTopButton"), {
   loading: () => <p>Loading ToTopButton...</p>,
 });
-import ManagementSearchForm from "@/components/Table/managementSearchForm";
 
 import { HomepageModalTabOneContent } from "@/components/Table/homepageModalTabOneContent";
 import { HomepageModalTabTwoContent } from "@/components/Table/homepageModalTabTwoContent";
@@ -51,11 +54,13 @@ import { Itable } from "../../utils/interfaces";
 // Management columns
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
 // import { columns } from "../../components/Table/homepageTableColumns";
-import { columns } from "@/components/Table/homepageTableColumns";
+import Spinner from "@/components/Spinner";
 import Pagination from "@/components/Table/Pagination";
+import { columns } from "@/components/Table/homepageTableColumns";
 
 const Home = () => {
   const [tableData, setTableData] = useState<Itable[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Not to be confused with 'setServiceOrder'
   const [searchServiceOrder, setSearchServiceOrder] = useState("");
@@ -156,11 +161,13 @@ const Home = () => {
 
   const fetchTableData = async () => {
     try {
+      setIsLoading(true);
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`
       );
       const data = await response.json();
       setTableData(data);
+      setIsLoading(false);
     } catch (error) {
       // console.log("Error", error);
     }
@@ -299,7 +306,8 @@ const Home = () => {
       }
     )
       .then((res) => res.json())
-      .then((data) => console.log("data2", data));
+      .then((data) => {});
+    // console.log("data2", data)
   };
 
   // Post repair data
@@ -388,6 +396,14 @@ const Home = () => {
     e.stopPropagation();
     router.push(`/edit/${id}`);
   };
+  const handleView = (e: React.SyntheticEvent, id: string | number) => {
+    e.stopPropagation();
+    setviewRowDetailsState({
+      open: true,
+      view: "view-job-details",
+    });
+    return <p>{id}</p>;
+  };
 
   // Table contents
 
@@ -405,13 +421,12 @@ const Home = () => {
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
   });
-  // console.log("table", table);
 
-  // console.log(table.getHeaderGroups().map((headerGroup) => headerGroup.id));
+  if (isLoading) return <Spinner />;
   return (
     <>
       <Head>
-        <title>HHPManagement</title>
+        <title>HHP Management</title>
         <meta name="robots" content="noindex"></meta>
         <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
@@ -434,7 +449,7 @@ const Home = () => {
             />
 
             <button
-              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer font-sans rounded-md p-3 my-2"
+              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer  rounded-md p-3 my-2"
               type="button"
               role="button"
               onClick={() =>
@@ -519,17 +534,18 @@ const Home = () => {
 
           <div className="max-h-[540px] overflow-y-auto">
             <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-sans text-sm uppercase font-semibold">
+              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white  text-sm uppercase font-semibold">
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id} className="font-sans font-semibold">
-                    <th className="px-4 py-3 cursor-pointer font-sans font-semibold">
+                  <tr key={headerGroup.id} className=" font-semibold">
+                    <th className="px-4 py-3 cursor-pointer  font-semibold">
                       Action
                     </th>
+
                     {headerGroup.headers.map((header) => {
                       return (
                         <th
                           key={header.id}
-                          className="px-4 py-3 cursor-pointer font-sans font-semibold"
+                          className="px-4 py-3 cursor-pointer  font-semibold"
                         >
                           {header.isPlaceholder ? null : (
                             <div
@@ -565,7 +581,7 @@ const Home = () => {
                     onDoubleClick={(e) => handleUpdate(e, row.original.id)}
                     className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
                   >
-                    <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                    <td className="px-4 py-3  font-medium text-sm max-w-full">
                       <button
                         type="button"
                         role="button"
@@ -575,10 +591,11 @@ const Home = () => {
                         Edit
                       </button>
                     </td>
+
                     {row.getVisibleCells().map((cell: any) => (
                       <td
                         key={cell.id}
-                        className="px-4 py-3 font-sans font-medium text-sm max-w-full"
+                        className="px-4 py-3  font-medium text-sm max-w-full"
                       >
                         {flexRender(
                           cell.column.columnDef.cell,

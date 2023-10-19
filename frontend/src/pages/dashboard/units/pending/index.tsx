@@ -1,7 +1,10 @@
+import dynamic from "next/dynamic";
 import { unitsPendingReportModalState } from "@/atoms/unitspendingAtom";
-import ModalManagement from "@/components/Modals/unitspending.modal";
-import Navbar from "@/components/Navbar";
-import UnitsPendingCard from "@/components/UnitsPendingCard";
+const ModalManagement = dynamic(
+  () => import("@/components/Modals/unitspending.modal")
+);
+const Navbar = dynamic(() => import("@/components/Navbar"));
+const UnitsPendingCard = dynamic(() => import("@/components/UnitsPendingCard"));
 import {
   getFilteredBookedInJobs,
   getFilteredJobsByStatusCount,
@@ -66,14 +69,7 @@ function Pending() {
   useEffect(() => {
     fetchDataCombinedData();
   }, []);
-  // console.log(
-  //   getMappedJobsByApprovedOrRejectedStatusCount(
-  //     fetchJobsApprovedAndRejected,
-  //     dateFrom,
-  //     dateTo,
-  //     "Quote approved"
-  //   )
-  // );
+
   return (
     <>
       <Head>
@@ -108,12 +104,12 @@ function Pending() {
                   </li>
 
                   <li
-                    className="inline-flex items-center px-4 text-gray-700 font-sans"
+                    className="inline-flex items-center px-4 text-gray-700 "
                     aria-current="page"
                   >
                     <Link
                       href="/dashboard/units/pending"
-                      className="text-gray-600 hover:text-blue-500 font-sans"
+                      className="text-gray-600 hover:text-blue-500 "
                     >
                       Units pending
                     </Link>
@@ -125,7 +121,7 @@ function Pending() {
                   >
                     <Link
                       href="/dashboard/engineers"
-                      className="text-gray-600 hover:text-blue-500 font-sans"
+                      className="text-gray-600 hover:text-blue-500 "
                     >
                       Engineers
                     </Link>
@@ -133,7 +129,7 @@ function Pending() {
                 </ol>
               </nav>
             </div>
-            <div className="date_input ">
+            <div className="date_input">
               <div className="flex gap-3 items-center">
                 <span>
                   <label htmlFor="dateFrom" className="sr-only">
@@ -146,11 +142,11 @@ function Pending() {
                     max={today}
                     value={dateFrom}
                     onChange={(e) => setDateFrom(e.target.value)}
-                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                    className="mb-2 cursor-pointer bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
                     id="dateFrom"
                   />
                 </span>
-                <span className="font-sans">-</span>
+                <span className="">-</span>
                 <span>
                   <label htmlFor="dateTo" className="sr-only">
                     Date to
@@ -162,7 +158,7 @@ function Pending() {
                     max={today}
                     value={dateTo}
                     onChange={(e) => setDateTo(e.target.value)}
-                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                    className="mb-2 cursor-pointer bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
                     id="dateTo"
                   />
                 </span>
@@ -177,6 +173,15 @@ function Pending() {
             dateFrom={dateFrom}
             dateTo={dateTo}
           />
+          <p className="text-gray-600 text-sm text-center">
+            The stats here are detailed, for quick counts by engineer, go to{" "}
+            <Link
+              href="/dashboard/engineers"
+              className="text-blue-600 hover:text-blue-500 font-semibold"
+            >
+              Engineers
+            </Link>
+          </p>
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3 my-3">
             <UnitsPendingCard
               onClick={() =>

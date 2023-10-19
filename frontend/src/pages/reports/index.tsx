@@ -1,18 +1,20 @@
+import { bookingAgentFunc, bookingAgentFuncTotal } from "@/components/Reports";
 import { getBookingAgentJobs } from "@/functions/getCombinedFlatData";
 import { postBookingAgentsJobs } from "@/functions/ipass_api";
 import { useToast } from "@chakra-ui/react";
-import moment from "moment";
+import dynamic from "next/dynamic";
 import Head from "next/head";
-import React, { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
-import { minDate } from "../../../utils/datemin";
-import { bookingAgentFunc, bookingAgentFuncTotal } from "@/components/Reports";
-import { bookingAgents } from "../../../public/_data/booking_agents";
 import { useRouter } from "next/router";
-import Link from "next/link";
-import ModalManagement from "@/components/Modals/bookings_report.modal";
+import React, { useEffect, useState } from "react";
+import { bookingAgents } from "../../../public/_data/booking_agents";
+import { minDate } from "../../../utils/datemin";
+const Navbar = dynamic(() => import("@/components/Navbar"));
+const ModalManagement = dynamic(
+  () => import("@/components/Modals/bookings_report.modal")
+);
+
 import { bookingsReportModalState } from "@/atoms/bookingsReport";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 
 function Reports() {
   const [searchServiceOrder, setSearchServiceOrder] = useState("");
@@ -212,7 +214,7 @@ function Reports() {
                   id="searchServiceOrder"
                   name="searchServiceOrder"
                   placeholder="Search service order"
-                  className="w-full outline-none py-2 px-2 border-2 font-sans font-semibold text-sm rounded-sm my-2 mx-auto"
+                  className="w-full outline-none py-2 px-2 border-2  font-semibold text-sm rounded-sm my-2 mx-auto"
                   value={searchServiceOrder}
                   onChange={(e) => setSearchServiceOrder(e.target.value)}
                   maxLength={10}
@@ -224,29 +226,29 @@ function Reports() {
           {searchServiceOrder.length === 10 ? (
             <div className="max-h-[540px] overflow-y-auto my-5">
               <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-                <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-sans text-sm uppercase font-semibold">
-                  <tr className="font-sans font-semibold">
-                    <th className="px-4 py-3 cursor-pointer font-sans font-semibold">
+                <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white  text-sm uppercase font-semibold">
+                  <tr className=" font-semibold">
+                    <th className="px-4 py-3 cursor-pointer  font-semibold">
                       Service Order No
                     </th>
-                    <th className="px-4 py-3 cursor-pointer font-sans font-semibold">
+                    <th className="px-4 py-3 cursor-pointer  font-semibold">
                       Agent
                     </th>
-                    <th className="px-4 py-3 cursor-pointer font-sans font-semibold">
+                    <th className="px-4 py-3 cursor-pointer  font-semibold">
                       Action
                     </th>
                   </tr>
                 </thead>
                 <tbody className="z-0">
                   <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
-                    <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                    <td className="px-4 py-3  font-medium text-sm max-w-full">
                       {serviceOrder}
                     </td>
-                    <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                    <td className="px-4 py-3  font-medium text-sm max-w-full">
                       <span>
                         <label
                           htmlFor="bookingAgent"
-                          className="block mb-2 text-sm font-medium font-sans text-gray-900 sr-only"
+                          className="block mb-2 text-sm font-medium  text-gray-900 sr-only"
                         >
                           Booking agent
                         </label>
@@ -267,12 +269,12 @@ function Reports() {
                         </select>
                       </span>
                     </td>
-                    <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                    <td className="px-4 py-3  font-medium text-sm max-w-full">
                       <button
                         type="button"
                         role="button"
                         onClick={postData}
-                        className="font-medium bg-[#082f49] hover:bg-[#075985] active:bg-[#075985]  text-white font-sans rounded py-1 px-2"
+                        className="font-medium bg-[#082f49] hover:bg-[#075985] active:bg-[#075985]  text-white  rounded py-1 px-2"
                       >
                         Add
                       </button>
@@ -287,12 +289,12 @@ function Reports() {
 
           <div className="max-h-[540px] overflow-y-auto">
             <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-sans text-sm uppercase font-semibold">
-                <tr className="font-sans font-semibold">
-                  <th className="px-4 py-3 cursor-pointer font-sans font-semibold">
+              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white  text-sm uppercase font-semibold">
+                <tr className=" font-semibold">
+                  <th className="px-4 py-3 cursor-pointer  font-semibold">
                     Booking Agent
                   </th>
-                  <th className="px-4 py-3 cursor-pointer font-sans font-semibold">
+                  <th className="px-4 py-3 cursor-pointer  font-semibold">
                     Jobs booked
                   </th>
                 </tr>
@@ -307,10 +309,10 @@ function Reports() {
                   }
                   className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
                 >
-                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
                     Shane
                   </td>
-                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
                     {bookingAgentFunc(
                       getBookingAgentJobsData,
                       dateFrom,
@@ -328,10 +330,10 @@ function Reports() {
                   }
                   className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
                 >
-                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
                     Nigel
                   </td>
-                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
                     {bookingAgentFunc(
                       getBookingAgentJobsData,
                       dateFrom,
@@ -349,10 +351,10 @@ function Reports() {
                   }
                   className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
                 >
-                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
                     Sherry
                   </td>
-                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
                     {bookingAgentFunc(
                       getBookingAgentJobsData,
                       dateFrom,
@@ -370,10 +372,10 @@ function Reports() {
                   }
                   className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
                 >
-                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
                     Lavona
                   </td>
-                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
                     {bookingAgentFunc(
                       getBookingAgentJobsData,
                       dateFrom,
@@ -383,10 +385,10 @@ function Reports() {
                   </td>
                 </tr>
                 <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
-                  <td className="px-4 py-3 font-sans font-bold text-sm max-w-full">
+                  <td className="px-4 py-3  font-bold text-sm max-w-full">
                     Total
                   </td>
-                  <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
                     {bookingAgentFuncTotal(
                       getBookingAgentJobsData,
                       dateFrom,
