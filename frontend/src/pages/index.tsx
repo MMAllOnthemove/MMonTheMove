@@ -396,14 +396,6 @@ const Home = () => {
     e.stopPropagation();
     router.push(`/edit/${id}`);
   };
-  const handleView = (e: React.SyntheticEvent, id: string | number) => {
-    e.stopPropagation();
-    setviewRowDetailsState({
-      open: true,
-      view: "view-job-details",
-    });
-    return <p>{id}</p>;
-  };
 
   // Table contents
 
