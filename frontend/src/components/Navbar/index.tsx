@@ -3,7 +3,16 @@ import { useState } from "react";
 import { hhpNavItems, partsNavItems } from "../../../public/_data/navbar";
 import logo from "../../../public/mmlogo.png";
 import Image from "next/image";
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  Bars2Icon,
+} from "@heroicons/react/24/outline";
+import dynamic from "next/dynamic";
+
+const ThemeChangerButton = dynamic(() => import("../Buttons/ThemeChanger"), {
+  ssr: false,
+});
 
 function Navbar() {
   const [isOpen, setIsopen] = useState(false);
@@ -16,7 +25,7 @@ function Navbar() {
 
   return (
     <>
-      <nav className="navbar flex justify-between items-center">
+      <nav className="navbar flex justify-between items-center dark:bg-[#15202B]">
         <button
           role="button"
           id="burger_menu"
@@ -25,30 +34,37 @@ function Navbar() {
           onClick={ToggleSidebar}
         >
           <svg
-            className="burger_icon"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
             viewBox="0 0 24 24"
+            className="dark:fill-white"
           >
-            <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" />
+            <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path>
           </svg>
         </button>
-        <Link
-          className="logo overflow-hidden flex justify-center items-center flex-col p-1"
-          href="/"
-        >
-          <Image
-            src={logo}
-            alt="allelectronics logo"
-            width={50}
-            height={40}
-            priority={true}
-            placeholder="blur"
-          />
-        </Link>
+        <div className="flex items-center gap-1">
+          <ThemeChangerButton />
+          <Link
+            className="logo overflow-hidden flex justify-center items-center flex-col p-1"
+            href="/"
+          >
+            <Image
+              src={logo}
+              alt="allelectronics logo"
+              width={50}
+              height={40}
+              priority={true}
+              placeholder="blur"
+            />
+          </Link>
+        </div>
       </nav>
-      <aside className={`sidebar ${isOpen === true ? "active" : ""}`}>
+      <aside
+        className={`sidebar dark:bg-[#15202B] ${
+          isOpen === true ? "active" : ""
+        }`}
+      >
         <div className="sd-header">
           <Link
             className="logo overflow-hidden flex justify-center items-center flex-col p-1"
@@ -82,15 +98,15 @@ function Navbar() {
         </div>
         <div className="sd-body">
           <button
-            className={`open-submenu-btn  text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
+            className={`open-submenu-btn dark:text-[#eee] text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
             onClick={() => setHHPSubMenuOpen(!hhpSubMenuOpen)}
           >
             <span>HHP</span>
             <span>
               {!hhpSubMenuOpen ? (
-                <ChevronDownIcon className="h-6 w-6 text-white" />
+                <ChevronDownIcon className="h-6 w-6 text-white dark:text-[#eee]" />
               ) : (
-                <ChevronUpIcon className="h-6 w-6 text-white" />
+                <ChevronUpIcon className="h-6 w-6 text-white dark:text-[#eee]" />
               )}
             </span>
           </button>
@@ -98,7 +114,10 @@ function Navbar() {
             <ul className="">
               {hhpNavItems.map((item) => (
                 <li key={item?.id}>
-                  <Link href={item?.pageRoute} className={`sd-link `}>
+                  <Link
+                    href={item?.pageRoute}
+                    className={`sd-link dark:text-[#eee] dark:hover:dark:text-[#eee]`}
+                  >
                     {item?.item}
                   </Link>
                 </li>
@@ -106,15 +125,15 @@ function Navbar() {
             </ul>
           )}
           <button
-            className={`open-submenu-btn  text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
+            className={`open-submenu-btn dark:text-[#eee] text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
             onClick={() => sePartsSubMenuOpen(!partsSubMenuOpen)}
           >
             <span>Parts</span>
             <span>
               {!partsSubMenuOpen ? (
-                <ChevronDownIcon className="h-6 w-6 text-white" />
+                <ChevronDownIcon className="h-6 w-6 text-white dark:text-[#eee]" />
               ) : (
-                <ChevronUpIcon className="h-6 w-6 text-white" />
+                <ChevronUpIcon className="h-6 w-6 text-white dark:text-[#eee]" />
               )}
             </span>
           </button>
@@ -122,7 +141,10 @@ function Navbar() {
             <ul className="">
               {partsNavItems.map((item) => (
                 <li key={item?.id}>
-                  <Link href={item?.pageRoute} className={`sd-link `}>
+                  <Link
+                    href={item?.pageRoute}
+                    className={`sd-link dark:text-[#eee] dark:hover:dark:text-[#eee]`}
+                  >
                     {item?.item}
                   </Link>
                 </li>

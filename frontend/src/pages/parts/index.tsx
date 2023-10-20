@@ -1,7 +1,7 @@
 import { useToast } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import { partsModalState } from "@/atoms/partsModalAtom";
-
+import Pagination from "@/components/Table/Pagination";
 const Button = dynamic(() => import("@/components/Buttons"));
 const Container = dynamic(() => import("@/components/Container"));
 const ModalManagement = dynamic(
@@ -240,7 +240,7 @@ function Parts() {
       <main className="space-between-navbar-and-content">
         <Container>
           <section className="flex justify-center pt-5">
-            <h1 className="mb-4 text-3xl font-extrabold text-gray-900 md:text-5xl lg:text-6xl">
+            <h1 className="mb-4 text-3xl font-extrabold text-gray-900 md:text-5xl lg:text-6xl dark:text-[#eee]">
               <span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
                 Parts
               </span>{" "}
@@ -254,7 +254,7 @@ function Parts() {
             />
 
             <button
-              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer  rounded-md p-3 my-2"
+              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer rounded-md p-3 my-2 dark:text-[#eee]"
               type="button"
               role="button"
               onClick={() =>
@@ -423,7 +423,7 @@ function Parts() {
 
           <div className="max-h-[540px] overflow-y-auto">
             <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white  text-sm uppercase font-semibold">
+              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] text-sm uppercase font-semibold">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id} className=" font-semibold">
                     <th className="px-4 py-3 cursor-pointer  font-semibold">
@@ -466,7 +466,7 @@ function Parts() {
                   <tr
                     key={row.id}
                     onDoubleClick={(e) => handleUpdate(e, row.original.id)}
-                    className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
+                    className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
                   >
                     <td className="px-4 py-3  font-medium text-sm max-w-full">
                       <button
@@ -495,83 +495,7 @@ function Parts() {
             </table>
           </div>
           <div className="h-2" />
-          <div className="pagination flex gap-1 p-2">
-            <button
-              role="button"
-              className="border rounded p-1  font-medium page-index-button hidden md:visible"
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-            >
-              {"<<"}
-            </button>
-            <button
-              role="button"
-              className="border rounded p-1  font-medium"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              {"<"}
-            </button>
-            <button
-              role="button"
-              className="border rounded p-1  font-medium"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              {">"}
-            </button>
-            <button
-              role="button"
-              className="border rounded p-1  font-medium page-index-button hidden md:visible"
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-            >
-              {">>"}
-            </button>
-            <span className="flex items-center gap-1">
-              <div className=" font-semibold text-[#0d0d0d]">Page</div>
-              <strong>
-                {table.getState().pagination.pageIndex + 1} of{" "}
-                {table.getPageCount()}
-              </strong>
-            </span>
-            <span className="flex items-center gap-1 ">
-              | Go to page:
-              <label htmlFor="search-page-number" className="sr-only">
-                {" "}
-                Go to page:
-              </label>
-              <input
-                id="search-page-number"
-                name="search-page-number"
-                type="number"
-                defaultValue={table.getState().pagination.pageIndex + 1}
-                onChange={(e) => {
-                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                  table.setPageIndex(page);
-                }}
-                className="border p-1 rounded w-16"
-              />
-            </span>
-            <label htmlFor="showPageSize" className="sr-only">
-              Show Page Size
-            </label>
-            <select
-              id="showPageSize"
-              name="showPageSize"
-              value={table.getState().pagination.pageSize}
-              className="border border-[#eee] outline-none ring-0  font-medium cursor-pointer"
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-              }}
-            >
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Pagination table={table} />
           <ToTopButton />
         </Container>
       </main>

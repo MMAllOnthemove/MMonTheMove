@@ -161,13 +161,11 @@ const Home = () => {
 
   const fetchTableData = async () => {
     try {
-      setIsLoading(true);
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`
       );
       const data = await response.json();
       setTableData(data);
-      setIsLoading(false);
     } catch (error) {
       // console.log("Error", error);
     }
@@ -414,7 +412,6 @@ const Home = () => {
     onGlobalFilterChange: setFiltering,
   });
 
-  if (isLoading) return <Spinner />;
   return (
     <>
       <Head>
@@ -427,7 +424,7 @@ const Home = () => {
       <main className="space-between-navbar-and-content">
         <Container>
           <section className="flex justify-center pt-5">
-            <h1 className="mb-4 text-3xl font-extrabold text-gray-900 md:text-5xl lg:text-6xl">
+            <h1 className="mb-4 text-3xl font-extrabold text-gray-900 md:text-5xl lg:text-6xl dark:text-[#eee]">
               <span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
                 HHP
               </span>{" "}
@@ -441,7 +438,7 @@ const Home = () => {
             />
 
             <button
-              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer  rounded-md p-3 my-2"
+              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer dark:text-[#eee] rounded-md p-3 my-2"
               type="button"
               role="button"
               onClick={() =>
@@ -526,7 +523,7 @@ const Home = () => {
 
           <div className="max-h-[540px] overflow-y-auto">
             <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white  text-sm uppercase font-semibold">
+              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] text-sm uppercase font-semibold">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id} className=" font-semibold">
                     <th className="px-4 py-3 cursor-pointer  font-semibold">
@@ -571,7 +568,7 @@ const Home = () => {
                   <tr
                     key={row.id}
                     onDoubleClick={(e) => handleUpdate(e, row.original.id)}
-                    className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
+                    className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
                   >
                     <td className="px-4 py-3  font-medium text-sm max-w-full">
                       <button

@@ -164,14 +164,17 @@ function Reports() {
       <Navbar />
       <main className="space-between-navbar-and-content">
         <section className="container mx-auto p-3">
-          <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl text-center">
+          <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-[#eee] md:text-5xl lg:text-6xl text-center">
             Booking Agents
           </h1>
           <section className="flex flex-col justify-center gap-3 py-4">
             <div className="flex gap-3 items-center justify-between flex-col lg:flex-row">
               <div className="flex gap-3 items-center">
                 <span>
-                  <label htmlFor="dateFrom" className="sr-only">
+                  <label
+                    htmlFor="dateFrom"
+                    className="sr-only dark:text-[#eee]"
+                  >
                     Date from
                   </label>
                   <input
@@ -181,13 +184,13 @@ function Reports() {
                     max={addTwoMoreDays}
                     value={dateFrom}
                     onChange={(e) => setDateFrom(e.target.value)}
-                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 dark:bg-[#22303C] dark:text-[#eee] text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
                     id="dateFrom"
                   />
                 </span>
                 <span>-</span>
                 <span>
-                  <label htmlFor="dateTo" className="sr-only">
+                  <label htmlFor="dateTo" className="sr-only dark:text-[#eee]">
                     Date to
                   </label>
                   <input
@@ -197,7 +200,7 @@ function Reports() {
                     max={addTwoMoreDays}
                     value={dateTo}
                     onChange={(e) => setDateTo(e.target.value)}
-                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 dark:bg-[#22303C] dark:text-[#eee] text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
                     id="dateTo"
                   />
                 </span>
@@ -205,7 +208,7 @@ function Reports() {
               <span>
                 <label
                   htmlFor="searchServiceOrder"
-                  className="text-center sr-only"
+                  className="text-center sr-only dark:text-[#eee]"
                 >
                   Search Service Order
                 </label>
@@ -214,7 +217,7 @@ function Reports() {
                   id="searchServiceOrder"
                   name="searchServiceOrder"
                   placeholder="Search service order"
-                  className="w-full outline-none py-2 px-2 border-2  font-semibold text-sm rounded-sm my-2 mx-auto"
+                  className="w-full outline-none py-2 px-2 border-2  font-semibold text-sm rounded-sm my-2 mx-auto dark:bg-[#22303C] dark:text-[#eee]"
                   value={searchServiceOrder}
                   onChange={(e) => setSearchServiceOrder(e.target.value)}
                   maxLength={10}
@@ -240,7 +243,7 @@ function Reports() {
                   </tr>
                 </thead>
                 <tbody className="z-0">
-                  <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
+                  <tr className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]">
                     <td className="px-4 py-3  font-medium text-sm max-w-full">
                       {serviceOrder}
                     </td>
@@ -307,7 +310,7 @@ function Reports() {
                       view: "shanes300123",
                     })
                   }
-                  className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
+                  className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
                 >
                   <td className="px-4 py-3  font-medium text-sm max-w-full">
                     Shane
@@ -328,7 +331,7 @@ function Reports() {
                       view: "nigelc01",
                     })
                   }
-                  className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
+                  className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
                 >
                   <td className="px-4 py-3  font-medium text-sm max-w-full">
                     Nigel
@@ -349,7 +352,7 @@ function Reports() {
                       view: "sherryl060223",
                     })
                   }
-                  className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
+                  className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
                 >
                   <td className="px-4 py-3  font-medium text-sm max-w-full">
                     Sherry
@@ -370,7 +373,7 @@ function Reports() {
                       view: "lavonaj01",
                     })
                   }
-                  className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
+                  className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
                 >
                   <td className="px-4 py-3  font-medium text-sm max-w-full">
                     Lavona
@@ -384,7 +387,7 @@ function Reports() {
                     )}
                   </td>
                 </tr>
-                <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
+                <tr className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]">
                   <td className="px-4 py-3  font-bold text-sm max-w-full">
                     Total
                   </td>

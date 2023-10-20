@@ -1,0 +1,21 @@
+import { useTheme } from "next-themes";
+import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
+
+const ThemeChangerButton = () => {
+  const { systemTheme, theme, setTheme } = useTheme();
+  const currentTheme = theme === "system" ? systemTheme : theme;
+
+  return (
+    <button
+      onClick={() => (theme == "dark" ? setTheme("light") : setTheme("dark"))}
+      className="p-2 outline-0 cursor-pointer"
+    >
+      {/* Toggle Mode */}
+      {theme === "light" && <MoonIcon className="h-6 w-6 text-[#212529]" />}
+
+      {theme === "dark" && <SunIcon className="h-6 w-6 text-[#fafafa]" />}
+    </button>
+  );
+};
+
+export default ThemeChangerButton;
