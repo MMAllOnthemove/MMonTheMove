@@ -77,13 +77,13 @@ function Pending() {
       </Head>
       <Navbar />
       <main className="space-between-navbar-and-content">
-        <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl text-center fonts-sans">
+        <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-[#eee] md:text-5xl lg:text-6xl text-center fonts-sans">
           Pending status breakdown
         </h1>
 
         <section className="container mx-auto stat_cards max-w-6xl py-4">
           <div className="breadcrumb_and_date_filter flex items-center justify-between">
-            <div className="bg-white p-4 flex items-center flex-wrap">
+            <div className="bg-white p-4 flex items-center flex-wrap  dark:bg-[#15202B] dark:border dark:border-[#eee]">
               <nav aria-label="breadcrumb">
                 <ol className="flex leading-none text-blue-500 divide-x">
                   <li className="pr-4">
@@ -92,7 +92,7 @@ function Pending() {
                       className="inline-flex items-center"
                     >
                       <svg
-                        className="w-5 h-auto fill-current mx-2 text-gray-400"
+                        className="w-5 h-auto fill-current mx-2 text-gray-400  dark:text-[#eee]"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
                         fill="#000000"
@@ -109,7 +109,7 @@ function Pending() {
                   >
                     <Link
                       href="/dashboard/units/pending"
-                      className="text-gray-600 hover:text-blue-500 "
+                      className="text-gray-600 hover:text-blue-500 dark:text-[#eee]"
                     >
                       Units pending
                     </Link>
@@ -121,7 +121,7 @@ function Pending() {
                   >
                     <Link
                       href="/dashboard/engineers"
-                      className="text-gray-600 hover:text-blue-500 "
+                      className="text-gray-600 hover:text-blue-500 dark:text-[#eee]"
                     >
                       Engineers
                     </Link>
@@ -142,7 +142,7 @@ function Pending() {
                     max={today}
                     value={dateFrom}
                     onChange={(e) => setDateFrom(e.target.value)}
-                    className="mb-2 cursor-pointer bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                    className="mb-2 cursor-pointer bg-white dark:bg-[#22303C] dark:text-[#eee] dark:accent-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
                     id="dateFrom"
                   />
                 </span>
@@ -158,7 +158,7 @@ function Pending() {
                     max={today}
                     value={dateTo}
                     onChange={(e) => setDateTo(e.target.value)}
-                    className="mb-2 cursor-pointer bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                    className="mb-2 cursor-pointer bg-white dark:bg-[#22303C] dark:text-[#eee] dark:accent-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
                     id="dateTo"
                   />
                 </span>
@@ -173,7 +173,7 @@ function Pending() {
             dateFrom={dateFrom}
             dateTo={dateTo}
           />
-          <p className="text-gray-600 text-sm text-center">
+          <p className="text-gray-600 text-sm text-center my-3 dark:text-[#eee]">
             The stats here are detailed, for quick counts by engineer, go to{" "}
             <Link
               href="/dashboard/engineers"

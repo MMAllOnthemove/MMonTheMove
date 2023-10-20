@@ -72,17 +72,17 @@ export default function Dashboard() {
       <Navbar />
       <main className="space-between-navbar-and-content">
         <section className="container max-w-6xl px-5 mx-auto pt-5 mb-28">
-          <h1 className="mb-4 text-4xl font-semibold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
+          <h1 className="mb-4 text-4xl font-semibold leading-none tracking-tight text-gray-900 dark:text-[#eee] md:text-5xl lg:text-6xl">
             Analytics overview
           </h1>
 
-          <div className="bg-white p-4 flex items-center flex-wrap">
+          <div className="bg-white p-4 flex items-center flex-wrap dark:bg-[#15202B] dark:border dark:border-[#eee]">
             <nav aria-label="breadcrumb">
               <ol className="flex leading-none text-blue-500 divide-x">
                 <li className="pr-4">
                   <Link href="/dashboard" className="inline-flex items-center">
                     <svg
-                      className="w-5 h-auto fill-current mx-2 text-gray-400"
+                      className="w-5 h-auto fill-current mx-2 text-gray-400 dark:text-[#eee]"
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
                       fill="#000000"
@@ -99,7 +99,7 @@ export default function Dashboard() {
                 >
                   <Link
                     href="/dashboard/units/pending"
-                    className="text-gray-600 hover:text-blue-500 "
+                    className="text-gray-600 hover:text-blue-500 dark:text-[#eee]"
                   >
                     Units pending
                   </Link>
@@ -111,7 +111,7 @@ export default function Dashboard() {
                 >
                   <Link
                     href="/dashboard/engineers"
-                    className="text-gray-600 hover:text-blue-500 "
+                    className="text-gray-600 hover:text-blue-500 dark:text-[#eee]"
                   >
                     Engineers
                   </Link>
@@ -135,7 +135,7 @@ export default function Dashboard() {
         </section>
         <section className="container mx-auto">
           <div className="max-h-[540px] overflow-y-auto">
-            <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
+            <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 dark:text-[#eee] table-auto">
               <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white  text-sm uppercase font-semibold">
                 <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
                   <td className="px-4 py-3  font-medium text-sm max-w-full">
@@ -148,7 +148,10 @@ export default function Dashboard() {
               </thead>
               <tbody className="z-0">
                 {engineerUnitsAdded.map((item, index) => (
-                  <tr key={index}>
+                  <tr
+                    key={index}
+                    className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
+                  >
                     <td className="px-4 py-3  font-medium text-sm max-w-full">
                       {item?.engineer}
                     </td>
