@@ -7,39 +7,6 @@ import {
   Tabs,
   useToast,
 } from "@chakra-ui/react";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { useSetRecoilState } from "recoil";
-
-// Custom imports
-import dynamic from "next/dynamic";
-const ModalManagement = dynamic(
-  () => import("@/components/Modals/modal.management"),
-  {
-    loading: () => <p>Loading modal...</p>,
-  }
-);
-
-import { managementModalState } from "@/atoms/managementModalAtom";
-const Container = dynamic(() => import("@/components/Container"), {
-  loading: () => <p>Loading wrapper...</p>,
-});
-// import Container from "@/components/Container";
-import ManagementSearchForm from "@/components/Table/managementSearchForm";
-import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
-import { getSOInfoAllFunction } from "@/functions/ipass_api";
-const Navbar = dynamic(() => import("@/components/Navbar"), {
-  loading: () => <p>Loading Navbar...</p>,
-});
-const ToTopButton = dynamic(() => import("@/components/ToTopButton"), {
-  loading: () => <p>Loading ToTopButton...</p>,
-});
-
-import { HomepageModalTabOneContent } from "@/components/Table/homepageModalTabOneContent";
-import { HomepageModalTabTwoContent } from "@/components/Table/homepageModalTabTwoContent";
-
-// Tanstack table functionality
 import {
   SortingState,
   flexRender,
@@ -49,21 +16,50 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import dynamic from "next/dynamic";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { useSetRecoilState } from "recoil";
+
+// Custom imports
+import { managementModalState } from "@/atoms/managementModalAtom";
+import Pagination from "@/components/Table/Pagination";
+import { HomepageModalTabOneContent } from "@/components/Table/homepageModalTabOneContent";
+import { HomepageModalTabTwoContent } from "@/components/Table/homepageModalTabTwoContent";
+import { columns } from "@/components/Table/homepageTableColumns";
+import ManagementSearchForm from "@/components/Table/managementSearchForm";
+import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
+import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
+import { getSOInfoAllFunction } from "@/functions/ipass_api";
 import { Itable } from "../../utils/interfaces";
 
-// Management columns
-import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
-// import { columns } from "../../components/Table/homepageTableColumns";
-import Spinner from "@/components/Spinner";
-import Pagination from "@/components/Table/Pagination";
-import { columns } from "@/components/Table/homepageTableColumns";
+// Dynamic imports
+const ModalManagement = dynamic(
+  () => import("@/components/Modals/modal.management"),
+  {
+    loading: () => <p>Loading modal...</p>,
+  }
+);
+const Container = dynamic(() => import("@/components/Container"), {
+  loading: () => <p>Loading wrapper...</p>,
+});
+const Navbar = dynamic(() => import("@/components/Navbar"), {
+  loading: () => <p>Loading Navbar...</p>,
+});
+const ToTopButton = dynamic(() => import("@/components/ToTopButton"), {
+  loading: () => <p>Loading ToTopButton...</p>,
+});
+const Button = dynamic(() => import("@/components/Buttons"), {
+  loading: () => <p>Loading button...</p>,
+});
 
 const Home = () => {
   const [tableData, setTableData] = useState<Itable[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   // Not to be confused with 'setServiceOrder'
   const [searchServiceOrder, setSearchServiceOrder] = useState("");
+
   // Search ticket for tab two
   const [searchTicket, setSearchTicket] = useState("");
 
@@ -95,13 +91,12 @@ const Home = () => {
   const [inHouseStatus, setInHouseStatus] = useState("");
   const [ticket, setTicket] = useState("");
   const [department, setDepartment] = useState("HHP");
-
   const [GSPNStatus, setGSPNStatus] = useState<string | null>("");
+
   // We want to get the Status Desc from the last object element of this array
   let GSPNStatusGetLastElement = GSPNStatus?.slice(-1);
 
   // Settings the user to also be the engineer
-
   let user = engineer;
 
   // Repairshpr states start here
@@ -159,20 +154,9 @@ const Home = () => {
     });
   }, [searchServiceOrder]);
 
-  const fetchTableData = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`
-      );
-      const data = await response.json();
-      setTableData(data);
-    } catch (error) {
-      // console.log("Error", error);
-    }
-  };
   useEffect(() => {
-    fetchTableData();
-  }, []);
+    fetchDataCombinedData({ setTableData });
+  }, [tableData]);
 
   useEffect(() => {
     getRepair({
@@ -437,19 +421,17 @@ const Home = () => {
               setFiltering={(e) => setFiltering(e.target.value)}
             />
 
-            <button
-              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer dark:text-[#eee] rounded-md p-3 my-2"
+            <Button
               type="button"
-              role="button"
+              text="Add job"
+              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer dark:text-[#eee] rounded-md p-3 my-2"
               onClick={() =>
                 setManagementModalState({
                   open: true,
                   view: "/",
                 })
               }
-            >
-              Add job
-            </button>
+            />
 
             {/* Called the modal here and added a post data prop that posts data on click */}
             <ModalManagement>

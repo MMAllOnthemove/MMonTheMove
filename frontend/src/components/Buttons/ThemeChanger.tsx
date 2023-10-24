@@ -14,6 +14,9 @@ const ThemeChangerButton = () => {
       {theme === "light" && <MoonIcon className="h-6 w-6 text-[#212529]" />}
 
       {theme === "dark" && <SunIcon className="h-6 w-6 text-[#fafafa]" />}
+      {theme !== "dark" && theme !== "light" && (
+        <MoonIcon className="h-6 w-6 text-[#212529]" />
+      )}
     </button>
   );
 };
