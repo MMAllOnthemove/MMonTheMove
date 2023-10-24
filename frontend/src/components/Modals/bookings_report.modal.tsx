@@ -35,16 +35,16 @@ function ModalManagement({ getBookingAgentJobsData, dateFrom, dateTo }: Props) {
         <ModalContent>
           <ModalHeader>
             {modalState.view === "shanes300123" && (
-              <h2 className="font-sans text-slate-800">Shane</h2>
+              <h2 className=" text-slate-800">Shane</h2>
             )}
             {modalState.view === "nigelc01" && (
-              <h2 className="font-sans text-slate-800">Nigel</h2>
+              <h2 className=" text-slate-800">Nigel</h2>
             )}
             {modalState.view === "sherryl060223" && (
-              <h2 className="font-sans text-slate-800">Sherry</h2>
+              <h2 className=" text-slate-800">Sherry</h2>
             )}
             {modalState.view === "lavonaj01" && (
-              <h2 className="font-sans text-slate-800">Lavona</h2>
+              <h2 className=" text-slate-800">Lavona</h2>
             )}
           </ModalHeader>
           <ModalCloseButton />

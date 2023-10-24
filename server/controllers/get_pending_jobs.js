@@ -18,7 +18,7 @@ const getJobsOnBookedinStatusForToday = async (req, res) => {
     );
     res.json(getQuery.rows);
   } catch (error) {
-    console.log("Jobs on Booked in for today error", error);
+    // console.log("Jobs on Booked in for today error", error);
   }
 };
 const getJobsOnBookedinStatusForYesterday = async (req, res) => {
@@ -28,6 +28,6 @@ const getJobsOnBookedinStatusForYesterday = async (req, res) => {
     );
     res.json(getQuery.rows);
   } catch (error) {
-    console.log("Jobs on Booked in for yesterday error", error);
+    // console.log("Jobs on Booked in for yesterday error", error);
   }
 };

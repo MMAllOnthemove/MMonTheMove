@@ -7,25 +7,8 @@ module.exports = {
     "./src/**/*.{ts,tsx}",
     "./node_modules/@tremor/**/*.{js,ts,jsx,tsx}", // Tremor module
   ],
+  darkMode: "class",
   theme: {
-    fontFamily: {
-      sans: [
-        "Inter",
-        "system-ui",
-        "-apple-system",
-        "BlinkMacSystemFont",
-        '"Segoe UI"',
-        "Roboto",
-        '"Helvetica Neue"',
-        "Arial",
-        '"Noto Sans"',
-        "sans-serif",
-        '"Apple Color Emoji"',
-        '"Segoe UI Emoji"',
-        '"Segoe UI Symbol"',
-        '"Noto Color Emoji"',
-      ],
-    },
     transparent: "transparent",
     current: "currentColor",
     extend: {
@@ -147,5 +130,5 @@ module.exports = {
         /^(fill-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
     },
   ],
-  plugins: [require("@headlessui/tailwindcss")],
+  plugins: [],
 };
