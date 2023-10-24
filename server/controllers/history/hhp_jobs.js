@@ -60,7 +60,7 @@ const postRepairJobsHistory = async (req, res) => {
     );
     res.status(200).json("Job added, thank you!");
   } catch (err) {
-    console.log("Create task error: ", err);
+    // console.log("Create task error: ", err);
   }
 };
 
@@ -74,7 +74,7 @@ const getAllJobsHistory = async (req, res) => {
     );
     res.json(newResults.rows);
   } catch (err) {
-    console.log("getAllJobs", err);
+    // console.log("getAllJobs", err);
   }
 };
 
@@ -136,7 +136,7 @@ const postJobsHistory = async (req, res) => {
 
     res.status(201).json("Job added, thank you!");
   } catch (err) {
-    console.log("Create task error: ", err);
+    // console.log("Create task error: ", err);
   }
 };
 

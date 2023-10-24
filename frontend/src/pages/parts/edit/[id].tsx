@@ -1,12 +1,13 @@
 import React from "react";
+import dynamic from "next/dynamic";
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useEffect, useState, useCallback } from "react";
 import { partsStatus } from "../../../../public/_data/statuses";
+const Button = dynamic(() => import("@/components/Buttons"));
+const Container = dynamic(() => import("@/components/Container"));
 import Head from "next/head";
-import Button from "@/components/Buttons";
 import UnitFinder from "@/pages/api/UnitFinder";
-import Container from "@/components/Container";
 
 function PartsEdit() {
   const [getPartsJobHistory, setGetPartsJobHistory] = useState<
@@ -182,28 +183,28 @@ function PartsEdit() {
       <main>
         <Container>
           <section className="section">
-            <span className="flex items-center justify-between">
+            <span className="flex items-center justify-between my-3">
               <Button
                 type="button"
                 onClick={() => history.back()}
-                className="bg-[#082f49]  font-sans font-semibold text-white hover:bg-blue-800 rounded-sm text-sm p-2.5 text-center"
+                className="bg-[#082f49]  font-semibold text-white dark:text-[#eee] hover:bg-blue-800 rounded-sm text-sm p-2.5 text-center"
                 text="Back"
               />
               <div>
-                <h1 className="text-center py-2 text-gray-900 font-sans font-semibold lg:text-2xl">
+                <h1 className="text-center py-2 text-gray-900 dark:text-[#eee] font-semibold lg:text-2xl">
                   {" "}
                   Editing service order: {showServiceOrderNumber}
                 </h1>
-                <hr />
               </div>
               <div />
             </span>
 
+            <hr />
             <form className="my-3" onSubmit={updateData} id="updateJobForm">
               <span>
                 <label
                   htmlFor="showServiceOrderNumber"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 "
+                  className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
                 >
                   Service Order No
                 </label>
@@ -211,7 +212,7 @@ function PartsEdit() {
                   type="text"
                   name="showServiceOrderNumber"
                   id="showServiceOrderNumber"
-                  className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                  className="mb-2 bg-gray-50 dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                   defaultValue={showServiceOrderNumber}
                   disabled
                 />
@@ -219,7 +220,7 @@ function PartsEdit() {
               <span>
                 <label
                   htmlFor="ticket"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 "
+                  className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
                 >
                   Ticket number
                 </label>
@@ -229,13 +230,13 @@ function PartsEdit() {
                   id="ticket"
                   defaultValue={ticket}
                   disabled
-                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
               </span>
               <span>
                 <label
                   htmlFor="fault"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 "
+                  className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
                 >
                   Fault
                 </label>
@@ -245,13 +246,13 @@ function PartsEdit() {
                   id="fault"
                   defaultValue={fault.toUpperCase()}
                   disabled
-                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="mb-2 bg-white  dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
               </span>
               <span>
                 <label
                   htmlFor="engineer"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 "
+                  className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
                 >
                   Engineer
                 </label>
@@ -259,7 +260,7 @@ function PartsEdit() {
                   type="text"
                   name="engineer"
                   id="engineer"
-                  className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="mb-2 bg-gray-50 dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   defaultValue={engineer}
                   disabled
                 />
@@ -267,7 +268,7 @@ function PartsEdit() {
               <span>
                 <label
                   htmlFor="department"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900 "
+                  className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
                 >
                   Department
                 </label>
@@ -275,7 +276,7 @@ function PartsEdit() {
                   type="text"
                   name="department"
                   id="department"
-                  className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="mb-2 bg-gray-50 dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   defaultValue={department}
                   disabled
                 />
@@ -283,7 +284,7 @@ function PartsEdit() {
               <span>
                 <label
                   htmlFor="inHouseStatus"
-                  className="block mb-2 text-sm font-medium font-sans text-gray-900"
+                  className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
                 >
                   In house status
                 </label>
@@ -291,7 +292,7 @@ function PartsEdit() {
                   value={inHouseStatus}
                   onChange={(e) => setInHouseStatus(e.target.value)}
                   id="inHouseStatus"
-                  className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="mb-2 cursor-pointer bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 >
                   <option disabled value="">
                     Choose status
@@ -303,13 +304,13 @@ function PartsEdit() {
                   ))}
                 </select>
                 <span>
-                  <h4 className="block mb-2 text-sm font-medium font-sans text-gray-900">
+                  <h4 className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]">
                     Parts already given:
                   </h4>
                   {partsAlreadyGiven?.map((part: string, index: number) => (
-                    <p className="block mb-2 text-sm font-normal font-sans text-gray-900">
+                    <p className="block mb-2 text-sm font-normal  text-gray-900 dark:text-[#eee]">
                       <span
-                        className="text-sm font-bold font-sans text-gray-900"
+                        className="text-sm font-bold  text-gray-900 dark:text-[#eee]"
                         key={index}
                       >
                         {index + 1}
@@ -321,7 +322,7 @@ function PartsEdit() {
                 <span>
                   <label
                     htmlFor="dispatchAnalysis"
-                    className="block mb-2 text-sm font-medium font-sans text-gray-900"
+                    className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
                   >
                     Dispatch comment
                   </label>
@@ -330,7 +331,7 @@ function PartsEdit() {
                     id="dispatchAnalysis"
                     value={dispatchAnalysis}
                     onChange={(e) => setDispatchAnalysis(e.target.value)}
-                    className="mb-2 bg-white border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5"
+                    className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5"
                   ></textarea>
                 </span>
               </span>
@@ -338,7 +339,7 @@ function PartsEdit() {
               <span>
                 <Button
                   type="submit"
-                  className="bg-[#082f49] w-full font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
+                  className="bg-[#082f49] w-full  font-semibold text-white dark:text-[#eee] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
                   text="Update"
                 />
               </span>
@@ -346,13 +347,15 @@ function PartsEdit() {
             {/* <span>
               <Button
                 type="button"
-                className="bg-red-500 w-full font-sans font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center my-3"
+                className="bg-red-500 w-full  font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center my-3"
                 text="Delete"
                 onClick={deleteData}
               />
             </span> */}
             <section className="my-4 flex flex-col gap-5 py-4">
-              <p className="font-sans font-semibold text-slate-700">History</p>
+              <p className=" font-semibold text-slate-700 dark:text-[#eee]">
+                History
+              </p>
               {getPartsJobHistory.length > 0
                 ? getPartsJobHistory
                     .filter(
@@ -365,13 +368,13 @@ function PartsEdit() {
                         key={jobHistory?.id}
                       >
                         <div className="top_row flex items-center justify-between">
-                          <h3 className=" text-slate-800 font-semibold">
+                          <h3 className=" text-slate-800 font-semibold dark:text-[#eee]">
                             {jobHistory?.dispatch_by}
                           </h3>
-                          <p className="font-sans text-slate-800  font-semibold">
+                          <p className=" text-slate-800  font-semibold dark:text-[#eee]">
                             {jobHistory?.service_order}
                           </p>
-                          <p className="font-sans text-slate-800  font-semibold">
+                          <p className=" text-slate-800  font-semibold dark:text-[#eee]">
                             {jobHistory?.job_modified_date === null || ""
                               ? ""
                               : new Date(
@@ -381,24 +384,24 @@ function PartsEdit() {
                         </div>
                         <hr />
                         <div className="rounded-sm flex justify-between items-center">
-                          <h5 className="font-sans text-slate-800 font-medium">
+                          <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
                             Assigned to:{" "}
                           </h5>
-                          <h5 className="font-sans text-slate-800 font-medium">
+                          <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
                             {jobHistory?.engineer}
                           </h5>
                         </div>
                         <div className="rounded-sm flex justify-between items-center">
-                          <h5 className="font-sans text-slate-800 font-medium">
+                          <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
                             In house status:{" "}
                           </h5>
-                          <h5 className="font-sans text-slate-800 font-medium">
+                          <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
                             {jobHistory?.in_house_status}
                           </h5>
                         </div>
 
-                        <div className="bg-[#f8f9fa]">
-                          <p className="font-sans text-slate-800">
+                        <div className="bg-[#f8f9fa] dark:bg-[#22303C]">
+                          <p className="  text-slate-800  dark:text-[#eee] font-medium">
                             {jobHistory?.dispatch_analysis.toUpperCase()}
                           </p>
                         </div>

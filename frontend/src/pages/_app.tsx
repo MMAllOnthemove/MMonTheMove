@@ -3,25 +3,29 @@ import "@/styles/globals.css";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import type { AppProps } from "next/app";
 import { RecoilRoot } from "recoil";
-import { Inter } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 
-const inter = Inter({ subsets: ["latin"] });
 // Instances of useSession will then have access to the session data and status. The <SessionProvider /> also takes care of keeping the session updated and synced between browser tabs and windows.
-
+const theme = extendTheme({
+  styles: {
+    global: () => ({
+      body: {
+        bg: "",
+      },
+    }),
+  },
+});
 export default function App({
   Component,
   pageProps: { ...pageProps },
 }: AppProps) {
   return (
     <>
-      <style jsx global>{`
-        html {
-          font-family: ${inter.style.fontFamily};
-        }
-      `}</style>
       <RecoilRoot>
-        <ChakraProvider>
-          <Component {...pageProps} />
+        <ChakraProvider theme={theme}>
+          <ThemeProvider attribute="class">
+            <Component {...pageProps} />
+          </ThemeProvider>
         </ChakraProvider>
       </RecoilRoot>
     </>
