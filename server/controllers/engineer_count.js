@@ -20,7 +20,7 @@ const getEngineerHeadCount = async (req, res) => {
     );
     res.json(newResults.rows);
   } catch (error) {
-    console.log("Error counting engineers", error);
+    // console.log("Error counting engineers", error);
   }
 };
 module.exports = { getEngineerHeadCount };

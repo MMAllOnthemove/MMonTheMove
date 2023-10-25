@@ -1,11 +1,7 @@
 const express = require("express");
-const { Server } = require("socket.io");
 const app = express();
 const helmet = require("helmet");
 const cors = require("cors");
-const pool = require("./db");
-const limiter = require("../server/controllers/rateLimiter");
-const { v4: uuidv4 } = require("uuid");
 
 const hhpJobs = require("../server/routes/hhp_jobs_route");
 const hhpJobsHistory = require("../server/routes/history/hhp_jobs_history_routes");

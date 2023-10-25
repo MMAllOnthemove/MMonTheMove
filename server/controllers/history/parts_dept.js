@@ -58,7 +58,7 @@ const postPartsJobHistory = async (req, res) => {
     );
     res.status(201).json("Job added, thank you!");
   } catch (e) {
-    console.log("parts post history error", e);
+    // console.log("parts post history error", e);
   }
 };
 const getPartsJobsHistory = async (req, res) => {
@@ -68,7 +68,7 @@ const getPartsJobsHistory = async (req, res) => {
     );
     res.json(newResults.rows);
   } catch (error) {
-    console.log(err);
+    // console.log(err);
   }
 };
 module.exports = { postPartsJobHistory, getPartsJobsHistory };

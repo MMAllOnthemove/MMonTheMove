@@ -53,7 +53,7 @@ const postRepairJobs = async (req, res) => {
     );
     if (findIfExists.rowCount > 0) {
       res.status(400).json("Ticket already exists!");
-      console.log("Cell exists");
+      // console.log("Cell exists");
     } else {
       const results = await pool.query(
         "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket, department, job_added_by, date_added) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) returning *",
@@ -80,7 +80,7 @@ const postRepairJobs = async (req, res) => {
       res.status(200).json("Job added, thank you!");
     }
   } catch (err) {
-    console.log("Create task error: ", err);
+    // console.log("Create task error: ", err);
   }
 };
 
@@ -95,7 +95,7 @@ const getAllJobs = async (req, res) => {
     );
     res.json(newResults.rows);
   } catch (err) {
-    console.log("getAllJobs", err);
+    // console.log("getAllJobs", err);
   }
 };
 
@@ -191,10 +191,11 @@ const updateJob = async (req, res) => {
       user,
       GSPNStatusGetLastElement,
       dateModified,
+      warranty,
     } = req.body;
     const editQuery = await pool
       .query(
-        "UPDATE units SET engineer_analysis = $1, in_house_status = $2, ticket = $3, reassign_engineer = $4, is_qc_checked = $5, qc_comment = $6, parts_list = $7, modified_by_who = $8, gspn_status = $9, date_modified = $10 WHERE id = $11 returning *",
+        "UPDATE units SET engineer_analysis = $1, in_house_status = $2, ticket = $3, reassign_engineer = $4, is_qc_checked = $5, qc_comment = $6, parts_list = $7, modified_by_who = $8, gspn_status = $9, date_modified = $10, warranty = $11 WHERE id = $12 returning *",
         [
           engineerAnalysis,
           inHouseStatus,
@@ -206,6 +207,7 @@ const updateJob = async (req, res) => {
           user,
           GSPNStatusGetLastElement,
           dateModified,
+          warranty,
           id,
         ]
       )
@@ -226,7 +228,9 @@ const updateJobclaimsGSPNStatus = async (req, res) => {
         claimsGSPNStatus,
         id,
       ])
-      .catch((e) => console.log("claimsGSPNStatus err", e));
+      .catch((e) => {
+        // console.log("claimsGSPNStatus err", e)
+      });
     res.send(editQuery.rows);
   } catch (error) {
     // console.log(error);

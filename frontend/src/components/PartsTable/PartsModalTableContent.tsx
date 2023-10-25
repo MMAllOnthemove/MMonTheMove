@@ -52,7 +52,7 @@ export function PartsModalTabOneContent(props: IPartsModalTabOneContent) {
       >
         <Accordion allowToggle>
           <AccordionItem>
-            <h2 className="font-sans font-semibold">
+            <h2 className=" font-semibold">
               <AccordionButton _expanded={{ bg: "#082f49", color: "white" }}>
                 <Box as="span" flex="1" textAlign="left">
                   Job info
@@ -70,7 +70,7 @@ export function PartsModalTabOneContent(props: IPartsModalTabOneContent) {
                 name="ServiceOrder"
                 placeholder="Service Order"
                 id="ServiceOrder"
-                className="w-full outline-none py-2 px-2 border-2 font-sans font-semibold text-sm rounded-sm my-2"
+                className="w-full outline-none py-2 px-2 border-2  font-semibold text-sm rounded-sm my-2"
                 size={10}
                 maxLength={10}
                 value={searchServiceOrder}
@@ -87,7 +87,7 @@ export function PartsModalTabOneContent(props: IPartsModalTabOneContent) {
                 aria-required
                 placeholder="Ticket number"
                 id="ticket"
-                className="w-full outline-none py-2 px-2 border-2 font-sans font-semibold text-sm rounded-sm my-2"
+                className="w-full outline-none py-2 px-2 border-2  font-semibold text-sm rounded-sm my-2"
                 size={10}
                 maxLength={10}
                 defaultValue={ticket}
@@ -102,7 +102,7 @@ export function PartsModalTabOneContent(props: IPartsModalTabOneContent) {
                 name="warranty"
                 placeholder="Warranty"
                 id="warranty"
-                className="w-full disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none outline-none bg-white py-2 px-2 border-2 border-slate-400 font-sans font-semibold text-sm rounded-sm my-2"
+                className="w-full disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none outline-none bg-white py-2 px-2 border-2 border-slate-400  font-semibold text-sm rounded-sm my-2"
                 value={warranty}
                 disabled
               />
@@ -115,7 +115,7 @@ export function PartsModalTabOneContent(props: IPartsModalTabOneContent) {
                 required
                 aria-required
                 id="inHouseStatus"
-                className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               >
                 <option disabled value="">
                   Choose status
@@ -135,7 +135,7 @@ export function PartsModalTabOneContent(props: IPartsModalTabOneContent) {
                 name="dispatchAnalysis"
                 placeholder="Dispatch Analysis"
                 id="dispatchAnalysis"
-                className="outline-none bg-white py-2 px-2 border-2 border-slate-400 font-sans font-semibold text-sm rounded-sm my-2"
+                className="outline-none bg-white py-2 px-2 border-2 border-slate-400  font-semibold text-sm rounded-sm my-2"
                 value={dispatchAnalysis}
                 onChange={setDispatchAnalysis}
                 hidden
@@ -147,7 +147,7 @@ export function PartsModalTabOneContent(props: IPartsModalTabOneContent) {
               <select
                 name="engineer"
                 id="engineer"
-                className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                 value={engineer}
                 onChange={setEngineer}
                 required
@@ -168,7 +168,7 @@ export function PartsModalTabOneContent(props: IPartsModalTabOneContent) {
               <select
                 name="dispatchBy"
                 id="dispatchBy"
-                className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                 value={dispatchBy}
                 onChange={setDispatch}
                 required
@@ -186,7 +186,7 @@ export function PartsModalTabOneContent(props: IPartsModalTabOneContent) {
               <select
                 name="department"
                 id="department"
-                className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900 font-sans font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                 value={department}
                 onChange={setDepartment}
                 required
@@ -204,7 +204,7 @@ export function PartsModalTabOneContent(props: IPartsModalTabOneContent) {
           </AccordionItem>
 
           <AccordionItem>
-            <h2 className="font-sans font-semibold">
+            <h2 className=" font-semibold">
               <AccordionButton _expanded={{ bg: "#082f49", color: "white" }}>
                 <Box as="span" flex="1" textAlign="left">
                   Parts info
@@ -219,11 +219,11 @@ export function PartsModalTabOneContent(props: IPartsModalTabOneContent) {
           <Button
             type="submit"
             text="Add"
-            className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus: text-white font-semibold font-sans rounded py-3 px-2 my-2 w-full"
+            className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus: text-white font-semibold  rounded py-3 px-2 my-2 w-full"
           />
           {/* <button
             type="submit"
-            className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus: text-white font-semibold font-sans rounded py-3 px-2 my-2 w-full"
+            className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus: text-white font-semibold  rounded py-3 px-2 my-2 w-full"
           >
             Add
           </button> */}
