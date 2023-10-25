@@ -1,3 +1,4 @@
+import TableBody from "@/components/Table/TableBody";
 import {
   Tab,
   TabList,
@@ -6,36 +7,6 @@ import {
   Tabs,
   useToast,
 } from "@chakra-ui/react";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { useSetRecoilState } from "recoil";
-import TableBody from "@/components/Table/TableBody";
-
-// Custom imports
-import dynamic from "next/dynamic";
-const ModalManagement = dynamic(
-  () => import("@/components/Modals/modal.management"),
-  {
-    loading: () => <p>Loading modal...</p>,
-  }
-);
-import { managementModalState } from "@/atoms/managementModalAtom";
-import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
-import { getSOInfoAllFunction } from "@/functions/ipass_api";
-import Container from "@/components/Container";
-const Navbar = dynamic(() => import("@/components/Navbar"), {
-  loading: () => <p>Loading Navbar...</p>,
-});
-const ToTopButton = dynamic(() => import("@/components/ToTopButton"), {
-  loading: () => <p>Loading ToTopButton...</p>,
-});
-import ManagementSearchForm from "@/components/Table/managementSearchForm";
-
-import { HomepageModalTabOneContent } from "@/components/Table/homepageModalTabOneContent";
-import { HomepageModalTabTwoContent } from "@/components/Table/homepageModalTabTwoContent";
-
-// Tanstack table functionality
 import {
   SortingState,
   flexRender,
@@ -45,19 +16,50 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import dynamic from "next/dynamic";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { useSetRecoilState } from "recoil";
+
+// Custom imports
+import { managementModalState } from "@/atoms/managementModalAtom";
+import Pagination from "@/components/Table/Pagination";
+import { HomepageModalTabOneContent } from "@/components/Table/homepageModalTabOneContent";
+import { HomepageModalTabTwoContent } from "@/components/Table/homepageModalTabTwoContent";
+import { columns } from "@/components/Table/homepageTableColumns";
+import ManagementSearchForm from "@/components/Table/managementSearchForm";
+import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
+import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
+import { getSOInfoAllFunction } from "@/functions/ipass_api";
 import { Itable } from "../../utils/interfaces";
 
-// Management columns
-import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
-// import { columns } from "../../components/Table/homepageTableColumns";
-import { columns } from "@/components/Table/homepageTableColumns";
-import Pagination from "@/components/Table/Pagination";
+// Dynamic imports
+const ModalManagement = dynamic(
+  () => import("@/components/Modals/modal.management"),
+  {
+    loading: () => <p>Loading modal...</p>,
+  }
+);
+const Container = dynamic(() => import("@/components/Container"), {
+  loading: () => <p>Loading wrapper...</p>,
+});
+const Navbar = dynamic(() => import("@/components/Navbar"), {
+  loading: () => <p>Loading Navbar...</p>,
+});
+const ToTopButton = dynamic(() => import("@/components/ToTopButton"), {
+  loading: () => <p>Loading ToTopButton...</p>,
+});
+const Button = dynamic(() => import("@/components/Buttons"), {
+  loading: () => <p>Loading button...</p>,
+});
 
 const Home = () => {
   const [tableData, setTableData] = useState<Itable[]>([]);
 
   // Not to be confused with 'setServiceOrder'
   const [searchServiceOrder, setSearchServiceOrder] = useState("");
+
   // Search ticket for tab two
   const [searchTicket, setSearchTicket] = useState("");
 
@@ -89,13 +91,12 @@ const Home = () => {
   const [inHouseStatus, setInHouseStatus] = useState("");
   const [ticket, setTicket] = useState("");
   const [department, setDepartment] = useState("HHP");
-
   const [GSPNStatus, setGSPNStatus] = useState<string | null>("");
+
   // We want to get the Status Desc from the last object element of this array
   let GSPNStatusGetLastElement = GSPNStatus?.slice(-1);
 
   // Settings the user to also be the engineer
-
   let user = engineer;
 
   // Repairshpr states start here
@@ -153,20 +154,9 @@ const Home = () => {
     });
   }, [searchServiceOrder]);
 
-  const fetchTableData = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`
-      );
-      const data = await response.json();
-      setTableData(data);
-    } catch (error) {
-      // console.log("Error", error);
-    }
-  };
   useEffect(() => {
-    fetchTableData();
-  }, []);
+    fetchDataCombinedData({ setTableData });
+  }, [tableData]);
 
   useEffect(() => {
     getRepair({
@@ -298,7 +288,8 @@ const Home = () => {
       }
     )
       .then((res) => res.json())
-      .then((data) => console.log("data2", data));
+      .then((data) => {});
+    // console.log("data2", data)
   };
 
   // Post repair data
@@ -404,13 +395,11 @@ const Home = () => {
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
   });
-  // console.log("table", table);
 
-  // console.log(table.getHeaderGroups().map((headerGroup) => headerGroup.id));
   return (
     <>
       <Head>
-        <title>HHPManagement</title>
+        <title>HHP Management</title>
         <meta name="robots" content="noindex"></meta>
         <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
@@ -419,7 +408,7 @@ const Home = () => {
       <main className="space-between-navbar-and-content">
         <Container>
           <section className="flex justify-center pt-5">
-            <h1 className="mb-4 text-3xl font-extrabold text-gray-900 md:text-5xl lg:text-6xl">
+            <h1 className="mb-4 text-3xl font-extrabold text-gray-900 md:text-5xl lg:text-6xl dark:text-[#eee]">
               <span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
                 HHP
               </span>{" "}
@@ -432,19 +421,17 @@ const Home = () => {
               setFiltering={(e) => setFiltering(e.target.value)}
             />
 
-            <button
-              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer font-sans rounded-md p-3 my-2"
+            <Button
               type="button"
-              role="button"
+              text="Add job"
+              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer dark:text-[#eee] rounded-md p-3 my-2"
               onClick={() =>
                 setManagementModalState({
                   open: true,
                   view: "/",
                 })
               }
-            >
-              Add job
-            </button>
+            />
 
             {/* Called the modal here and added a post data prop that posts data on click */}
             <ModalManagement>
@@ -518,17 +505,18 @@ const Home = () => {
 
           <div className="max-h-[540px] overflow-y-auto">
             <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-sans text-sm uppercase font-semibold">
+              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] text-sm uppercase font-semibold">
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id} className="font-sans font-semibold">
-                    <th className="px-4 py-3 cursor-pointer font-sans font-semibold">
+                  <tr key={headerGroup.id} className=" font-semibold">
+                    <th className="px-4 py-3 cursor-pointer  font-semibold">
                       Action
                     </th>
+
                     {headerGroup.headers.map((header) => {
                       return (
                         <th
                           key={header.id}
-                          className="px-4 py-3 cursor-pointer font-sans font-semibold"
+                          className="px-4 py-3 cursor-pointer  font-semibold"
                         >
                           {header.isPlaceholder ? null : (
                             <div
@@ -556,14 +544,15 @@ const Home = () => {
                   </tr>
                 ))}
               </thead>
+
               <TableBody>
                 {table.getRowModel().rows.map((row: any) => (
                   <tr
                     key={row.id}
                     onDoubleClick={(e) => handleUpdate(e, row.original.id)}
-                    className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900"
+                    className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
                   >
-                    <td className="px-4 py-3 font-sans font-medium text-sm max-w-full">
+                    <td className="px-4 py-3  font-medium text-sm max-w-full">
                       <button
                         type="button"
                         role="button"
@@ -573,10 +562,11 @@ const Home = () => {
                         Edit
                       </button>
                     </td>
+
                     {row.getVisibleCells().map((cell: any) => (
                       <td
                         key={cell.id}
-                        className="px-4 py-3 font-sans font-medium text-sm max-w-full"
+                        className="px-4 py-3  font-medium text-sm max-w-full"
                       >
                         {flexRender(
                           cell.column.columnDef.cell,

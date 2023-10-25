@@ -1,24 +1,29 @@
-import Navbar from "@/components/Navbar";
-import UnitsPendingCard from "@/components/UnitsPendingCard";
-import moment from "moment";
+import dynamic from "next/dynamic";
+import { unitsPendingReportModalState } from "@/atoms/unitspendingAtom";
+const ModalManagement = dynamic(
+  () => import("@/components/Modals/unitspending.modal")
+);
+const Navbar = dynamic(() => import("@/components/Navbar"));
+const UnitsPendingCard = dynamic(() => import("@/components/UnitsPendingCard"));
+import {
+  getFilteredBookedInJobs,
+  getFilteredJobsByStatusCount,
+  getMappedJobsByApprovedOrRejectedStatusCount,
+} from "@/functions/pendingUnitsFunc";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useSetRecoilState } from "recoil";
 import { minDate } from "../../../../../utils/datemin";
-import {
-  getFilteredBookedInJobs,
-  getFilteredJobsByStatusCount,
-} from "@/functions/pendingUnitsFunc";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { unitsPendingReportModalState } from "@/atoms/unitspendingAtom";
-import ModalManagement from "@/components/Modals/unitspending.modal";
 
 function Pending() {
   const [fetchAlldata, setFetchAlldata] = useState<any[]>([]);
   const setPendingUnitsModalState = useSetRecoilState(
     unitsPendingReportModalState
   );
+  const [fetchJobsApprovedAndRejected, setFetchJobsApprovedAndRejected] =
+    useState<any[]>([]);
   const router = useRouter();
   var today = new Date().toISOString().split("T")[0].toString();
 
@@ -40,7 +45,27 @@ function Pending() {
       // console.log("Error", error);
     }
   };
+  const countJobsApprovedAndRejected = async () => {
+    // Get these from the history table
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/units/history/get`,
+        {
+          method: "GET",
+        }
+      );
+      const data = await response.json();
+      // console.log(data.length);
+      // console.log(data);
+      setFetchJobsApprovedAndRejected(data);
+    } catch (error) {
+      // console.log("Error", error);
+    }
+  };
 
+  useEffect(() => {
+    countJobsApprovedAndRejected();
+  }, [fetchJobsApprovedAndRejected]);
   useEffect(() => {
     fetchDataCombinedData();
   }, []);
@@ -52,13 +77,13 @@ function Pending() {
       </Head>
       <Navbar />
       <main className="space-between-navbar-and-content">
-        <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl text-center fonts-sans">
+        <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-[#eee] md:text-5xl lg:text-6xl text-center fonts-sans">
           Pending status breakdown
         </h1>
 
         <section className="container mx-auto stat_cards max-w-6xl py-4">
           <div className="breadcrumb_and_date_filter flex items-center justify-between">
-            <div className="bg-white p-4 flex items-center flex-wrap">
+            <div className="bg-white p-4 flex items-center flex-wrap  dark:bg-[#15202B] dark:border dark:border-[#eee]">
               <nav aria-label="breadcrumb">
                 <ol className="flex leading-none text-blue-500 divide-x">
                   <li className="pr-4">
@@ -67,7 +92,7 @@ function Pending() {
                       className="inline-flex items-center"
                     >
                       <svg
-                        className="w-5 h-auto fill-current mx-2 text-gray-400"
+                        className="w-5 h-auto fill-current mx-2 text-gray-400  dark:text-[#eee]"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
                         fill="#000000"
@@ -79,12 +104,12 @@ function Pending() {
                   </li>
 
                   <li
-                    className="inline-flex items-center px-4 text-gray-700 font-sans"
+                    className="inline-flex items-center px-4 text-gray-700 "
                     aria-current="page"
                   >
                     <Link
                       href="/dashboard/units/pending"
-                      className="text-gray-600 hover:text-blue-500 font-sans"
+                      className="text-gray-600 hover:text-blue-500 dark:text-[#eee]"
                     >
                       Units pending
                     </Link>
@@ -96,7 +121,7 @@ function Pending() {
                   >
                     <Link
                       href="/dashboard/engineers"
-                      className="text-gray-600 hover:text-blue-500 font-sans"
+                      className="text-gray-600 hover:text-blue-500 dark:text-[#eee]"
                     >
                       Engineers
                     </Link>
@@ -104,7 +129,7 @@ function Pending() {
                 </ol>
               </nav>
             </div>
-            <div className="date_input ">
+            <div className="date_input">
               <div className="flex gap-3 items-center">
                 <span>
                   <label htmlFor="dateFrom" className="sr-only">
@@ -117,11 +142,11 @@ function Pending() {
                     max={today}
                     value={dateFrom}
                     onChange={(e) => setDateFrom(e.target.value)}
-                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                    className="mb-2 cursor-pointer bg-white dark:bg-[#22303C] dark:text-[#eee] dark:accent-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
                     id="dateFrom"
                   />
                 </span>
-                <span className="font-sans">-</span>
+                <span className="">-</span>
                 <span>
                   <label htmlFor="dateTo" className="sr-only">
                     Date to
@@ -133,7 +158,7 @@ function Pending() {
                     max={today}
                     value={dateTo}
                     onChange={(e) => setDateTo(e.target.value)}
-                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                    className="mb-2 cursor-pointer bg-white dark:bg-[#22303C] dark:text-[#eee] dark:accent-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
                     id="dateTo"
                   />
                 </span>
@@ -144,9 +169,19 @@ function Pending() {
           {/* The modal, we are putting it here because it won't matter */}
           <ModalManagement
             fetchAlldata={fetchAlldata}
+            fetchJobsApprovedAndRejected={fetchJobsApprovedAndRejected}
             dateFrom={dateFrom}
             dateTo={dateTo}
           />
+          <p className="text-gray-600 text-sm text-center my-3 dark:text-[#eee]">
+            The stats here are detailed, for quick counts by engineer, go to{" "}
+            <Link
+              href="/dashboard/engineers"
+              className="text-blue-600 hover:text-blue-500 font-semibold"
+            >
+              Engineers
+            </Link>
+          </p>
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3 my-3">
             <UnitsPendingCard
               onClick={() =>
@@ -328,8 +363,8 @@ function Pending() {
                 })
               }
               cardParagraph={"Quote approved"}
-              cardHeading={getFilteredJobsByStatusCount(
-                fetchAlldata,
+              cardHeading={getMappedJobsByApprovedOrRejectedStatusCount(
+                fetchJobsApprovedAndRejected,
                 dateFrom,
                 dateTo,
                 "Quote approved"
@@ -448,8 +483,8 @@ function Pending() {
                 })
               }
               cardParagraph={"Quote rejected"}
-              cardHeading={getFilteredJobsByStatusCount(
-                fetchAlldata,
+              cardHeading={getMappedJobsByApprovedOrRejectedStatusCount(
+                fetchJobsApprovedAndRejected,
                 dateFrom,
                 dateTo,
                 "Quote rejected"

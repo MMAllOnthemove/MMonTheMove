@@ -17,11 +17,17 @@ import {
 interface Props {
   children?: React.ReactNode;
   fetchAlldata: string[] | any;
+  fetchJobsApprovedAndRejected: string[] | any;
   dateFrom: string | any;
   dateTo: string | any;
 }
 
-function ModalManagement({ fetchAlldata, dateFrom, dateTo }: Props) {
+function ModalManagement({
+  fetchAlldata,
+  fetchJobsApprovedAndRejected,
+  dateFrom,
+  dateTo,
+}: Props) {
   //   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalState, setModalState] = useRecoilState(
     unitsPendingReportModalState
@@ -40,75 +46,73 @@ function ModalManagement({ fetchAlldata, dateFrom, dateTo }: Props) {
         <ModalContent>
           <ModalHeader>
             {modalState.view === "assigned-to-tech" && (
-              <h2 className="font-sans text-slate-800">Assigned to tech</h2>
+              <h2 className=" text-slate-800">Assigned to tech</h2>
             )}
             {modalState.view === "booked-in" && (
-              <h2 className="font-sans text-slate-800">Booked in</h2>
+              <h2 className=" text-slate-800">Booked in</h2>
             )}
             {modalState.view === "customer-reply" && (
-              <h2 className="font-sans text-slate-800">Customer reply</h2>
+              <h2 className=" text-slate-800">Customer reply</h2>
             )}
             {modalState.view === "first-approval" && (
-              <h2 className="font-sans text-slate-800">
-                Parts request 1st approval
-              </h2>
+              <h2 className=" text-slate-800">Parts request 1st approval</h2>
             )}
             {modalState.view === "for-invoicing" && (
-              <h2 className="font-sans text-slate-800">For invoicing</h2>
+              <h2 className=" text-slate-800">For invoicing</h2>
             )}
             {modalState.view === "parts-dna" && (
-              <h2 className="font-sans text-slate-800">Parts DNA</h2>
+              <h2 className=" text-slate-800">Parts DNA</h2>
             )}
             {modalState.view === "parts-issued" && (
-              <h2 className="font-sans text-slate-800">Parts issued</h2>
+              <h2 className=" text-slate-800">Parts issued</h2>
             )}
             {modalState.view === "parts-to-be-ordered" && (
-              <h2 className="font-sans text-slate-800">Parts to be ordered</h2>
+              <h2 className=" text-slate-800">Parts to be ordered</h2>
             )}
             {modalState.view === "pending-q-and-a" && (
-              <h2 className="font-sans text-slate-800">Pending Q&A</h2>
+              <h2 className=" text-slate-800">Pending Q&A</h2>
             )}
             {modalState.view === "qc-completed" && (
-              <h2 className="font-sans text-slate-800">QC Completed</h2>
+              <h2 className=" text-slate-800">QC Completed</h2>
             )}
             {modalState.view === "qc-failed" && (
-              <h2 className="font-sans text-slate-800">QC Failed</h2>
+              <h2 className=" text-slate-800">QC Failed</h2>
             )}
             {modalState.view === "quality-control" && (
-              <h2 className="font-sans text-slate-800">Quality Control</h2>
+              <h2 className=" text-slate-800">Quality Control</h2>
             )}
             {modalState.view === "quote-approved" && (
-              <h2 className="font-sans text-slate-800">Quote approved</h2>
+              <h2 className=" text-slate-800">Quote approved</h2>
             )}
             {modalState.view === "quote-pending" && (
-              <h2 className="font-sans text-slate-800">Quote pending</h2>
+              <h2 className=" text-slate-800">Quote pending</h2>
             )}
             {modalState.view === "quote-rejected" && (
-              <h2 className="font-sans text-slate-800">Quote rejected</h2>
+              <h2 className=" text-slate-800">Quote rejected</h2>
             )}
             {modalState.view === "repair-complete" && (
-              <h2 className="font-sans text-slate-800">Repair complete</h2>
+              <h2 className=" text-slate-800">Repair complete</h2>
             )}
             {modalState.view === "repair-in-progress" && (
-              <h2 className="font-sans text-slate-800">Repair in progress</h2>
+              <h2 className=" text-slate-800">Repair in progress</h2>
             )}
             {modalState.view === "scheduled" && (
-              <h2 className="font-sans text-slate-800">Scheduled</h2>
+              <h2 className=" text-slate-800">Scheduled</h2>
             )}
             {modalState.view === "scrap-approved" && (
-              <h2 className="font-sans text-slate-800">Scrap approved</h2>
+              <h2 className=" text-slate-800">Scrap approved</h2>
             )}
             {modalState.view === "so-cancel" && (
-              <h2 className="font-sans text-slate-800">SO cancel</h2>
+              <h2 className=" text-slate-800">SO cancel</h2>
             )}
             {modalState.view === "waiting-for-customer" && (
-              <h2 className="font-sans text-slate-800">Waiting for customer</h2>
+              <h2 className=" text-slate-800">Waiting for customer</h2>
             )}
             {modalState.view === "waiting-for-parts" && (
-              <h2 className="font-sans text-slate-800">Waiting for parts</h2>
+              <h2 className=" text-slate-800">Waiting for parts</h2>
             )}
             {modalState.view === "waiting-saw" && (
-              <h2 className="font-sans text-slate-800">Waiting SAW</h2>
+              <h2 className=" text-slate-800">Waiting SAW</h2>
             )}
           </ModalHeader>
           <ModalCloseButton />
@@ -197,7 +201,7 @@ function ModalManagement({ fetchAlldata, dateFrom, dateTo }: Props) {
                 )}
               {modalState.view === "quote-approved" &&
                 getMappedJobsByStatusCount(
-                  fetchAlldata,
+                  fetchJobsApprovedAndRejected,
                   dateFrom,
                   dateTo,
                   "Quote approved"
@@ -211,7 +215,7 @@ function ModalManagement({ fetchAlldata, dateFrom, dateTo }: Props) {
                 )}
               {modalState.view === "quote-rejected" &&
                 getMappedJobsByStatusCount(
-                  fetchAlldata,
+                  fetchJobsApprovedAndRejected,
                   dateFrom,
                   dateTo,
                   "Quote rejected"

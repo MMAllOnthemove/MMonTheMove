@@ -1,11 +1,15 @@
-import Navbar from "@/components/Navbar";
-import UnitsPendingCard from "@/components/UnitsPendingCard";
+import dynamic from "next/dynamic";
+const Navbar = dynamic(() => import("@/components/Navbar"));
+const UnitsPendingCard = dynamic(() => import("@/components/UnitsPendingCard"));
+
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
 import Head from "next/head";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { engineers } from "../../../../public/_data/engineers";
 import { minDate } from "../../../../utils/datemin";
+import { getEngineerJobsByStatusCount } from "@/functions/pendingUnitsFunc";
+
 function Engineers() {
   const [engineerFilter, setEngineerFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
@@ -19,535 +23,6 @@ function Engineers() {
     fetchDataCombinedData({ setTableData });
   }, []);
 
-  let getBookedin =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Booked in" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Booked in" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let repairInProgress =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Repair in progress" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Repair in progress" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let waitingForParts =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Waiting for parts" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Waiting for parts" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-  // console.log(waitingForParts);
-
-  let waitingForCustomer =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Waiting for customer" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Waiting for customer" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let partsIssued =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Parts issued" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Parts issued" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let partsToBeOrdered =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Parts to be ordered" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Parts to be ordered" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let scheduled =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Scheduled" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Scheduled" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let customerReply =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Customer reply" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Customer reply" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let qualityControl =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Quality Control (QC)" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Quality Control (QC)" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let repairComplete =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Repair complete" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Repair complete" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-  // console.log("repairComplete", repairComplete);
-  let assignedTotech =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Assigned to tech" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Assigned to tech" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let firstApproval =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Parts request 1st approval" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Parts request 1st approval" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let quotePending =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Quote pending" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Quote pending" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-  // console.log("quotePending", quotePending);
-  let quoteApproved =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Quote approved" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Quote approved" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let qcFailed =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "QC failed" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "QC failed" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let qcCompleted =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "QC completed" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "QC completed" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let pendingQandA =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Pending Q&A" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Pending Q&A" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let soCancel =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "SO cancel" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "SO cancel" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let scrapApproved =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Scrap approved" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Scrap approved" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let quoteRejected =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Quote rejected" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Quote rejected" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let forInvoicing =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "For invoicing" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "For invoicing" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let partsDNA =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Parts DNA" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Parts DNA" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
-
-  let waitingSAW =
-    dateFrom.length > 0 && dateTo.length > 0
-      ? tableData.filter((item) => {
-          let filterPass = true;
-          let date = new Date(item.date_modified);
-          if (dateFrom) {
-            filterPass =
-              filterPass &&
-              new Date(dateFrom) < date &&
-              item.in_house_status === "Waiting SAW" &&
-              item.engineer === engineerFilter;
-          }
-          if (dateTo) {
-            filterPass =
-              filterPass &&
-              new Date(dateTo) > date &&
-              item.in_house_status === "Waiting SAW" &&
-              item.engineer === engineerFilter;
-          }
-          return filterPass;
-        })
-      : [];
   return (
     <>
       <Head>
@@ -555,17 +30,17 @@ function Engineers() {
       </Head>
       <Navbar />
       <main className="space-between-navbar-and-content">
-        <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl text-center fonts-sans">
+        <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-[#eee] md:text-5xl lg:text-6xl text-center fonts-sans">
           Engineers breakdown
         </h1>
         <section className="container mx-auto stat_cards max-w-6xl py-4">
-          <div className="bg-white p-4 flex items-center flex-wrap my-3">
+          <div className="bg-white p-4 flex items-center flex-wrap my-3  dark:bg-[#15202B] dark:border dark:border-[#eee]">
             <nav aria-label="breadcrumb">
               <ol className="flex leading-none text-blue-500 divide-x">
                 <li className="pr-4">
                   <Link href="/dashboard" className="inline-flex items-center">
                     <svg
-                      className="w-5 h-auto fill-current mx-2 text-gray-400"
+                      className="w-5 h-auto fill-current mx-2 text-gray-400 dark:text-[#eee]"
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
                       fill="#000000"
@@ -576,12 +51,12 @@ function Engineers() {
                   </Link>
                 </li>
                 <li
-                  className="inline-flex items-center px-4 text-gray-700 font-sans"
+                  className="inline-flex items-center px-4 text-gray-700 "
                   aria-current="page"
                 >
                   <Link
                     href="/dashboard/units/pending"
-                    className="text-gray-600 hover:text-blue-500 "
+                    className="text-gray-600 hover:text-blue-500 dark:text-[#eee]"
                   >
                     Units pending
                   </Link>
@@ -593,7 +68,7 @@ function Engineers() {
                 >
                   <Link
                     href="/dashboard/engineers"
-                    className="text-gray-600 hover:text-blue-500 font-sans"
+                    className="text-gray-600 hover:text-blue-500 dark:text-[#eee]"
                   >
                     Engineers
                   </Link>
@@ -605,7 +80,10 @@ function Engineers() {
             <div>
               <div className="flex gap-3 items-center">
                 <span>
-                  <label htmlFor="dateFrom" className="sr-only">
+                  <label
+                    htmlFor="dateFrom"
+                    className="sr-only dark:text-[#eee]"
+                  >
                     Date from
                   </label>
                   <input
@@ -615,13 +93,13 @@ function Engineers() {
                     max={today}
                     value={dateFrom}
                     onChange={(e) => setDateFrom(e.target.value)}
-                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                    className="mb-2 cursor-pointer bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
                     id="dateFrom"
                   />
                 </span>
                 <span>-</span>
                 <span>
-                  <label htmlFor="dateTo" className="sr-only">
+                  <label htmlFor="dateTo" className="sr-only dark:text-[#eee]">
                     Date to
                   </label>
                   <input
@@ -631,7 +109,7 @@ function Engineers() {
                     max={today}
                     value={dateTo}
                     onChange={(e) => setDateTo(e.target.value)}
-                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                    className="mb-2 cursor-pointer bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
                     id="dateTo"
                   />
                 </span>
@@ -640,7 +118,7 @@ function Engineers() {
             <span>
               <label
                 htmlFor="engineerFilter"
-                className="block mb-2 text-sm font-medium font-sans text-gray-900 sr-only"
+                className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee] sr-only"
               >
                 Engineer filter
               </label>
@@ -648,7 +126,7 @@ function Engineers() {
                 value={engineerFilter}
                 onChange={(e) => setEngineerFilter(e.target.value)}
                 id="engineerFilter"
-                className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                className="mb-2 bg-white border cursor-pointer border-gray-300 outline-0 dark:bg-[#22303C] dark:text-[#eee] text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               >
                 <option disabled value="">
                   Filter by engineer
@@ -661,108 +139,251 @@ function Engineers() {
               </select>
             </span>
           </div>
+          <p className="text-gray-600 text-sm text-center my-3 dark:text-[#eee]">
+            The stats here are only counts, for detailed, go to{" "}
+            <Link
+              href="/dashboard/units/pending"
+              className="text-blue-600 hover:text-blue-500 font-semibold"
+            >
+              Units pending
+            </Link>
+          </p>
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3 my-3">
             <UnitsPendingCard
               cardParagraph={"Booked in"}
-              cardHeading={getBookedin.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Booked in",
+                engineerFilter
+              )}
             />
             <UnitsPendingCard
               cardParagraph={"Repair in progress"}
-              cardHeading={repairInProgress.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Repair in progress",
+                engineerFilter
+              )}
             />
             <UnitsPendingCard
               cardParagraph={"Waiting for parts"}
-              cardHeading={waitingForParts.length}
-            />
-            <UnitsPendingCard
-              cardParagraph={"Waiting for customer"}
-              cardHeading={waitingForCustomer.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Waiting for parts",
+                engineerFilter
+              )}
             />
 
             <UnitsPendingCard
               cardParagraph={"Parts issued"}
-              cardHeading={partsIssued.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Parts issued",
+                engineerFilter
+              )}
             />
 
             <UnitsPendingCard
               cardParagraph={"Parts to be ordered"}
-              cardHeading={partsToBeOrdered.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Parts to be ordered",
+                engineerFilter
+              )}
             />
 
             <UnitsPendingCard
               cardParagraph={"Scheduled"}
-              cardHeading={scheduled.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Scheduled",
+                engineerFilter
+              )}
             />
             <UnitsPendingCard
               cardParagraph={"Customer reply"}
-              cardHeading={customerReply.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Customer reply",
+                engineerFilter
+              )}
             />
 
             <UnitsPendingCard
               cardParagraph={"Quality Control (QC)"}
-              cardHeading={qualityControl.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Quality Control (QC)",
+                engineerFilter
+              )}
             />
 
             <UnitsPendingCard
               cardParagraph={"Assigned to tech"}
-              cardHeading={assignedTotech.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Assigned to tech",
+                engineerFilter
+              )}
             />
 
             <UnitsPendingCard
               cardParagraph={"Parts request 1st approval"}
-              cardHeading={firstApproval.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Parts request 1st approval",
+                engineerFilter
+              )}
             />
             <UnitsPendingCard
               cardParagraph={"Quote pending"}
-              cardHeading={quotePending.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Quote pending",
+                engineerFilter
+              )}
             />
             <UnitsPendingCard
               cardParagraph={"Quote approved"}
-              cardHeading={quoteApproved.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Quote approved",
+                engineerFilter
+              )}
             />
             <UnitsPendingCard
               cardParagraph={"Waiting for customer"}
-              cardHeading={waitingForCustomer.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Waiting for customer",
+                engineerFilter
+              )}
             />
             <UnitsPendingCard
               cardParagraph={"Waiting SAW"}
-              cardHeading={waitingSAW.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Waiting SAW",
+                engineerFilter
+              )}
             />
             <UnitsPendingCard
               cardParagraph={"QC failed"}
-              cardHeading={qcFailed.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "QC failed",
+                engineerFilter
+              )}
             />
             <UnitsPendingCard
               cardParagraph={"QC completed"}
-              cardHeading={qcCompleted.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "QC completed",
+                engineerFilter
+              )}
             />
             <UnitsPendingCard
               cardParagraph={"Pending Q&A"}
-              cardHeading={pendingQandA.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Pending Q&A",
+                engineerFilter
+              )}
             />
             <UnitsPendingCard
               cardParagraph={"SO cancel"}
-              cardHeading={soCancel.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "SO cancel",
+                engineerFilter
+              )}
             />
             <UnitsPendingCard
               cardParagraph={"Scrap approved"}
-              cardHeading={scrapApproved.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Scrap approved",
+                engineerFilter
+              )}
             />
             <UnitsPendingCard
               cardParagraph={"Quote rejected"}
-              cardHeading={quoteRejected.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Quote rejected",
+                engineerFilter
+              )}
             />
             <UnitsPendingCard
               cardParagraph={"For invoicing"}
-              cardHeading={forInvoicing.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "For invoicing",
+                engineerFilter
+              )}
             />
             <UnitsPendingCard
               cardParagraph={"Parts DNA"}
-              cardHeading={partsDNA.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Parts DNA",
+                engineerFilter
+              )}
             />
             <UnitsPendingCard
               cardParagraph={"Repair Complete"}
-              cardHeading={repairComplete.length}
+              cardHeading={getEngineerJobsByStatusCount(
+                tableData,
+                dateFrom,
+                dateTo,
+                "Repair complete",
+                engineerFilter
+              )}
             />
           </div>
         </section>

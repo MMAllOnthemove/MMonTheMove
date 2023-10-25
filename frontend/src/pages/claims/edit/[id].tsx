@@ -73,12 +73,24 @@ function EditClaim() {
     <>
       <main>
         <section className="section container mx-auto">
-          <h1 className="text-center py-2 text-gray-900 font-sans font-semibold lg:text-2xl">
-            Editing service order:{" "}
-            <span className="text-sky-700 font-sans font-bold">
-              {showServiceOrderNumber}
-            </span>
-          </h1>
+          <span className="flex items-center justify-between my-2">
+            <Button
+              type="button"
+              onClick={() => history.back()}
+              className="bg-[#082f49]   font-semibold text-white dark:text-[#eee] hover:bg-blue-800 rounded-sm text-sm p-2.5 text-center"
+              text="Back"
+            />
+            <div>
+              <h1 className="text-center py-2 text-gray-900 dark:text-[#eee] font-semibold lg:text-2xl">
+                Editing service order:{" "}
+                <span className="text-sky-700  font-bold">
+                  {showServiceOrderNumber}
+                </span>
+              </h1>
+            </div>
+            <div />
+          </span>
+          <hr />
 
           <form
             className="my-3"
@@ -88,7 +100,7 @@ function EditClaim() {
             <span>
               <label
                 htmlFor="inHouseStatus"
-                className="block mb-2 text-sm font-medium font-sans text-gray-900"
+                className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
               >
                 In house status
               </label>
@@ -96,7 +108,7 @@ function EditClaim() {
                 value={claimsGSPNStatus}
                 onChange={(e) => setClaimsGSPNStatus(e.target.value)}
                 id="inHouseStatus"
-                className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                className="mb-2 cursor-pointer bg-white dark:bg-[#22303C] dark:text-[#eee]  border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               >
                 <option disabled value="">
                   Choose status
@@ -110,7 +122,7 @@ function EditClaim() {
             <span>
               <Button
                 type="submit"
-                className="bg-[#082f49] w-full font-sans font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
+                className="bg-[#082f49] w-full dark:text-[#eee] font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
                 text="Update"
               />
             </span>

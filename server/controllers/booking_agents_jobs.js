@@ -39,7 +39,7 @@ const postBookingAgentsJobs = async (req, res) => {
     );
     if (findIfExists.rowCount > 0 || bookingAgent === "") {
       res.status(400).json("Job already exists! or no agent name");
-      console.log("Cell exists or no agent name");
+      // console.log("Cell exists or no agent name");
     } else {
       const newResults = await pool.query(
         "INSERT INTO booking_agents_jobs (service_order_no, created_date, created_time, warranty, booking_agent) values ($1, $2, $3, $4, $5) returning *",
@@ -48,7 +48,7 @@ const postBookingAgentsJobs = async (req, res) => {
       res.status(200).json("Job added, thank you!");
     }
   } catch (err) {
-    console.log("Create task error: ", err);
+    // console.log("Create task error: ", err);
   }
 };
 

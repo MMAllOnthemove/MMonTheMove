@@ -9,7 +9,7 @@ function Login() {
           id="google-signin-button"
           role="button"
           type="button"
-          className="flex items-center mx-auto bg-white font-sans font-medium text-slate-500 px-6 py-4 rounded-sm shadow-md gap-2"
+          className="flex items-center mx-auto bg-white  font-medium text-slate-500 px-6 py-4 rounded-sm shadow-md gap-2"
         >
           <span>
             <svg
@@ -24,7 +24,7 @@ function Login() {
           Signin with Google
         </button>
 
-        {/* <p className="font-sans font-semibold text-slate-900">
+        {/* <p className=" font-semibold text-slate-900">
           or{" "}
           <Link className="text-sky-700" href="/auth/signup">
             Create account
