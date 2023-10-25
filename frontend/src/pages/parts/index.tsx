@@ -323,7 +323,7 @@ function Parts() {
                           defaultValue={singleService?.sealNumber}
                           onChange={(e) => handleServiceChange(e, index)}
                           size={12}
-                          maxLength={10}
+                          maxLength={12}
                         />
                         {partsList.length - 1 === index &&
                           partsList.length < 10 && (
@@ -331,7 +331,7 @@ function Parts() {
                               className="my-2 bg-[#082f49]   font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
                               type="button"
                               onClick={handleServiceAdd}
-                              text="Add part"
+                              text="+"
                             />
                             // <button
                             //   className="my-2 bg-[#082f49]   font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
