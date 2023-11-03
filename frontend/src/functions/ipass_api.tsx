@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   IgetSOInfoAll,
   IgetSOStatusDescLatest,
@@ -18,34 +19,47 @@ export async function getSOInfoAllFunction(props: IgetSOInfoAll) {
       Pac: `${process.env.NEXT_PUBLIC_PAC}`,
     },
   };
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_IPAAS_API_GETSOINFOALL}`,
-    {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
-      },
-      body: JSON.stringify(options),
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_IPAAS_API_GETSOINFOALL}`,
+          {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
+            },
+            body: JSON.stringify(options),
+          }
+        );
+
+        const data = await response.json();
+
+        props.setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
+        props.setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
+        props.setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
+        props.setModel(data?.Return?.EsModelInfo?.Model);
+        props.setWarranty(data?.Return?.EsModelInfo?.WtyType);
+        props.setFault(data?.Return?.EsModelInfo?.DefectDesc);
+        props.setImei(data?.Return?.EsModelInfo?.IMEI);
+        props.setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
+        props.setEngineerAssignDate(data?.Return?.EsScheInfo?.EngrAssignDate);
+        props.setEngineerAssignTime(data?.Return?.EsScheInfo?.EngrAssignTime);
+        props.setGSPNStatus(
+          data?.EtFlowInfo?.results?.map((x: any) => x.StatusDesc)
+        );
+      } catch (e) {
+        //
+      }
     }
-  );
+    fetchData();
+  }, []);
 
-  const data = await response.json();
-
-  props.setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
-  props.setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
-  props.setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
-  props.setModel(data?.Return?.EsModelInfo?.Model);
-  props.setWarranty(data?.Return?.EsModelInfo?.WtyType);
-  props.setFault(data?.Return?.EsModelInfo?.DefectDesc);
-  props.setImei(data?.Return?.EsModelInfo?.IMEI);
-  props.setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
-  props.setEngineerAssignDate(data?.Return?.EsScheInfo?.EngrAssignDate);
-  props.setEngineerAssignTime(data?.Return?.EsScheInfo?.EngrAssignTime);
-  props.setGSPNStatus(data?.EtFlowInfo?.results?.map((x: any) => x.StatusDesc));
+  return {};
 }
 export async function getSOStatusDescLatest(props: IgetSOStatusDescLatest) {
   const options = {

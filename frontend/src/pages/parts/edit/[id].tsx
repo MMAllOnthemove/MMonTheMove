@@ -1,15 +1,17 @@
-import React from "react";
-import dynamic from "next/dynamic";
+import { getProfile } from "@/functions/getLoggedInUserProfile";
+import UnitFinder from "@/pages/api/UnitFinder";
 import { useToast } from "@chakra-ui/react";
+import dynamic from "next/dynamic";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { partsStatus } from "../../../../public/_data/statuses";
 const Button = dynamic(() => import("@/components/Buttons"));
 const Container = dynamic(() => import("@/components/Container"));
-import Head from "next/head";
-import UnitFinder from "@/pages/api/UnitFinder";
 
 function PartsEdit() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userData, setUserData] = useState("");
   const [getPartsJobHistory, setGetPartsJobHistory] = useState<
     string[] | any[]
   >([]);
@@ -35,11 +37,38 @@ function PartsEdit() {
   );
   const [partsChecked, setPartsChecked] = useState("");
   const [reasonForIncompleteParts, setReasonForIncompleteParts] = useState("");
-  const [dispatchBy, setDispatch] = useState("");
+  // const [dispatchBy, setDispatch] = useState("");
+  let dispatchBy = userData;
 
   const router = useRouter();
   const { id } = router.query;
   const toast = useToast();
+
+  const checkAuthenticated = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
+      {
+        method: "POST",
+        headers: { jwt_token: localStorage.token },
+      }
+    );
+
+    const parseData = await res.json();
+    parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    if (parseData === false) {
+      setIsAuthenticated(false);
+      router.push("/auth/login");
+    }
+    // console.log("parseData", parseData);
+  };
+
+  useEffect(() => {
+    checkAuthenticated();
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    getProfile({ setUserData });
+  }, [isAuthenticated]);
 
   useEffect(() => {
     getThisJobsData();
@@ -65,7 +94,6 @@ function PartsEdit() {
         setReasonForIncompleteParts(data[0]?.reason_for_incomplete_parts);
         setModel(data[0]?.model);
         setImei(data[0]?.imei);
-        setDispatch(data[0]?.dispatch_by);
       });
   }, []);
 
@@ -102,6 +130,7 @@ function PartsEdit() {
       dispatchAnalysis,
       inHouseStatus,
       dateModified,
+      dispatchBy,
       id,
     };
     // console.log(putThisInfo);
@@ -195,6 +224,10 @@ function PartsEdit() {
                   {" "}
                   Editing service order: {showServiceOrderNumber}
                 </h1>
+                <h3 className="text-center dark:text-[#eee] font-semibold">
+                  You are editing as:{" "}
+                  <span className="text-sky-700  font-bold">{userData}</span>
+                </h3>
               </div>
               <div />
             </span>

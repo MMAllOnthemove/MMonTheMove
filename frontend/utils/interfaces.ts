@@ -55,8 +55,6 @@ export interface IHomepageModalTabOneContent {
 export interface IPartsModalTabOneContent extends IHomepageModalTabOneContent {
     dispatchAnalysis?: string;
     setDispatchAnalysis?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    dispatchBy: string;
-    setDispatch: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     children: React.ReactNode;
 }
 

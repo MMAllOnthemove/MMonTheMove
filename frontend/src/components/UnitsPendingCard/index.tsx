@@ -1,4 +1,3 @@
-import React from "react";
 import { IUnitsPendingCard } from "../../../utils/interfaces";
 
 function UnitsPendingCard(props: IUnitsPendingCard) {

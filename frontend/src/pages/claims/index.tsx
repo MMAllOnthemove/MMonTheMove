@@ -1,16 +1,47 @@
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
+import { getProfile } from "@/functions/getLoggedInUserProfile";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 const Navbar = dynamic(() => import("@/components/Navbar"));
+const Footer = dynamic(() => import("@/components/Footer"));
 // import Navbar from "../../../components/Navbar";
 
 export default function Claims() {
   const [searchTerm, setSearchTerm] = useState("");
   const [tableData, setTableData] = useState<string[] | any[]>([]);
+  const [userData, setUserData] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const router = useRouter();
+
+  const checkAuthenticated = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
+      {
+        method: "POST",
+        headers: { jwt_token: localStorage.token },
+      }
+    );
+
+    const parseData = await res.json();
+    parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    if (parseData === false) {
+      setIsAuthenticated(false);
+      router.push("/auth/login");
+    }
+    // console.log("parseData", parseData);
+  };
+
+  useEffect(() => {
+    checkAuthenticated();
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    getProfile({ setUserData });
+  }, [isAuthenticated]);
+
   useEffect(() => {
     fetchDataCombinedData({ setTableData });
   }, []);
@@ -96,6 +127,7 @@ export default function Claims() {
           </div>
         </section>
       </main>
+      <Footer />
     </>
   );
 }

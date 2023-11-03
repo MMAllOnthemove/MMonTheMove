@@ -1,4 +1,3 @@
-import React from "react";
 import { ISearchForm } from "../../../utils/interfaces";
 
 function ManagementSearchForm({ filtering, setFiltering }: ISearchForm) {
