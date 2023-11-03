@@ -9,15 +9,46 @@ import React, { useEffect, useState } from "react";
 import { engineers } from "../../../../public/_data/engineers";
 import { minDate } from "../../../../utils/datemin";
 import { getEngineerJobsByStatusCount } from "@/functions/pendingUnitsFunc";
+import { getProfile } from "@/functions/getLoggedInUserProfile";
+import { useRouter } from "next/router";
 
 function Engineers() {
   const [engineerFilter, setEngineerFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [tableData, setTableData] = useState<any[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userData, setUserData] = useState("");
 
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   var today = new Date().toISOString().split("T")[0].toString();
+  const router = useRouter();
+
+  const checkAuthenticated = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
+      {
+        method: "POST",
+        headers: { jwt_token: localStorage.token },
+      }
+    );
+
+    const parseData = await res.json();
+    parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    if (parseData === false) {
+      setIsAuthenticated(false);
+      router.push("/auth/login");
+    }
+    // console.log("parseData", parseData);
+  };
+
+  useEffect(() => {
+    checkAuthenticated();
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    getProfile({ setUserData });
+  }, [isAuthenticated]);
 
   useEffect(() => {
     fetchDataCombinedData({ setTableData });
@@ -147,6 +178,10 @@ function Engineers() {
             >
               Units pending
             </Link>
+          </p>
+          <p className="text-center font-medium dark:text-[#eee] text-sm my-3">
+            Logged in as{" "}
+            <span className="text-sky-700 font-semibold">{userData}</span>
           </p>
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3 my-3">
             <UnitsPendingCard

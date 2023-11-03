@@ -3,7 +3,8 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 // import Button from "../../../../components/Buttons";
 import dynamic from "next/dynamic";
-
+import { getProfile } from "@/functions/getLoggedInUserProfile";
+const Footer = dynamic(() => import("@/components/Footer"));
 const Button = dynamic(() => import("@/components/Buttons"));
 
 function EditClaim() {
@@ -11,6 +12,35 @@ function EditClaim() {
   // We just show them and make their inputs disabled
   const [showServiceOrderNumber, setShowServiceOrderNumber] = useState("");
   const [claimsGSPNStatus, setClaimsGSPNStatus] = useState("");
+  const [userData, setUserData] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  let dateOfClaim = new Date();
+
+  const checkAuthenticated = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
+      {
+        method: "POST",
+        headers: { jwt_token: localStorage.token },
+      }
+    );
+
+    const parseData = await res.json();
+    parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    if (parseData === false) {
+      setIsAuthenticated(false);
+      router.push("/auth/login");
+    }
+    // console.log("parseData", parseData);
+  };
+
+  useEffect(() => {
+    checkAuthenticated();
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    getProfile({ setUserData });
+  }, [isAuthenticated]);
 
   const router = useRouter();
   const { id } = router.query;
@@ -34,6 +64,8 @@ function EditClaim() {
 
     const putThisInfo = {
       claimsGSPNStatus,
+      userData,
+      dateOfClaim,
       id,
     };
     // console.log(putThisInfo);
@@ -83,13 +115,17 @@ function EditClaim() {
             <div>
               <h1 className="text-center py-2 text-gray-900 dark:text-[#eee] font-semibold lg:text-2xl">
                 Editing service order:{" "}
-                <span className="text-sky-700  font-bold">
+                <span className="text-sky-700 font-bold">
                   {showServiceOrderNumber}
                 </span>
               </h1>
             </div>
             <div />
           </span>
+          <h3 className="text-center dark:text-[#eee] font-semibold my-2">
+            You are editing as:{" "}
+            <span className="text-sky-700  font-bold">{userData}</span>
+          </h3>
           <hr />
 
           <form
@@ -129,6 +165,7 @@ function EditClaim() {
           </form>
         </section>
       </main>
+      <Footer />
     </>
   );
 }

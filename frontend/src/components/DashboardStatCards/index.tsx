@@ -1,4 +1,3 @@
-import React from "react";
 import { Metric, Text } from "@tremor/react";
 
 type TDashboardStatCards = {
@@ -21,7 +20,6 @@ function DashboardStatCards({ title, stat, onClick }: TDashboardStatCards) {
             {stat}
           </Metric>
         </div>
-        {/* <ArrowPathIcon className="h-6 w-6 text-gray-500" /> */}
       </div>
     </article>
   );

@@ -1,21 +1,23 @@
-import dynamic from "next/dynamic";
 import { unitsPendingReportModalState } from "@/atoms/unitspendingAtom";
-const ModalManagement = dynamic(
-  () => import("@/components/Modals/unitspending.modal")
-);
-const Navbar = dynamic(() => import("@/components/Navbar"));
-const UnitsPendingCard = dynamic(() => import("@/components/UnitsPendingCard"));
+import { getProfile } from "@/functions/getLoggedInUserProfile";
 import {
   getFilteredBookedInJobs,
   getFilteredJobsByStatusCount,
   getMappedJobsByApprovedOrRejectedStatusCount,
 } from "@/functions/pendingUnitsFunc";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import { minDate } from "../../../../../utils/datemin";
+const ModalManagement = dynamic(
+  () => import("@/components/Modals/unitspending.modal")
+);
+const Navbar = dynamic(() => import("@/components/Navbar"));
+const UnitsPendingCard = dynamic(() => import("@/components/UnitsPendingCard"));
+const Footer = dynamic(() => import("@/components/Footer"));
 
 function Pending() {
   const [fetchAlldata, setFetchAlldata] = useState<any[]>([]);
@@ -24,11 +26,40 @@ function Pending() {
   );
   const [fetchJobsApprovedAndRejected, setFetchJobsApprovedAndRejected] =
     useState<any[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userData, setUserData] = useState("");
+
   const router = useRouter();
   var today = new Date().toISOString().split("T")[0].toString();
 
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+
+  const checkAuthenticated = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
+      {
+        method: "POST",
+        headers: { jwt_token: localStorage.token },
+      }
+    );
+
+    const parseData = await res.json();
+    parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    if (parseData === false) {
+      setIsAuthenticated(false);
+      router.push("/auth/login");
+    }
+    // console.log("parseData", parseData);
+  };
+
+  useEffect(() => {
+    checkAuthenticated();
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    getProfile({ setUserData });
+  }, [isAuthenticated]);
 
   // Repair and gspn combined data
   const fetchDataCombinedData = async () => {
@@ -66,6 +97,7 @@ function Pending() {
   useEffect(() => {
     countJobsApprovedAndRejected();
   }, [fetchJobsApprovedAndRejected]);
+
   useEffect(() => {
     fetchDataCombinedData();
   }, []);
@@ -181,6 +213,10 @@ function Pending() {
             >
               Engineers
             </Link>
+          </p>
+          <p className="text-center font-medium dark:text-[#eee] text-sm my-3">
+            Logged in as{" "}
+            <span className="text-sky-700 font-semibold">{userData}</span>
           </p>
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3 my-3">
             <UnitsPendingCard

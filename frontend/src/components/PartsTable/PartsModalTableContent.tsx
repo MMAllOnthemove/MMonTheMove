@@ -1,25 +1,15 @@
-import React, { useState } from "react";
-import * as Yup from "yup";
-import { partsStatus } from "../../../public/_data/statuses";
-import Button from "../Buttons";
-import { IPartsModalTabOneContent } from "../../../utils/interfaces";
-import {
-  Box,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  useToast,
-} from "@chakra-ui/react";
 import {
   Accordion,
-  AccordionItem,
   AccordionButton,
-  AccordionPanel,
   AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
 } from "@chakra-ui/react";
 import { engineers } from "../../../public/_data/engineers";
+import { partsStatus } from "../../../public/_data/statuses";
+import { IPartsModalTabOneContent } from "../../../utils/interfaces";
+import Button from "../Buttons";
 
 export function PartsModalTabOneContent(props: IPartsModalTabOneContent) {
   const {
@@ -36,8 +26,6 @@ export function PartsModalTabOneContent(props: IPartsModalTabOneContent) {
     setEngineer,
     department,
     setDepartment,
-    dispatchBy,
-    setDispatch,
     children,
     postData,
   } = props;
@@ -162,24 +150,7 @@ export function PartsModalTabOneContent(props: IPartsModalTabOneContent) {
                   </option>
                 ))}
               </select>
-              <label htmlFor="dispatchBy" className="sr-only">
-                Dispatch by
-              </label>
-              <select
-                name="dispatchBy"
-                id="dispatchBy"
-                className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                value={dispatchBy}
-                onChange={setDispatch}
-                required
-                aria-required
-              >
-                <option value="" disabled>
-                  Select dispatch
-                </option>
-                <option value="Mohamed Gaffoor">Mohamed Gaffoor</option>
-                <option value="Vaschen Reddy">Vaschen Reddy</option>
-              </select>
+
               <label htmlFor="department" className="sr-only">
                 Department
               </label>

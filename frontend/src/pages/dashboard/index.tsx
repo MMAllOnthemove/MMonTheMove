@@ -9,13 +9,40 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
+const Footer = dynamic(() => import("@/components/Footer"));
 
 export default function Dashboard() {
   const [tableData, setTableData] = useState<string[] | any[]>([]);
   const [engineerUnitsAdded, setEngineerUnitsAdded] = useState<
     string[] | any[]
   >([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userData, setUserData] = useState("");
+
   const router = useRouter();
+
+  const checkAuthenticated = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
+      {
+        method: "POST",
+        headers: { jwt_token: localStorage.token },
+      }
+    );
+
+    const parseData = await res.json();
+    parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    if (parseData === false) {
+      setIsAuthenticated(false);
+      router.push("/auth/login");
+    }
+    // console.log("parseData", parseData);
+  };
+
+  useEffect(() => {
+    checkAuthenticated();
+  }, [isAuthenticated]);
+
   useEffect(() => {
     fetchDataCombinedData({ setTableData });
   }, []);
@@ -165,6 +192,7 @@ export default function Dashboard() {
           </div>
         </section>
       </main>
+      <Footer />
     </>
   );
 }

@@ -1,17 +1,18 @@
 import { bookingAgentFunc, bookingAgentFuncTotal } from "@/components/Reports";
 import { getBookingAgentJobs } from "@/functions/getCombinedFlatData";
+import { getProfile } from "@/functions/getLoggedInUserProfile";
 import { postBookingAgentsJobs } from "@/functions/ipass_api";
 import { useToast } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { bookingAgents } from "../../../public/_data/booking_agents";
 import { minDate } from "../../../utils/datemin";
 const Navbar = dynamic(() => import("@/components/Navbar"));
 const ModalManagement = dynamic(
   () => import("@/components/Modals/bookings_report.modal")
 );
+const Footer = dynamic(() => import("@/components/Footer"));
 
 import { bookingsReportModalState } from "@/atoms/bookingsReport";
 import { useSetRecoilState } from "recoil";
@@ -22,14 +23,15 @@ function Reports() {
   const [createdDate, setCreatedDate] = useState("");
   const [createdTime, setCreatedTime] = useState("");
   const [warranty, setWarranty] = useState("");
-  const [bookingAgent, setBookingAgent] = useState("");
   const [getBookingAgentJobsData, setGetBookingAgentJobsData] = useState<
     string[] | any[]
   >([]);
-
+  const [userData, setUserData] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const setBookingsReportModalState = useSetRecoilState(
     bookingsReportModalState
   );
+  let bookingAgent = userData;
 
   const [dateFrom, setDateFrom] = useState<string | number | Date | any>("");
   const [dateTo, setDateTo] = useState<string | number | Date | any>("");
@@ -38,6 +40,31 @@ function Reports() {
   var addTwoMoreDays = new Date().getDate() + 2; // does not work
   const router = useRouter();
 
+  const checkAuthenticated = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
+      {
+        method: "POST",
+        headers: { jwt_token: localStorage.token },
+      }
+    );
+
+    const parseData = await res.json();
+    parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    if (parseData === false) {
+      setIsAuthenticated(false);
+      router.push("/auth/login");
+    }
+    // console.log("parseData", parseData);
+  };
+
+  useEffect(() => {
+    checkAuthenticated();
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    getProfile({ setUserData });
+  }, [isAuthenticated]);
   // Chakra ui toast
   const toast = useToast();
 
@@ -94,67 +121,6 @@ function Reports() {
   useEffect(() => {
     getBookingAgentJobs({ setGetBookingAgentJobsData });
   }, []);
-
-  // Booking agent Shane
-  // let getJobsByAgentShane =
-  //   dateFrom.length > 0 && dateTo.length > 0
-  //     ? getBookingAgentJobsData.filter((agent) => {
-  //         let date = moment(agent.created_date).format("YYYY-MM-DD");
-  //         return (
-  //           date >= dateFrom &&
-  //           agent.booking_agent === "shanes300123" &&
-  //           date <= dateTo &&
-  //           agent.booking_agent === "shanes300123"
-  //         );
-  //       })
-  //     : [];
-  // let getJobsByAgentShane;
-  // bookingAgentFunc(getBookingAgentJobsData, dateFrom, dateTo, "shanes300123");
-  // console.log(getJobsByAgentShane);
-
-  // Booking agent Sherry
-  // let getJobsByAgentSherry =
-  //   dateFrom.length > 0 && dateTo.length > 0
-  //     ? getBookingAgentJobsData.filter((agent) => {
-  //         let date = moment(agent.created_date).format("YYYY-MM-DD");
-  //         return (
-  //           date >= dateFrom &&
-  //           agent.booking_agent === "sherryl060223" &&
-  //           date <= dateTo &&
-  //           agent.booking_agent === "sherryl060223"
-  //         );
-  //       })
-  //     : [];
-
-  // console.log(getJobsByAgentSherry);
-
-  // Booking agent Nigel
-  // let getJobsByAgentNigel =
-  //   dateFrom.length > 0 && dateTo.length > 0
-  //     ? getBookingAgentJobsData.filter((agent) => {
-  //         let date = moment(agent.created_date).format("YYYY-MM-DD");
-  //         return (
-  //           date >= dateFrom &&
-  //           agent.booking_agent === "nigelc01" &&
-  //           date <= dateTo &&
-  //           agent.booking_agent === "nigelc01"
-  //         );
-  //       })
-  //     : [];
-
-  // Booking agent Livonna
-  // let getJobsByAgentLavona =
-  //   dateFrom.length > 0 && dateTo.length > 0
-  //     ? getBookingAgentJobsData.filter((agent) => {
-  //         let date = moment(agent.created_date).format("YYYY-MM-DD");
-  //         return (
-  //           date >= dateFrom &&
-  //           agent.booking_agent === "lavonaj01" &&
-  //           date <= dateTo &&
-  //           agent.booking_agent === "lavonaj01"
-  //         );
-  //       })
-  //     : [];
 
   return (
     <>
@@ -243,35 +209,15 @@ function Reports() {
                   </tr>
                 </thead>
                 <tbody className="z-0">
-                  <tr className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]">
+                  <tr className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c] text-left">
                     <td className="px-4 py-3  font-medium text-sm max-w-full">
                       {serviceOrder}
                     </td>
+
                     <td className="px-4 py-3  font-medium text-sm max-w-full">
-                      <span>
-                        <label
-                          htmlFor="bookingAgent"
-                          className="block mb-2 text-sm font-medium  text-gray-900 sr-only"
-                        >
-                          Booking agent
-                        </label>
-                        <select
-                          value={bookingAgent}
-                          onChange={(e) => setBookingAgent(e.target.value)}
-                          id="bookingAgent"
-                          className="mb-2 bg-white border cursor-pointer border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-sm p-2.5"
-                        >
-                          <option disabled value="">
-                            Select agent
-                          </option>
-                          {bookingAgents.map((stat) => (
-                            <option key={stat.id} value={`${stat.agentName}`}>
-                              {stat?.agentName}
-                            </option>
-                          ))}
-                        </select>
-                      </span>
+                      {userData}
                     </td>
+
                     <td className="px-4 py-3  font-medium text-sm max-w-full">
                       <button
                         type="button"
@@ -409,6 +355,7 @@ function Reports() {
           </div>
         </section>
       </main>
+      <Footer />
     </>
   );
 }

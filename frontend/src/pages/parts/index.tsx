@@ -1,7 +1,7 @@
-import { useToast } from "@chakra-ui/react";
-import dynamic from "next/dynamic";
 import { partsModalState } from "@/atoms/partsModalAtom";
 import Pagination from "@/components/Table/Pagination";
+import { useToast } from "@chakra-ui/react";
+import dynamic from "next/dynamic";
 const Button = dynamic(() => import("@/components/Buttons"));
 const Container = dynamic(() => import("@/components/Container"));
 const ModalManagement = dynamic(
@@ -10,11 +10,12 @@ const ModalManagement = dynamic(
 
 import { PartsModalTabOneContent } from "@/components/PartsTable/PartsModalTableContent";
 import { columns } from "@/components/PartsTable/PartsTableColumns";
-const ToTopButton = dynamic(() => import("@/components/ToTopButton"));
+import { getProfile } from "@/functions/getLoggedInUserProfile";
 import { getSOInfoAllFunctionForParts } from "@/functions/ipass_api";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import { useSetRecoilState } from "recoil";
+const ToTopButton = dynamic(() => import("@/components/ToTopButton"));
 const Navbar = dynamic(() => import("@/components/Navbar"));
 const ManagementSearchForm = dynamic(
   () => import("@/components/Table/managementSearchForm")
@@ -32,8 +33,40 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useRouter } from "next/router";
+const Footer = dynamic(() => import("@/components/Footer"));
 
 function Parts() {
+  const [userData, setUserData] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  let dispatchBy = userData;
+
+  const checkAuthenticated = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
+      {
+        method: "POST",
+        headers: { jwt_token: localStorage.token },
+      }
+    );
+
+    const parseData = await res.json();
+    parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    if (parseData === false) {
+      setIsAuthenticated(false);
+      router.push("/auth/login");
+    }
+    // console.log("parseData", parseData);
+  };
+
+  useEffect(() => {
+    checkAuthenticated();
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    getProfile({ setUserData });
+  }, [isAuthenticated]);
+
   const [tableData, setTableData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -63,7 +96,6 @@ function Parts() {
   const [inHouseStatus, setInHouseStatus] = useState("");
   const [ticket, setTicket] = useState("");
   const [department, setDepartment] = useState("");
-  const [dispatchBy, setDispatch] = useState("");
 
   const [partsChecked, setPartsChecked] = useState("");
   const [reasonForIncompleteParts, setReasonForIncompleteParts] = useState("");
@@ -276,8 +308,6 @@ function Parts() {
                 }
                 warranty={warranty}
                 inHouseStatus={inHouseStatus}
-                dispatchBy={dispatchBy}
-                setDispatch={(e) => setDispatch(e.target.value)}
                 setInHouseStatus={(e) => setInHouseStatus(e.target.value)}
                 ticket={ticket}
                 setTicket={(e) => setTicket(e.target.value)}
@@ -499,6 +529,7 @@ function Parts() {
           <ToTopButton />
         </Container>
       </main>
+      <Footer />
     </>
   );
 }

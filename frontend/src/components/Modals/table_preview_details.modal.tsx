@@ -7,7 +7,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useRecoilState } from "recoil";
 
 interface Props {

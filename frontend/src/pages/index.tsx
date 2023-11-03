@@ -28,13 +28,16 @@ import Pagination from "@/components/Table/Pagination";
 import { HomepageModalTabOneContent } from "@/components/Table/homepageModalTabOneContent";
 import { HomepageModalTabTwoContent } from "@/components/Table/homepageModalTabTwoContent";
 import { columns } from "@/components/Table/homepageTableColumns";
-import ManagementSearchForm from "@/components/Table/managementSearchForm";
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
+import { getProfile } from "@/functions/getLoggedInUserProfile";
 import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
 import { Itable } from "../../utils/interfaces";
 
 // Dynamic imports
+const ManagementSearchForm = dynamic(
+  () => import("@/components/Table/managementSearchForm")
+);
 const ModalManagement = dynamic(
   () => import("@/components/Modals/modal.management"),
   {
@@ -53,8 +56,42 @@ const ToTopButton = dynamic(() => import("@/components/ToTopButton"), {
 const Button = dynamic(() => import("@/components/Buttons"), {
   loading: () => <p>Loading button...</p>,
 });
+const Footer = dynamic(() => import("@/components/Footer"));
 
 const Home = () => {
+  const router = useRouter();
+  // Chakra ui toast
+  const toast = useToast();
+
+  const [userData, setUserData] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const checkAuthenticated = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
+      {
+        method: "POST",
+        headers: { jwt_token: localStorage.token },
+      }
+    );
+
+    const parseData = await res.json();
+    parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    if (parseData === false) {
+      setIsAuthenticated(false);
+      router.push("/auth/login");
+    }
+    // console.log("parseData", parseData);
+  };
+
+  useEffect(() => {
+    checkAuthenticated();
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    getProfile({ setUserData });
+  }, [isAuthenticated]);
+
   const [tableData, setTableData] = useState<Itable[]>([]);
 
   // Not to be confused with 'setServiceOrder'
@@ -62,9 +99,6 @@ const Home = () => {
 
   // Search ticket for tab two
   const [searchTicket, setSearchTicket] = useState("");
-
-  // Chakra ui toast
-  const toast = useToast();
 
   // Global state for the modal
   const setManagementModalState = useSetRecoilState(managementModalState);
@@ -96,8 +130,8 @@ const Home = () => {
   // We want to get the Status Desc from the last object element of this array
   let GSPNStatusGetLastElement = GSPNStatus?.slice(-1);
 
-  // Settings the user to also be the engineer
-  let user = engineer;
+  // Setting the user to email user is logged in with
+  let user = userData;
 
   // Repairshpr states start here
   const [repairServiceOrder, setRepairServiceOrder] = useState<
@@ -136,27 +170,26 @@ const Home = () => {
   const [repairAPILoading, setRepairAPILoading] = useState(true);
 
   // For the repair API
-  let repairUser = repairEngineer;
-  useEffect(() => {
-    getSOInfoAllFunction({
-      searchServiceOrder,
-      setServiceOrder,
-      setCreatedDate,
-      setCreatedTime,
-      setModel,
-      setWarranty,
-      setFault,
-      setImei,
-      setSerialNumber,
-      setEngineerAssignDate,
-      setEngineerAssignTime,
-      setGSPNStatus,
-    });
-  }, [searchServiceOrder]);
+  // Setting the user to email user is logged in with
+  let repairUser = userData;
 
+  getSOInfoAllFunction({
+    searchServiceOrder,
+    setServiceOrder,
+    setCreatedDate,
+    setCreatedTime,
+    setModel,
+    setWarranty,
+    setFault,
+    setImei,
+    setSerialNumber,
+    setEngineerAssignDate,
+    setEngineerAssignTime,
+    setGSPNStatus,
+  });
   useEffect(() => {
     fetchDataCombinedData({ setTableData });
-  }, [tableData]);
+  }, []);
 
   useEffect(() => {
     getRepair({
@@ -370,9 +403,6 @@ const Home = () => {
       });
   };
 
-  // For the table
-  const router = useRouter();
-
   // Redirects user to the edit table page
   const handleUpdate = (e: React.SyntheticEvent, id: string | number) => {
     e.stopPropagation();
@@ -584,7 +614,9 @@ const Home = () => {
           <ToTopButton />
         </Container>
       </main>
+      <Footer />
     </>
   );
 };
+
 export default Home;

@@ -12,7 +12,7 @@ interface MyFormValues {
   email: string;
   password: string;
 }
-function Login() {
+function ForgotPassword() {
   const [passwordShown, setPasswordShown] = useState(false);
   const router = useRouter();
   // Password toggle handler
@@ -38,10 +38,6 @@ function Login() {
     password: "",
   };
 
-  // useEffect(() => {
-  //   console.log(document.cookie);
-  // }, []);
-
   return (
     <>
       <main className="auth">
@@ -56,7 +52,7 @@ function Login() {
               />
             </span>
             <h3 className="text-center py-2 text-gray-900 dark:text-[#eee] font-semibold">
-              Welcome back
+              Forgot password
             </h3>
           </div>
           <Formik
@@ -65,46 +61,24 @@ function Login() {
             onSubmit={(values, actions) => {
               setTimeout(async () => {
                 // console.log(JSON.stringify(values, null, 2));
-                // console.log(values);
                 // actions.setSubmitting(false);
-
-                try {
-                  const response = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/login`,
-                    {
-                      method: "POST",
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify(values),
-                    }
-                  );
-
-                  const data = await response.json();
-                  console.log(data);
-                  if (response.ok) {
-                    localStorage.setItem("token", data.jwtToken);
-                    toast({
-                      title: "Successful.",
-                      description: ``,
-                      status: "success",
-                      duration: 9000,
-                      isClosable: true,
-                    });
-                    router.push("/");
-                  } else {
-                    toast({
-                      title: "Error.",
-                      description: `${data}`,
-                      status: "error",
-                      duration: 9000,
-                      isClosable: true,
-                    });
-                    return;
+                const response = await fetch(
+                  `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/update_password/:email`,
+                  {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(values),
                   }
-                } catch (error) {
-                  console.log(error);
-                }
+                );
+                await response.json();
+                toast({
+                  title: "Successful.",
+                  description: `Password successfully updated`,
+                  status: "success",
+                  duration: 9000,
+                  isClosable: true,
+                });
+                router.push("/auth/login");
               }, 1000);
             }}
           >
@@ -170,20 +144,20 @@ function Login() {
                   type="submit"
                   className="bg-[#082f49] w-full  font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
                 >
-                  Login
+                  Update password
                 </button>
               </Form>
             )}
           </Formik>
-          {/* <p className="text-gray-600 text-sm text-center my-3 dark:text-[#eee]">
-            Forgot password?{" "}
+          <p className="text-gray-600 text-sm text-center my-3 dark:text-[#eee]">
+            Have an account?{" "}
             <Link
-              href="/auth/forgot_password"
+              href="/auth/login"
               className="text-blue-600 hover:text-blue-500 font-semibold"
             >
-              Reset it here
+              Login
             </Link>
-          </p> */}
+          </p>
           <p className="text-gray-600 text-sm text-center my-3 dark:text-[#eee]">
             First time?{" "}
             <Link
@@ -199,4 +173,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default ForgotPassword;

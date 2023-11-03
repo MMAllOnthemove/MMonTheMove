@@ -1,5 +1,9 @@
 import { unitsPendingReportModalState } from "@/atoms/unitspendingAtom";
 import {
+  getMappedBookedInJobs,
+  getMappedJobsByStatusCount,
+} from "@/functions/pendingUnitsFunc";
+import {
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -9,10 +13,6 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { useRecoilState } from "recoil";
-import {
-  getMappedJobsByStatusCount,
-  getMappedBookedInJobs,
-} from "@/functions/pendingUnitsFunc";
 
 interface Props {
   children?: React.ReactNode;

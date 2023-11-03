@@ -7,14 +7,22 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import * as Yup from "yup";
 import logo from "../../../../public/mmlogo.png";
+import axios from "axios";
 
 interface MyFormValues {
+  fullName: string;
+  username: string;
   email: string;
   password: string;
+  confirmPassword: string;
+  createdAt: Date;
 }
-function Login() {
-  const [passwordShown, setPasswordShown] = useState(false);
+
+export default function Signup() {
   const router = useRouter();
+
+  const [passwordShown, setPasswordShown] = useState(false);
+
   // Password toggle handler
   const togglePassword = () => {
     // When the handler is invoked
@@ -25,22 +33,30 @@ function Login() {
   const toast = useToast();
 
   const validateSchema = Yup.object({
+    fullName: Yup.string()
+      .required("Fullname is required!")
+      .min(4, "Password must be minimum 4 digits!"),
+    username: Yup.string()
+      .required("Username is required!")
+      .min(4, "Password must be minimum 4 digits!"),
     email: Yup.string()
       .email("Email is invalid!")
       .required("Email is required!"),
     password: Yup.string()
       .min(4, "Password must be minimum 4 digits!")
       .required("Password Required!"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("password"), null as any], "Password must match!")
+      .required("Pleas confirm password!"),
   });
-
   const initialValues: MyFormValues = {
+    fullName: "",
+    username: "",
     email: "",
     password: "",
+    confirmPassword: "",
+    createdAt: new Date(),
   };
-
-  // useEffect(() => {
-  //   console.log(document.cookie);
-  // }, []);
 
   return (
     <>
@@ -56,7 +72,7 @@ function Login() {
               />
             </span>
             <h3 className="text-center py-2 text-gray-900 dark:text-[#eee] font-semibold">
-              Welcome back
+              Create an account
             </h3>
           </div>
           <Formik
@@ -65,12 +81,10 @@ function Login() {
             onSubmit={(values, actions) => {
               setTimeout(async () => {
                 // console.log(JSON.stringify(values, null, 2));
-                // console.log(values);
                 // actions.setSubmitting(false);
-
                 try {
                   const response = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/login`,
+                    `http://localhost:8000/auth/signup`,
                     {
                       method: "POST",
                       headers: {
@@ -110,6 +124,44 @@ function Login() {
           >
             {({ errors, touched }: any) => (
               <Form>
+                <span className="my-3 form_input_row">
+                  <label
+                    htmlFor="fullName"
+                    className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
+                  >
+                    Fullname
+                  </label>
+                  <Field
+                    name="fullName"
+                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  />
+                  <ErrorMessage name="fullName">
+                    {(msg: any) => (
+                      <div className="text-sm text-red-500 font-medium">
+                        {msg}
+                      </div>
+                    )}
+                  </ErrorMessage>
+                </span>
+                <span className="my-3 form_input_row">
+                  <label
+                    htmlFor="username"
+                    className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
+                  >
+                    Username
+                  </label>
+                  <Field
+                    name="username"
+                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  />
+                  <ErrorMessage name="username">
+                    {(msg: any) => (
+                      <div className="text-sm text-red-500 font-medium">
+                        {msg}
+                      </div>
+                    )}
+                  </ErrorMessage>
+                </span>
                 <span className="my-3 form_input_row">
                   <label
                     htmlFor="email"
@@ -166,31 +218,43 @@ function Login() {
                     )}
                   </ErrorMessage>
                 </span>
+                <span className="my-3 form_input_row">
+                  <label
+                    htmlFor="confirmPassword"
+                    className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
+                  >
+                    Confirm password
+                  </label>
+                  <Field
+                    name="confirmPassword"
+                    type="password"
+                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  />
+                  <ErrorMessage name="confirmPassword">
+                    {(msg: any) => (
+                      <div className="text-sm text-red-500 font-medium">
+                        {msg}
+                      </div>
+                    )}
+                  </ErrorMessage>
+                </span>
+
                 <button
                   type="submit"
                   className="bg-[#082f49] w-full  font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
                 >
-                  Login
+                  Signup
                 </button>
               </Form>
             )}
           </Formik>
-          {/* <p className="text-gray-600 text-sm text-center my-3 dark:text-[#eee]">
-            Forgot password?{" "}
-            <Link
-              href="/auth/forgot_password"
-              className="text-blue-600 hover:text-blue-500 font-semibold"
-            >
-              Reset it here
-            </Link>
-          </p> */}
           <p className="text-gray-600 text-sm text-center my-3 dark:text-[#eee]">
-            First time?{" "}
+            Have an account?{" "}
             <Link
-              href="/auth/signup"
+              href="/auth/login"
               className="text-blue-600 hover:text-blue-500 font-semibold"
             >
-              Sign up here
+              Login
             </Link>
           </p>
         </article>
@@ -198,5 +262,3 @@ function Login() {
     </>
   );
 }
-
-export default Login;

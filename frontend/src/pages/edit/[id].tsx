@@ -1,15 +1,19 @@
-import dynamic from "next/dynamic";
+import { getProfile } from "@/functions/getLoggedInUserProfile";
+import { getSOStatusDescLatest } from "@/functions/ipass_api";
 import UnitFinder from "@/pages/api/UnitFinder";
 import { useToast } from "@chakra-ui/react";
+import dynamic from "next/dynamic";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { unitStatus } from "../../../public/_data/statuses";
 const Button = dynamic(() => import("@/components/Buttons"));
-import { getSOStatusDescLatest } from "@/functions/ipass_api";
-import Head from "next/head";
 const Container = dynamic(() => import("@/components/Container"));
+const Footer = dynamic(() => import("@/components/Footer"));
 
 function EditRow() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userData, setUserData] = useState("");
   // These are already handled in the table but for user experience
   // We just show them and make their inputs disabled
   const [showServiceOrderNumber, setShowServiceOrderNumber] = useState("");
@@ -41,10 +45,37 @@ function EditRow() {
   const [department, setDepartment] = useState("");
   const [dateAdded, setDateAdded] = useState("");
 
+  const checkAuthenticated = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
+      {
+        method: "POST",
+        headers: { jwt_token: localStorage.token },
+      }
+    );
+
+    const parseData = await res.json();
+    parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    if (parseData === false) {
+      setIsAuthenticated(false);
+      router.push("/auth/login");
+    }
+    // console.log("parseData", parseData);
+  };
+
+  useEffect(() => {
+    checkAuthenticated();
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    getProfile({ setUserData });
+  }, [isAuthenticated]);
+
   const handleQCisCheckedChange = () => {
     setIsQCchecked(!isQCchecked);
   };
-  const [user, setUser] = useState("");
+  let user = userData;
+  // const [user, setUser] = useState("");
   // Add and remove fields via button
   const [partsList, setPartsList] = useState<string[] | any[]>([
     { partNumber: "" },
@@ -80,7 +111,6 @@ function EditRow() {
         setEngineerAssignDate(data[0]?.engineer_assign_date);
         setEngineerAssignTime(data[0]?.engineer_assign_time);
         setTicket(data[0]?.ticket);
-        setUser(data[0]?.job_added_by);
         setQCcomments(data[0]?.qc_comment);
         setDepartment(data[0]?.department);
         setDateAdded(data[0]?.date_added);
@@ -269,7 +299,7 @@ function EditRow() {
                 </h1>
                 <h3 className="text-center dark:text-[#eee] font-semibold">
                   You are editing as:{" "}
-                  <span className="text-sky-700  font-bold">{user}</span>
+                  <span className="text-sky-700  font-bold">{userData}</span>
                 </h3>
               </div>
               <div />
