@@ -27,16 +27,20 @@ export default function Claims() {
 
     const parseData = await res.json();
     parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
-    if (parseData === false) {
-      setIsAuthenticated(false);
-      router.push("/auth/login");
-    }
+
     // console.log("parseData", parseData);
   };
 
   useEffect(() => {
     checkAuthenticated();
-  }, [isAuthenticated]);
+  }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token || token === "") {
+      router.push("/auth/login");
+    }
+  }, []);
 
   useEffect(() => {
     getProfile({ setUserData });
@@ -127,7 +131,6 @@ export default function Claims() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

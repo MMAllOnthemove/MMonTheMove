@@ -171,7 +171,7 @@ const postJobs = async (req, res) => {
       res.status(201).json("Job added, thank you!");
     }
   } catch (err) {
-    console.log("Create task error: ", err);
+    // console.log("Create task error: ", err);
   }
 };
 
@@ -212,7 +212,7 @@ const updateJob = async (req, res) => {
     );
     res.status(201).send(editQuery.rows);
   } catch (error) {
-    console.log("editQuery", error);
+    // console.log("editQuery", error);
   }
 };
 

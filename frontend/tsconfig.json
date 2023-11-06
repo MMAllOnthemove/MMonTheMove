@@ -29,7 +29,8 @@
     "**/*.ts",
     "**/*.tsx",
     "src/context/TableInfoContext.js",
-    "src/components/PartsTable/PartsTableColumns.tsx"
+    "src/components/PartsTable/PartsTableColumns.tsx",
+    "src/functions/user.ts"
   ],
   "exclude": [
     "node_modules"

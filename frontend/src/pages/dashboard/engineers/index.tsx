@@ -16,12 +16,13 @@ function Engineers() {
   const [engineerFilter, setEngineerFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [tableData, setTableData] = useState<any[]>([]);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>();
   const [userData, setUserData] = useState("");
-
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+
   var today = new Date().toISOString().split("T")[0].toString();
+
   const router = useRouter();
 
   const checkAuthenticated = async () => {
@@ -34,21 +35,21 @@ function Engineers() {
     );
 
     const parseData = await res.json();
-    parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
-    if (parseData === false) {
-      setIsAuthenticated(false);
-      router.push("/auth/login");
-    }
+    setIsAuthenticated(parseData);
+    // parseData === true ? setIsAuthenticated(parseData)
     // console.log("parseData", parseData);
   };
 
   useEffect(() => {
     checkAuthenticated();
-  }, [isAuthenticated]);
-
+  }, []);
   useEffect(() => {
-    getProfile({ setUserData });
-  }, [isAuthenticated]);
+    const token = localStorage.getItem("token");
+
+    if (!token || token === "") {
+      router.push("/auth/login");
+    }
+  }, []);
 
   useEffect(() => {
     fetchDataCombinedData({ setTableData });

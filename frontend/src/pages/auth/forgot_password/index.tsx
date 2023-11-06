@@ -78,7 +78,6 @@ function ForgotPassword() {
                   duration: 9000,
                   isClosable: true,
                 });
-                router.push("/auth/login");
               }, 1000);
             }}
           >

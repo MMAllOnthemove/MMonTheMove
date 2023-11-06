@@ -32,16 +32,20 @@ export default function Dashboard() {
 
     const parseData = await res.json();
     parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
-    if (parseData === false) {
-      setIsAuthenticated(false);
-      router.push("/auth/login");
-    }
+
     // console.log("parseData", parseData);
   };
 
   useEffect(() => {
     checkAuthenticated();
-  }, [isAuthenticated]);
+  }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token || token === "") {
+      router.push("/auth/login");
+    }
+  }, []);
 
   useEffect(() => {
     fetchDataCombinedData({ setTableData });
@@ -192,7 +196,6 @@ export default function Dashboard() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

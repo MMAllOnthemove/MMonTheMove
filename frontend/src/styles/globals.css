@@ -15,11 +15,12 @@ html:focus-within {
 }
 
 html,
-body {
-  padding: 0;
+body {  padding: 0;
   margin: 0;
   font-family: "Inter", sans-serif !important;
   height: 100vh;
+  max-height:1000vh;
+  min-height:100vh;
   --scrollbarBG: #dee2da;
   --thumbBG: #6c757d;
 }
@@ -43,29 +44,22 @@ img {
   width: 100%;
   height: 100%;
 }
+
 /* Navbar */
 .navbar {
-  padding: 1rem;
-  height: 6rem;
+
   position: fixed;
   top: 0;
   overflow: hidden;
   width: 100%;
   background-color: white;
   border-bottom: 1px solid #eee;
+  z-index: 1;
 }
 /*  space-between-navbar-and-content */
 .space-between-navbar-and-content {
-  /* position: absolute;
-  top: 6rem;
-  left:0;
-  right: 0;
-  width: 100%;
+  margin-top: calc(100vh - 89vh);
   height:100%;
-
-  border: 1px solid red;
-  bottom: 5rem; */
-  margin-top: calc(100vh - 88vh);
 }
 
 .nav_links {
@@ -190,7 +184,7 @@ button.close_button {
 /* Footer */
 .footer {
   padding: 1rem;
-  height: 4rem;
+  height: 5.926vh; /* 4rem */
   position: absolute;
   bottom: 0;
   overflow: hidden;

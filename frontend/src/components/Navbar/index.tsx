@@ -4,9 +4,10 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { hhpNavItems, partsNavItems } from "../../../public/_data/navbar";
 import logo from "../../../public/mmlogo.png";
+import { getProfile } from "@/functions/getLoggedInUserProfile";
 const Button = dynamic(() => import("../Buttons"));
 const ThemeChangerButton = dynamic(() => import("../Buttons/ThemeChanger"), {
   ssr: false,
@@ -23,6 +24,34 @@ function Navbar() {
   const [hhpSubMenuOpen, setHHPSubMenuOpen] = useState(false);
   const [partsSubMenuOpen, sePartsSubMenuOpen] = useState(false);
 
+  const [userData, setUserData] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  const checkAuthenticated = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
+      {
+        method: "POST",
+        headers: { jwt_token: localStorage.token },
+      }
+    );
+
+    const parseData = await res.json();
+    setIsAuthenticated(parseData);
+    // parseData === true ? setIsAuthenticated(parseData)
+    // console.log("parseData", parseData);
+  };
+
+  useEffect(() => {
+    checkAuthenticated();
+
+    console.log(isAuthenticated);
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    getProfile({ setUserData });
+  }, [isAuthenticated]);
+
   function onSignout() {
     localStorage.removeItem("token");
     router.push("/auth/login");
@@ -37,39 +66,47 @@ function Navbar() {
 
   return (
     <>
-      <nav className="navbar flex justify-between items-center dark:bg-[#15202B]">
-        <button
-          role="button"
-          id="burger_menu"
-          className="burger_menu"
-          aria-label="burger_menu"
-          onClick={ToggleSidebar}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            className="dark:fill-white"
+      <nav className="navbar">
+        <div className="navbar_first_row bg-[#082f49]">
+          <p className=" dark:text-[#eee] text-[#eee] text-sm text-center">
+            Logged in as{" "}
+            <span className="text-sky-500 font-semibold">{userData}</span>
+          </p>
+        </div>
+        <div className="navbar_second_row flex justify-between items-center py-2  px-4 dark:bg-[#15202B]">
+          <button
+            role="button"
+            id="burger_menu"
+            className="burger_menu"
+            aria-label="burger_menu"
+            onClick={ToggleSidebar}
           >
-            <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path>
-          </svg>
-        </button>
-        <div className="flex items-center gap-1">
-          <ThemeChangerButton />
-          <Link
-            className="logo overflow-hidden flex justify-center items-center flex-col p-1"
-            href="/"
-          >
-            <Image
-              src={logo}
-              alt="allelectronics logo"
-              width={50}
-              height={40}
-              priority={true}
-              placeholder="blur"
-            />
-          </Link>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              className="dark:fill-white"
+            >
+              <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path>
+            </svg>
+          </button>
+          <div className="flex items-center gap-1">
+            <ThemeChangerButton />
+            <Link
+              className="logo overflow-hidden flex justify-center items-center flex-col p-1"
+              href="/"
+            >
+              <Image
+                src={logo}
+                alt="allelectronics logo"
+                width={50}
+                height={40}
+                priority={true}
+                placeholder="blur"
+              />
+            </Link>
+          </div>
         </div>
       </nav>
 
