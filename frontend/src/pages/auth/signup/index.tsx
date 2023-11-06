@@ -84,7 +84,7 @@ export default function Signup() {
                 // actions.setSubmitting(false);
                 try {
                   const response = await fetch(
-                    `http://localhost:8000/auth/signup`,
+                    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/signup`,
                     {
                       method: "POST",
                       headers: {
@@ -95,7 +95,7 @@ export default function Signup() {
                   );
 
                   const data = await response.json();
-                  console.log(data);
+                  // console.log(data);
                   if (response.ok) {
                     localStorage.setItem("token", data.jwtToken);
                     toast({
@@ -117,7 +117,7 @@ export default function Signup() {
                     return;
                   }
                 } catch (error) {
-                  console.log(error);
+                  // console.log(error);
                 }
               }, 1000);
             }}

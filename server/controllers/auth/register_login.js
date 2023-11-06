@@ -78,7 +78,7 @@ const loginUser = async (req, res) => {
     );
     return res.json({ jwtToken });
   } catch (err) {
-    // console.error(err.message);
+    console.log("loginUser", err);
     res.status(500).json("Server error");
   }
 };

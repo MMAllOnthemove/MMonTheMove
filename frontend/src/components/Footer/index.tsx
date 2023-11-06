@@ -20,7 +20,6 @@ export default function Footer() {
     parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
     if (parseData === false) {
       setIsAuthenticated(false);
-      router.push("/auth/login");
     }
     // console.log("parseData", parseData);
   }, []);

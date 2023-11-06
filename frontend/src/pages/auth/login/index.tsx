@@ -45,7 +45,7 @@ function Login() {
   return (
     <>
       <main className="auth">
-        <article className="auth_card">
+        <article className="auth_card dark:bg-[#22303c] bg-gray-50 dark:border dark:border-[#eee]">
           <div className="form_header">
             <span className="auth_card_logo">
               <Image
@@ -81,7 +81,7 @@ function Login() {
                   );
 
                   const data = await response.json();
-                  console.log(data);
+                  // console.log(data);
                   if (response.ok) {
                     localStorage.setItem("token", data.jwtToken);
                     toast({
@@ -103,7 +103,7 @@ function Login() {
                     return;
                   }
                 } catch (error) {
-                  console.log(error);
+                  // console.log(error);
                 }
               }, 1000);
             }}
@@ -119,7 +119,7 @@ function Login() {
                   </label>
                   <Field
                     name="email"
-                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   />
                   <ErrorMessage name="email">
                     {(msg: any) => (
@@ -139,7 +139,7 @@ function Login() {
                   <div className="flex items-center gap-2 border border-gray-300 mb-2 pr-1 rounded-sm">
                     <Field
                       name="password"
-                      className=" bg-white border-none  outline-none text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                      className=" bg-white border-none dark:bg-[#22303C] dark:text-[#eee] outline-none text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                       type={passwordShown ? "text" : "password"}
                     />
 
@@ -150,9 +150,9 @@ function Login() {
                     >
                       <span>
                         {!passwordShown ? (
-                          <EyeIcon className="w-6 h-6" />
+                          <EyeIcon className="w-6 h-6  dark:text-[#eee]" />
                         ) : (
-                          <EyeSlashIcon className="w-6 h-6" />
+                          <EyeSlashIcon className="w-6 h-6  dark:text-[#eee]" />
                         )}
                       </span>
                     </button>
@@ -168,7 +168,7 @@ function Login() {
                 </span>
                 <button
                   type="submit"
-                  className="bg-[#082f49] w-full  font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
+                  className="bg-[#082f49] w-full  font-semibold text-white dark:text-[#eee] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
                 >
                   Login
                 </button>
@@ -188,7 +188,7 @@ function Login() {
             First time?{" "}
             <Link
               href="/auth/signup"
-              className="text-blue-600 hover:text-blue-500 font-semibold"
+              className="text-blue-600 hover:text-blue-500 font-semibold "
             >
               Sign up here
             </Link>

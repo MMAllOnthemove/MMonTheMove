@@ -25,8 +25,6 @@ module.exports = function (req, res, next) {
 
     // console.log("req.user", req.user);
     // console.log("verify.user", verify.user);
-    // console.log("req.user.id", req.user.id);
-    // console.log("verify.id", verify.id);
     next();
   } catch (err) {
     // res.status(401).json({ msg: "Token is not valid" });

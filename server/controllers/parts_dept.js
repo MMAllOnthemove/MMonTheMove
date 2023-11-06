@@ -76,7 +76,7 @@ const getPartsJobs = async (req, res) => {
     );
     res.json(newResults.rows);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 };
 
