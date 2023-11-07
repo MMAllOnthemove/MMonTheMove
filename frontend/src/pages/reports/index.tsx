@@ -32,7 +32,7 @@ import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
 import { getProfile } from "@/functions/getLoggedInUserProfile";
 import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
-import { Itable } from "../../utils/interfaces";
+import { Itable } from "../../../utils/interfaces";
 
 // Dynamic imports
 const ManagementSearchForm = dynamic(
