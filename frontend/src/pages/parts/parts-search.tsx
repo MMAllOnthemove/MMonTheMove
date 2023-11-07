@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import useDebounce from "@/components/useDebounce";
 
-function PartsSearch() {
+const PartsSearch = () => {
   const [data, setData] = useState<null | any>(null);
   const [stockData, setStockData] = useState<null | any>(null);
   const [search, setSearch] = useState<string | any>("");
@@ -559,6 +559,6 @@ function PartsSearch() {
       </main>
     </>
   );
-}
+};
 
 export default PartsSearch;

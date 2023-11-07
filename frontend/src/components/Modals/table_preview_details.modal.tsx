@@ -15,7 +15,7 @@ interface Props {
   id: string | number;
 }
 
-export default function ModalManagementDetails({ id }: Props) {
+const ModalManagementDetails = ({ id }: Props) => {
   const [modalState, setModalState] = useRecoilState(
     viewDetailsOnHomeTableModalState
   );
@@ -42,4 +42,5 @@ export default function ModalManagementDetails({ id }: Props) {
       </Modal>
     </>
   );
-}
+};
+export default ModalManagementDetails;

@@ -1,9 +1,9 @@
 import moment from "moment";
 import { IgetRepair, IgetTicketNumberOnJobAdd } from "../../utils/interfaces";
 
-export async function getRepair(props: IgetRepair) {
+export const getRepair = async (props: IgetRepair) => {
   await fetch(
-    `https://allelectronics.repairshopr.com/api/v1/tickets?number=${props.searchTicket}`,
+    ``,
 
     {
       method: "GET",
@@ -49,9 +49,11 @@ export async function getRepair(props: IgetRepair) {
       props.setRepairDepartment("HHP");
       props.setRepairAPILoading(false);
     });
-}
+};
 // `https://allelectronics.repairshopr.com/api/v1/tickets?number=${props.searchServiceOrder}`
-export async function getTicketNumberOnJobAdd(props: IgetTicketNumberOnJobAdd) {
+export const getTicketNumberOnJobAdd = async (
+  props: IgetTicketNumberOnJobAdd
+) => {
   await fetch(
     `${props.searchServiceOrder}`,
 
@@ -61,7 +63,7 @@ export async function getTicketNumberOnJobAdd(props: IgetTicketNumberOnJobAdd) {
       cache: "default",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
+        Authorization: `Bearer `,
       },
     }
   )
@@ -81,4 +83,4 @@ export async function getTicketNumberOnJobAdd(props: IgetTicketNumberOnJobAdd) {
       //   props.setTicket("");
       // }
     });
-}
+};

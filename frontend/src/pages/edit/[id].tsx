@@ -9,9 +9,8 @@ import { useCallback, useEffect, useState } from "react";
 import { unitStatus } from "../../../public/_data/statuses";
 const Button = dynamic(() => import("@/components/Buttons"));
 const Container = dynamic(() => import("@/components/Container"));
-const Footer = dynamic(() => import("@/components/Footer"));
 
-function EditRow() {
+const EditRow = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userData, setUserData] = useState("");
   // These are already handled in the table but for user experience
@@ -644,6 +643,6 @@ function EditRow() {
       </main>
     </>
   );
-}
+};
 
 export default EditRow;

@@ -1,3 +1,5 @@
+import { boolean } from "yup";
+
 export interface Itable {
     id: string | number;
     unique_id: string;
@@ -161,4 +163,25 @@ export interface IRepairTicketInfo {
 export interface IgetStockOverviewInfo {
     debouncedSearch: string | any;
     setStockData: (stockDataResponse: any) => void;
+}
+
+export interface ISignUpFormValues {
+    fullName: string;
+    username: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    createdAt: Date;
+}
+export interface ILoginFormValues {
+    email: string;
+    password: string;
+}
+
+export interface IcustomToast {
+    title: string;
+    description: string;
+    status: "info" | "warning" | "success" | "error" | "loading" | undefined;
+    duration: number;
+    isClosable: boolean;
 }

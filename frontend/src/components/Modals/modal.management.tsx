@@ -14,7 +14,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-function ModalManagement(props: Props) {
+const ModalManagement = (props: Props) => {
   //   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalState, setModalState] = useRecoilState(managementModalState);
 
@@ -48,6 +48,6 @@ function ModalManagement(props: Props) {
       </Modal>
     </>
   );
-}
+};
 
 export default ModalManagement;

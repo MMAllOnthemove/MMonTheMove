@@ -22,12 +22,12 @@ interface Props {
   dateTo: string | any;
 }
 
-function ModalManagement({
+const ModalManagement = ({
   fetchAlldata,
   fetchJobsApprovedAndRejected,
   dateFrom,
   dateTo,
-}: Props) {
+}: Props) => {
   //   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalState, setModalState] = useRecoilState(
     unitsPendingReportModalState
@@ -282,6 +282,6 @@ function ModalManagement({
       </Modal>
     </>
   );
-}
+};
 
 export default ModalManagement;

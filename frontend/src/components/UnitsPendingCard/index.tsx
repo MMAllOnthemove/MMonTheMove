@@ -1,6 +1,6 @@
 import { IUnitsPendingCard } from "../../../utils/interfaces";
 
-function UnitsPendingCard(props: IUnitsPendingCard) {
+const UnitsPendingCard = (props: IUnitsPendingCard) => {
   return (
     <article
       onClick={props.onClick}
@@ -14,6 +14,6 @@ function UnitsPendingCard(props: IUnitsPendingCard) {
       </h3>
     </article>
   );
-}
+};
 
 export default UnitsPendingCard;

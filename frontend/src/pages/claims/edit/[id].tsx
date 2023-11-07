@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 // import Button from "../../../../components/Buttons";
 import dynamic from "next/dynamic";
 import { getProfile } from "@/functions/getLoggedInUserProfile";
-const Footer = dynamic(() => import("@/components/Footer"));
 const Button = dynamic(() => import("@/components/Buttons"));
 
 function EditClaim() {

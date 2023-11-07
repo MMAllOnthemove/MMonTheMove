@@ -8,7 +8,7 @@ import {
   IgetSOInfoAllParts,
 } from "../../utils/interfaces";
 
-export async function getSOInfoAllFunction(props: IgetSOInfoAll) {
+export const getSOInfoAllFunction = (props: IgetSOInfoAll) => {
   const options = {
     IvSvcOrderNo: props.searchServiceOrder,
     IsCommonHeader: {
@@ -20,7 +20,7 @@ export async function getSOInfoAllFunction(props: IgetSOInfoAll) {
     },
   };
   useEffect(() => {
-    async function fetchData() {
+    const fetchData = async () => {
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_IPAAS_API_GETSOINFOALL}`,
@@ -55,13 +55,14 @@ export async function getSOInfoAllFunction(props: IgetSOInfoAll) {
       } catch (e) {
         //
       }
-    }
+    };
     fetchData();
   }, []);
 
   return {};
-}
-export async function getSOStatusDescLatest(props: IgetSOStatusDescLatest) {
+};
+
+export const getSOStatusDescLatest = async (props: IgetSOStatusDescLatest) => {
   const options = {
     IvSvcOrderNo: props.showServiceOrderNumber,
     IsCommonHeader: {
@@ -88,9 +89,9 @@ export async function getSOStatusDescLatest(props: IgetSOStatusDescLatest) {
   );
   const data = await response.json();
   props.setGSPNStatus(data?.EtLogInfo?.results?.map((x: any) => x.StatusDesc));
-}
+};
 
-export async function getPartsInfoFunction(props: IgetPartsInfo) {
+export const getPartsInfoFunction = async (props: IgetPartsInfo) => {
   const options = {
     IsCommonHeader: {
       Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
@@ -122,9 +123,9 @@ export async function getPartsInfoFunction(props: IgetPartsInfo) {
     return <p>Loading...</p>;
   }
   // console.log(data);
-}
+};
 
-export async function postBookingAgentsJobs(props: IpostBookingAgentsJobs) {
+export const postBookingAgentsJobs = async (props: IpostBookingAgentsJobs) => {
   const options = {
     IvSvcOrderNo: props.searchServiceOrder,
     IsCommonHeader: {
@@ -155,9 +156,9 @@ export async function postBookingAgentsJobs(props: IpostBookingAgentsJobs) {
   props.setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
   props.setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
   props.setWarranty(data?.Return?.EsModelInfo?.WtyType);
-}
+};
 
-export async function getStockOverviewInfo(props: IgetStockOverviewInfo) {
+export const getStockOverviewInfo = async (props: IgetStockOverviewInfo) => {
   const options = {
     IvCompany: `${process.env.NEXT_PUBLIC_COMPANY}`,
     IvLanguage: `${process.env.NEXT_PUBLIC_LANG}`,
@@ -191,8 +192,10 @@ export async function getStockOverviewInfo(props: IgetStockOverviewInfo) {
       props.setStockData(data);
       // console.log(data);
     });
-}
-export async function getSOInfoAllFunctionForParts(props: IgetSOInfoAllParts) {
+};
+export const getSOInfoAllFunctionForParts = async (
+  props: IgetSOInfoAllParts
+) => {
   const options = {
     IvSvcOrderNo: props.searchServiceOrder,
     IsCommonHeader: {
@@ -226,4 +229,4 @@ export async function getSOInfoAllFunctionForParts(props: IgetSOInfoAllParts) {
   props.setFault(data?.Return?.EsModelInfo?.DefectDesc);
   props.setImei(data?.Return?.EsModelInfo?.IMEI);
   props.setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
-}
+};

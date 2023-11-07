@@ -17,9 +17,8 @@ const ModalManagement = dynamic(
 );
 const Navbar = dynamic(() => import("@/components/Navbar"));
 const UnitsPendingCard = dynamic(() => import("@/components/UnitsPendingCard"));
-const Footer = dynamic(() => import("@/components/Footer"));
 
-function Pending() {
+const Pending = () => {
   const [fetchAlldata, setFetchAlldata] = useState<any[]>([]);
   const setPendingUnitsModalState = useSetRecoilState(
     unitsPendingReportModalState
@@ -580,6 +579,6 @@ function Pending() {
       </main>
     </>
   );
-}
+};
 
 export default Pending;

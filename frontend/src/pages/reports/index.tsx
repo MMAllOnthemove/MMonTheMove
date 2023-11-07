@@ -56,7 +56,6 @@ const ToTopButton = dynamic(() => import("@/components/ToTopButton"), {
 const Button = dynamic(() => import("@/components/Buttons"), {
   loading: () => <p>Loading button...</p>,
 });
-const Footer = dynamic(() => import("@/components/Footer"));
 
 const Home = () => {
   const router = useRouter();

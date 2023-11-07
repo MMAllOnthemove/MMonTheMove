@@ -12,7 +12,7 @@ import { getEngineerJobsByStatusCount } from "@/functions/pendingUnitsFunc";
 import { getProfile } from "@/functions/getLoggedInUserProfile";
 import { useRouter } from "next/router";
 
-function Engineers() {
+const Engineers = () => {
   const [engineerFilter, setEngineerFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [tableData, setTableData] = useState<any[]>([]);
@@ -426,6 +426,6 @@ function Engineers() {
       </main>
     </>
   );
-}
+};
 
 export default Engineers;

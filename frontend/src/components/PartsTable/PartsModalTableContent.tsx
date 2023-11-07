@@ -11,7 +11,7 @@ import { partsStatus } from "../../../public/_data/statuses";
 import { IPartsModalTabOneContent } from "../../../utils/interfaces";
 import Button from "../Buttons";
 
-export function PartsModalTabOneContent(props: IPartsModalTabOneContent) {
+const PartsModalTabOneContent = (props: IPartsModalTabOneContent) => {
   const {
     searchServiceOrder,
     setSearchServiceOrder,
@@ -202,4 +202,6 @@ export function PartsModalTabOneContent(props: IPartsModalTabOneContent) {
       </form>
     </>
   );
-}
+};
+
+export default PartsModalTabOneContent;

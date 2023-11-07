@@ -8,17 +8,10 @@ import { useState } from "react";
 import * as Yup from "yup";
 import logo from "../../../../public/mmlogo.png";
 import axios from "axios";
+import { SignupvalidateSchema } from "../../../../utils/validateSchema";
+import { ISignUpFormValues } from "../../../../utils/interfaces";
 
-interface MyFormValues {
-  fullName: string;
-  username: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  createdAt: Date;
-}
-
-export default function Signup() {
+const Signup = () => {
   const router = useRouter();
 
   const [passwordShown, setPasswordShown] = useState(false);
@@ -32,24 +25,7 @@ export default function Signup() {
   // Chakra ui toast
   const toast = useToast();
 
-  const validateSchema = Yup.object({
-    fullName: Yup.string()
-      .required("Fullname is required!")
-      .min(4, "Password must be minimum 4 digits!"),
-    username: Yup.string()
-      .required("Username is required!")
-      .min(4, "Password must be minimum 4 digits!"),
-    email: Yup.string()
-      .email("Email is invalid!")
-      .required("Email is required!"),
-    password: Yup.string()
-      .min(4, "Password must be minimum 4 digits!")
-      .required("Password Required!"),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref("password"), null as any], "Password must match!")
-      .required("Pleas confirm password!"),
-  });
-  const initialValues: MyFormValues = {
+  const initialValues: ISignUpFormValues = {
     fullName: "",
     username: "",
     email: "",
@@ -61,7 +37,7 @@ export default function Signup() {
   return (
     <>
       <main className="auth">
-        <article className="auth_card">
+        <article className="auth_card  dark:bg-[#22303c] bg-gray-50 dark:border dark:border-[#eee]">
           <div className="form_header">
             <span className="auth_card_logo">
               <Image
@@ -77,7 +53,7 @@ export default function Signup() {
           </div>
           <Formik
             initialValues={initialValues}
-            validationSchema={validateSchema}
+            validationSchema={SignupvalidateSchema}
             onSubmit={(values, actions) => {
               setTimeout(async () => {
                 // console.log(JSON.stringify(values, null, 2));
@@ -133,7 +109,7 @@ export default function Signup() {
                   </label>
                   <Field
                     name="fullName"
-                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   />
                   <ErrorMessage name="fullName">
                     {(msg: any) => (
@@ -152,7 +128,7 @@ export default function Signup() {
                   </label>
                   <Field
                     name="username"
-                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   />
                   <ErrorMessage name="username">
                     {(msg: any) => (
@@ -171,7 +147,7 @@ export default function Signup() {
                   </label>
                   <Field
                     name="email"
-                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   />
                   <ErrorMessage name="email">
                     {(msg: any) => (
@@ -191,7 +167,7 @@ export default function Signup() {
                   <div className="flex items-center gap-2 border border-gray-300 mb-2 pr-1 rounded-sm">
                     <Field
                       name="password"
-                      className=" bg-white border-none  outline-none text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                      className=" bg-white border-none dark:bg-[#22303C] dark:text-[#eee] outline-none text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                       type={passwordShown ? "text" : "password"}
                     />
 
@@ -202,9 +178,9 @@ export default function Signup() {
                     >
                       <span>
                         {!passwordShown ? (
-                          <EyeIcon className="w-6 h-6" />
+                          <EyeIcon className="w-6 h-6  dark:text-[#eee]" />
                         ) : (
-                          <EyeSlashIcon className="w-6 h-6" />
+                          <EyeSlashIcon className="w-6 h-6  dark:text-[#eee]" />
                         )}
                       </span>
                     </button>
@@ -228,7 +204,7 @@ export default function Signup() {
                   <Field
                     name="confirmPassword"
                     type="password"
-                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   />
                   <ErrorMessage name="confirmPassword">
                     {(msg: any) => (
@@ -241,7 +217,7 @@ export default function Signup() {
 
                 <button
                   type="submit"
-                  className="bg-[#082f49] w-full  font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
+                  className="bg-[#082f49] w-full  font-semibold text-white dark:text-[#eee] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-center my-3"
                 >
                   Signup
                 </button>
@@ -261,4 +237,6 @@ export default function Signup() {
       </main>
     </>
   );
-}
+};
+
+export default Signup;
