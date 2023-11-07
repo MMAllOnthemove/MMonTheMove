@@ -1,11 +1,11 @@
 import moment from "moment";
 
-export function bookingAgentFunc(
+export const bookingAgentFunc = (
   arr: string[] | any[],
   dateFrom: string,
   dateTo: string,
   agentName: string
-) {
+) => {
   arr =
     dateFrom.length > 0 && dateTo.length > 0
       ? arr.filter((agent) => {
@@ -20,12 +20,12 @@ export function bookingAgentFunc(
       : [];
 
   return arr.length;
-}
-export function bookingAgentFuncTotal(
+};
+export const bookingAgentFuncTotal = (
   arr: string[] | any[],
   dateFrom: string,
   dateTo: string
-) {
+) => {
   arr =
     dateFrom.length > 0 && dateTo.length > 0
       ? arr.filter((agent) => {
@@ -35,14 +35,14 @@ export function bookingAgentFuncTotal(
       : [];
 
   return arr.length;
-}
+};
 
-export function bookingAgentMapOverJobs(
+export const bookingAgentMapOverJobs = (
   arr: string[] | any[],
   dateFrom: string,
   dateTo: string,
   agentName: string
-) {
+) => {
   arr =
     dateFrom.length > 0 && dateTo.length > 0
       ? arr
@@ -63,4 +63,4 @@ export function bookingAgentMapOverJobs(
       : [];
 
   return arr;
-}
+};

@@ -5,10 +5,8 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 const Navbar = dynamic(() => import("@/components/Navbar"));
-const Footer = dynamic(() => import("@/components/Footer"));
-// import Navbar from "../../../components/Navbar";
 
-export default function Claims() {
+const Claims = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [tableData, setTableData] = useState<string[] | any[]>([]);
   const [userData, setUserData] = useState("");
@@ -133,4 +131,5 @@ export default function Claims() {
       </main>
     </>
   );
-}
+};
+export default Claims;

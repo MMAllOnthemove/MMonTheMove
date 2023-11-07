@@ -13,7 +13,7 @@ const ThemeChangerButton = dynamic(() => import("../Buttons/ThemeChanger"), {
   ssr: false,
 });
 
-function Navbar() {
+const Navbar = () => {
   const [isOpen, setIsopen] = useState(false);
   const ToggleSidebar = () => {
     isOpen === true ? setIsopen(false) : setIsopen(true);
@@ -25,7 +25,7 @@ function Navbar() {
   const [partsSubMenuOpen, sePartsSubMenuOpen] = useState(false);
 
   const [userData, setUserData] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const checkAuthenticated = async () => {
     const res = await fetch(
@@ -37,22 +37,26 @@ function Navbar() {
     );
 
     const parseData = await res.json();
-    setIsAuthenticated(parseData);
-    // parseData === true ? setIsAuthenticated(parseData)
+    parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+
     // console.log("parseData", parseData);
   };
 
   useEffect(() => {
     checkAuthenticated();
-
-    console.log(isAuthenticated);
-  }, [isAuthenticated]);
+  }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token || token === "") {
+      router.push("/auth/login");
+    }
+  }, []);
 
   useEffect(() => {
     getProfile({ setUserData });
-  }, [isAuthenticated]);
-
-  function onSignout() {
+  }, []);
+  // console.log(userData);
+  const onSignout = () => {
     localStorage.removeItem("token");
     router.push("/auth/login");
     toast({
@@ -62,7 +66,7 @@ function Navbar() {
       duration: 9000,
       isClosable: true,
     });
-  }
+  };
 
   return (
     <>
@@ -218,6 +222,6 @@ function Navbar() {
       ></div>
     </>
   );
-}
+};
 
 export default Navbar;

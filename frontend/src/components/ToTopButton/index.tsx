@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function ToTopButton() {
+const ToTopButton = () => {
   const [showTopBtn, setShowTopBtn] = useState(false);
 
   useEffect(() => {
@@ -28,6 +28,6 @@ function ToTopButton() {
       )}
     </>
   );
-}
+};
 
 export default ToTopButton;

@@ -18,7 +18,11 @@ interface Props {
   dateTo: string | any;
 }
 
-function ModalManagement({ getBookingAgentJobsData, dateFrom, dateTo }: Props) {
+const ModalManagement = ({
+  getBookingAgentJobsData,
+  dateFrom,
+  dateTo,
+}: Props) => {
   //   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalState, setModalState] = useRecoilState(bookingsReportModalState);
 
@@ -86,6 +90,6 @@ function ModalManagement({ getBookingAgentJobsData, dateFrom, dateTo }: Props) {
       </Modal>
     </>
   );
-}
+};
 
 export default ModalManagement;

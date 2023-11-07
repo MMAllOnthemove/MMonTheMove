@@ -1,7 +1,7 @@
 interface Itable {
   table: any;
 }
-function Pagination(props: Itable) {
+const Pagination = (props: Itable) => {
   return (
     <div className="pagination flex gap-1 p-2">
       <button
@@ -83,6 +83,6 @@ function Pagination(props: Itable) {
       </select>
     </div>
   );
-}
+};
 
 export default Pagination;

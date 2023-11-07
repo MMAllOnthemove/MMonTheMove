@@ -7,8 +7,7 @@ const Container = dynamic(() => import("@/components/Container"));
 const ModalManagement = dynamic(
   () => import("@/components/Modals/parts.modal")
 );
-
-import { PartsModalTabOneContent } from "@/components/PartsTable/PartsModalTableContent";
+import PartsModalTabOneContent from "@/components/PartsTable/PartsModalTableContent";
 import { columns } from "@/components/PartsTable/PartsTableColumns";
 import { getProfile } from "@/functions/getLoggedInUserProfile";
 import { getSOInfoAllFunctionForParts } from "@/functions/ipass_api";
@@ -33,9 +32,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useRouter } from "next/router";
-const Footer = dynamic(() => import("@/components/Footer"));
 
-function Parts() {
+const Parts = () => {
   const [userData, setUserData] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -534,6 +532,6 @@ function Parts() {
       </main>
     </>
   );
-}
+};
 
 export default Parts;

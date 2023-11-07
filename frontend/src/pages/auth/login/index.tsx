@@ -5,14 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import * as Yup from "yup";
 import logo from "../../../../public/mmlogo.png";
+import { ILoginFormValues } from "../../../../utils/interfaces";
+import { LoginvalidateSchema } from "../../../../utils/validateSchema";
 
-interface MyFormValues {
-  email: string;
-  password: string;
-}
-function Login() {
+const Login = () => {
   const [passwordShown, setPasswordShown] = useState(false);
   const router = useRouter();
   // Password toggle handler
@@ -24,16 +21,7 @@ function Login() {
   // Chakra ui toast
   const toast = useToast();
 
-  const validateSchema = Yup.object({
-    email: Yup.string()
-      .email("Email is invalid!")
-      .required("Email is required!"),
-    password: Yup.string()
-      .min(4, "Password must be minimum 4 digits!")
-      .required("Password Required!"),
-  });
-
-  const initialValues: MyFormValues = {
+  const initialValues: ILoginFormValues = {
     email: "",
     password: "",
   };
@@ -61,7 +49,7 @@ function Login() {
           </div>
           <Formik
             initialValues={initialValues}
-            validationSchema={validateSchema}
+            validationSchema={LoginvalidateSchema}
             onSubmit={(values, actions) => {
               setTimeout(async () => {
                 // console.log(JSON.stringify(values, null, 2));
@@ -168,7 +156,7 @@ function Login() {
                 </span>
                 <button
                   type="submit"
-                  className="bg-[#082f49] w-full  font-semibold text-white dark:text-[#eee] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
+                  className="bg-[#082f49] w-full  font-semibold text-white dark:text-[#eee] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-center my-3"
                 >
                   Login
                 </button>
@@ -197,6 +185,6 @@ function Login() {
       </main>
     </>
   );
-}
+};
 
 export default Login;

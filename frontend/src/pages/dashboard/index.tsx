@@ -9,9 +9,8 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
-const Footer = dynamic(() => import("@/components/Footer"));
 
-export default function Dashboard() {
+const Dashboard = () => {
   const [tableData, setTableData] = useState<string[] | any[]>([]);
   const [engineerUnitsAdded, setEngineerUnitsAdded] = useState<
     string[] | any[]
@@ -198,4 +197,5 @@ export default function Dashboard() {
       </main>
     </>
   );
-}
+};
+export default Dashboard;

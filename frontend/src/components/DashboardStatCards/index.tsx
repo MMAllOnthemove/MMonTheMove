@@ -5,7 +5,7 @@ type TDashboardStatCards = {
   stat: string | number | any;
   onClick?: () => void;
 };
-function DashboardStatCards({ title, stat, onClick }: TDashboardStatCards) {
+const DashboardStatCards = ({ title, stat, onClick }: TDashboardStatCards) => {
   return (
     <article
       className="flex flex-col justify-between p-5 border border-[#eee] bg-white dark:bg-[#22303C] rounded cursor-pointer"
@@ -23,6 +23,6 @@ function DashboardStatCards({ title, stat, onClick }: TDashboardStatCards) {
       </div>
     </article>
   );
-}
+};
 
 export default DashboardStatCards;
