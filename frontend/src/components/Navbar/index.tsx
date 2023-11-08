@@ -35,9 +35,8 @@ const Navbar = () => {
         headers: { jwt_token: localStorage.token },
       }
     );
-
     const parseData = await res.json();
-    parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    // parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
 
     // console.log("parseData", parseData);
   };

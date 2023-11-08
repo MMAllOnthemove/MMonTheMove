@@ -22,7 +22,7 @@ const registerUser = async (req, res) => {
     const emailRegex = /^[^@\s]+@allelectronics.co.za$/i;
     const checkEmailRegex = emailRegex.test(capitalizedEmail) === true;
     const passwordRegex =
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!+@#\$%\^&\*])(?=.{8,})/;
     const checkPasswordRegex = passwordRegex.test(password) === true;
 
     if (user.rows.length > 0) {
