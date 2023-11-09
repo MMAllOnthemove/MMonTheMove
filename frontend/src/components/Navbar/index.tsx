@@ -28,17 +28,26 @@ const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const checkAuthenticated = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
-      {
-        method: "POST",
-        headers: { jwt_token: localStorage.token },
-      }
-    );
-    const parseData = await res.json();
-    // parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
+        {
+          method: "POST",
+          headers: { jwt_token: localStorage.token },
+          // credentials: "include",
+          // headers: {
+          //   authorization: `Bearer ${localStorage.token}`,
+          // },
+        }
+      );
+      const parseData = await res.json();
+      // console.log("Navbar parsedData", parseData);
+      // parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
 
-    // console.log("parseData", parseData);
+      // console.log("parseData", parseData);
+    } catch (err) {
+      console.log("parseData", err);
+    }
   };
 
   useEffect(() => {

@@ -18,12 +18,14 @@ const verifyUserDashboard = async (req, res) => {
     //   const payload = {
     //     user: user_id
     //   };
-
+    // console.log("req.user.id", req.user.id);
+    // console.log("user.rows", user.rows[0].user_id);
+    // console.log("user", user);
     res.json(user.rows[0]);
   } catch (err) {
-    // console.error(err.message);
-    // res.status(500).json("Server error");
+    console.log(err);
+    res.status(500).json("Server error");
   }
 };
 
-module.exports = { verifyUserDashboard };
+module.exports = verifyUserDashboard;
