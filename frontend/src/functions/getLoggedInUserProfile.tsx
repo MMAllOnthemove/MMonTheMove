@@ -9,12 +9,18 @@ export const getProfile = async ({ setUserData }: IgetProfile) => {
       {
         method: "POST",
         headers: { jwt_token: localStorage.token },
+        // headers: { jwt_token: localStorage.token },
+        // credentials: "include",
+        // headers: {
+        //   authorization: `Bearer ${localStorage.token}`,
+        // },
       }
     );
 
     const getUserData = await res.json();
+    // console.log(getUserData);
     setUserData(getUserData.email);
   } catch (err) {
-    // console.log(err);
+    console.log(err);
   }
 };
