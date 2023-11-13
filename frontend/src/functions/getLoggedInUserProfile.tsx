@@ -8,12 +8,13 @@ export const getProfile = async ({ setUserData }: IgetProfile) => {
       `${process.env.NEXT_PUBLIC_API_SERVER_URL}/dashboard/`,
       {
         method: "POST",
-        headers: { jwt_token: localStorage.token },
+
         // headers: { jwt_token: localStorage.token },
         // credentials: "include",
-        // headers: {
-        //   authorization: `Bearer ${localStorage.token}`,
-        // },
+        headers: {
+          "Content-type": "application/json",
+          jwt_token: localStorage.token,
+        },
       }
     );
 
