@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 // import Button from "../../../../components/Buttons";
 import dynamic from "next/dynamic";
-import { getProfile } from "@/functions/getLoggedInUserProfile";
 const Button = dynamic(() => import("@/components/Buttons"));
 
 function EditClaim() {
@@ -12,40 +11,38 @@ function EditClaim() {
   const [showServiceOrderNumber, setShowServiceOrderNumber] = useState("");
   const [claimsGSPNStatus, setClaimsGSPNStatus] = useState("");
   const [userData, setUserData] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   let dateOfClaim = new Date();
 
-  const checkAuthenticated = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
-      {
-        method: "POST",
-        headers: { jwt_token: localStorage.token },
-      }
-    );
-
-    const parseData = await res.json();
-    parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
-
-    // console.log("parseData", parseData);
-  };
-
-  useEffect(() => {
-    checkAuthenticated();
-  }, []);
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (!token || token === "") {
-      router.push("/auth/login");
-    }
-  }, []);
-
-  useEffect(() => {
-    getProfile({ setUserData });
-  }, [isAuthenticated]);
-
   const router = useRouter();
+
+  useEffect(() => {
+    const getProfile = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({}),
+          }
+        );
+
+        const getUserData = await res.json();
+        if (!getUserData) {
+          router.push("/auth/login");
+        }
+        // console.log(getUserData);
+        setUserData(getUserData.email);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getProfile();
+  }, [userData]);
+
   const { id } = router.query;
   const toast = useToast();
 

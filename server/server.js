@@ -17,7 +17,6 @@ const bookingAgents = require("../server/routes/booking_agent_jobs_route");
 const partsDept = require("../server/routes/parts_dept_routes");
 const partsHistory = require("../server/routes/history/parts_dept_routes");
 const auth = require("../server/routes/auth/auth_route");
-const authDashboard = require("../server/routes/auth/auth_dashboard");
 require("dotenv").config();
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -39,7 +38,7 @@ app.disable("x-powered-by");
 
 // Authentication
 app.use("/auth", auth);
-app.use("/dashboard", authDashboard);
+// app.use("/dashboard", authDashboard);
 
 // All jobs
 app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, hhpJobs);
