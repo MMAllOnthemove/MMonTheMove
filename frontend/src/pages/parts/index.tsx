@@ -1,19 +1,18 @@
 import { partsModalState } from "@/atoms/partsModalAtom";
+import PartsModalTabOneContent from "@/components/PartsTable/PartsModalTableContent";
+import { columns } from "@/components/PartsTable/PartsTableColumns";
 import Pagination from "@/components/Table/Pagination";
+import { getSOInfoAllFunctionForParts } from "@/functions/ipass_api";
 import { useToast } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
+import Head from "next/head";
+import React, { useEffect, useState } from "react";
+import { useSetRecoilState } from "recoil";
 const Button = dynamic(() => import("@/components/Buttons"));
 const Container = dynamic(() => import("@/components/Container"));
 const ModalManagement = dynamic(
   () => import("@/components/Modals/parts.modal")
 );
-import PartsModalTabOneContent from "@/components/PartsTable/PartsModalTableContent";
-import { columns } from "@/components/PartsTable/PartsTableColumns";
-import { getProfile } from "@/functions/getLoggedInUserProfile";
-import { getSOInfoAllFunctionForParts } from "@/functions/ipass_api";
-import Head from "next/head";
-import React, { useEffect, useState } from "react";
-import { useSetRecoilState } from "recoil";
 const ToTopButton = dynamic(() => import("@/components/ToTopButton"));
 const Navbar = dynamic(() => import("@/components/Navbar"));
 const ManagementSearchForm = dynamic(
@@ -35,38 +34,36 @@ import { useRouter } from "next/router";
 
 const Parts = () => {
   const [userData, setUserData] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   let dispatchBy = userData;
 
-  const checkAuthenticated = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
-      {
-        method: "POST",
-        headers: { jwt_token: localStorage.token },
+  useEffect(() => {
+    const getProfile = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({}),
+          }
+        );
+
+        const getUserData = await res.json();
+        if (!getUserData) {
+          router.push("/auth/login");
+        }
+        // console.log(getUserData);
+        setUserData(getUserData.email);
+      } catch (err) {
+        console.log(err);
       }
-    );
-
-    const parseData = await res.json();
-    parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
-
-    // console.log("parseData", parseData);
-  };
-
-  useEffect(() => {
-    checkAuthenticated();
-  }, []);
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (!token || token === "") {
-      router.push("/auth/login");
-    }
-  }, []);
-  useEffect(() => {
-    getProfile({ setUserData });
-  }, [isAuthenticated]);
+    };
+    getProfile();
+  }, [userData]);
 
   const [tableData, setTableData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);

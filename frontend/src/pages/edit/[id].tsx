@@ -1,4 +1,3 @@
-import { getProfile } from "@/functions/getLoggedInUserProfile";
 import { getSOStatusDescLatest } from "@/functions/ipass_api";
 import UnitFinder from "@/pages/api/UnitFinder";
 import { useToast } from "@chakra-ui/react";
@@ -11,7 +10,6 @@ const Button = dynamic(() => import("@/components/Buttons"));
 const Container = dynamic(() => import("@/components/Container"));
 
 const EditRow = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userData, setUserData] = useState("");
   // These are already handled in the table but for user experience
   // We just show them and make their inputs disabled
@@ -44,36 +42,33 @@ const EditRow = () => {
   const [department, setDepartment] = useState("");
   const [dateAdded, setDateAdded] = useState("");
 
-  const checkAuthenticated = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
-      {
-        method: "POST",
-        headers: { jwt_token: localStorage.token },
+  useEffect(() => {
+    const getProfile = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({}),
+          }
+        );
+
+        const getUserData = await res.json();
+        if (!getUserData) {
+          router.push("/auth/login");
+        }
+        // console.log(getUserData);
+        setUserData(getUserData.email);
+      } catch (err) {
+        console.log(err);
       }
-    );
-
-    const parseData = await res.json();
-    parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
-
-    // console.log("parseData", parseData);
-  };
-
-  useEffect(() => {
-    checkAuthenticated();
-  }, []);
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (!token || token === "") {
-      router.push("/auth/login");
-    }
-  }, []);
-
-  useEffect(() => {
-    getProfile({ setUserData });
-  }, [isAuthenticated]);
-
+    };
+    getProfile();
+  }, [userData]);
   const handleQCisCheckedChange = () => {
     setIsQCchecked(!isQCchecked);
   };

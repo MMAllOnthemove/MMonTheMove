@@ -3,53 +3,52 @@ const Navbar = dynamic(() => import("@/components/Navbar"));
 const UnitsPendingCard = dynamic(() => import("@/components/UnitsPendingCard"));
 
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
+import { getEngineerJobsByStatusCount } from "@/functions/pendingUnitsFunc";
 import Head from "next/head";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { engineers } from "../../../../public/_data/engineers";
 import { minDate } from "../../../../utils/datemin";
-import { getEngineerJobsByStatusCount } from "@/functions/pendingUnitsFunc";
-import { getProfile } from "@/functions/getLoggedInUserProfile";
-import { useRouter } from "next/router";
 
 const Engineers = () => {
   const [engineerFilter, setEngineerFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [tableData, setTableData] = useState<any[]>([]);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>();
   const [userData, setUserData] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
 
   var today = new Date().toISOString().split("T")[0].toString();
-
   const router = useRouter();
 
-  const checkAuthenticated = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
-      {
-        method: "POST",
-        headers: { jwt_token: localStorage.token },
+  useEffect(() => {
+    const getProfile = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({}),
+          }
+        );
+
+        const getUserData = await res.json();
+        if (!getUserData) {
+          router.push("/auth/login");
+        }
+        // console.log(getUserData);
+        setUserData(getUserData.email);
+      } catch (err) {
+        console.log(err);
       }
-    );
-
-    const parseData = await res.json();
-    setIsAuthenticated(parseData);
-    // parseData === true ? setIsAuthenticated(parseData)
-    // console.log("parseData", parseData);
-  };
-
-  useEffect(() => {
-    checkAuthenticated();
-  }, []);
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (!token || token === "") {
-      router.push("/auth/login");
-    }
-  }, []);
+    };
+    getProfile();
+  }, [userData]);
 
   useEffect(() => {
     fetchDataCombinedData({ setTableData });

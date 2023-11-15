@@ -7,13 +7,18 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { hhpNavItems, partsNavItems } from "../../../public/_data/navbar";
 import logo from "../../../public/mmlogo.png";
-import { getProfile } from "@/functions/getLoggedInUserProfile";
+import { logoutUserFunction } from "@/functions/getLoggedInUserProfile";
+import Cookies from "universal-cookie";
+import { useCookies } from "react-cookie";
+
 const Button = dynamic(() => import("../Buttons"));
 const ThemeChangerButton = dynamic(() => import("../Buttons/ThemeChanger"), {
   ssr: false,
 });
+import axios from "axios";
 
 const Navbar = () => {
+  const [removeCookie] = useCookies([""]);
   const [isOpen, setIsopen] = useState(false);
   const ToggleSidebar = () => {
     isOpen === true ? setIsopen(false) : setIsopen(true);
@@ -23,52 +28,40 @@ const Navbar = () => {
   const router = useRouter();
   const [hhpSubMenuOpen, setHHPSubMenuOpen] = useState(false);
   const [partsSubMenuOpen, sePartsSubMenuOpen] = useState(false);
-
+  const cookies = new Cookies();
   const [userData, setUserData] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const checkAuthenticated = async () => {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-            jwt_token: localStorage.token,
-          },
-          // credentials: "include",
-          // headers: {
-          //   authorization: `Bearer ${localStorage.token}`,
-          // },
+  useEffect(() => {
+    const getProfile = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({}),
+          }
+        );
+
+        const getUserData = await res.json();
+        if (!getUserData) {
+          router.push("/auth/login");
         }
-      );
-      const parseData = await res.json();
-      // console.log("Navbar parsedData", parseData);
-      // parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+        // console.log(getUserData);
+        setUserData(getUserData.email);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getProfile();
+  }, [userData]);
 
-      // console.log("parseData", parseData);
-    } catch (err) {
-      console.log("parseData", err);
-    }
-  };
-
-  useEffect(() => {
-    checkAuthenticated();
-  }, []);
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token || token === "") {
-      router.push("/auth/login");
-    }
-  }, []);
-
-  useEffect(() => {
-    getProfile({ setUserData });
-  }, []);
-  // console.log(userData);
-  const onSignout = () => {
-    localStorage.removeItem("token");
+  const onSignout = async () => {
+    // removeCookie("token");
+    logoutUserFunction();
     router.push("/auth/login");
     toast({
       title: "Logout successful",

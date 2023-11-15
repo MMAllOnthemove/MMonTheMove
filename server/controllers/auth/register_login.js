@@ -12,7 +12,7 @@ const registerUser = async (req, res) => {
   let capitalizedUsername = username.toLowerCase();
   let capitalizedFullName = fullName.toLowerCase();
   let capitalizedEmail = email.toLowerCase();
-
+  const maxAge = 3 * 24 * 60 * 60;
   try {
     const user = await pool.query(
       "SELECT * FROM company_people WHERE email = $1",
@@ -51,7 +51,12 @@ const registerUser = async (req, res) => {
       //   }
       // );
       const jwtToken = jwtGenerator(newUser.rows[0].user_id);
-
+      res.cookie("token", jwtToken, {
+        withCredentials: true,
+        secure: (process.env.NODE_ENV = "development" ? false : true),
+        httpOnly: true,
+        maxAge: maxAge * 1000,
+      });
       return res.json({ jwtToken });
     } else {
       return res.status(400).json("Signup failed; Invalid email or password");
@@ -65,6 +70,8 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   let capitalizedEmail = email.toLowerCase();
+  const maxAge = 3 * 24 * 60 * 60;
+
   try {
     const user = await pool.query(
       "SELECT * FROM company_people WHERE email = $1",
@@ -92,6 +99,13 @@ const loginUser = async (req, res) => {
     //     expiresIn: 86400, // 24 hours
     //   }
     // );
+
+    res.cookie("token", jwtToken, {
+      withCredentials: true,
+      secure: (process.env.NODE_ENV = "development" ? false : true),
+      httpOnly: true,
+      maxAge: maxAge * 1000,
+    });
     return res.json({ jwtToken });
   } catch (err) {
     console.log("loginUser", err);
@@ -99,13 +113,13 @@ const loginUser = async (req, res) => {
   }
 };
 
-const verifyUser = (req, res) => {
-  try {
-    res.json(true);
-  } catch (err) {
-    console.log("verifyUser", err);
-    res.status(500).send("Server error");
-  }
-};
+// const verifyUser = (req, res) => {
+//   try {
+//     res.json(true);
+//   } catch (err) {
+//     console.log("verifyUser", err);
+//     res.status(500).send("Server error");
+//   }
+// };
 
-module.exports = { registerUser, loginUser, verifyUser };
+module.exports = { registerUser, loginUser };

@@ -29,7 +29,6 @@ import { HomepageModalTabOneContent } from "@/components/Table/homepageModalTabO
 import { HomepageModalTabTwoContent } from "@/components/Table/homepageModalTabTwoContent";
 import { columns } from "@/components/Table/homepageTableColumns";
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
-import { getProfile } from "@/functions/getLoggedInUserProfile";
 import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
 import { Itable } from "../../utils/interfaces";
@@ -63,37 +62,34 @@ const Home = () => {
   const toast = useToast();
 
   const [userData, setUserData] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const checkAuthenticated = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
-      {
-        method: "POST",
-        headers: { jwt_token: localStorage.token },
+  useEffect(() => {
+    const getProfile = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({}),
+          }
+        );
+
+        const getUserData = await res.json();
+        if (!getUserData) {
+          router.push("/auth/login");
+        }
+        // console.log(getUserData);
+        setUserData(getUserData.email);
+      } catch (err) {
+        console.log(err);
       }
-    );
-
-    const parseData = await res.json();
-    parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
-
-    // console.log("parseData", parseData);
-  };
-
-  useEffect(() => {
-    checkAuthenticated();
-  }, []);
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (!token || token === "") {
-      router.push("/auth/login");
-    }
-  }, []);
-
-  useEffect(() => {
-    getProfile({ setUserData });
-  }, []);
+    };
+    getProfile();
+  }, [userData]);
 
   const [tableData, setTableData] = useState<Itable[]>([]);
 

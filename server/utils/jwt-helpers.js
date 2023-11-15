@@ -15,9 +15,9 @@ function jwtGenerator(user_id) {
   //   const payload = {
   //     user: user_id
   //   };
-
+  const maxAge = 3 * 24 * 60 * 60;
   return jwt.sign(payload, process.env.NEXT_PUBLIC_BACKEND_JWT_TOKEN_KEY, {
-    expiresIn: "1h",
+    expiresIn: maxAge,
   });
 }
 

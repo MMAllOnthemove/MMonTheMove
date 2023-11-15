@@ -1,5 +1,4 @@
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
-import { getProfile } from "@/functions/getLoggedInUserProfile";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -9,40 +8,38 @@ const Navbar = dynamic(() => import("@/components/Navbar"));
 const Claims = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [tableData, setTableData] = useState<string[] | any[]>([]);
-  const [userData, setUserData] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const router = useRouter();
 
-  const checkAuthenticated = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/verify`,
-      {
-        method: "POST",
-        headers: { jwt_token: localStorage.token },
+  const [userData, setUserData] = useState("");
+
+  useEffect(() => {
+    const getProfile = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({}),
+          }
+        );
+
+        const getUserData = await res.json();
+        if (!getUserData) {
+          router.push("/auth/login");
+        }
+        // console.log(getUserData);
+        setUserData(getUserData.email);
+      } catch (err) {
+        console.log(err);
       }
-    );
-
-    const parseData = await res.json();
-    parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
-
-    // console.log("parseData", parseData);
-  };
-
-  useEffect(() => {
-    checkAuthenticated();
-  }, []);
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (!token || token === "") {
-      router.push("/auth/login");
-    }
-  }, []);
-
-  useEffect(() => {
-    getProfile({ setUserData });
-  }, [isAuthenticated]);
+    };
+    getProfile();
+  }, [userData]);
 
   useEffect(() => {
     fetchDataCombinedData({ setTableData });

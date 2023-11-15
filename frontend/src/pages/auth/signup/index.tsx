@@ -63,6 +63,7 @@ const Signup = () => {
                     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/signup`,
                     {
                       method: "POST",
+                      credentials: "include",
                       headers: {
                         "Content-Type": "application/json",
                       },
@@ -73,7 +74,7 @@ const Signup = () => {
                   const data = await response.json();
                   // console.log(data);
                   if (response.ok) {
-                    localStorage.setItem("token", data.jwtToken);
+                    // localStorage.setItem("token", data.jwtToken);
                     toast({
                       title: "Successful.",
                       description: ``,
