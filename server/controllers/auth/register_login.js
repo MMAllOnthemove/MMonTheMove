@@ -21,13 +21,10 @@ const registerUser = async (req, res) => {
 
     const emailRegex = /^[^@\s]+@allelectronics.co.za$/i;
     const checkEmailRegex = emailRegex.test(capitalizedEmail) === true;
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!+@#\$%\^&\*])(?=.{8,})/;
-    const checkPasswordRegex = passwordRegex.test(password) === true;
 
     if (user.rows.length > 0) {
       return res.status(401).json("User already exist!");
-    } else if (checkEmailRegex && checkPasswordRegex) {
+    } else if (checkEmailRegex) {
       const salt = await bcrypt.genSalt(10);
       const bcryptPassword = await bcrypt.hash(password, salt);
 

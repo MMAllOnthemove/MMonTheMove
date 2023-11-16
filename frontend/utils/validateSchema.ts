@@ -15,10 +15,7 @@ export const SignupvalidateSchema = Yup.object({
         .required("Email is required!"),
     password: Yup.string()
         .required("Please Enter password")
-        .matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!+@#\$%\^&\*])(?=.{8,})/,
-            "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
-        ),
+        .min(6, "Password must be minimum 6 digits!"),
     confirmPassword: Yup.string()
         .oneOf([Yup.ref("password"), null as any], "Password must match!")
         .required("Please confirm password!"),

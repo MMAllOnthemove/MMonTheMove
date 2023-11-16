@@ -29,8 +29,14 @@ const getBookingAgentsJobs = async (req, res) => {
 const postBookingAgentsJobs = async (req, res) => {
   let newResults;
   let isCached = false;
-  const { serviceOrder, createdDate, createdTime, warranty, bookingAgent } =
-    req.body;
+  const {
+    serviceOrder,
+    createdDate,
+    createdTime,
+    warranty,
+    bookingAgent,
+    userData,
+  } = req.body;
 
   try {
     const findIfExists = await pool.query(
@@ -42,13 +48,20 @@ const postBookingAgentsJobs = async (req, res) => {
       // console.log("Cell exists or no agent name");
     } else {
       const newResults = await pool.query(
-        "INSERT INTO booking_agents_jobs (service_order_no, created_date, created_time, warranty, booking_agent) values ($1, $2, $3, $4, $5) returning *",
-        [serviceOrder, createdDate, createdTime, warranty, bookingAgent]
+        "INSERT INTO booking_agents_jobs (service_order_no, created_date, created_time, warranty, booking_agent, added_by) values ($1, $2, $3, $4, $5, $6) returning *",
+        [
+          serviceOrder,
+          createdDate,
+          createdTime,
+          warranty,
+          bookingAgent,
+          userData,
+        ]
       );
       res.status(200).json("Job added, thank you!");
     }
   } catch (err) {
-    // console.log("Create task error: ", err);
+    console.log("Create task error: ", err);
   }
 };
 
