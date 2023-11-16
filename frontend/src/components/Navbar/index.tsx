@@ -10,6 +10,7 @@ import logo from "../../../public/mmlogo.png";
 import { logoutUserFunction } from "@/functions/getLoggedInUserProfile";
 import Cookies from "universal-cookie";
 import { useCookies } from "react-cookie";
+import NotLoggedIn from "../NotLoggedIn";
 
 const Button = dynamic(() => import("../Buttons"));
 const ThemeChangerButton = dynamic(() => import("../Buttons/ThemeChanger"), {
@@ -18,7 +19,6 @@ const ThemeChangerButton = dynamic(() => import("../Buttons/ThemeChanger"), {
 import axios from "axios";
 
 const Navbar = () => {
-  const [removeCookie] = useCookies([""]);
   const [isOpen, setIsopen] = useState(false);
   const ToggleSidebar = () => {
     isOpen === true ? setIsopen(false) : setIsopen(true);
@@ -28,34 +28,34 @@ const Navbar = () => {
   const router = useRouter();
   const [hhpSubMenuOpen, setHHPSubMenuOpen] = useState(false);
   const [partsSubMenuOpen, sePartsSubMenuOpen] = useState(false);
-  const cookies = new Cookies();
   const [userData, setUserData] = useState("");
 
-  useEffect(() => {
-    const getProfile = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/`,
-          {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({}),
-          }
-        );
-
-        const getUserData = await res.json();
-        if (!getUserData) {
-          router.push("/auth/login");
+  const getProfile = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({}),
         }
-        // console.log(getUserData);
-        setUserData(getUserData.email);
-      } catch (err) {
-        console.log(err);
-      }
-    };
+      );
+
+      const getUserData = await res.json();
+
+      // console.log("getUserData", getUserData);
+      setUserData(getUserData.email);
+    } catch (err) {
+      // console.log(err);
+    }
+  };
+
+  // console.log("userData", userData);
+
+  useEffect(() => {
     getProfile();
   }, [userData]);
 
@@ -76,29 +76,39 @@ const Navbar = () => {
     <>
       <nav className="navbar">
         <div className="navbar_first_row bg-[#082f49]">
-          <p className=" dark:text-[#eee] text-[#eee] text-sm text-center">
-            Logged in as{" "}
-            <span className="text-sky-500 font-semibold">{userData}</span>
-          </p>
+          {!userData || userData === "" ? (
+            <p className=" dark:text-[#eee] text-[#eee] text-sm text-center">
+              Please login
+            </p>
+          ) : (
+            <p className=" dark:text-[#eee] text-[#eee] text-sm text-center">
+              Logged in as{" "}
+              <span className="text-sky-500 font-semibold">{userData}</span>
+            </p>
+          )}
         </div>
         <div className="navbar_second_row flex justify-between items-center py-2  px-4 dark:bg-[#15202B]">
-          <button
-            role="button"
-            id="burger_menu"
-            className="burger_menu"
-            aria-label="burger_menu"
-            onClick={ToggleSidebar}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              className="dark:fill-white"
+          {!userData || userData === "" ? (
+            <div />
+          ) : (
+            <button
+              role="button"
+              id="burger_menu"
+              className="burger_menu"
+              aria-label="burger_menu"
+              onClick={ToggleSidebar}
             >
-              <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path>
-            </svg>
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                className="dark:fill-white"
+              >
+                <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path>
+              </svg>
+            </button>
+          )}
           <div className="flex items-center gap-1">
             <ThemeChangerButton />
             <Link

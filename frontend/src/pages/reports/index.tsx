@@ -1,67 +1,43 @@
-import TableBody from "@/components/Table/TableBody";
-import {
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  useToast,
-} from "@chakra-ui/react";
-import {
-  SortingState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { bookingAgentFunc, bookingAgentFuncTotal } from "@/components/Reports";
+import { getBookingAgentJobs } from "@/functions/getCombinedFlatData";
+import { postBookingAgentsJobs } from "@/functions/ipass_api";
+import { useToast } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { bookingAgents } from "../../../public/_data/booking_agents";
+import { minDate } from "../../../utils/datemin";
+const Navbar = dynamic(() => import("@/components/Navbar"));
+const ModalManagement = dynamic(
+  () => import("@/components/Modals/bookings_report.modal")
+);
+
+import { bookingsReportModalState } from "@/atoms/bookingsReport";
 import { useSetRecoilState } from "recoil";
 
-// Custom imports
-import { managementModalState } from "@/atoms/managementModalAtom";
-import Pagination from "@/components/Table/Pagination";
-import { HomepageModalTabOneContent } from "@/components/Table/homepageModalTabOneContent";
-import { HomepageModalTabTwoContent } from "@/components/Table/homepageModalTabTwoContent";
-import { columns } from "@/components/Table/homepageTableColumns";
-import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
-import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
-import { getSOInfoAllFunction } from "@/functions/ipass_api";
-import { Itable } from "../../../utils/interfaces";
+function Reports() {
+  const [searchServiceOrder, setSearchServiceOrder] = useState("");
+  const [serviceOrder, setServiceOrder] = useState("");
+  const [createdDate, setCreatedDate] = useState("");
+  const [createdTime, setCreatedTime] = useState("");
+  const [warranty, setWarranty] = useState("");
+  const [bookingAgent, setBookingAgent] = useState("");
+  const [getBookingAgentJobsData, setGetBookingAgentJobsData] = useState<
+    string[] | any[]
+  >([]);
 
-// Dynamic imports
-const ManagementSearchForm = dynamic(
-  () => import("@/components/Table/managementSearchForm")
-);
-const ModalManagement = dynamic(
-  () => import("@/components/Modals/modal.management"),
-  {
-    loading: () => <p>Loading modal...</p>,
-  }
-);
-const Container = dynamic(() => import("@/components/Container"), {
-  loading: () => <p>Loading wrapper...</p>,
-});
-const Navbar = dynamic(() => import("@/components/Navbar"), {
-  loading: () => <p>Loading Navbar...</p>,
-});
-const ToTopButton = dynamic(() => import("@/components/ToTopButton"), {
-  loading: () => <p>Loading ToTopButton...</p>,
-});
-const Button = dynamic(() => import("@/components/Buttons"), {
-  loading: () => <p>Loading button...</p>,
-});
+  const setBookingsReportModalState = useSetRecoilState(
+    bookingsReportModalState
+  );
 
-const Home = () => {
-  const router = useRouter();
-  // Chakra ui toast
-  const toast = useToast();
-
+  const [dateFrom, setDateFrom] = useState<string | number | Date | any>("");
+  const [dateTo, setDateTo] = useState<string | number | Date | any>("");
   const [userData, setUserData] = useState("");
+
+  var today = new Date().toISOString().split("T")[0].toString();
+  var addTwoMoreDays = new Date().getDate() + 2; // does not work
+  const router = useRouter();
 
   useEffect(() => {
     const getProfile = async () => {
@@ -85,216 +61,53 @@ const Home = () => {
         // console.log(getUserData);
         setUserData(getUserData.email);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
     };
     getProfile();
   }, [userData]);
 
-  const [tableData, setTableData] = useState<Itable[]>([]);
-
-  // Not to be confused with 'setServiceOrder'
-  const [searchServiceOrder, setSearchServiceOrder] = useState("");
-
-  // Search ticket for tab two
-  const [searchTicket, setSearchTicket] = useState("");
-
-  // Global state for the modal
-  const setManagementModalState = useSetRecoilState(managementModalState);
-
-  // Table sorting
-  const [sorting, setSorting] = useState<SortingState>([]);
-
-  // Table filtering
-  const [filtering, setFiltering] = useState("");
-
-  // GSPN
-  const [service_order, setServiceOrder] = useState("");
-  const [warranty, setWarranty] = useState("");
-  const [model, setModel] = useState("");
-  const [imei, setImei] = useState("");
-  const [fault, setFault] = useState("");
-  const [serial_number, setSerialNumber] = useState("");
-  const [engineer, setEngineer] = useState("");
-  const [engineerAnalysis, setEngineerAnalysis] = useState("");
-  const [createdDate, setCreatedDate] = useState("");
-  const [createdTime, setCreatedTime] = useState("");
-  const [engineerAssignDate, setEngineerAssignDate] = useState("");
-  const [engineerAssignTime, setEngineerAssignTime] = useState("");
-  const [inHouseStatus, setInHouseStatus] = useState("");
-  const [ticket, setTicket] = useState("");
-  const [department, setDepartment] = useState("HHP");
-  const [GSPNStatus, setGSPNStatus] = useState<string | null>("");
-
-  // We want to get the Status Desc from the last object element of this array
-  let GSPNStatusGetLastElement = GSPNStatus?.slice(-1);
-
-  // Setting the user to email user is logged in with
-  let user = userData;
-
-  // Repairshpr states start here
-  const [repairServiceOrder, setRepairServiceOrder] = useState<
-    string | number | undefined
-  >("");
-  const [repairCreatedDate, setRepairCreatedDate] = useState<
-    string | number | undefined
-  >("");
-  const [repairCreatedTime, setRepairCreatedTime] = useState<
-    string | number | undefined
-  >("");
-  const [repairModel, setRepairModel] = useState<string | undefined>("");
-  const [repairWarranty, setRepairWarranty] = useState<string | undefined>("");
-  const [repairEngineer, setRepairEngineer] = useState<string | undefined>("");
-  const [repairFault, setRepairFault] = useState<string | undefined>("");
-  const [repairImei, setRepairImei] = useState<string | number | undefined>("");
-  const [repairSerialNumber, setRepairSerialNumber] = useState<
-    string | number | undefined
-  >("");
-  const [repairInHouseStatus, setRepairInHouseStatus] = useState<
-    string | undefined
-  >("");
-  const [repairEngineerAssignDate, setRepairEngineerAssignDate] = useState<
-    string | number | undefined
-  >("");
-  const [repairEngineerAssignTime, setRepairEngineerAssignTime] = useState<
-    string | number | undefined
-  >("");
-  const [repairTicket, setRepairTicket] = useState<string | number | undefined>(
-    ""
-  );
-  const [repairEngineerAnalysis, setRepairEngineerAnalysis] = useState<
-    string | number | undefined
-  >("");
-  const [repairDepartment, setRepairDepartment] = useState("HHP");
-  const [repairAPILoading, setRepairAPILoading] = useState(true);
-
-  // For the repair API
-  // Setting the user to email user is logged in with
-  let repairUser = userData;
-
-  getSOInfoAllFunction({
-    searchServiceOrder,
-    setServiceOrder,
-    setCreatedDate,
-    setCreatedTime,
-    setModel,
-    setWarranty,
-    setFault,
-    setImei,
-    setSerialNumber,
-    setEngineerAssignDate,
-    setEngineerAssignTime,
-    setGSPNStatus,
-  });
-  useEffect(() => {
-    fetchDataCombinedData({ setTableData });
-  }, []);
+  // Chakra ui toast
+  const toast = useToast();
 
   useEffect(() => {
-    getRepair({
-      searchTicket,
-      setRepairFault,
-      setRepairCreatedDate,
-      setRepairCreatedTime,
-      setRepairEngineerAssignDate,
-      setRepairEngineerAssignTime,
-      setRepairImei,
-      setRepairServiceOrder,
-      setRepairTicket,
-      setRepairEngineerAnalysis,
-      setRepairDepartment,
-      setRepairAPILoading,
-    });
-  }, [searchTicket]);
-
-  useEffect(() => {
-    getTicketNumberOnJobAdd({
+    postBookingAgentsJobs({
       searchServiceOrder,
-      setTicket,
+      setCreatedDate,
+      setCreatedTime,
+      setWarranty,
+      setServiceOrder,
     });
   }, [searchServiceOrder]);
-
-  // const user = session?.user?.email;
-
-  let dateAdded = new Date();
 
   const postData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const postThisInfo = {
-      service_order,
+      serviceOrder,
       createdDate,
       createdTime,
-      model,
       warranty,
-      engineer,
-      fault,
-      imei,
-      serial_number,
-      inHouseStatus,
-      engineerAssignDate,
-      engineerAssignTime,
-      engineerAnalysis,
-      ticket,
-      department,
-      user,
-      GSPNStatusGetLastElement,
-      dateAdded,
+      bookingAgent,
+      userData,
     };
-    // console.log(postThisInfo);
-    let regexNumber = /^[0-9]+$/;
+
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
+      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/agents/booking-agents/jobs/add`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(postThisInfo),
       }
     );
-    if (
-      searchServiceOrder.length < 10 ||
-      searchServiceOrder.length < 0 ||
-      searchServiceOrder.length === 0
-    ) {
-      setManagementModalState({
-        open: false,
-        view: "/",
-      });
+    if (!response.ok || bookingAgent === "") {
       toast({
         title: "Job failed.",
-        description: "Not enough characters.",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-    } else if (!searchServiceOrder.match(regexNumber)) {
-      setManagementModalState({
-        open: false,
-        view: "/",
-      });
-      toast({
-        title: "Job failed.",
-        description: "Only enter numeric characters.",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-    } else if (!response.ok) {
-      setManagementModalState({
-        open: false,
-        view: "/",
-      });
-      toast({
-        title: "Job failed.",
-        description: "Job already exists.",
+        description: "Job already exists or no agent name.",
         status: "error",
         duration: 9000,
         isClosable: true,
       });
     } else {
-      setManagementModalState({
-        open: false,
-        view: "/",
-      });
       await response.json();
       toast({
         title: "Job added.",
@@ -303,318 +116,270 @@ const Home = () => {
         duration: 9000,
         isClosable: true,
       });
-
       // window.location.reload();
-
-      fetchDataCombinedData({ setTableData });
+      getBookingAgentJobs({ setGetBookingAgentJobsData });
+      // return json;
     }
-
-    // // This part will deposit the same data into our history table
-    // For some reason it's not reading this function initially, only when user updates job
-    const response2 = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/units/history/post`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(postThisInfo),
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => {});
-    // console.log("data2", data)
   };
-
-  // Post repair data
-  const postRepairData = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    const postThisInfo = {
-      repairServiceOrder,
-      repairCreatedDate,
-      repairCreatedTime,
-      repairModel,
-      repairWarranty,
-      repairEngineer,
-      repairFault,
-      repairImei,
-      repairSerialNumber,
-      repairInHouseStatus,
-      repairEngineerAssignDate,
-      repairEngineerAssignTime,
-      repairEngineerAnalysis,
-      repairTicket,
-      repairDepartment,
-      repairUser,
-      GSPNStatusGetLastElement,
-      dateAdded,
-    };
-    // console.log(postThisInfo);
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/repair`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(postThisInfo),
-      }
-    );
-    if (!response.ok) {
-      setManagementModalState({
-        open: false,
-        view: "/",
-      });
-      toast({
-        title: "Job failed.",
-        description: "Job already exists.",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-    } else {
-      await response.json();
-      setManagementModalState({
-        open: false,
-        view: "/",
-      });
-      toast({
-        title: "Job added.",
-        description: "You've added a job to the table.",
-        status: "success",
-        duration: 9000,
-        isClosable: true,
-      });
-      // window.location.reload();
-      fetchDataCombinedData({ setTableData });
-    }
-
-    // This part will deposit the same data into our history table
-    const response2 = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/repair/units/history/post`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(postThisInfo),
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        // console.log("data2", data);
-      });
-  };
-
-  // Redirects user to the edit table page
-  const handleUpdate = (e: React.SyntheticEvent, id: string | number) => {
-    e.stopPropagation();
-    router.push(`/edit/${id}`);
-  };
-
-  // Table contents
-
-  const table = useReactTable({
-    data: tableData,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    state: {
-      sorting: sorting,
-      globalFilter: filtering,
-    },
-    onSortingChange: setSorting,
-    onGlobalFilterChange: setFiltering,
-  });
+  useEffect(() => {
+    getBookingAgentJobs({ setGetBookingAgentJobsData });
+  }, []);
 
   return (
     <>
       <Head>
-        <title>HHP Management</title>
-        <meta name="robots" content="noindex"></meta>
-        <link rel="shortcut icon" href="/favicon.ico" />
+        <title>Booking Agents</title>
       </Head>
       <Navbar />
-
       <main className="space-between-navbar-and-content">
-        <Container>
-          <section className="flex justify-center pt-5">
-            <h1 className="mb-4 text-3xl font-extrabold text-gray-900 md:text-5xl lg:text-6xl dark:text-[#eee]">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
-                HHP
-              </span>{" "}
-              Management.
-            </h1>
-          </section>
-          <section className="flex justify-between items-center py-5">
-            <ManagementSearchForm
-              filtering={filtering}
-              setFiltering={(e) => setFiltering(e.target.value)}
-            />
-
-            <Button
-              type="button"
-              text="Add job"
-              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer dark:text-[#eee] rounded-md p-3 my-2"
-              onClick={() =>
-                setManagementModalState({
-                  open: true,
-                  view: "/",
-                })
-              }
-            />
-
-            {/* Called the modal here and added a post data prop that posts data on click */}
-            <ModalManagement>
-              <Tabs defaultIndex={0} isFitted>
-                <TabList>
-                  <Tab fontFamily="inherit" fontWeight="500">
-                    Use service order
-                  </Tab>
-
-                  <Tab fontFamily="inherit" fontWeight="500">
-                    Use ticket number
-                  </Tab>
-                </TabList>
-
-                <TabPanels>
-                  <TabPanel>
-                    <HomepageModalTabOneContent
-                      searchServiceOrder={searchServiceOrder}
-                      setSearchServiceOrder={(e) =>
-                        setSearchServiceOrder(e.target.value)
-                      }
-                      warranty={warranty}
-                      inHouseStatus={inHouseStatus}
-                      setInHouseStatus={(e) => setInHouseStatus(e.target.value)}
-                      ticket={ticket}
-                      setTicket={(e) => setTicket(e.target.value)}
-                      engineerAnalysis={engineerAnalysis}
-                      setEngineerAnalysis={(e) =>
-                        setEngineerAnalysis(e.target.value)
-                      }
-                      engineer={engineer}
-                      setEngineer={(e) => setEngineer(e.target.value)}
-                      department={department}
-                      setDepartment={(e) => setDepartment(e.target.value)}
-                      postData={postData}
-                    />
-                  </TabPanel>
-                  <TabPanel>
-                    <HomepageModalTabTwoContent
-                      repairAPILoading={repairAPILoading}
-                      searchTicket={searchTicket}
-                      setSearchTicket={(e) => setSearchTicket(e.target.value)}
-                      repairFault={repairFault}
-                      repairWarranty={repairWarranty}
-                      setRepairWarranty={(e) =>
-                        setRepairWarranty(e.target.value)
-                      }
-                      repairImei={repairImei}
-                      setRepairImei={(e) => setRepairImei(e.target.value)}
-                      repairSerialNumber={repairSerialNumber}
-                      setRepairSerialNumber={(e) =>
-                        setRepairSerialNumber(e.target.value)
-                      }
-                      repairModel={repairModel}
-                      setRepairModel={(e) => setRepairModel(e.target.value)}
-                      repairInHouseStatus={repairInHouseStatus}
-                      setRepairInHouseStatus={(e) =>
-                        setRepairInHouseStatus(e.target.value)
-                      }
-                      repairEngineer={repairEngineer}
-                      setRepairEngineer={(e) =>
-                        setRepairEngineer(e.target.value)
-                      }
-                      postRepairData={postRepairData}
-                    />
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-            </ModalManagement>
+        <section className="container mx-auto p-3">
+          <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-[#eee] md:text-5xl lg:text-6xl text-center">
+            Booking Agents
+          </h1>
+          <section className="flex flex-col justify-center gap-3 py-4">
+            <div className="flex gap-3 items-center justify-between flex-col lg:flex-row">
+              <div className="flex gap-3 items-center">
+                <span>
+                  <label
+                    htmlFor="dateFrom"
+                    className="sr-only dark:text-[#eee]"
+                  >
+                    Date from
+                  </label>
+                  <input
+                    type="date"
+                    name="dateFrom"
+                    min={minDate}
+                    max={addTwoMoreDays}
+                    value={dateFrom}
+                    onChange={(e) => setDateFrom(e.target.value)}
+                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 dark:bg-[#22303C] dark:text-[#eee] text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                    id="dateFrom"
+                  />
+                </span>
+                <span>-</span>
+                <span>
+                  <label htmlFor="dateTo" className="sr-only dark:text-[#eee]">
+                    Date to
+                  </label>
+                  <input
+                    type="date"
+                    name="dateTo"
+                    min={minDate}
+                    max={addTwoMoreDays}
+                    value={dateTo}
+                    onChange={(e) => setDateTo(e.target.value)}
+                    className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 dark:bg-[#22303C] dark:text-[#eee] text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                    id="dateTo"
+                  />
+                </span>
+              </div>
+              <span>
+                <label
+                  htmlFor="searchServiceOrder"
+                  className="text-center sr-only dark:text-[#eee]"
+                >
+                  Search Service Order
+                </label>
+                <input
+                  type="text"
+                  id="searchServiceOrder"
+                  name="searchServiceOrder"
+                  placeholder="Search service order"
+                  className="w-full outline-none py-2 px-2 border-2  font-semibold text-sm rounded-sm my-2 mx-auto dark:bg-[#22303C] dark:text-[#eee]"
+                  value={searchServiceOrder}
+                  onChange={(e) => setSearchServiceOrder(e.target.value)}
+                  maxLength={10}
+                />
+              </span>
+            </div>
           </section>
 
-          <div className="max-h-[540px] overflow-y-auto">
-            <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] text-sm uppercase font-semibold">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id} className=" font-semibold">
+          {searchServiceOrder.length === 10 ? (
+            <div className="max-h-[540px] overflow-y-auto my-5">
+              <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
+                <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white  text-sm uppercase font-semibold">
+                  <tr className=" font-semibold">
+                    <th className="px-4 py-3 cursor-pointer  font-semibold">
+                      Service Order No
+                    </th>
+                    <th className="px-4 py-3 cursor-pointer  font-semibold">
+                      Agent
+                    </th>
                     <th className="px-4 py-3 cursor-pointer  font-semibold">
                       Action
                     </th>
-
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <th
-                          key={header.id}
-                          className="px-4 py-3 cursor-pointer  font-semibold"
-                        >
-                          {header.isPlaceholder ? null : (
-                            <div
-                              {...{
-                                className: header.column.getCanSort()
-                                  ? "cursor-pointer select-none"
-                                  : "",
-                                onClick:
-                                  header.column.getToggleSortingHandler(),
-                              }}
-                            >
-                              {flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                              {{
-                                asc: " ▽",
-                                desc: " △",
-                              }[header.column.getIsSorted() as string] ?? null}
-                            </div>
-                          )}
-                        </th>
-                      );
-                    })}
                   </tr>
-                ))}
-              </thead>
-
-              <TableBody>
-                {table.getRowModel().rows.map((row: any) => (
-                  <tr
-                    key={row.id}
-                    onDoubleClick={(e) => handleUpdate(e, row.original.id)}
-                    className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
-                  >
+                </thead>
+                <tbody className="z-0">
+                  <tr className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]">
+                    <td className="px-4 py-3  font-medium text-sm max-w-full">
+                      {serviceOrder}
+                    </td>
+                    <td className="px-4 py-3  font-medium text-sm max-w-full">
+                      <span>
+                        <label
+                          htmlFor="bookingAgent"
+                          className="block mb-2 text-sm font-medium  text-gray-900 sr-only"
+                        >
+                          Booking agent
+                        </label>
+                        <select
+                          value={bookingAgent}
+                          onChange={(e) => setBookingAgent(e.target.value)}
+                          id="bookingAgent"
+                          className="mb-2 bg-white border cursor-pointer border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-sm p-2.5"
+                        >
+                          <option disabled value="">
+                            Select agent
+                          </option>
+                          {bookingAgents.map((stat) => (
+                            <option key={stat.id} value={`${stat.agentName}`}>
+                              {stat?.agentName}
+                            </option>
+                          ))}
+                        </select>
+                      </span>
+                    </td>
                     <td className="px-4 py-3  font-medium text-sm max-w-full">
                       <button
                         type="button"
                         role="button"
-                        onClick={(e) => handleUpdate(e, row.original.id)}
-                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                        onClick={postData}
+                        className="font-medium bg-[#082f49] hover:bg-[#075985] active:bg-[#075985]  text-white  rounded py-1 px-2"
                       >
-                        Edit
+                        Add
                       </button>
                     </td>
-
-                    {row.getVisibleCells().map((cell: any) => (
-                      <td
-                        key={cell.id}
-                        className="px-4 py-3  font-medium text-sm max-w-full"
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    ))}
                   </tr>
-                ))}
-              </TableBody>
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            ""
+          )}
+
+          <div className="max-h-[540px] overflow-y-auto">
+            <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
+              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white  text-sm uppercase font-semibold">
+                <tr className=" font-semibold">
+                  <th className="px-4 py-3 cursor-pointer  font-semibold">
+                    Booking Agent
+                  </th>
+                  <th className="px-4 py-3 cursor-pointer  font-semibold">
+                    Jobs booked
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="z-0">
+                <tr
+                  onClick={() =>
+                    setBookingsReportModalState({
+                      open: true,
+                      view: "shanes300123",
+                    })
+                  }
+                  className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
+                >
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
+                    Shane
+                  </td>
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
+                    {bookingAgentFunc(
+                      getBookingAgentJobsData,
+                      dateFrom,
+                      dateTo,
+                      "shanes300123"
+                    )}
+                  </td>
+                </tr>
+                <tr
+                  onClick={() =>
+                    setBookingsReportModalState({
+                      open: true,
+                      view: "nigelc01",
+                    })
+                  }
+                  className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
+                >
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
+                    Nigel
+                  </td>
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
+                    {bookingAgentFunc(
+                      getBookingAgentJobsData,
+                      dateFrom,
+                      dateTo,
+                      "nigelc01"
+                    )}
+                  </td>
+                </tr>
+                <tr
+                  onClick={() =>
+                    setBookingsReportModalState({
+                      open: true,
+                      view: "sherryl060223",
+                    })
+                  }
+                  className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
+                >
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
+                    Sherry
+                  </td>
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
+                    {bookingAgentFunc(
+                      getBookingAgentJobsData,
+                      dateFrom,
+                      dateTo,
+                      "sherryl060223"
+                    )}
+                  </td>
+                </tr>
+                <tr
+                  onClick={() =>
+                    setBookingsReportModalState({
+                      open: true,
+                      view: "lavonaj01",
+                    })
+                  }
+                  className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
+                >
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
+                    Lavona
+                  </td>
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
+                    {bookingAgentFunc(
+                      getBookingAgentJobsData,
+                      dateFrom,
+                      dateTo,
+                      "lavonaj01"
+                    )}
+                  </td>
+                </tr>
+                <tr className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]">
+                  <td className="px-4 py-3  font-bold text-sm max-w-full">
+                    Total
+                  </td>
+                  <td className="px-4 py-3  font-medium text-sm max-w-full">
+                    {bookingAgentFuncTotal(
+                      getBookingAgentJobsData,
+                      dateFrom,
+                      dateTo
+                    )}
+                  </td>
+                </tr>
+              </tbody>
             </table>
+            <ModalManagement
+              getBookingAgentJobsData={getBookingAgentJobsData}
+              dateFrom={dateFrom}
+              dateTo={dateTo}
+            />
           </div>
-          <div className="h-2" />
-          <Pagination table={table} />
-          <ToTopButton />
-        </Container>
+        </section>
       </main>
     </>
   );
-};
+}
 
-export default Home;
+export default Reports;
