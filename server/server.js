@@ -38,7 +38,6 @@ app.disable("x-powered-by");
 
 // Authentication
 app.use("/auth", auth);
-// app.use("/dashboard", authDashboard);
 
 // All jobs
 app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, hhpJobs);

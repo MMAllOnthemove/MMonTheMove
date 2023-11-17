@@ -1,3 +1,4 @@
+// External imports
 import { useToast } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import dynamic from "next/dynamic";
@@ -5,18 +6,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+
+// Custom imports
 import { hhpNavItems, partsNavItems } from "../../../public/_data/navbar";
 import logo from "../../../public/mmlogo.png";
 import { logoutUserFunction } from "@/functions/getLoggedInUserProfile";
-import Cookies from "universal-cookie";
-import { useCookies } from "react-cookie";
-import NotLoggedIn from "../NotLoggedIn";
 
+// Dynamic imports
 const Button = dynamic(() => import("../Buttons"));
 const ThemeChangerButton = dynamic(() => import("../Buttons/ThemeChanger"), {
   ssr: false,
 });
-import axios from "axios";
 
 const Navbar = () => {
   const [isOpen, setIsopen] = useState(false);
@@ -46,14 +46,11 @@ const Navbar = () => {
 
       const getUserData = await res.json();
 
-      // console.log("getUserData", getUserData);
       setUserData(getUserData.email);
     } catch (err) {
       // console.log(err);
     }
   };
-
-  // console.log("userData", userData);
 
   useEffect(() => {
     getProfile();
@@ -62,7 +59,7 @@ const Navbar = () => {
   const onSignout = async () => {
     // removeCookie("token");
     logoutUserFunction();
-    router.push("/auth/login");
+    router.push("/auth/");
     toast({
       title: "Logout successful",
       description: "Bye.",

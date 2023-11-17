@@ -1,4 +1,4 @@
-import { bookingsReportModalState } from "@/atoms/bookingsReport";
+// External imports
 import {
   Modal,
   ModalBody,
@@ -9,20 +9,17 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { useRecoilState } from "recoil";
-import { bookingAgentMapOverJobs } from "../Reports";
 
-interface Props {
-  children?: React.ReactNode;
-  getBookingAgentJobsData: string[] | any;
-  dateFrom: string | any;
-  dateTo: string | any;
-}
+// Custom imports
+import { bookingsReportModalState } from "@/atoms/bookingsReport";
+import { bookingAgentMapOverJobs } from "../Reports";
+import { IBookingAgentsJobDataModal } from "../../../utils/interfaces";
 
 const ModalManagement = ({
   getBookingAgentJobsData,
   dateFrom,
   dateTo,
-}: Props) => {
+}: IBookingAgentsJobDataModal) => {
   //   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalState, setModalState] = useRecoilState(bookingsReportModalState);
 

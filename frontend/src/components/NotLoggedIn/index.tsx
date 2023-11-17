@@ -8,9 +8,9 @@ function NotLoggedIn() {
     <div className="flex justify-center items-center m-auto">
       <Button
         type="button"
-        text="Login here"
+        text="Login or Signup here"
         className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer dark:text-[#eee] rounded-md p-3 my-2"
-        onClick={() => router.push("/auth/login")}
+        onClick={() => router.push("/auth/")}
       />
     </div>
   );

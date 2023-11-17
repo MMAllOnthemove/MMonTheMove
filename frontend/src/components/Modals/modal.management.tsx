@@ -1,4 +1,4 @@
-import { managementModalState } from "@/atoms/managementModalAtom";
+// External imports
 import {
   Modal,
   ModalBody,
@@ -9,6 +9,9 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { useRecoilState } from "recoil";
+
+// Custom imports
+import { managementModalState } from "@/atoms/managementModalAtom";
 
 interface Props {
   children: React.ReactNode;
