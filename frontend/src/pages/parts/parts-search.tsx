@@ -1,13 +1,16 @@
+// External imports
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+
+// Custom imports
+import Navbar from "@/components/Navbar";
+import useDebounce from "@/components/useDebounce";
 import {
   getPartsInfoFunction,
   getStockOverviewInfo,
 } from "@/functions/ipass_api";
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
-import Head from "next/head";
-import { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
-import useDebounce from "@/components/useDebounce";
-import { useRouter } from "next/router";
 
 const PartsSearch = () => {
   const [data, setData] = useState<null | any>(null);
@@ -35,7 +38,7 @@ const PartsSearch = () => {
 
         const getUserData = await res.json();
         if (!getUserData) {
-          router.push("/auth/login");
+          router.push("/auth/");
         }
         // console.log(getUserData);
         setUserData(getUserData.email);

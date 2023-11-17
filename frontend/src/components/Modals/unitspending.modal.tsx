@@ -1,4 +1,4 @@
-import { unitsPendingReportModalState } from "@/atoms/unitspendingAtom";
+// Custom imports
 import {
   getMappedBookedInJobs,
   getMappedJobsByStatusCount,
@@ -14,20 +14,16 @@ import {
 import React from "react";
 import { useRecoilState } from "recoil";
 
-interface Props {
-  children?: React.ReactNode;
-  fetchAlldata: string[] | any;
-  fetchJobsApprovedAndRejected: string[] | any;
-  dateFrom: string | any;
-  dateTo: string | any;
-}
+// Custom imports
+import { unitsPendingReportModalState } from "@/atoms/unitspendingAtom";
+import { IUnitsPendingJobDataModal } from "../../../utils/interfaces";
 
 const ModalManagement = ({
   fetchAlldata,
   fetchJobsApprovedAndRejected,
   dateFrom,
   dateTo,
-}: Props) => {
+}: IUnitsPendingJobDataModal) => {
   //   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalState, setModalState] = useRecoilState(
     unitsPendingReportModalState

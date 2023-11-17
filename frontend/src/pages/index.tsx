@@ -1,4 +1,4 @@
-import TableBody from "@/components/Table/TableBody";
+// External imports
 import {
   Tab,
   TabList,
@@ -25,16 +25,18 @@ import { useSetRecoilState } from "recoil";
 // Custom imports
 import { managementModalState } from "@/atoms/managementModalAtom";
 import Pagination from "@/components/Table/Pagination";
+import TableBody from "@/components/Table/TableBody";
 import { HomepageModalTabOneContent } from "@/components/Table/homepageModalTabOneContent";
 import { HomepageModalTabTwoContent } from "@/components/Table/homepageModalTabTwoContent";
 import { columns } from "@/components/Table/homepageTableColumns";
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
+import { getProfile } from "@/functions/getLoggedInUserProfile";
 import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
 import { Itable } from "../../utils/interfaces";
-import NotLoggedIn from "@/components/NotLoggedIn";
 
 // Dynamic imports
+const NotLoggedIn = dynamic(() => import("@/components/NotLoggedIn"));
 const ManagementSearchForm = dynamic(
   () => import("@/components/Table/managementSearchForm")
 );
@@ -64,32 +66,9 @@ const Home = () => {
 
   const [userData, setUserData] = useState("");
 
+  // Fetches logged in user's data
   useEffect(() => {
-    const getProfile = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/`,
-          {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({}),
-          }
-        );
-
-        const getUserData = await res.json();
-        if (!getUserData) {
-          router.push("/auth/login");
-        }
-        // console.log(getUserData);
-        setUserData(getUserData.email);
-      } catch (err) {
-        // console.log(err);
-      }
-    };
-    getProfile();
+    getProfile({ setUserData });
   }, [userData]);
 
   const [tableData, setTableData] = useState<Itable[]>([]);
@@ -187,10 +166,13 @@ const Home = () => {
     setEngineerAssignTime,
     setGSPNStatus,
   });
+
+  // Fetches combined data
   useEffect(() => {
     fetchDataCombinedData({ setTableData });
   }, []);
 
+  // Gives data from repairshpr based on ticket
   useEffect(() => {
     getRepair({
       searchTicket,
@@ -218,6 +200,8 @@ const Home = () => {
   // const user = session?.user?.email;
 
   let dateAdded = new Date();
+
+  // This posts from the GSPN data
 
   const postData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -247,6 +231,7 @@ const Home = () => {
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
       {
         method: "POST",
+        cache: "default",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(postThisInfo),
       }
@@ -399,7 +384,7 @@ const Home = () => {
     )
       .then((res) => res.json())
       .then((data) => {
-        console.log("data2", data);
+        // console.log("data2", data);
       });
   };
 

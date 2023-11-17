@@ -1,3 +1,4 @@
+// External imports
 import {
   Accordion,
   AccordionButton,
@@ -6,6 +7,8 @@ import {
   AccordionPanel,
   Box,
 } from "@chakra-ui/react";
+
+// Custom imports
 import { engineers } from "../../../public/_data/engineers";
 import { partsStatus } from "../../../public/_data/statuses";
 import { IPartsModalTabOneContent } from "../../../utils/interfaces";

@@ -185,3 +185,16 @@ export interface IcustomToast {
     duration: number;
     isClosable: boolean;
 }
+export interface IBookingAgentsJobDataModal {
+    children?: React.ReactNode;
+    getBookingAgentJobsData: string[] | any;
+    dateFrom: string | any;
+    dateTo: string | any;
+}
+export interface IUnitsPendingJobDataModal {
+    children?: React.ReactNode;
+    fetchAlldata: string[] | any;
+    fetchJobsApprovedAndRejected: string[] | any;
+    dateFrom: string | any;
+    dateTo: string | any;
+}
