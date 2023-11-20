@@ -1,4 +1,4 @@
-import { managementModalState } from "@/atoms/managementModalAtom";
+// External imports
 import {
   Modal,
   ModalBody,
@@ -10,11 +10,14 @@ import {
 import React from "react";
 import { useRecoilState } from "recoil";
 
+// Custom imports
+import { managementModalState } from "@/atoms/managementModalAtom";
+
 interface Props {
   children: React.ReactNode;
 }
 
-function ModalManagement(props: Props) {
+const ModalManagement = (props: Props) => {
   //   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalState, setModalState] = useRecoilState(managementModalState);
 
@@ -48,6 +51,6 @@ function ModalManagement(props: Props) {
       </Modal>
     </>
   );
-}
+};
 
 export default ModalManagement;

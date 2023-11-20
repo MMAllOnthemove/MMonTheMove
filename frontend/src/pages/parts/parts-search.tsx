@@ -1,19 +1,53 @@
+// External imports
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+
+// Custom imports
+import Navbar from "@/components/Navbar";
+import useDebounce from "@/components/useDebounce";
 import {
   getPartsInfoFunction,
   getStockOverviewInfo,
 } from "@/functions/ipass_api";
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
-import Head from "next/head";
-import { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
-import useDebounce from "@/components/useDebounce";
 
-function PartsSearch() {
+const PartsSearch = () => {
   const [data, setData] = useState<null | any>(null);
   const [stockData, setStockData] = useState<null | any>(null);
   const [search, setSearch] = useState<string | any>("");
-  // const [searchStock, setStockSearch] = useState<string>("");
+  const [userData, setUserData] = useState("");
 
+  // const [searchStock, setStockSearch] = useState<string>("");
+  const router = useRouter();
+
+  useEffect(() => {
+    const getProfile = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({}),
+          }
+        );
+
+        const getUserData = await res.json();
+        if (!getUserData) {
+          router.push("/auth/");
+        }
+        // console.log(getUserData);
+        setUserData(getUserData.email);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getProfile();
+  }, [userData]);
   const debouncedSearch = useDebounce(search, 500);
 
   useEffect(() => {
@@ -559,6 +593,6 @@ function PartsSearch() {
       </main>
     </>
   );
-}
+};
 
 export default PartsSearch;

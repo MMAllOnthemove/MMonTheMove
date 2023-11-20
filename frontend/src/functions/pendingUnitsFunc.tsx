@@ -1,11 +1,11 @@
 import moment from "moment";
 
-export function getFilteredJobsByStatusCount(
+export const getFilteredJobsByStatusCount = (
   arr: string[] | any,
   dateFrom: string,
   dateTo: string,
   statusName: string
-) {
+) => {
   arr =
     dateFrom.length > 0 && dateTo.length > 0
       ? arr.filter((item: string | any) => {
@@ -19,13 +19,13 @@ export function getFilteredJobsByStatusCount(
         })
       : [];
   return arr.length;
-}
-export function getMappedJobsByStatusCount(
+};
+export const getMappedJobsByStatusCount = (
   arr: string[] | any,
   dateFrom: string,
   dateTo: string,
   statusName: string
-) {
+) => {
   arr =
     dateFrom.length > 0 && dateTo.length > 0
       ? arr
@@ -48,13 +48,13 @@ export function getMappedJobsByStatusCount(
           ))
       : [];
   return arr;
-}
-export function getMappedJobsByApprovedOrRejectedStatusCount(
+};
+export const getMappedJobsByApprovedOrRejectedStatusCount = (
   arr: string[] | any,
   dateFrom: string,
   dateTo: string,
   statusName: string
-) {
+) => {
   arr =
     dateFrom.length > 0 && dateTo.length > 0
       ? arr.filter((item: any, index: number) => {
@@ -68,13 +68,13 @@ export function getMappedJobsByApprovedOrRejectedStatusCount(
         })
       : [];
   return arr.length;
-}
+};
 // Get all jobs per date
-export function getMappedBookedInJobs(
+export const getMappedBookedInJobs = (
   arr: string[] | any,
   dateFrom: string,
   dateTo: string
-) {
+) => {
   arr =
     dateFrom.length > 0 && dateTo.length > 0
       ? arr
@@ -92,13 +92,13 @@ export function getMappedBookedInJobs(
           ))
       : [];
   return arr;
-}
+};
 // Get all jobs count per date
-export function getFilteredBookedInJobs(
+export const getFilteredBookedInJobs = (
   arr: string[] | any,
   dateFrom: string,
   dateTo: string
-) {
+) => {
   arr =
     dateFrom.length > 0 && dateTo.length > 0
       ? arr.filter((item: any) => {
@@ -107,15 +107,15 @@ export function getFilteredBookedInJobs(
         })
       : [];
   return arr.length;
-}
+};
 // Pull job counts for each engineer
-export function getEngineerJobsByStatusCount(
+export const getEngineerJobsByStatusCount = (
   arr: string[] | any,
   dateFrom: string,
   dateTo: string,
   statusName: string,
   engineerFilter: string
-) {
+) => {
   arr =
     dateFrom.length > 0 && dateTo.length > 0
       ? arr.filter((item: string | any) => {
@@ -131,4 +131,4 @@ export function getEngineerJobsByStatusCount(
         })
       : [];
   return arr.length;
-}
+};

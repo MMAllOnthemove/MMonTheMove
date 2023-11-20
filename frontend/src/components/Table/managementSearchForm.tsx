@@ -1,7 +1,6 @@
-import React from "react";
 import { ISearchForm } from "../../../utils/interfaces";
 
-function ManagementSearchForm({ filtering, setFiltering }: ISearchForm) {
+const ManagementSearchForm = ({ filtering, setFiltering }: ISearchForm) => {
   return (
     <form className="flex items-center" id="management-search-form">
       <label htmlFor="simple-search" className="sr-only">
@@ -34,6 +33,6 @@ function ManagementSearchForm({ filtering, setFiltering }: ISearchForm) {
       </div>
     </form>
   );
-}
+};
 
 export default ManagementSearchForm;

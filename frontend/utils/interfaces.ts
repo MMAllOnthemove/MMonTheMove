@@ -1,3 +1,5 @@
+import { boolean } from "yup";
+
 export interface Itable {
     id: string | number;
     unique_id: string;
@@ -55,8 +57,6 @@ export interface IHomepageModalTabOneContent {
 export interface IPartsModalTabOneContent extends IHomepageModalTabOneContent {
     dispatchAnalysis?: string;
     setDispatchAnalysis?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    dispatchBy: string;
-    setDispatch: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     children: React.ReactNode;
 }
 
@@ -163,4 +163,38 @@ export interface IRepairTicketInfo {
 export interface IgetStockOverviewInfo {
     debouncedSearch: string | any;
     setStockData: (stockDataResponse: any) => void;
+}
+
+export interface ISignUpFormValues {
+    fullName: string;
+    username: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    createdAt: Date;
+}
+export interface ILoginFormValues {
+    email: string;
+    password: string;
+}
+
+export interface IcustomToast {
+    title: string;
+    description: string;
+    status: "info" | "warning" | "success" | "error" | "loading" | undefined;
+    duration: number;
+    isClosable: boolean;
+}
+export interface IBookingAgentsJobDataModal {
+    children?: React.ReactNode;
+    getBookingAgentJobsData: string[] | any;
+    dateFrom: string | any;
+    dateTo: string | any;
+}
+export interface IUnitsPendingJobDataModal {
+    children?: React.ReactNode;
+    fetchAlldata: string[] | any;
+    fetchJobsApprovedAndRejected: string[] | any;
+    dateFrom: string | any;
+    dateTo: string | any;
 }
