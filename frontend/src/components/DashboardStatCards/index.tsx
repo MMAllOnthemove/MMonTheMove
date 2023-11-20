@@ -1,4 +1,3 @@
-import React from "react";
 import { Metric, Text } from "@tremor/react";
 
 type TDashboardStatCards = {
@@ -6,7 +5,7 @@ type TDashboardStatCards = {
   stat: string | number | any;
   onClick?: () => void;
 };
-function DashboardStatCards({ title, stat, onClick }: TDashboardStatCards) {
+const DashboardStatCards = ({ title, stat, onClick }: TDashboardStatCards) => {
   return (
     <article
       className="flex flex-col justify-between p-5 border border-[#eee] bg-white dark:bg-[#22303C] rounded cursor-pointer"
@@ -21,10 +20,9 @@ function DashboardStatCards({ title, stat, onClick }: TDashboardStatCards) {
             {stat}
           </Metric>
         </div>
-        {/* <ArrowPathIcon className="h-6 w-6 text-gray-500" /> */}
       </div>
     </article>
   );
-}
+};
 
 export default DashboardStatCards;

@@ -1,9 +1,7 @@
-import React from "react";
-
 interface Itable {
   table: any;
 }
-function Pagination(props: Itable) {
+const Pagination = (props: Itable) => {
   return (
     <div className="pagination flex gap-1 p-2">
       <button
@@ -72,7 +70,7 @@ function Pagination(props: Itable) {
         id="showPageSize"
         name="showPageSize"
         value={props.table.getState().pagination.pageSize}
-        className="border border-[#eee] outline-none ring-0  font-medium cursor-pointer bg-white p-1 rounded"
+        className="border  outline-none ring-0  font-medium cursor-pointer  bg-gray-50 dark:bg-[#22303C] border-gray-300 text-gray-900 dark:text-[#eee] p-1 rounded"
         onChange={(e) => {
           props.table.setPageSize(Number(e.target.value));
         }}
@@ -85,6 +83,6 @@ function Pagination(props: Itable) {
       </select>
     </div>
   );
-}
+};
 
 export default Pagination;

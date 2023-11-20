@@ -1,7 +1,7 @@
 import React from "react";
 
-function Tests() {
+const Tests = () => {
   return <div>Tests</div>;
-}
+};
 
 export default Tests;

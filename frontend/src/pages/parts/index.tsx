@@ -1,27 +1,5 @@
+// External imports
 import { useToast } from "@chakra-ui/react";
-import dynamic from "next/dynamic";
-import { partsModalState } from "@/atoms/partsModalAtom";
-import Pagination from "@/components/Table/Pagination";
-const Button = dynamic(() => import("@/components/Buttons"));
-const Container = dynamic(() => import("@/components/Container"));
-const ModalManagement = dynamic(
-  () => import("@/components/Modals/parts.modal")
-);
-
-import { PartsModalTabOneContent } from "@/components/PartsTable/PartsModalTableContent";
-import { columns } from "@/components/PartsTable/PartsTableColumns";
-const ToTopButton = dynamic(() => import("@/components/ToTopButton"));
-import { getSOInfoAllFunctionForParts } from "@/functions/ipass_api";
-import Head from "next/head";
-import React, { useEffect, useState } from "react";
-import { useSetRecoilState } from "recoil";
-const Navbar = dynamic(() => import("@/components/Navbar"));
-const ManagementSearchForm = dynamic(
-  () => import("@/components/Table/managementSearchForm")
-);
-const Spinner = dynamic(() => import("@/components/Spinner"));
-
-// Tanstack table functionality
 import {
   SortingState,
   flexRender,
@@ -31,9 +9,43 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import dynamic from "next/dynamic";
+import Head from "next/head";
 import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 
-function Parts() {
+// External imports
+import { partsModalState } from "@/atoms/partsModalAtom";
+import PartsModalTabOneContent from "@/components/PartsTable/PartsModalTableContent";
+import { columns } from "@/components/PartsTable/PartsTableColumns";
+import Pagination from "@/components/Table/Pagination";
+import { getProfile } from "@/functions/getLoggedInUserProfile";
+import { getSOInfoAllFunctionForParts } from "@/functions/ipass_api";
+import { useSetRecoilState } from "recoil";
+
+// Dynamic imports
+const Button = dynamic(() => import("@/components/Buttons"));
+const Container = dynamic(() => import("@/components/Container"));
+const ModalManagement = dynamic(
+  () => import("@/components/Modals/parts.modal")
+);
+const ToTopButton = dynamic(() => import("@/components/ToTopButton"));
+const Navbar = dynamic(() => import("@/components/Navbar"));
+const ManagementSearchForm = dynamic(
+  () => import("@/components/Table/managementSearchForm")
+);
+const NotLoggedIn = dynamic(() => import("@/components/NotLoggedIn"));
+
+const Parts = () => {
+  const [userData, setUserData] = useState("");
+
+  let dispatchBy = userData;
+
+  // Fetches logged in user's data
+  useEffect(() => {
+    getProfile({ setUserData });
+  }, [userData]);
+
   const [tableData, setTableData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -63,7 +75,6 @@ function Parts() {
   const [inHouseStatus, setInHouseStatus] = useState("");
   const [ticket, setTicket] = useState("");
   const [department, setDepartment] = useState("");
-  const [dispatchBy, setDispatch] = useState("");
 
   const [partsChecked, setPartsChecked] = useState("");
   const [reasonForIncompleteParts, setReasonForIncompleteParts] = useState("");
@@ -228,7 +239,7 @@ function Parts() {
       .then((res) => res.json())
       .then((data) => console.log("data2", data));
   };
-  if (isLoading) return <Spinner />;
+
   return (
     <>
       <Head>
@@ -247,260 +258,268 @@ function Parts() {
               Management.
             </h1>
           </section>
-          <section className="flex justify-between items-center py-5">
-            <ManagementSearchForm
-              filtering={filtering}
-              setFiltering={(e) => setFiltering(e.target.value)}
-            />
 
-            <button
-              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer rounded-md p-3 my-2 dark:text-[#eee]"
-              type="button"
-              role="button"
-              onClick={() =>
-                setPartsManagementModalState({
-                  open: true,
-                  view: "/parts",
-                })
-              }
-            >
-              Add job
-            </button>
+          {!userData ? (
+            <NotLoggedIn />
+          ) : (
+            <>
+              <section className="flex justify-between items-center py-5">
+                <ManagementSearchForm
+                  filtering={filtering}
+                  setFiltering={(e) => setFiltering(e.target.value)}
+                />
 
-            {/* Called the modal here and added a post data prop that posts data on click */}
-            <ModalManagement>
-              <PartsModalTabOneContent
-                searchServiceOrder={searchServiceOrder}
-                setSearchServiceOrder={(e) =>
-                  setSearchServiceOrder(e.target.value)
-                }
-                warranty={warranty}
-                inHouseStatus={inHouseStatus}
-                dispatchBy={dispatchBy}
-                setDispatch={(e) => setDispatch(e.target.value)}
-                setInHouseStatus={(e) => setInHouseStatus(e.target.value)}
-                ticket={ticket}
-                setTicket={(e) => setTicket(e.target.value)}
-                dispatchAnalysis={dispatchAnalysis}
-                setDispatchAnalysis={(e) => setDispatchAnalysis(e.target.value)}
-                engineer={engineer}
-                setEngineer={(e) => setEngineer(e.target.value)}
-                department={department}
-                setDepartment={(e) => setDepartment(e.target.value)}
-                postData={postData}
-              >
-                <span>
-                  <label
-                    htmlFor="partNumber"
-                    className="block mb-2 text-sm font-medium  text-gray-900 "
+                <button
+                  className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer rounded-md p-3 my-2 dark:text-[#eee]"
+                  type="button"
+                  role="button"
+                  onClick={() =>
+                    setPartsManagementModalState({
+                      open: true,
+                      view: "/parts",
+                    })
+                  }
+                >
+                  Add job
+                </button>
+
+                {/* Called the modal here and added a post data prop that posts data on click */}
+                <ModalManagement>
+                  <PartsModalTabOneContent
+                    searchServiceOrder={searchServiceOrder}
+                    setSearchServiceOrder={(e) =>
+                      setSearchServiceOrder(e.target.value)
+                    }
+                    warranty={warranty}
+                    inHouseStatus={inHouseStatus}
+                    setInHouseStatus={(e) => setInHouseStatus(e.target.value)}
+                    ticket={ticket}
+                    setTicket={(e) => setTicket(e.target.value)}
+                    dispatchAnalysis={dispatchAnalysis}
+                    setDispatchAnalysis={(e) =>
+                      setDispatchAnalysis(e.target.value)
+                    }
+                    engineer={engineer}
+                    setEngineer={(e) => setEngineer(e.target.value)}
+                    department={department}
+                    setDepartment={(e) => setDepartment(e.target.value)}
+                    postData={postData}
                   >
-                    Parts you are issuing. <small>Max = 10</small>
-                    <br />
-                    <small>e.g. LED - GHS7-0000..</small>
-                  </label>
-                  {partsList.map((singleService, index) => (
-                    <div key={index} className="services">
-                      <div className="first-division flex items-center gap-4">
+                    <span>
+                      <label
+                        htmlFor="partNumber"
+                        className="block mb-2 text-sm font-medium  text-gray-900 "
+                      >
+                        Parts you are issuing. <small>Max = 10</small>
+                        <br />
+                        <small>e.g. LED - GHS7-0000..</small>
+                      </label>
+                      {partsList.map((singleService, index) => (
+                        <div key={index} className="services">
+                          <div className="first-division flex items-center gap-4">
+                            <input
+                              className="my-2 border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 p-2.5"
+                              name="partNumber"
+                              type="text"
+                              id="partNumber"
+                              placeholder="Part no."
+                              defaultValue={singleService?.partNumber}
+                              onChange={(e) => handleServiceChange(e, index)}
+                              size={12}
+                              maxLength={12}
+                              aria-required
+                              required
+                            />
+                            <input
+                              className="my-2 border  border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500  p-2.5"
+                              name="sealNumber"
+                              type="text"
+                              id="sealNumber"
+                              placeholder="Seal no."
+                              defaultValue={singleService?.sealNumber}
+                              onChange={(e) => handleServiceChange(e, index)}
+                              size={12}
+                              maxLength={12}
+                            />
+                            {partsList.length - 1 === index &&
+                              partsList.length < 10 && (
+                                <Button
+                                  className="my-2 bg-[#082f49]   font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
+                                  type="button"
+                                  onClick={handleServiceAdd}
+                                  text="+"
+                                />
+                                // <button
+                                //   className="my-2 bg-[#082f49]   font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
+                                //   type="button"
+                                //   onClick={handleServiceAdd}
+                                // >
+                                //   Add a part
+                                // </button>
+                              )}
+                          </div>
+                          <div className="second-division">
+                            {partsList.length !== 1 && (
+                              <Button
+                                type="button"
+                                onClick={() => handleServiceRemove(index)}
+                                className="bg-red-500  font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center remove-btn"
+                                text="Remove"
+                              />
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </span>
+                    <p className=" font-semibold my-2">
+                      <small> Parts being handed out complete?</small>
+                    </p>
+                    <span className="flex items-center gap-3">
+                      <span className="flex items-center">
                         <input
-                          className="my-2 border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                          name="partNumber"
-                          type="text"
-                          id="partNumber"
-                          placeholder="Part no."
-                          defaultValue={singleService?.partNumber}
-                          onChange={(e) => handleServiceChange(e, index)}
-                          size={12}
-                          maxLength={12}
+                          type="radio"
+                          id="partsCheckedYes"
+                          name="partsChecked"
+                          value={"Yes"}
+                          className="mr-2 cursor-pointer accent-sky-700"
+                          checked={partsChecked === "Yes"}
+                          onChange={(e) => setPartsChecked(e.target.value)}
                           aria-required
                           required
                         />
-                        <input
-                          className="my-2 border  border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500  p-2.5"
-                          name="sealNumber"
-                          type="text"
-                          id="sealNumber"
-                          placeholder="Seal no."
-                          defaultValue={singleService?.sealNumber}
-                          onChange={(e) => handleServiceChange(e, index)}
-                          size={12}
-                          maxLength={12}
-                        />
-                        {partsList.length - 1 === index &&
-                          partsList.length < 10 && (
-                            <Button
-                              className="my-2 bg-[#082f49]   font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
-                              type="button"
-                              onClick={handleServiceAdd}
-                              text="+"
-                            />
-                            // <button
-                            //   className="my-2 bg-[#082f49]   font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
-                            //   type="button"
-                            //   onClick={handleServiceAdd}
-                            // >
-                            //   Add a part
-                            // </button>
-                          )}
-                      </div>
-                      <div className="second-division">
-                        {partsList.length !== 1 && (
-                          <Button
-                            type="button"
-                            onClick={() => handleServiceRemove(index)}
-                            className="bg-red-500  font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center remove-btn"
-                            text="Remove"
-                          />
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </span>
-                <p className=" font-semibold my-2">
-                  <small> Parts being handed out complete?</small>
-                </p>
-                <span className="flex items-center gap-3">
-                  <span className="flex items-center">
-                    <input
-                      type="radio"
-                      id="partsCheckedYes"
-                      name="partsChecked"
-                      value={"Yes"}
-                      className="mr-2 cursor-pointer accent-sky-700"
-                      checked={partsChecked === "Yes"}
-                      onChange={(e) => setPartsChecked(e.target.value)}
-                      aria-required
-                      required
-                    />
-                    <label
-                      htmlFor="partsCheckedYes"
-                      className="cursor-pointer text-sm font-medium  text-gray-900"
-                    >
-                      Yes
-                    </label>
-                  </span>
-                  <span className="flex items-center">
-                    <input
-                      type="radio"
-                      id="partsCheckedNo"
-                      name="partsChecked"
-                      value={"No"}
-                      className="mr-2 cursor-pointer accent-sky-700"
-                      checked={partsChecked === "No"}
-                      onChange={(e) => setPartsChecked(e.target.value)}
-                    />
-                    <label
-                      htmlFor="partsCheckedNo"
-                      className="cursor-pointer text-sm font-medium  text-gray-900"
-                    >
-                      No
-                    </label>
-                  </span>
-                </span>
-                {partsChecked === "No" ? (
-                  <span>
-                    <label
-                      htmlFor="reasonForIncompleteParts"
-                      className="block mb-2 text-sm font-medium  text-gray-900"
-                    >
-                      Reason for incomplete parts
-                    </label>
-                    <textarea
-                      name="reasonForIncompleteParts"
-                      id="reasonForIncompleteParts"
-                      className="mb-2 bg-white border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5 "
-                      value={reasonForIncompleteParts}
-                      onChange={(event) =>
-                        setReasonForIncompleteParts(event.target.value)
-                      }
-                    ></textarea>
-                  </span>
-                ) : (
-                  ""
-                )}
-              </PartsModalTabOneContent>
-            </ModalManagement>
-          </section>
-
-          <div className="max-h-[540px] overflow-y-auto">
-            <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] text-sm uppercase font-semibold">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id} className=" font-semibold">
-                    <th className="px-4 py-3 cursor-pointer  font-semibold">
-                      Action
-                    </th>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <th
-                          key={header.id}
-                          className="px-4 py-3 cursor-pointer  font-semibold"
+                        <label
+                          htmlFor="partsCheckedYes"
+                          className="cursor-pointer text-sm font-medium  text-gray-900"
                         >
-                          {header.isPlaceholder ? null : (
-                            <div
-                              {...{
-                                className: header.column.getCanSort()
-                                  ? "cursor-pointer select-none"
-                                  : "",
-                                onClick:
-                                  header.column.getToggleSortingHandler(),
-                              }}
-                            >
-                              {flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                              {{
-                                asc: " ▽",
-                                desc: " △",
-                              }[header.column.getIsSorted() as string] ?? null}
-                            </div>
-                          )}
+                          Yes
+                        </label>
+                      </span>
+                      <span className="flex items-center">
+                        <input
+                          type="radio"
+                          id="partsCheckedNo"
+                          name="partsChecked"
+                          value={"No"}
+                          className="mr-2 cursor-pointer accent-sky-700"
+                          checked={partsChecked === "No"}
+                          onChange={(e) => setPartsChecked(e.target.value)}
+                        />
+                        <label
+                          htmlFor="partsCheckedNo"
+                          className="cursor-pointer text-sm font-medium  text-gray-900"
+                        >
+                          No
+                        </label>
+                      </span>
+                    </span>
+                    {partsChecked === "No" ? (
+                      <span>
+                        <label
+                          htmlFor="reasonForIncompleteParts"
+                          className="block mb-2 text-sm font-medium  text-gray-900"
+                        >
+                          Reason for incomplete parts
+                        </label>
+                        <textarea
+                          name="reasonForIncompleteParts"
+                          id="reasonForIncompleteParts"
+                          className="mb-2 bg-white border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5 "
+                          value={reasonForIncompleteParts}
+                          onChange={(event) =>
+                            setReasonForIncompleteParts(event.target.value)
+                          }
+                        ></textarea>
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </PartsModalTabOneContent>
+                </ModalManagement>
+              </section>
+
+              <div className="max-h-[540px] overflow-y-auto">
+                <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
+                  <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] text-sm uppercase font-semibold">
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <tr key={headerGroup.id} className=" font-semibold">
+                        <th className="px-4 py-3 cursor-pointer  font-semibold">
+                          Action
                         </th>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </thead>
-              <tbody className="z-0">
-                {table.getRowModel().rows.map((row: any) => (
-                  <tr
-                    key={row.id}
-                    onDoubleClick={(e) => handleUpdate(e, row.original.id)}
-                    className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
-                  >
-                    <td className="px-4 py-3  font-medium text-sm max-w-full">
-                      <button
-                        type="button"
-                        role="button"
-                        onClick={(e) => handleUpdate(e, row.original.id)}
-                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                      >
-                        Edit
-                      </button>
-                    </td>
-                    {row.getVisibleCells().map((cell: any) => (
-                      <td
-                        key={cell.id}
-                        className="px-4 py-3  font-medium text-sm max-w-full"
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
+                        {headerGroup.headers.map((header) => {
+                          return (
+                            <th
+                              key={header.id}
+                              className="px-4 py-3 cursor-pointer  font-semibold"
+                            >
+                              {header.isPlaceholder ? null : (
+                                <div
+                                  {...{
+                                    className: header.column.getCanSort()
+                                      ? "cursor-pointer select-none"
+                                      : "",
+                                    onClick:
+                                      header.column.getToggleSortingHandler(),
+                                  }}
+                                >
+                                  {flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext()
+                                  )}
+                                  {{
+                                    asc: " ▽",
+                                    desc: " △",
+                                  }[header.column.getIsSorted() as string] ??
+                                    null}
+                                </div>
+                              )}
+                            </th>
+                          );
+                        })}
+                      </tr>
                     ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="h-2" />
-          <Pagination table={table} />
-          <ToTopButton />
+                  </thead>
+                  <tbody className="z-0">
+                    {table.getRowModel().rows.map((row: any) => (
+                      <tr
+                        key={row.id}
+                        onDoubleClick={(e) => handleUpdate(e, row.original.id)}
+                        className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
+                      >
+                        <td className="px-4 py-3  font-medium text-sm max-w-full">
+                          <button
+                            type="button"
+                            role="button"
+                            onClick={(e) => handleUpdate(e, row.original.id)}
+                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                          >
+                            Edit
+                          </button>
+                        </td>
+                        {row.getVisibleCells().map((cell: any) => (
+                          <td
+                            key={cell.id}
+                            className="px-4 py-3  font-medium text-sm max-w-full"
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="h-2" />
+              <Pagination table={table} />
+              <ToTopButton />
+            </>
+          )}
         </Container>
       </main>
     </>
   );
-}
+};
 
 export default Parts;

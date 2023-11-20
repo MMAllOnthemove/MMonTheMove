@@ -1,4 +1,4 @@
-import TableBody from "@/components/Table/TableBody";
+// External imports
 import {
   Tab,
   TabList,
@@ -25,16 +25,21 @@ import { useSetRecoilState } from "recoil";
 // Custom imports
 import { managementModalState } from "@/atoms/managementModalAtom";
 import Pagination from "@/components/Table/Pagination";
+import TableBody from "@/components/Table/TableBody";
 import { HomepageModalTabOneContent } from "@/components/Table/homepageModalTabOneContent";
 import { HomepageModalTabTwoContent } from "@/components/Table/homepageModalTabTwoContent";
 import { columns } from "@/components/Table/homepageTableColumns";
-import ManagementSearchForm from "@/components/Table/managementSearchForm";
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
+import { getProfile } from "@/functions/getLoggedInUserProfile";
 import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
 import { Itable } from "../../utils/interfaces";
 
 // Dynamic imports
+const NotLoggedIn = dynamic(() => import("@/components/NotLoggedIn"));
+const ManagementSearchForm = dynamic(
+  () => import("@/components/Table/managementSearchForm")
+);
 const ModalManagement = dynamic(
   () => import("@/components/Modals/modal.management"),
   {
@@ -55,6 +60,17 @@ const Button = dynamic(() => import("@/components/Buttons"), {
 });
 
 const Home = () => {
+  const router = useRouter();
+  // Chakra ui toast
+  const toast = useToast();
+
+  const [userData, setUserData] = useState("");
+
+  // Fetches logged in user's data
+  useEffect(() => {
+    getProfile({ setUserData });
+  }, [userData]);
+
   const [tableData, setTableData] = useState<Itable[]>([]);
 
   // Not to be confused with 'setServiceOrder'
@@ -62,9 +78,6 @@ const Home = () => {
 
   // Search ticket for tab two
   const [searchTicket, setSearchTicket] = useState("");
-
-  // Chakra ui toast
-  const toast = useToast();
 
   // Global state for the modal
   const setManagementModalState = useSetRecoilState(managementModalState);
@@ -96,8 +109,8 @@ const Home = () => {
   // We want to get the Status Desc from the last object element of this array
   let GSPNStatusGetLastElement = GSPNStatus?.slice(-1);
 
-  // Settings the user to also be the engineer
-  let user = engineer;
+  // Setting the user to email user is logged in with
+  let user = userData;
 
   // Repairshpr states start here
   const [repairServiceOrder, setRepairServiceOrder] = useState<
@@ -136,28 +149,30 @@ const Home = () => {
   const [repairAPILoading, setRepairAPILoading] = useState(true);
 
   // For the repair API
-  let repairUser = repairEngineer;
-  useEffect(() => {
-    getSOInfoAllFunction({
-      searchServiceOrder,
-      setServiceOrder,
-      setCreatedDate,
-      setCreatedTime,
-      setModel,
-      setWarranty,
-      setFault,
-      setImei,
-      setSerialNumber,
-      setEngineerAssignDate,
-      setEngineerAssignTime,
-      setGSPNStatus,
-    });
-  }, [searchServiceOrder]);
+  // Setting the user to email user is logged in with
+  let repairUser = userData;
 
+  getSOInfoAllFunction({
+    searchServiceOrder,
+    setServiceOrder,
+    setCreatedDate,
+    setCreatedTime,
+    setModel,
+    setWarranty,
+    setFault,
+    setImei,
+    setSerialNumber,
+    setEngineerAssignDate,
+    setEngineerAssignTime,
+    setGSPNStatus,
+  });
+
+  // Fetches combined data
   useEffect(() => {
     fetchDataCombinedData({ setTableData });
-  }, [tableData]);
+  }, []);
 
+  // Gives data from repairshpr based on ticket
   useEffect(() => {
     getRepair({
       searchTicket,
@@ -185,6 +200,8 @@ const Home = () => {
   // const user = session?.user?.email;
 
   let dateAdded = new Date();
+
+  // This posts from the GSPN data
 
   const postData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -214,6 +231,7 @@ const Home = () => {
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
       {
         method: "POST",
+        cache: "default",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(postThisInfo),
       }
@@ -366,12 +384,9 @@ const Home = () => {
     )
       .then((res) => res.json())
       .then((data) => {
-        console.log("data2", data);
+        // console.log("data2", data);
       });
   };
-
-  // For the table
-  const router = useRouter();
 
   // Redirects user to the edit table page
   const handleUpdate = (e: React.SyntheticEvent, id: string | number) => {
@@ -415,176 +430,188 @@ const Home = () => {
               Management.
             </h1>
           </section>
-          <section className="flex justify-between items-center py-5">
-            <ManagementSearchForm
-              filtering={filtering}
-              setFiltering={(e) => setFiltering(e.target.value)}
-            />
+          {!userData || userData === "" ? (
+            <NotLoggedIn />
+          ) : (
+            <>
+              <section className="flex justify-between items-center py-5">
+                <ManagementSearchForm
+                  filtering={filtering}
+                  setFiltering={(e) => setFiltering(e.target.value)}
+                />
 
-            <Button
-              type="button"
-              text="Add job"
-              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer dark:text-[#eee] rounded-md p-3 my-2"
-              onClick={() =>
-                setManagementModalState({
-                  open: true,
-                  view: "/",
-                })
-              }
-            />
+                <Button
+                  type="button"
+                  text="Add job"
+                  className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer dark:text-[#eee] rounded-md p-3 my-2"
+                  onClick={() =>
+                    setManagementModalState({
+                      open: true,
+                      view: "/",
+                    })
+                  }
+                />
 
-            {/* Called the modal here and added a post data prop that posts data on click */}
-            <ModalManagement>
-              <Tabs defaultIndex={0} isFitted>
-                <TabList>
-                  <Tab fontFamily="inherit" fontWeight="500">
-                    Use service order
-                  </Tab>
+                {/* Called the modal here and added a post data prop that posts data on click */}
+                <ModalManagement>
+                  <Tabs defaultIndex={0} isFitted>
+                    <TabList>
+                      <Tab fontFamily="inherit" fontWeight="500">
+                        Use service order
+                      </Tab>
 
-                  <Tab fontFamily="inherit" fontWeight="500">
-                    Use ticket number
-                  </Tab>
-                </TabList>
+                      <Tab fontFamily="inherit" fontWeight="500">
+                        Use ticket number
+                      </Tab>
+                    </TabList>
 
-                <TabPanels>
-                  <TabPanel>
-                    <HomepageModalTabOneContent
-                      searchServiceOrder={searchServiceOrder}
-                      setSearchServiceOrder={(e) =>
-                        setSearchServiceOrder(e.target.value)
-                      }
-                      warranty={warranty}
-                      inHouseStatus={inHouseStatus}
-                      setInHouseStatus={(e) => setInHouseStatus(e.target.value)}
-                      ticket={ticket}
-                      setTicket={(e) => setTicket(e.target.value)}
-                      engineerAnalysis={engineerAnalysis}
-                      setEngineerAnalysis={(e) =>
-                        setEngineerAnalysis(e.target.value)
-                      }
-                      engineer={engineer}
-                      setEngineer={(e) => setEngineer(e.target.value)}
-                      department={department}
-                      setDepartment={(e) => setDepartment(e.target.value)}
-                      postData={postData}
-                    />
-                  </TabPanel>
-                  <TabPanel>
-                    <HomepageModalTabTwoContent
-                      repairAPILoading={repairAPILoading}
-                      searchTicket={searchTicket}
-                      setSearchTicket={(e) => setSearchTicket(e.target.value)}
-                      repairFault={repairFault}
-                      repairWarranty={repairWarranty}
-                      setRepairWarranty={(e) =>
-                        setRepairWarranty(e.target.value)
-                      }
-                      repairImei={repairImei}
-                      setRepairImei={(e) => setRepairImei(e.target.value)}
-                      repairSerialNumber={repairSerialNumber}
-                      setRepairSerialNumber={(e) =>
-                        setRepairSerialNumber(e.target.value)
-                      }
-                      repairModel={repairModel}
-                      setRepairModel={(e) => setRepairModel(e.target.value)}
-                      repairInHouseStatus={repairInHouseStatus}
-                      setRepairInHouseStatus={(e) =>
-                        setRepairInHouseStatus(e.target.value)
-                      }
-                      repairEngineer={repairEngineer}
-                      setRepairEngineer={(e) =>
-                        setRepairEngineer(e.target.value)
-                      }
-                      postRepairData={postRepairData}
-                    />
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-            </ModalManagement>
-          </section>
+                    <TabPanels>
+                      <TabPanel>
+                        <HomepageModalTabOneContent
+                          searchServiceOrder={searchServiceOrder}
+                          setSearchServiceOrder={(e) =>
+                            setSearchServiceOrder(e.target.value)
+                          }
+                          warranty={warranty}
+                          inHouseStatus={inHouseStatus}
+                          setInHouseStatus={(e) =>
+                            setInHouseStatus(e.target.value)
+                          }
+                          ticket={ticket}
+                          setTicket={(e) => setTicket(e.target.value)}
+                          engineerAnalysis={engineerAnalysis}
+                          setEngineerAnalysis={(e) =>
+                            setEngineerAnalysis(e.target.value)
+                          }
+                          engineer={engineer}
+                          setEngineer={(e) => setEngineer(e.target.value)}
+                          department={department}
+                          setDepartment={(e) => setDepartment(e.target.value)}
+                          postData={postData}
+                        />
+                      </TabPanel>
+                      <TabPanel>
+                        <HomepageModalTabTwoContent
+                          repairAPILoading={repairAPILoading}
+                          searchTicket={searchTicket}
+                          setSearchTicket={(e) =>
+                            setSearchTicket(e.target.value)
+                          }
+                          repairFault={repairFault}
+                          repairWarranty={repairWarranty}
+                          setRepairWarranty={(e) =>
+                            setRepairWarranty(e.target.value)
+                          }
+                          repairImei={repairImei}
+                          setRepairImei={(e) => setRepairImei(e.target.value)}
+                          repairSerialNumber={repairSerialNumber}
+                          setRepairSerialNumber={(e) =>
+                            setRepairSerialNumber(e.target.value)
+                          }
+                          repairModel={repairModel}
+                          setRepairModel={(e) => setRepairModel(e.target.value)}
+                          repairInHouseStatus={repairInHouseStatus}
+                          setRepairInHouseStatus={(e) =>
+                            setRepairInHouseStatus(e.target.value)
+                          }
+                          repairEngineer={repairEngineer}
+                          setRepairEngineer={(e) =>
+                            setRepairEngineer(e.target.value)
+                          }
+                          postRepairData={postRepairData}
+                        />
+                      </TabPanel>
+                    </TabPanels>
+                  </Tabs>
+                </ModalManagement>
+              </section>
 
-          <div className="max-h-[540px] overflow-y-auto">
-            <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] text-sm uppercase font-semibold">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id} className=" font-semibold">
-                    <th className="px-4 py-3 cursor-pointer  font-semibold">
-                      Action
-                    </th>
-
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <th
-                          key={header.id}
-                          className="px-4 py-3 cursor-pointer  font-semibold"
-                        >
-                          {header.isPlaceholder ? null : (
-                            <div
-                              {...{
-                                className: header.column.getCanSort()
-                                  ? "cursor-pointer select-none"
-                                  : "",
-                                onClick:
-                                  header.column.getToggleSortingHandler(),
-                              }}
-                            >
-                              {flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                              {{
-                                asc: " ▽",
-                                desc: " △",
-                              }[header.column.getIsSorted() as string] ?? null}
-                            </div>
-                          )}
+              <div className="max-h-[540px] overflow-y-auto">
+                <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
+                  <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] text-sm uppercase font-semibold">
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <tr key={headerGroup.id} className=" font-semibold">
+                        <th className="px-4 py-3 cursor-pointer  font-semibold">
+                          Action
                         </th>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </thead>
 
-              <TableBody>
-                {table.getRowModel().rows.map((row: any) => (
-                  <tr
-                    key={row.id}
-                    onDoubleClick={(e) => handleUpdate(e, row.original.id)}
-                    className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
-                  >
-                    <td className="px-4 py-3  font-medium text-sm max-w-full">
-                      <button
-                        type="button"
-                        role="button"
-                        onClick={(e) => handleUpdate(e, row.original.id)}
-                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                      >
-                        Edit
-                      </button>
-                    </td>
-
-                    {row.getVisibleCells().map((cell: any) => (
-                      <td
-                        key={cell.id}
-                        className="px-4 py-3  font-medium text-sm max-w-full"
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
+                        {headerGroup.headers.map((header) => {
+                          return (
+                            <th
+                              key={header.id}
+                              className="px-4 py-3 cursor-pointer  font-semibold"
+                            >
+                              {header.isPlaceholder ? null : (
+                                <div
+                                  {...{
+                                    className: header.column.getCanSort()
+                                      ? "cursor-pointer select-none"
+                                      : "",
+                                    onClick:
+                                      header.column.getToggleSortingHandler(),
+                                  }}
+                                >
+                                  {flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext()
+                                  )}
+                                  {{
+                                    asc: " ▽",
+                                    desc: " △",
+                                  }[header.column.getIsSorted() as string] ??
+                                    null}
+                                </div>
+                              )}
+                            </th>
+                          );
+                        })}
+                      </tr>
                     ))}
-                  </tr>
-                ))}
-              </TableBody>
-            </table>
-          </div>
-          <div className="h-2" />
-          <Pagination table={table} />
-          <ToTopButton />
+                  </thead>
+
+                  <TableBody>
+                    {table.getRowModel().rows.map((row: any) => (
+                      <tr
+                        key={row.id}
+                        onDoubleClick={(e) => handleUpdate(e, row.original.id)}
+                        className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
+                      >
+                        <td className="px-4 py-3  font-medium text-sm max-w-full">
+                          <button
+                            type="button"
+                            role="button"
+                            onClick={(e) => handleUpdate(e, row.original.id)}
+                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                          >
+                            Edit
+                          </button>
+                        </td>
+
+                        {row.getVisibleCells().map((cell: any) => (
+                          <td
+                            key={cell.id}
+                            className="px-4 py-3  font-medium text-sm max-w-full"
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </TableBody>
+                </table>
+              </div>
+              <div className="h-2" />
+              <Pagination table={table} />
+              <ToTopButton />
+            </>
+          )}
         </Container>
       </main>
     </>
   );
 };
+
 export default Home;

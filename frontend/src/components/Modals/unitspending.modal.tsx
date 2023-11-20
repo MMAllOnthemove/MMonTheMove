@@ -1,4 +1,8 @@
-import { unitsPendingReportModalState } from "@/atoms/unitspendingAtom";
+// Custom imports
+import {
+  getMappedBookedInJobs,
+  getMappedJobsByStatusCount,
+} from "@/functions/pendingUnitsFunc";
 import {
   Modal,
   ModalBody,
@@ -9,25 +13,17 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { useRecoilState } from "recoil";
-import {
-  getMappedJobsByStatusCount,
-  getMappedBookedInJobs,
-} from "@/functions/pendingUnitsFunc";
 
-interface Props {
-  children?: React.ReactNode;
-  fetchAlldata: string[] | any;
-  fetchJobsApprovedAndRejected: string[] | any;
-  dateFrom: string | any;
-  dateTo: string | any;
-}
+// Custom imports
+import { unitsPendingReportModalState } from "@/atoms/unitspendingAtom";
+import { IUnitsPendingJobDataModal } from "../../../utils/interfaces";
 
-function ModalManagement({
+const ModalManagement = ({
   fetchAlldata,
   fetchJobsApprovedAndRejected,
   dateFrom,
   dateTo,
-}: Props) {
+}: IUnitsPendingJobDataModal) => {
   //   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalState, setModalState] = useRecoilState(
     unitsPendingReportModalState
@@ -282,6 +278,6 @@ function ModalManagement({
       </Modal>
     </>
   );
-}
+};
 
 export default ModalManagement;

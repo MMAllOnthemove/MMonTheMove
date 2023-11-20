@@ -69,7 +69,9 @@ CREATE TABLE units (
     qc_comment text,
     is_qc_checked boolean,
     parts_list text [],
-    gspn_status text -
+    gspn_status text,
+    claim_by text,
+    claim_date date
 );
 
 ALTER TABLE
@@ -123,4 +125,18 @@ CREATE TABLE units_history (
     is_qc_checked boolean,
     parts_list text [],
     gspn_status text
+);
+
+CREATE TABLE company_people (
+    user_id BIGSERIAL PRIMARY KEY,
+    user_unique_id uuid DEFAULT gen_random_uuid(),
+    full_name text,
+    user_name text,
+    email text,
+    user_password text,
+    department text,
+    created_at date,
+    updated_at date,
+    user_role text,
+    is_user_blocked boolean
 );

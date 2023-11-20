@@ -1,15 +1,22 @@
-import React from "react";
-import dynamic from "next/dynamic";
+// External imports
 import { useToast } from "@chakra-ui/react";
+import dynamic from "next/dynamic";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+// Custom imports
+import { getProfile } from "@/functions/getLoggedInUserProfile";
+import UnitFinder from "@/pages/api/UnitFinder";
 import { partsStatus } from "../../../../public/_data/statuses";
+
+// Dynamic imports
 const Button = dynamic(() => import("@/components/Buttons"));
 const Container = dynamic(() => import("@/components/Container"));
-import Head from "next/head";
-import UnitFinder from "@/pages/api/UnitFinder";
+const NotLoggedIn = dynamic(() => import("@/components/NotLoggedIn"));
 
 function PartsEdit() {
+  const [userData, setUserData] = useState("");
   const [getPartsJobHistory, setGetPartsJobHistory] = useState<
     string[] | any[]
   >([]);
@@ -35,11 +42,17 @@ function PartsEdit() {
   );
   const [partsChecked, setPartsChecked] = useState("");
   const [reasonForIncompleteParts, setReasonForIncompleteParts] = useState("");
-  const [dispatchBy, setDispatch] = useState("");
+  // const [dispatchBy, setDispatch] = useState("");
+  let dispatchBy = userData;
 
   const router = useRouter();
   const { id } = router.query;
   const toast = useToast();
+
+  // Fetches logged in user's data
+  useEffect(() => {
+    getProfile({ setUserData });
+  }, [userData]);
 
   useEffect(() => {
     getThisJobsData();
@@ -65,7 +78,6 @@ function PartsEdit() {
         setReasonForIncompleteParts(data[0]?.reason_for_incomplete_parts);
         setModel(data[0]?.model);
         setImei(data[0]?.imei);
-        setDispatch(data[0]?.dispatch_by);
       });
   }, []);
 
@@ -102,6 +114,7 @@ function PartsEdit() {
       dispatchAnalysis,
       inHouseStatus,
       dateModified,
+      dispatchBy,
       id,
     };
     // console.log(putThisInfo);
@@ -182,169 +195,179 @@ function PartsEdit() {
       </Head>
       <main>
         <Container>
-          <section className="section">
-            <span className="flex items-center justify-between my-3">
-              <Button
-                type="button"
-                onClick={() => history.back()}
-                className="bg-[#082f49]  font-semibold text-white dark:text-[#eee] hover:bg-blue-800 rounded-sm text-sm p-2.5 text-center"
-                text="Back"
-              />
-              <div>
-                <h1 className="text-center py-2 text-gray-900 dark:text-[#eee] font-semibold lg:text-2xl">
-                  {" "}
-                  Editing service order: {showServiceOrderNumber}
-                </h1>
-              </div>
-              <div />
-            </span>
+          {!userData ? (
+            <NotLoggedIn />
+          ) : (
+            <>
+              <section className="section">
+                <span className="flex items-center justify-between my-3">
+                  <Button
+                    type="button"
+                    onClick={() => history.back()}
+                    className="bg-[#082f49]  font-semibold text-white dark:text-[#eee] hover:bg-blue-800 rounded-sm text-sm p-2.5 text-center"
+                    text="Back"
+                  />
+                  <div>
+                    <h1 className="text-center py-2 text-gray-900 dark:text-[#eee] font-semibold lg:text-2xl">
+                      {" "}
+                      Editing service order: {showServiceOrderNumber}
+                    </h1>
+                    <h3 className="text-center dark:text-[#eee] font-semibold">
+                      You are editing as:{" "}
+                      <span className="text-sky-700  font-bold">
+                        {userData}
+                      </span>
+                    </h3>
+                  </div>
+                  <div />
+                </span>
 
-            <hr />
-            <form className="my-3" onSubmit={updateData} id="updateJobForm">
-              <span>
-                <label
-                  htmlFor="showServiceOrderNumber"
-                  className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
-                >
-                  Service Order No
-                </label>
-                <input
-                  type="text"
-                  name="showServiceOrderNumber"
-                  id="showServiceOrderNumber"
-                  className="mb-2 bg-gray-50 dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                  defaultValue={showServiceOrderNumber}
-                  disabled
-                />
-              </span>
-              <span>
-                <label
-                  htmlFor="ticket"
-                  className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
-                >
-                  Ticket number
-                </label>
-                <input
-                  type="text"
-                  name="ticket"
-                  id="ticket"
-                  defaultValue={ticket}
-                  disabled
-                  className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                />
-              </span>
-              <span>
-                <label
-                  htmlFor="fault"
-                  className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
-                >
-                  Fault
-                </label>
-                <input
-                  type="text"
-                  name="fault"
-                  id="fault"
-                  defaultValue={fault.toUpperCase()}
-                  disabled
-                  className="mb-2 bg-white  dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                />
-              </span>
-              <span>
-                <label
-                  htmlFor="engineer"
-                  className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
-                >
-                  Engineer
-                </label>
-                <input
-                  type="text"
-                  name="engineer"
-                  id="engineer"
-                  className="mb-2 bg-gray-50 dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  defaultValue={engineer}
-                  disabled
-                />
-              </span>
-              <span>
-                <label
-                  htmlFor="department"
-                  className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
-                >
-                  Department
-                </label>
-                <input
-                  type="text"
-                  name="department"
-                  id="department"
-                  className="mb-2 bg-gray-50 dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  defaultValue={department}
-                  disabled
-                />
-              </span>
-              <span>
-                <label
-                  htmlFor="inHouseStatus"
-                  className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
-                >
-                  In house status
-                </label>
-                <select
-                  value={inHouseStatus}
-                  onChange={(e) => setInHouseStatus(e.target.value)}
-                  id="inHouseStatus"
-                  className="mb-2 cursor-pointer bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                >
-                  <option disabled value="">
-                    Choose status
-                  </option>
-                  {partsStatus.map((stat) => (
-                    <option key={stat.id} value={`${stat._status}`}>
-                      {stat?._status}
-                    </option>
-                  ))}
-                </select>
-                <span>
-                  <h4 className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]">
-                    Parts already given:
-                  </h4>
-                  {partsAlreadyGiven?.map((part: string, index: number) => (
-                    <p className="block mb-2 text-sm font-normal  text-gray-900 dark:text-[#eee]">
-                      <span
-                        className="text-sm font-bold  text-gray-900 dark:text-[#eee]"
-                        key={index}
+                <hr />
+                <form className="my-3" onSubmit={updateData} id="updateJobForm">
+                  <span>
+                    <label
+                      htmlFor="showServiceOrderNumber"
+                      className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
+                    >
+                      Service Order No
+                    </label>
+                    <input
+                      type="text"
+                      name="showServiceOrderNumber"
+                      id="showServiceOrderNumber"
+                      className="mb-2 bg-gray-50 dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                      defaultValue={showServiceOrderNumber}
+                      disabled
+                    />
+                  </span>
+                  <span>
+                    <label
+                      htmlFor="ticket"
+                      className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
+                    >
+                      Ticket number
+                    </label>
+                    <input
+                      type="text"
+                      name="ticket"
+                      id="ticket"
+                      defaultValue={ticket}
+                      disabled
+                      className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    />
+                  </span>
+                  <span>
+                    <label
+                      htmlFor="fault"
+                      className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
+                    >
+                      Fault
+                    </label>
+                    <input
+                      type="text"
+                      name="fault"
+                      id="fault"
+                      defaultValue={fault.toUpperCase()}
+                      disabled
+                      className="mb-2 bg-white  dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    />
+                  </span>
+                  <span>
+                    <label
+                      htmlFor="engineer"
+                      className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
+                    >
+                      Engineer
+                    </label>
+                    <input
+                      type="text"
+                      name="engineer"
+                      id="engineer"
+                      className="mb-2 bg-gray-50 dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                      defaultValue={engineer}
+                      disabled
+                    />
+                  </span>
+                  <span>
+                    <label
+                      htmlFor="department"
+                      className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
+                    >
+                      Department
+                    </label>
+                    <input
+                      type="text"
+                      name="department"
+                      id="department"
+                      className="mb-2 bg-gray-50 dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                      defaultValue={department}
+                      disabled
+                    />
+                  </span>
+                  <span>
+                    <label
+                      htmlFor="inHouseStatus"
+                      className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
+                    >
+                      In house status
+                    </label>
+                    <select
+                      value={inHouseStatus}
+                      onChange={(e) => setInHouseStatus(e.target.value)}
+                      id="inHouseStatus"
+                      className="mb-2 cursor-pointer bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    >
+                      <option disabled value="">
+                        Choose status
+                      </option>
+                      {partsStatus.map((stat) => (
+                        <option key={stat.id} value={`${stat._status}`}>
+                          {stat?._status}
+                        </option>
+                      ))}
+                    </select>
+                    <span>
+                      <h4 className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]">
+                        Parts already given:
+                      </h4>
+                      {partsAlreadyGiven?.map((part: string, index: number) => (
+                        <p className="block mb-2 text-sm font-normal  text-gray-900 dark:text-[#eee]">
+                          <span
+                            className="text-sm font-bold  text-gray-900 dark:text-[#eee]"
+                            key={index}
+                          >
+                            {index + 1}
+                          </span>{" "}
+                          - {part}
+                        </p>
+                      ))}
+                    </span>
+                    <span>
+                      <label
+                        htmlFor="dispatchAnalysis"
+                        className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
                       >
-                        {index + 1}
-                      </span>{" "}
-                      - {part}
-                    </p>
-                  ))}
-                </span>
-                <span>
-                  <label
-                    htmlFor="dispatchAnalysis"
-                    className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
-                  >
-                    Dispatch comment
-                  </label>
-                  <textarea
-                    name="dispatchAnalysis"
-                    id="dispatchAnalysis"
-                    value={dispatchAnalysis}
-                    onChange={(e) => setDispatchAnalysis(e.target.value)}
-                    className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5"
-                  ></textarea>
-                </span>
-              </span>
+                        Dispatch comment
+                      </label>
+                      <textarea
+                        name="dispatchAnalysis"
+                        id="dispatchAnalysis"
+                        value={dispatchAnalysis}
+                        onChange={(e) => setDispatchAnalysis(e.target.value)}
+                        className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5"
+                      ></textarea>
+                    </span>
+                  </span>
 
-              <span>
-                <Button
-                  type="submit"
-                  className="bg-[#082f49] w-full  font-semibold text-white dark:text-[#eee] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
-                  text="Update"
-                />
-              </span>
-            </form>
-            {/* <span>
+                  <span>
+                    <Button
+                      type="submit"
+                      className="bg-[#082f49] w-full  font-semibold text-white dark:text-[#eee] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
+                      text="Update"
+                    />
+                  </span>
+                </form>
+                {/* <span>
               <Button
                 type="button"
                 className="bg-red-500 w-full  font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center my-3"
@@ -352,64 +375,66 @@ function PartsEdit() {
                 onClick={deleteData}
               />
             </span> */}
-            <section className="my-4 flex flex-col gap-5 py-4">
-              <p className=" font-semibold text-slate-700 dark:text-[#eee]">
-                History
-              </p>
-              {getPartsJobHistory.length > 0
-                ? getPartsJobHistory
-                    .filter(
-                      (onlyThisJob) =>
-                        onlyThisJob.service_order === service_order
-                    )
-                    .map((jobHistory: string | any) => (
-                      <article
-                        className="job_history_card border rounded-sm padding border-[#eee] p-2 flex flex-col gap-4"
-                        key={jobHistory?.id}
-                      >
-                        <div className="top_row flex items-center justify-between">
-                          <h3 className=" text-slate-800 font-semibold dark:text-[#eee]">
-                            {jobHistory?.dispatch_by}
-                          </h3>
-                          <p className=" text-slate-800  font-semibold dark:text-[#eee]">
-                            {jobHistory?.service_order}
-                          </p>
-                          <p className=" text-slate-800  font-semibold dark:text-[#eee]">
-                            {jobHistory?.job_modified_date === null || ""
-                              ? ""
-                              : new Date(
-                                  jobHistory?.job_modified_date
-                                ).toDateString()}
-                          </p>
-                        </div>
-                        <hr />
-                        <div className="rounded-sm flex justify-between items-center">
-                          <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
-                            Assigned to:{" "}
-                          </h5>
-                          <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
-                            {jobHistory?.engineer}
-                          </h5>
-                        </div>
-                        <div className="rounded-sm flex justify-between items-center">
-                          <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
-                            In house status:{" "}
-                          </h5>
-                          <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
-                            {jobHistory?.in_house_status}
-                          </h5>
-                        </div>
+                <section className="my-4 flex flex-col gap-5 py-4">
+                  <p className=" font-semibold text-slate-700 dark:text-[#eee]">
+                    History
+                  </p>
+                  {getPartsJobHistory.length > 0
+                    ? getPartsJobHistory
+                        .filter(
+                          (onlyThisJob) =>
+                            onlyThisJob.service_order === service_order
+                        )
+                        .map((jobHistory: string | any) => (
+                          <article
+                            className="job_history_card border rounded-sm padding border-[#eee] p-2 flex flex-col gap-4"
+                            key={jobHistory?.id}
+                          >
+                            <div className="top_row flex items-center justify-between">
+                              <h3 className=" text-slate-800 font-semibold dark:text-[#eee]">
+                                {jobHistory?.dispatch_by}
+                              </h3>
+                              <p className=" text-slate-800  font-semibold dark:text-[#eee]">
+                                {jobHistory?.service_order}
+                              </p>
+                              <p className=" text-slate-800  font-semibold dark:text-[#eee]">
+                                {jobHistory?.job_modified_date === null || ""
+                                  ? ""
+                                  : new Date(
+                                      jobHistory?.job_modified_date
+                                    ).toDateString()}
+                              </p>
+                            </div>
+                            <hr />
+                            <div className="rounded-sm flex justify-between items-center">
+                              <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
+                                Assigned to:{" "}
+                              </h5>
+                              <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
+                                {jobHistory?.engineer}
+                              </h5>
+                            </div>
+                            <div className="rounded-sm flex justify-between items-center">
+                              <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
+                                In house status:{" "}
+                              </h5>
+                              <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
+                                {jobHistory?.in_house_status}
+                              </h5>
+                            </div>
 
-                        <div className="bg-[#f8f9fa] dark:bg-[#22303C]">
-                          <p className="  text-slate-800  dark:text-[#eee] font-medium">
-                            {jobHistory?.dispatch_analysis.toUpperCase()}
-                          </p>
-                        </div>
-                      </article>
-                    ))
-                : "History not available"}
-            </section>
-          </section>
+                            <div className="bg-[#f8f9fa] dark:bg-[#22303C]">
+                              <p className="  text-slate-800  dark:text-[#eee] font-medium">
+                                {jobHistory?.dispatch_analysis.toUpperCase()}
+                              </p>
+                            </div>
+                          </article>
+                        ))
+                    : "History not available"}
+                </section>
+              </section>
+            </>
+          )}
         </Container>
       </main>
     </>

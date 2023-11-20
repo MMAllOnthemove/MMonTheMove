@@ -1,4 +1,4 @@
-import { viewDetailsOnHomeTableModalState } from "@/atoms/viewDetailsOnHomeTableAtom";
+// External imports
 import {
   Modal,
   ModalBody,
@@ -7,19 +7,21 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
 import { useRecoilState } from "recoil";
+
+// Custom imports
+import { viewDetailsOnHomeTableModalState } from "@/atoms/viewDetailsOnHomeTableAtom";
 
 interface Props {
   //   children: React.ReactNode;
   id: string | number;
 }
 
-export default function ModalManagementDetails({ id }: Props) {
+const ModalManagementDetails = ({ id }: Props) => {
   const [modalState, setModalState] = useRecoilState(
     viewDetailsOnHomeTableModalState
   );
-  const [getJobDetails, setGetJobDetails] = useState<any[]>([]);
+
   const handleClose = () => {
     setModalState((prev) => ({
       ...prev,
@@ -27,7 +29,6 @@ export default function ModalManagementDetails({ id }: Props) {
     }));
   };
 
-  // let getJobById =
   return (
     <>
       <Modal isOpen={modalState.open} onClose={handleClose}>
@@ -42,4 +43,5 @@ export default function ModalManagementDetails({ id }: Props) {
       </Modal>
     </>
   );
-}
+};
+export default ModalManagementDetails;
