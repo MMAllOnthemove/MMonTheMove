@@ -19,7 +19,7 @@ import {
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSetRecoilState } from "recoil";
 
 // Custom imports
@@ -34,6 +34,7 @@ import { getProfile } from "@/functions/getLoggedInUserProfile";
 import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
 import { Itable } from "../../utils/interfaces";
+import Spinner from "@/components/Spinner";
 
 // Dynamic imports
 const NotLoggedIn = dynamic(() => import("@/components/NotLoggedIn"));
@@ -65,12 +66,6 @@ const Home = () => {
   const toast = useToast();
 
   const [userData, setUserData] = useState("");
-
-  // Fetches logged in user's data
-  useEffect(() => {
-    getProfile({ setUserData });
-  }, [userData]);
-
   const [tableData, setTableData] = useState<Itable[]>([]);
 
   // Not to be confused with 'setServiceOrder'
@@ -109,9 +104,6 @@ const Home = () => {
   // We want to get the Status Desc from the last object element of this array
   let GSPNStatusGetLastElement = GSPNStatus?.slice(-1);
 
-  // Setting the user to email user is logged in with
-  let user = userData;
-
   // Repairshpr states start here
   const [repairServiceOrder, setRepairServiceOrder] = useState<
     string | number | undefined
@@ -148,6 +140,35 @@ const Home = () => {
   const [repairDepartment, setRepairDepartment] = useState("HHP");
   const [repairAPILoading, setRepairAPILoading] = useState(true);
 
+  // Fetches logged in user's data
+  useEffect(() => {
+    getProfile({ setUserData });
+
+    fetchDataCombinedData({ setTableData });
+    // Gives data from repairshpr based on ticket
+    getRepair({
+      searchTicket,
+      setRepairFault,
+      setRepairCreatedDate,
+      setRepairCreatedTime,
+      setRepairEngineerAssignDate,
+      setRepairEngineerAssignTime,
+      setRepairImei,
+      setRepairServiceOrder,
+      setRepairTicket,
+      setRepairEngineerAnalysis,
+      setRepairDepartment,
+      setRepairAPILoading,
+    });
+    getTicketNumberOnJobAdd({
+      searchServiceOrder,
+      setTicket,
+    });
+  }, [userData, searchServiceOrder, searchTicket]);
+
+  // Setting the user to email user is logged in with
+  let user = userData;
+
   // For the repair API
   // Setting the user to email user is logged in with
   let repairUser = userData;
@@ -167,43 +188,13 @@ const Home = () => {
     setGSPNStatus,
   });
 
-  // Fetches combined data
-  useEffect(() => {
-    fetchDataCombinedData({ setTableData });
-  }, []);
-
-  // Gives data from repairshpr based on ticket
-  useEffect(() => {
-    getRepair({
-      searchTicket,
-      setRepairFault,
-      setRepairCreatedDate,
-      setRepairCreatedTime,
-      setRepairEngineerAssignDate,
-      setRepairEngineerAssignTime,
-      setRepairImei,
-      setRepairServiceOrder,
-      setRepairTicket,
-      setRepairEngineerAnalysis,
-      setRepairDepartment,
-      setRepairAPILoading,
-    });
-  }, [searchTicket]);
-
-  useEffect(() => {
-    getTicketNumberOnJobAdd({
-      searchServiceOrder,
-      setTicket,
-    });
-  }, [searchServiceOrder]);
-
   // const user = session?.user?.email;
 
   let dateAdded = new Date();
 
   // This posts from the GSPN data
 
-  const postData = async (e: React.SyntheticEvent) => {
+  const postData = useCallback(async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const postThisInfo = {
       service_order,
@@ -226,7 +217,7 @@ const Home = () => {
       dateAdded,
     };
     // console.log(postThisInfo);
-    let regexNumber = /^[0-9]+$/;
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
       {
@@ -236,35 +227,7 @@ const Home = () => {
         body: JSON.stringify(postThisInfo),
       }
     );
-    if (
-      searchServiceOrder.length < 10 ||
-      searchServiceOrder.length < 0 ||
-      searchServiceOrder.length === 0
-    ) {
-      setManagementModalState({
-        open: false,
-        view: "/",
-      });
-      toast({
-        title: "Job failed.",
-        description: "Not enough characters.",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-    } else if (!searchServiceOrder.match(regexNumber)) {
-      setManagementModalState({
-        open: false,
-        view: "/",
-      });
-      toast({
-        title: "Job failed.",
-        description: "Only enter numeric characters.",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-    } else if (!response.ok) {
+    if (!response.ok) {
       setManagementModalState({
         open: false,
         view: "/",
@@ -308,10 +271,9 @@ const Home = () => {
       .then((res) => res.json())
       .then((data) => {});
     // console.log("data2", data)
-  };
-
+  }, []);
   // Post repair data
-  const postRepairData = async (e: React.SyntheticEvent) => {
+  const postRepairData = useCallback(async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const postThisInfo = {
       repairServiceOrder,
@@ -386,13 +348,16 @@ const Home = () => {
       .then((data) => {
         // console.log("data2", data);
       });
-  };
+  }, []);
 
   // Redirects user to the edit table page
-  const handleUpdate = (e: React.SyntheticEvent, id: string | number) => {
-    e.stopPropagation();
-    router.push(`/edit/${id}`);
-  };
+  const handleUpdate = useCallback(
+    (e: React.SyntheticEvent, id: string | number) => {
+      e.stopPropagation();
+      router.push(`/edit/${id}`);
+    },
+    []
+  );
 
   // Table contents
 

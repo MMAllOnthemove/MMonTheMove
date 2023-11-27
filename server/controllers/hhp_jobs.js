@@ -171,7 +171,7 @@ const postJobs = async (req, res) => {
       res.status(201).json("Job added, thank you!");
     }
   } catch (err) {
-    // console.log("Create task error: ", err);
+    console.log("Create task error: ", err);
   }
 };
 
@@ -227,7 +227,7 @@ const updateJobclaimsGSPNStatus = async (req, res) => {
     );
     res.status(201).send(editQuery.rows);
   } catch (error) {
-    // console.log(error);
+    console.log("update claims", error);
   }
 };
 
