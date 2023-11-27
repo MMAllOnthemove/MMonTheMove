@@ -3,7 +3,7 @@ import { useToast } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSetRecoilState } from "recoil";
 
 // Custom imports
@@ -48,12 +48,6 @@ function Reports() {
   // Fetches logged in user's data
   useEffect(() => {
     getProfile({ setUserData });
-  }, [userData]);
-
-  // Chakra ui toast
-  const toast = useToast();
-
-  useEffect(() => {
     postBookingAgentsJobs({
       searchServiceOrder,
       setCreatedDate,
@@ -61,9 +55,13 @@ function Reports() {
       setWarranty,
       setServiceOrder,
     });
-  }, [searchServiceOrder]);
+    getBookingAgentJobs({ setGetBookingAgentJobsData });
+  }, [userData, searchServiceOrder]);
 
-  const postData = async (e: React.SyntheticEvent) => {
+  // Chakra ui toast
+  const toast = useToast();
+
+  const postData = useCallback(async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const postThisInfo = {
       serviceOrder,
@@ -103,9 +101,6 @@ function Reports() {
       getBookingAgentJobs({ setGetBookingAgentJobsData });
       // return json;
     }
-  };
-  useEffect(() => {
-    getBookingAgentJobs({ setGetBookingAgentJobsData });
   }, []);
 
   return (

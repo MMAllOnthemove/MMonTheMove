@@ -52,11 +52,10 @@ function PartsEdit() {
   // Fetches logged in user's data
   useEffect(() => {
     getProfile({ setUserData });
-  }, [userData]);
-
-  useEffect(() => {
     getThisJobsData();
-  }, [id]);
+    getThisJobsDataHistory();
+    getPartsJobHistory;
+  }, [userData, id]);
 
   const getThisJobsData = useCallback(async () => {
     await fetch(
@@ -81,10 +80,6 @@ function PartsEdit() {
       });
   }, []);
 
-  useEffect(() => {
-    getThisJobsDataHistory();
-  }, [getPartsJobHistory]);
-
   const getThisJobsDataHistory = useCallback(async () => {
     await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/parts/history/get`,
@@ -99,7 +94,8 @@ function PartsEdit() {
   }, []);
 
   let dateModified = new Date();
-  const updateData = async (e: any) => {
+
+  const updateData = useCallback(async (e: any) => {
     e.preventDefault();
     router.push("/parts");
     toast({
@@ -173,7 +169,7 @@ function PartsEdit() {
       .then((data) => {
         //
       });
-  };
+  }, []);
 
   async function deleteData() {
     router.push("/parts");

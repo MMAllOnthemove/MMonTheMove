@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, memo, useMemo } from "react";
 import { useSetRecoilState } from "recoil";
 
 // Custom imports
@@ -42,53 +42,47 @@ const Pending = () => {
   // Fetches logged in user's data
   useEffect(() => {
     getProfile({ setUserData });
-  }, [userData]);
+    fetchDataCombinedData();
+    countJobsApprovedAndRejected();
+  }, [userData, fetchJobsApprovedAndRejected]);
 
   // Repair and gspn combined data
-  const fetchDataCombinedData = useCallback(() => {
-    async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
-          {
-            method: "GET",
-          }
-        );
-        const data = await response.json();
-        setFetchAlldata(data);
-      } catch (error) {
-        // console.log("Error", error);
-      }
-    };
-  }, []);
+  const fetchDataCombinedData = async () => {
+    // console.log("fetchDataCombinedData render");
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
+        {
+          method: "GET",
+          cache: "default",
+        }
+      );
+      const data = await response.json();
+      setFetchAlldata(data);
+    } catch (error) {
+      // console.log("Error", error);
+    }
+  };
 
-  const countJobsApprovedAndRejected = useCallback(() => {
-    async () => {
-      // Get these from the history table
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/units/history/get`,
-          {
-            method: "GET",
-          }
-        );
-        const data = await response.json();
-        // console.log(data.length);
-        // console.log(data);
-        setFetchJobsApprovedAndRejected(data);
-      } catch (error) {
-        // console.log("Error", error);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    countJobsApprovedAndRejected();
-  }, [fetchJobsApprovedAndRejected]);
-
-  useEffect(() => {
-    fetchDataCombinedData();
-  }, []);
+  const countJobsApprovedAndRejected = async () => {
+    // Get these from the history table
+    // console.log("countJobsApprovedAndRejected render");
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/units/history/get`,
+        {
+          method: "GET",
+          cache: "default",
+        }
+      );
+      const data = await response.json();
+      // console.log(data.length);
+      // console.log(data);
+      setFetchJobsApprovedAndRejected(data);
+    } catch (error) {
+      // console.log("Error", error);
+    }
+  };
 
   return (
     <>
@@ -101,13 +95,13 @@ const Pending = () => {
           Pending status breakdown
         </h1>
 
-        <section className="container mx-auto stat_cards max-w-6xl py-4">
+        <section className="container mx-auto stat_cards max-w-6xl py-4 px-3 lg:px-0">
           {!userData ? (
             <NotLoggedIn />
           ) : (
             <>
-              <div className="breadcrumb_and_date_filter flex items-center justify-between">
-                <div className="bg-white p-4 flex items-center flex-wrap  dark:bg-[#15202B] dark:border dark:border-[#eee]">
+              <div className="breadcrumb_and_date_filter flex items-center flex-col justify-between lg:flex-row">
+                <div className="bg-white p-4 flex items-center flex-wrap dark:bg-[#15202B] dark:border dark:border-[#eee]">
                   <nav aria-label="breadcrumb">
                     <ol className="flex leading-none text-blue-500 divide-x">
                       <li className="pr-4">
@@ -153,40 +147,39 @@ const Pending = () => {
                     </ol>
                   </nav>
                 </div>
-                <div className="date_input">
-                  <div className="flex gap-3 items-center">
-                    <span>
-                      <label htmlFor="dateFrom" className="sr-only">
-                        Date from
-                      </label>
-                      <input
-                        type="date"
-                        name="dateFrom"
-                        min={minDate}
-                        max={today}
-                        value={dateFrom}
-                        onChange={(e) => setDateFrom(e.target.value)}
-                        className="mb-2 cursor-pointer bg-white dark:bg-[#22303C] dark:text-[#eee] dark:accent-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
-                        id="dateFrom"
-                      />
-                    </span>
-                    <span className="">-</span>
-                    <span>
-                      <label htmlFor="dateTo" className="sr-only">
-                        Date to
-                      </label>
-                      <input
-                        type="date"
-                        name="dateTo"
-                        min={minDate}
-                        max={today}
-                        value={dateTo}
-                        onChange={(e) => setDateTo(e.target.value)}
-                        className="mb-2 cursor-pointer bg-white dark:bg-[#22303C] dark:text-[#eee] dark:accent-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
-                        id="dateTo"
-                      />
-                    </span>
-                  </div>
+
+                <div className="flex gap-3 items-center">
+                  <span>
+                    <label htmlFor="dateFrom" className="sr-only">
+                      Date from
+                    </label>
+                    <input
+                      type="date"
+                      name="dateFrom"
+                      min={minDate}
+                      max={today}
+                      value={dateFrom}
+                      onChange={(e) => setDateFrom(e.target.value)}
+                      className="mb-2 cursor-pointer bg-white dark:bg-[#22303C] dark:text-[#eee] dark:accent-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                      id="dateFrom"
+                    />
+                  </span>
+                  <span className="">-</span>
+                  <span>
+                    <label htmlFor="dateTo" className="sr-only">
+                      Date to
+                    </label>
+                    <input
+                      type="date"
+                      name="dateTo"
+                      min={minDate}
+                      max={today}
+                      value={dateTo}
+                      onChange={(e) => setDateTo(e.target.value)}
+                      className="mb-2 cursor-pointer bg-white dark:bg-[#22303C] dark:text-[#eee] dark:accent-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                      id="dateTo"
+                    />
+                  </span>
                 </div>
               </div>
 

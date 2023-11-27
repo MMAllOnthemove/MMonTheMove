@@ -52,7 +52,12 @@ const EditRow = () => {
   // Fetches logged in user's data
   useEffect(() => {
     getProfile({ setUserData });
-  }, [userData]);
+    getThis();
+    getSOStatusDescLatest({
+      showServiceOrderNumber,
+      setGSPNStatus,
+    });
+  }, [userData, showServiceOrderNumber]);
 
   const handleQCisCheckedChange = () => {
     setIsQCchecked(!isQCchecked);
@@ -70,10 +75,6 @@ const EditRow = () => {
   const router = useRouter();
   const { id } = router.query;
   const toast = useToast();
-
-  useEffect(() => {
-    getThis();
-  }, []);
 
   const getThis = useCallback(async () => {
     await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/` + id)
@@ -100,17 +101,11 @@ const EditRow = () => {
       });
   }, []);
 
-  useEffect(() => {
-    getSOStatusDescLatest({
-      showServiceOrderNumber,
-      setGSPNStatus,
-    });
-  }, [showServiceOrderNumber]);
   // console.log(status);
 
   let dateModified = new Date();
 
-  async function updateData(e: any) {
+  const updateData = useCallback(async (e: any) => {
     e.preventDefault();
     router.push("/");
     toast({
@@ -191,7 +186,7 @@ const EditRow = () => {
       .then((data) => {
         //
       });
-  }
+  }, []);
 
   async function deleteData() {
     router.push("/");
@@ -562,14 +557,15 @@ const EditRow = () => {
                     />
                   </span>
                 </form>
+                {/* TODO: Comment this out when done */}
                 {/* <span>
-              <Button
-                type="button"
-                className="bg-red-500 w-full  font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center my-3"
-                text="Delete"
-                onClick={deleteData}
-              />
-            </span> */}
+                  <Button
+                    type="button"
+                    className="bg-red-500 w-full  font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center my-3"
+                    text="Delete"
+                    onClick={deleteData}
+                  />
+                </span> */}
               </section>
               <hr />
               <section className="my-4 flex flex-col gap-5 py-4">

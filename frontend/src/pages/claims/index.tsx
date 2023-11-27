@@ -2,7 +2,7 @@
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 // Custom imports
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
@@ -23,20 +23,17 @@ const Claims = () => {
   // Fetches logged in user's data
   useEffect(() => {
     getProfile({ setUserData });
-  }, [userData]);
-
-  useEffect(() => {
     fetchDataCombinedData({ setTableData });
-  }, []);
+  }, [userData]);
 
   let filteredSearch = tableData.filter(
     (item) => item.service_order_no === searchTerm
   );
 
-  const handleUpdate = (e: React.SyntheticEvent, id: any) => {
+  const handleUpdate = useCallback((e: React.SyntheticEvent, id: any) => {
     e.stopPropagation();
     router.push(`/claims/edit/${id}`);
-  };
+  }, []);
 
   return (
     <>

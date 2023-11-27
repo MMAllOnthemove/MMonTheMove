@@ -24,14 +24,11 @@ function EditClaim() {
   // Fetches logged in user's data
   useEffect(() => {
     getProfile({ setUserData });
+    getThis();
   }, [userData]);
 
   const { id } = router.query;
   const toast = useToast();
-
-  useEffect(() => {
-    getThis();
-  }, []);
 
   const getThis = useCallback(async () => {
     await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/` + id)
@@ -42,7 +39,7 @@ function EditClaim() {
       });
   }, []);
 
-  async function updateData(e: any) {
+  const updateData = useCallback(async (e: any) => {
     e.preventDefault();
 
     const putThisInfo = {
@@ -82,8 +79,7 @@ function EditClaim() {
         isClosable: true,
       });
     }
-  }
-
+  }, []);
   return (
     <>
       <main>

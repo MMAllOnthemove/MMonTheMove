@@ -28,11 +28,9 @@ const Dashboard = () => {
   // Fetches logged in user's data
   useEffect(() => {
     getProfile({ setUserData });
-  }, [userData]);
-
-  useEffect(() => {
     fetchDataCombinedData({ setTableData });
-  }, []);
+    countEngineerRepairCompleteAlltimeJobs();
+  }, [userData, engineerUnitsAdded]);
 
   const getEngineers = tableData
     .flat()
@@ -55,7 +53,7 @@ const Dashboard = () => {
   ).length;
 
   // Get the engineers and repaired jobs from api
-  const countEngineerRepairCompleteAlltimeJobs = useCallback(async () => {
+  const countEngineerRepairCompleteAlltimeJobs = async () => {
     await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT}/complete/all-time`,
       {
@@ -68,11 +66,7 @@ const Dashboard = () => {
         // console.log("all-time graph", data);
         setEngineerUnitsAdded(data);
       });
-  }, [engineerUnitsAdded]);
-
-  useEffect(() => {
-    countEngineerRepairCompleteAlltimeJobs();
-  }, []);
+  };
 
   // Sort the count descending
   engineerUnitsAdded.sort((a, b) => b - a);
