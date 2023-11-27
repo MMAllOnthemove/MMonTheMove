@@ -6,10 +6,10 @@ import * as Yup from "yup";
 export const SignupvalidateSchema = Yup.object({
     fullName: Yup.string()
         .required("Fullname is required!")
-        .min(4, "Password must be minimum 4 digits!"),
+        .min(4, "Fullname must be minimum 4 digits!"),
     username: Yup.string()
         .required("Username is required!")
-        .min(4, "Password must be minimum 4 digits!"),
+        .min(4, "Username must be minimum 4 digits!"),
     email: Yup.string()
         .email("Email is invalid!")
         .required("Email is required!"),
