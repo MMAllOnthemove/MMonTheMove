@@ -10,26 +10,24 @@ const NotLoggedIn = dynamic(() => import("@/components/NotLoggedIn"));
 
 // Custom imports
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
-import { getProfile } from "@/functions/getLoggedInUserProfile";
 import { getEngineerJobsByStatusCount } from "@/functions/pendingUnitsFunc";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { CurrentUserContext } from "../../../../context/user";
 import { engineers } from "../../../../public/_data/engineers";
 import { minDate } from "../../../../utils/datemin";
 
 const Engineers = () => {
   const [engineerFilter, setEngineerFilter] = useState("");
   const [tableData, setTableData] = useState<any[]>([]);
-  const [userData, setUserData] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
-
+  const userData = useContext(CurrentUserContext);
   var today = new Date().toISOString().split("T")[0].toString();
 
   // Fetches logged in user's data
   useEffect(() => {
-    getProfile({ setUserData });
     fetchDataCombinedData({ setTableData });
-  }, [userData]);
+  }, []);
 
   return (
     <>

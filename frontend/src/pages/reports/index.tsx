@@ -3,15 +3,15 @@ import { useToast } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useSetRecoilState } from "recoil";
 
 // Custom imports
 import { bookingsReportModalState } from "@/atoms/bookingsReport";
 import { bookingAgentFunc, bookingAgentFuncTotal } from "@/components/Reports";
 import { getBookingAgentJobs } from "@/functions/getCombinedFlatData";
-import { getProfile } from "@/functions/getLoggedInUserProfile";
 import { postBookingAgentsJobs } from "@/functions/ipass_api";
+import { CurrentUserContext } from "../../../context/user";
 import { bookingAgents } from "../../../public/_data/booking_agents";
 import { minDate } from "../../../utils/datemin";
 
@@ -39,15 +39,15 @@ function Reports() {
 
   const [dateFrom, setDateFrom] = useState<string | number | Date | any>("");
   const [dateTo, setDateTo] = useState<string | number | Date | any>("");
-  const [userData, setUserData] = useState("");
 
   var today = new Date().toISOString().split("T")[0].toString();
   var addTwoMoreDays = new Date().getDate() + 2; // does not work
   const router = useRouter();
 
   // Fetches logged in user's data
+  const userData = useContext(CurrentUserContext);
+
   useEffect(() => {
-    getProfile({ setUserData });
     postBookingAgentsJobs({
       searchServiceOrder,
       setCreatedDate,
@@ -56,12 +56,12 @@ function Reports() {
       setServiceOrder,
     });
     getBookingAgentJobs({ setGetBookingAgentJobsData });
-  }, [userData, searchServiceOrder]);
+  }, [searchServiceOrder]);
 
   // Chakra ui toast
   const toast = useToast();
 
-  const postData = useCallback(async (e: React.SyntheticEvent) => {
+  const postData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const postThisInfo = {
       serviceOrder,
@@ -101,7 +101,7 @@ function Reports() {
       getBookingAgentJobs({ setGetBookingAgentJobsData });
       // return json;
     }
-  }, []);
+  };
 
   return (
     <>

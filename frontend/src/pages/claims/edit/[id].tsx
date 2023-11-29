@@ -2,10 +2,10 @@
 import { useToast } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 
 // Custom imports
-import { getProfile } from "@/functions/getLoggedInUserProfile";
+import { CurrentUserContext } from "../../../../context/user";
 
 // Dynamic imports
 const Button = dynamic(() => import("@/components/Buttons"));
@@ -16,16 +16,12 @@ function EditClaim() {
   // We just show them and make their inputs disabled
   const [showServiceOrderNumber, setShowServiceOrderNumber] = useState("");
   const [claimsGSPNStatus, setClaimsGSPNStatus] = useState("");
-  const [userData, setUserData] = useState("");
   let dateOfClaim = new Date();
 
   const router = useRouter();
 
   // Fetches logged in user's data
-  useEffect(() => {
-    getProfile({ setUserData });
-    getThis();
-  }, [userData]);
+  const userData = useContext(CurrentUserContext);
 
   const { id } = router.query;
   const toast = useToast();
@@ -39,7 +35,7 @@ function EditClaim() {
       });
   }, []);
 
-  const updateData = useCallback(async (e: any) => {
+  const updateData = async (e: any) => {
     e.preventDefault();
 
     const putThisInfo = {
@@ -79,7 +75,7 @@ function EditClaim() {
         isClosable: true,
       });
     }
-  }, []);
+  };
   return (
     <>
       <main>

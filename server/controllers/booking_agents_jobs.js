@@ -14,8 +14,6 @@ let redisClient;
 
 // Get repair jobs
 const getBookingAgentsJobs = async (req, res) => {
-  let newResults;
-  let isCached = false;
   try {
     const newResults = await pool.query(
       "SELECT DISTINCT booking_agent, id, created_date, service_order_no from booking_agents_jobs"
@@ -61,7 +59,7 @@ const postBookingAgentsJobs = async (req, res) => {
       res.status(200).json("Job added, thank you!");
     }
   } catch (err) {
-    console.log("Create task error: ", err);
+    // console.log("Create task error: ", err);
   }
 };
 

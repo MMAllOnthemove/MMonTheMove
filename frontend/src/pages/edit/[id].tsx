@@ -3,13 +3,14 @@ import { useToast } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 
 // Custom imports
 import { getProfile } from "@/functions/getLoggedInUserProfile";
 import { getSOStatusDescLatest } from "@/functions/ipass_api";
 import UnitFinder from "@/pages/api/UnitFinder";
 import { unitStatus } from "../../../public/_data/statuses";
+import { CurrentUserContext } from "../../../context/user";
 
 // Dynamic imports
 const Button = dynamic(() => import("@/components/Buttons"));
@@ -17,7 +18,7 @@ const Container = dynamic(() => import("@/components/Container"));
 const NotLoggedIn = dynamic(() => import("@/components/NotLoggedIn"));
 
 const EditRow = () => {
-  const [userData, setUserData] = useState("");
+  const userData = useContext(CurrentUserContext);
   // These are already handled in the table but for user experience
   // We just show them and make their inputs disabled
   const [showServiceOrderNumber, setShowServiceOrderNumber] = useState("");
@@ -51,13 +52,12 @@ const EditRow = () => {
 
   // Fetches logged in user's data
   useEffect(() => {
-    getProfile({ setUserData });
     getThis();
     getSOStatusDescLatest({
       showServiceOrderNumber,
       setGSPNStatus,
     });
-  }, [userData, showServiceOrderNumber]);
+  }, [showServiceOrderNumber]);
 
   const handleQCisCheckedChange = () => {
     setIsQCchecked(!isQCchecked);
@@ -105,7 +105,7 @@ const EditRow = () => {
 
   let dateModified = new Date();
 
-  const updateData = useCallback(async (e: any) => {
+  const updateData = async (e: any) => {
     e.preventDefault();
     router.push("/");
     toast({
@@ -186,7 +186,7 @@ const EditRow = () => {
       .then((data) => {
         //
       });
-  }, []);
+  };
 
   async function deleteData() {
     router.push("/");
@@ -558,14 +558,14 @@ const EditRow = () => {
                   </span>
                 </form>
                 {/* TODO: Comment this out when done */}
-                {/* <span>
+                <span>
                   <Button
                     type="button"
                     className="bg-red-500 w-full  font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center my-3"
                     text="Delete"
                     onClick={deleteData}
                   />
-                </span> */}
+                </span>
               </section>
               <hr />
               <section className="my-4 flex flex-col gap-5 py-4">

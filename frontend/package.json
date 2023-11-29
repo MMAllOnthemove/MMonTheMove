@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cypress:open": "cypress open"
   },
   "dependencies": {
     "@chakra-ui/next-js": "^2.1.4",
@@ -50,6 +51,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "cypress": "^12.17.3"
+    "cypress": "^12.17.4"
   }
 }

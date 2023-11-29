@@ -2,11 +2,11 @@
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useContext } from "react";
 
 // Custom imports
 import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
-import { getProfile } from "@/functions/getLoggedInUserProfile";
+import { CurrentUserContext } from "../../../context/user";
 
 // Dynamic imports
 const Navbar = dynamic(() => import("@/components/Navbar"));
@@ -17,12 +17,10 @@ const Claims = () => {
   const [tableData, setTableData] = useState<string[] | any[]>([]);
 
   const router = useRouter();
-
-  const [userData, setUserData] = useState("");
+  const userData = useContext(CurrentUserContext);
 
   // Fetches logged in user's data
   useEffect(() => {
-    getProfile({ setUserData });
     fetchDataCombinedData({ setTableData });
   }, [userData]);
 
@@ -30,10 +28,10 @@ const Claims = () => {
     (item) => item.service_order_no === searchTerm
   );
 
-  const handleUpdate = useCallback((e: React.SyntheticEvent, id: any) => {
+  const handleUpdate = (e: React.SyntheticEvent, id: any) => {
     e.stopPropagation();
     router.push(`/claims/edit/${id}`);
-  }, []);
+  };
 
   return (
     <>

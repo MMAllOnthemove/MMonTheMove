@@ -5,7 +5,7 @@ const logoutUser = async (req, res) => {
     res.clearCookie("token");
     res.redirect("/");
   } catch (e) {
-    console.log("Logout error", e);
+    // console.log("Logout error", e);
   }
 };
 module.exports = { logoutUser };
