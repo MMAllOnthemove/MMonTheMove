@@ -3,8 +3,6 @@ require("dotenv").config();
 const pool = require("../db");
 
 function userVerification(req, res, next) {
-  // Get token from header
-  // const token = req.header("jwt_token");
   const token = req.cookies.token;
   if (!token) {
     return res.json({ status: false });

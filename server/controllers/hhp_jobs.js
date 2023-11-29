@@ -136,7 +136,7 @@ const postJobs = async (req, res) => {
   } = req.body;
   try {
     const findIfExists = await pool.query(
-      "SELECT id from units WHERE service_order_no = $1",
+      "SELECT service_order_no from units WHERE service_order_no = $1",
       [service_order]
     );
     if (findIfExists.rowCount > 0) {
@@ -144,7 +144,7 @@ const postJobs = async (req, res) => {
       res.status(400).json("Service order already exists!");
       console.log("Cell exists");
     } else {
-      const results = await pool.query(
+      await pool.query(
         "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket, department, job_added_by, gspn_status, date_added) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) returning *",
         [
           service_order,
@@ -167,7 +167,6 @@ const postJobs = async (req, res) => {
           dateAdded,
         ]
       );
-
       res.status(201).json("Job added, thank you!");
     }
   } catch (err) {
@@ -225,7 +224,7 @@ const updateJobclaimsGSPNStatus = async (req, res) => {
       "UPDATE units SET gspn_status = $1, claim_by = $2, claim_date = $3 WHERE id = $4 returning *",
       [claimsGSPNStatus, userData, dateOfClaim, id]
     );
-    res.status(201).send(editQuery.rows);
+    // res.status(201).send(editQuery.rows);
   } catch (error) {
     console.log("update claims", error);
   }

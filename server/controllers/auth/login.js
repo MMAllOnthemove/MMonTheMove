@@ -1,9 +1,7 @@
 const express = require("express");
-const router = express.Router();
 const bcrypt = require("bcrypt");
 const pool = require("../../db");
 const jwtGenerator = require("../../utils/jwt-helpers");
-const jwt = require("jsonwebtoken");
 
 //authorizeentication
 
@@ -40,7 +38,7 @@ const loginUser = async (req, res) => {
     });
     return res.json({ jwtToken });
   } catch (err) {
-    console.log("loginUser", err);
+    // console.log("loginUser", err);
     res.status(500).json("Server error");
   }
 };

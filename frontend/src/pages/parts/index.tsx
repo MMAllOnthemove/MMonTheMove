@@ -12,16 +12,16 @@ import {
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 // External imports
 import { partsModalState } from "@/atoms/partsModalAtom";
 import PartsModalTabOneContent from "@/components/PartsTable/PartsModalTableContent";
 import { columns } from "@/components/PartsTable/PartsTableColumns";
 import Pagination from "@/components/Table/Pagination";
-import { getProfile } from "@/functions/getLoggedInUserProfile";
 import { getSOInfoAllFunctionForParts } from "@/functions/ipass_api";
 import { useSetRecoilState } from "recoil";
+import { CurrentUserContext } from "../../../context/user";
 
 // Dynamic imports
 const Button = dynamic(() => import("@/components/Buttons"));
@@ -37,14 +37,10 @@ const ManagementSearchForm = dynamic(
 const NotLoggedIn = dynamic(() => import("@/components/NotLoggedIn"));
 
 const Parts = () => {
-  const [userData, setUserData] = useState("");
+  // Fetches logged in user's data
+  const userData = useContext(CurrentUserContext);
 
   let dispatchBy = userData;
-
-  // Fetches logged in user's data
-  useEffect(() => {
-    getProfile({ setUserData });
-  }, [userData]);
 
   const [tableData, setTableData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);

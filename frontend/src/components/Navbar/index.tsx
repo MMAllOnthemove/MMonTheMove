@@ -5,12 +5,13 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 // Custom imports
 import { hhpNavItems, partsNavItems } from "../../../public/_data/navbar";
 import logo from "../../../public/mmlogo.png";
 import { logoutUserFunction } from "@/functions/getLoggedInUserProfile";
+import { CurrentUserContext } from "../../../context/user";
 
 // Dynamic imports
 const Button = dynamic(() => import("../Buttons"));
@@ -28,33 +29,9 @@ const Navbar = () => {
   const router = useRouter();
   const [hhpSubMenuOpen, setHHPSubMenuOpen] = useState(false);
   const [partsSubMenuOpen, sePartsSubMenuOpen] = useState(false);
-  const [userData, setUserData] = useState("");
+  // const [userData, setUserData] = useState("");
 
-  const getProfile = async () => {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({}),
-        }
-      );
-
-      const getUserData = await res.json();
-
-      setUserData(getUserData.email);
-    } catch (err) {
-      // console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    getProfile();
-  }, [userData]);
+  const userData = useContext(CurrentUserContext);
 
   const onSignout = async () => {
     // removeCookie("token");

@@ -1,6 +1,5 @@
 const pool = require("../db");
 const redis = require("redis");
-const Yup = require("yup");
 
 let redisClient;
 
@@ -14,8 +13,6 @@ let redisClient;
 
 // Get repair jobs
 const getBookingAgentsJobs = async (req, res) => {
-  let newResults;
-  let isCached = false;
   try {
     const newResults = await pool.query(
       "SELECT DISTINCT booking_agent, id, created_date, service_order_no from booking_agents_jobs"
@@ -27,8 +24,6 @@ const getBookingAgentsJobs = async (req, res) => {
 };
 
 const postBookingAgentsJobs = async (req, res) => {
-  let newResults;
-  let isCached = false;
   const {
     serviceOrder,
     createdDate,
@@ -47,7 +42,7 @@ const postBookingAgentsJobs = async (req, res) => {
       res.status(400).json("Job already exists! or no agent name");
       // console.log("Cell exists or no agent name");
     } else {
-      const newResults = await pool.query(
+      await pool.query(
         "INSERT INTO booking_agents_jobs (service_order_no, created_date, created_time, warranty, booking_agent, added_by) values ($1, $2, $3, $4, $5, $6) returning *",
         [
           serviceOrder,
@@ -61,7 +56,7 @@ const postBookingAgentsJobs = async (req, res) => {
       res.status(200).json("Job added, thank you!");
     }
   } catch (err) {
-    console.log("Create task error: ", err);
+    // console.log("Create task error: ", err);
   }
 };
 
