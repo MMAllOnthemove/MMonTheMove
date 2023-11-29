@@ -1,5 +1,5 @@
+const compression = require("compression");
 const express = require("express");
-const router = express.Router();
 const app = express();
 const helmet = require("helmet");
 const cors = require("cors");
@@ -31,6 +31,7 @@ app.use(
 
 app.use(cookieParser());
 app.use(express.json());
+app.use(compression());
 // app.use(sessionMiddleware);
 app.set("trust proxy", 1); // trust first proxy
 app.disable("x-powered-by");

@@ -1,13 +1,15 @@
-import Dashboard from "@/pages/dashboard";
-import Home from "@/pages";
+import Signup from "@/components/Signup";
+import Auth from "@/pages/auth";
+import React from "react";
+import { useRouter } from "next/router";
+import Tests from "@/pages/tests";
+import Button from "@/components/Buttons";
+import NotLoggedIn from "@/components/NotLoggedIn";
 
-describe("<Home/>", () => {
-  it("has Page title", () => {
-    cy.mount(<Home />);
-    cy.get("input").should(
-      "have.attr",
-      "placeholder",
-      "Subscribe to our newsletter"
-    );
+describe("Auth comp", () => {
+  it("mounts", () => {
+    cy.mount(<NotLoggedIn />);
+
+    cy.contains("button");
   });
 });

@@ -3,18 +3,18 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState, memo, useMemo } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useSetRecoilState } from "recoil";
 
 // Custom imports
 import { unitsPendingReportModalState } from "@/atoms/unitspendingAtom";
-import { getProfile } from "@/functions/getLoggedInUserProfile";
 import {
   getFilteredBookedInJobs,
   getFilteredJobsByStatusCount,
   getMappedJobsByApprovedOrRejectedStatusCount,
 } from "@/functions/pendingUnitsFunc";
 import { minDate } from "../../../../../utils/datemin";
+import { CurrentUserContext } from "../../../../../context/user";
 
 // Dynamic imports
 const ModalManagement = dynamic(
@@ -31,7 +31,7 @@ const Pending = () => {
   );
   const [fetchJobsApprovedAndRejected, setFetchJobsApprovedAndRejected] =
     useState<any[]>([]);
-  const [userData, setUserData] = useState("");
+  const userData = useContext(CurrentUserContext);
 
   const router = useRouter();
   var today = new Date().toISOString().split("T")[0].toString();
@@ -41,10 +41,9 @@ const Pending = () => {
 
   // Fetches logged in user's data
   useEffect(() => {
-    getProfile({ setUserData });
     fetchDataCombinedData();
     countJobsApprovedAndRejected();
-  }, [userData, fetchJobsApprovedAndRejected]);
+  }, [fetchJobsApprovedAndRejected]);
 
   // Repair and gspn combined data
   const fetchDataCombinedData = async () => {

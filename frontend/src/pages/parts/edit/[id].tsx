@@ -3,11 +3,11 @@ import { useToast } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 
 // Custom imports
-import { getProfile } from "@/functions/getLoggedInUserProfile";
 import UnitFinder from "@/pages/api/UnitFinder";
+import { CurrentUserContext } from "../../../../context/user";
 import { partsStatus } from "../../../../public/_data/statuses";
 
 // Dynamic imports
@@ -16,7 +16,7 @@ const Container = dynamic(() => import("@/components/Container"));
 const NotLoggedIn = dynamic(() => import("@/components/NotLoggedIn"));
 
 function PartsEdit() {
-  const [userData, setUserData] = useState("");
+  const userData = useContext(CurrentUserContext);
   const [getPartsJobHistory, setGetPartsJobHistory] = useState<
     string[] | any[]
   >([]);
@@ -51,11 +51,10 @@ function PartsEdit() {
 
   // Fetches logged in user's data
   useEffect(() => {
-    getProfile({ setUserData });
     getThisJobsData();
     getThisJobsDataHistory();
     getPartsJobHistory;
-  }, [userData, id]);
+  }, [id]);
 
   const getThisJobsData = useCallback(async () => {
     await fetch(
@@ -95,7 +94,7 @@ function PartsEdit() {
 
   let dateModified = new Date();
 
-  const updateData = useCallback(async (e: any) => {
+  const updateData = async (e: any) => {
     e.preventDefault();
     router.push("/parts");
     toast({
@@ -169,7 +168,7 @@ function PartsEdit() {
       .then((data) => {
         //
       });
-  }, []);
+  };
 
   async function deleteData() {
     router.push("/parts");

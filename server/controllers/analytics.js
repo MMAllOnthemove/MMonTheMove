@@ -1,8 +1,5 @@
-const express = require("express");
-const router = express.Router();
 const pool = require("../db");
 const redis = require("redis");
-const limiter = require("../controllers/rateLimiter");
 
 let redisClient;
 

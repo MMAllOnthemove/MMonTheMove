@@ -16,9 +16,7 @@ let redisClient;
 // Post feedback to database
 router.post("/", async (req, res) => {
   try {
-    const { rows } = await pool.query(
-      "SELECT * FROM feedback ORDER BY date_created"
-    );
+    await pool.query("SELECT * FROM feedback ORDER BY date_created");
     // console.log(rows[0]);
   } catch (err) {
     // console.log(err);

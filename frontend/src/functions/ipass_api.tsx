@@ -7,9 +7,22 @@ import {
   IgetSOInfoAllParts,
 } from "../../utils/interfaces";
 
-export async function getSOInfoAllFunction(props: IgetSOInfoAll) {
+export async function getSOInfoAllFunction({
+  searchServiceOrder,
+  setServiceOrder,
+  setCreatedDate,
+  setCreatedTime,
+  setModel,
+  setWarranty,
+  setFault,
+  setImei,
+  setSerialNumber,
+  setEngineerAssignDate,
+  setEngineerAssignTime,
+  setGSPNStatus,
+}: IgetSOInfoAll) {
   const options = {
-    IvSvcOrderNo: props.searchServiceOrder,
+    IvSvcOrderNo: searchServiceOrder,
     IsCommonHeader: {
       Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
       AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
@@ -35,17 +48,17 @@ export async function getSOInfoAllFunction(props: IgetSOInfoAll) {
 
   const data = await response.json();
 
-  props.setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
-  props.setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
-  props.setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
-  props.setModel(data?.Return?.EsModelInfo?.Model);
-  props.setWarranty(data?.Return?.EsModelInfo?.WtyType);
-  props.setFault(data?.Return?.EsModelInfo?.DefectDesc);
-  props.setImei(data?.Return?.EsModelInfo?.IMEI);
-  props.setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
-  props.setEngineerAssignDate(data?.Return?.EsScheInfo?.EngrAssignDate);
-  props.setEngineerAssignTime(data?.Return?.EsScheInfo?.EngrAssignTime);
-  props.setGSPNStatus(data?.EtFlowInfo?.results?.map((x: any) => x.StatusDesc));
+  setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
+  setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
+  setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
+  setModel(data?.Return?.EsModelInfo?.Model);
+  setWarranty(data?.Return?.EsModelInfo?.WtyType);
+  setFault(data?.Return?.EsModelInfo?.DefectDesc);
+  setImei(data?.Return?.EsModelInfo?.IMEI);
+  setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
+  setEngineerAssignDate(data?.Return?.EsScheInfo?.EngrAssignDate);
+  setEngineerAssignTime(data?.Return?.EsScheInfo?.EngrAssignTime);
+  setGSPNStatus(data?.EtFlowInfo?.results?.map((x: any) => x.StatusDesc));
 }
 export async function getSOStatusDescLatest(props: IgetSOStatusDescLatest) {
   const options = {
@@ -110,9 +123,15 @@ export async function getPartsInfoFunction(props: IgetPartsInfo) {
   // console.log(data);
 }
 
-export async function postBookingAgentsJobs(props: IpostBookingAgentsJobs) {
+export async function postBookingAgentsJobs({
+  searchServiceOrder,
+  setServiceOrder,
+  setCreatedDate,
+  setCreatedTime,
+  setWarranty,
+}: IpostBookingAgentsJobs) {
   const options = {
-    IvSvcOrderNo: props.searchServiceOrder,
+    IvSvcOrderNo: searchServiceOrder,
     IsCommonHeader: {
       Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
       AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
@@ -137,19 +156,22 @@ export async function postBookingAgentsJobs(props: IpostBookingAgentsJobs) {
   );
 
   const data = await response.json();
-  props.setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
-  props.setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
-  props.setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
-  props.setWarranty(data?.Return?.EsModelInfo?.WtyType);
+  setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
+  setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
+  setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
+  setWarranty(data?.Return?.EsModelInfo?.WtyType);
 }
 
-export async function getStockOverviewInfo(props: IgetStockOverviewInfo) {
+export async function getStockOverviewInfo({
+  debouncedSearch,
+  setStockData,
+}: IgetStockOverviewInfo) {
   const options = {
     IvCompany: `${process.env.NEXT_PUBLIC_COMPANY}`,
     IvLanguage: `${process.env.NEXT_PUBLIC_LANG}`,
     IvAscAcctno: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
     IvAscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
-    IvPartsCode: props.debouncedSearch,
+    IvPartsCode: debouncedSearch,
     IsCommonHeader: {
       Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
       AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
@@ -174,13 +196,21 @@ export async function getStockOverviewInfo(props: IgetStockOverviewInfo) {
   })
     .then((response) => response.json())
     .then((data) => {
-      props.setStockData(data);
+      setStockData(data);
       // console.log(data);
     });
 }
-export async function getSOInfoAllFunctionForParts(props: IgetSOInfoAllParts) {
+export async function getSOInfoAllFunctionForParts({
+  searchServiceOrder,
+  setServiceOrder,
+  setModel,
+  setWarranty,
+  setFault,
+  setImei,
+  setSerialNumber,
+}: IgetSOInfoAllParts) {
   const options = {
-    IvSvcOrderNo: props.searchServiceOrder,
+    IvSvcOrderNo: searchServiceOrder,
     IsCommonHeader: {
       Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
       AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
@@ -206,10 +236,10 @@ export async function getSOInfoAllFunctionForParts(props: IgetSOInfoAllParts) {
 
   const data = await response.json();
 
-  props.setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
-  props.setModel(data?.Return?.EsModelInfo?.Model);
-  props.setWarranty(data?.Return?.EsModelInfo?.WtyType);
-  props.setFault(data?.Return?.EsModelInfo?.DefectDesc);
-  props.setImei(data?.Return?.EsModelInfo?.IMEI);
-  props.setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
+  setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
+  setModel(data?.Return?.EsModelInfo?.Model);
+  setWarranty(data?.Return?.EsModelInfo?.WtyType);
+  setFault(data?.Return?.EsModelInfo?.DefectDesc);
+  setImei(data?.Return?.EsModelInfo?.IMEI);
+  setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
 }
