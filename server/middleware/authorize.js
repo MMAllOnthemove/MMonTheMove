@@ -4,6 +4,7 @@ const pool = require("../db");
 
 function userVerification(req, res, next) {
   const token = req.cookies.token;
+  console.log("token", token);
   if (!token) {
     return res.json({ status: false });
   }

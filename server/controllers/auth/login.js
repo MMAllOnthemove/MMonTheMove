@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const pool = require("../../db");
 const jwtGenerator = require("../../utils/jwt-helpers");
 
-//authorizeentication
+//authentication
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -38,7 +38,7 @@ const loginUser = async (req, res) => {
     });
     return res.json({ jwtToken });
   } catch (err) {
-    // console.log("loginUser", err);
+    console.log("loginUser", err);
     res.status(500).json("Server error");
   }
 };
