@@ -1,0 +1,418 @@
+// External imports
+import { useToast } from "@chakra-ui/react";
+import {
+  SortingState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import dynamic from "next/dynamic";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useContext, useEffect, useState } from "react";
+import { dtvAddTaskModalState } from "@/atoms/dtv-add-task-modal-atom";
+import { useSetRecoilState } from "recoil";
+
+// Custom imports
+import Pagination from "@/components/Table/Pagination";
+import TableBody from "@/components/Table/TableBody";
+
+import { columns } from "@/components/DTV/table-columns";
+import { CurrentUserContext } from "../../../../context/user";
+import ManagementSearchForm from "@/components/Table/managementSearchForm";
+import useDebounce from "@/components/useDebounce";
+import useFetchRepairJobs from "@/hooks/useFetchRepairJobs";
+import {
+  getPartsInfoForServiceOrder,
+  getSOInfoAllFunctionDtv,
+} from "@/functions/ipass_api";
+
+// Dynamic imports
+const Container = dynamic(() => import("@/components/Container"), {
+  loading: () => <p>Loading wrapper...</p>,
+});
+const Navbar = dynamic(() => import("@/components/Navbar"), {
+  loading: () => <p>Loading Navbar...</p>,
+});
+const ToTopButton = dynamic(() => import("@/components/ToTopButton"), {
+  loading: () => <p>Loading ToTopButton...</p>,
+});
+const Button = dynamic(() => import("@/components/Buttons"), {
+  loading: () => <p>Loading button...</p>,
+});
+const ModalDtv = dynamic(() => import("@/components/Modals/dtvAddTaskModal"));
+const DtvModalAddTaskContent = dynamic(
+  () => import("@/components/DTV/DtvModalTabOneContent")
+);
+
+const HomeComponent = () => {
+  const router = useRouter();
+  // Chakra ui toast
+  const toast = useToast();
+  const userData = useContext(CurrentUserContext);
+
+  const [tableData, setTableData] = useState<any[]>([]);
+
+  // Table sorting
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  // Table filtering
+  const [filtering, setFiltering] = useState("");
+
+  const [searchServiceOrder, setSearchServiceOrder] = useState("");
+  const [ticket, setTicket] = useState("");
+  const [ticketNumberId, setTicketNumberId] = useState<string | number | any>(
+    ""
+  );
+  const jobStatus = true; // when adding a job it's automatically true
+  const [engineerPhoneNumber, setEngineerPhoneNumber] = useState("");
+
+  // GSPN
+  const [acknowledgeDate, setAcknowledgeDate] = useState("");
+  const [acknowledgeTime, setAcknowledgeTime] = useState("");
+  const [engineerAssignDate, setEngineerAssignDate] = useState("");
+  const [engineerAssignTime, setEngineerAssignTime] = useState("");
+  const [engineer, setEngineer] = useState("");
+  const [model, setModel] = useState("");
+  const [remark, setRemark] = useState("");
+  const [serialNumber, setSerialNumber] = useState("");
+  const [serviceOrder, setServiceOrder] = useState("");
+  const [createdDate, setCreatedDate] = useState("");
+  const [createdTime, setCreatedTime] = useState("");
+  const [warranty, setWarranty] = useState("");
+  const [warrantyRepairType, setWarrantyRepairType] = useState("");
+  const [fault, setFault] = useState("");
+  const [IMEI, setImei] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [customerFirstName, setCustomerFirstName] = useState("");
+  const [customerLastName, setCustomerLastName] = useState("");
+  const [customerStreetAddress, setCustomerStreetAddress] = useState("");
+  const [customerStreetAddressTwo, setCustomerStreetAddressTwo] = useState("");
+  const [customerCity, setCustomerCity] = useState("");
+  const [customerCountry, setCustomerCountry] = useState("");
+  const [customerProvince, setCustomerProvince] = useState("");
+  const [customerDistrict, setCustomerDistrict] = useState("");
+  const [customerHomePhone, setCustomerHomePhone] = useState("");
+  const [customerMobilePhone, setCustomerMobilePhone] = useState("");
+
+  const debouncedTicketSearch = useDebounce(ticket, 500);
+  // TODO: remove this - e.g ticket (99104)
+  const [repairData] = useFetchRepairJobs(
+    `https://allelectronics.repairshopr.com/api/v1/tickets?number=${ticket}`
+  );
+
+  useEffect(() => {
+    if (userData === null || userData === undefined) {
+      router.push("/auth/");
+    }
+    if (repairData !== "") {
+      setTicketNumberId("");
+    } else if (repairData?.length > 0) {
+      setTicketNumberId(repairData?.tickets[0]?.id);
+    }
+  }, [repairData]);
+  // console.log("repairData", repairData?.tickets[0]?.id);
+  // Because the drop down requires both the value and label, we will create it
+
+  // Parts given to job
+  const [partsAssignedForJob, setPartsAssignedForJob] = useState<
+    string | any
+  >();
+
+  const debouncedSearch = useDebounce(searchServiceOrder, 500);
+
+  const setDtvAddTaskModalState = useSetRecoilState(dtvAddTaskModalState);
+
+  // Redirects user to the edit table page
+  const handleUpdate = (e: React.SyntheticEvent, id: string | number) => {
+    e.stopPropagation();
+    router.push(`/department/dtv/edit/${id}`);
+  };
+  const fetchTableData = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_DTV}task/get/`
+      );
+      const data = await response.json();
+      setTableData(data);
+    } catch (error) {
+      // console.log("Error", error);
+    }
+  };
+  useEffect(() => {
+    fetchTableData();
+  }, [tableData]);
+
+  useEffect(() => {
+    getSOInfoAllFunctionDtv({
+      searchServiceOrder,
+      setAcknowledgeDate,
+      setAcknowledgeTime,
+      setEngineerAssignDate,
+      setEngineerAssignTime,
+      setEngineer,
+      setModel,
+      setRemark,
+      setSerialNumber,
+      setServiceOrder,
+      setCreatedDate,
+      setCreatedTime,
+      setWarranty,
+      setWarrantyRepairType,
+      setFault,
+      setImei,
+      setCustomerEmail,
+      setCustomerFirstName,
+      setCustomerLastName,
+      setCustomerStreetAddress,
+      setCustomerStreetAddressTwo,
+      setCustomerCity,
+      setCustomerCountry,
+      setCustomerProvince,
+      setCustomerDistrict,
+      setCustomerHomePhone,
+      setCustomerMobilePhone,
+    });
+    getPartsInfoForServiceOrder({
+      searchServiceOrder,
+      setPartsAssignedForJob,
+    });
+  }, [searchServiceOrder]);
+
+  async function postData(e: React.SyntheticEvent) {
+    e.preventDefault();
+    const dateAdded = new Date();
+    const infoToPost = {
+      ticket,
+      ticketNumberId,
+      acknowledgeDate,
+      acknowledgeTime,
+      engineerAssignDate,
+      engineerAssignTime,
+      engineer,
+      model,
+      remark,
+      serialNumber,
+      serviceOrder,
+      createdDate,
+      createdTime,
+      warranty,
+      warrantyRepairType,
+      fault,
+      IMEI,
+      customerEmail,
+      customerFirstName,
+      customerLastName,
+      customerStreetAddress,
+      customerStreetAddressTwo,
+      customerCity,
+      customerCountry,
+      customerProvince,
+      customerDistrict,
+      customerHomePhone,
+      customerMobilePhone,
+      partsAssignedForJob,
+      dateAdded,
+      jobStatus,
+      engineerPhoneNumber,
+    };
+
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(infoToPost),
+    };
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_DTV}task/create`,
+      requestOptions
+    );
+    if (!response.ok) {
+      setDtvAddTaskModalState({
+        open: false,
+        view: "dtv-add-task",
+      });
+      toast({
+        title: "Task failed.",
+        description: "Task already exists.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else {
+      setDtvAddTaskModalState({
+        open: false,
+        view: "dtv-add-task",
+      });
+      await response.json();
+      toast({
+        title: "Task added.",
+        description: "You've added a task to the table.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+
+      // window.location.reload();
+      fetchTableData();
+    }
+  }
+  // Table contents
+
+  const table = useReactTable({
+    data: tableData,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      sorting: sorting,
+      globalFilter: filtering,
+    },
+    onSortingChange: setSorting,
+    onGlobalFilterChange: setFiltering,
+  });
+
+  return (
+    <>
+      <Head>
+        <title>DTV Management</title>
+        <meta name="robots" content="noindex"></meta>
+        <link rel="shortcut icon" href="/favicon.ico" />
+      </Head>
+      <Navbar />
+
+      <main className="space-between-navbar-and-content">
+        <Container>
+          <section className="flex justify-center pt-5">
+            <h1 className="mb-4 text-3xl font-extrabold text-gray-900 md:text-5xl lg:text-6xl dark:text-[#eee]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
+                DTV
+              </span>{" "}
+              Management.
+            </h1>
+          </section>
+
+          <section className="flex justify-between items-center py-5">
+            <ManagementSearchForm
+              filtering={filtering}
+              setFiltering={(e) => setFiltering(e.target.value)}
+            />
+            <button
+              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer rounded-md p-3 my-2 dark:text-[#eee]"
+              type="button"
+              role="button"
+              onClick={() =>
+                setDtvAddTaskModalState({
+                  open: true,
+                  view: "dtv-add-task",
+                })
+              }
+            >
+              Add job
+            </button>
+            {/* Called the modal here and added a post data prop that posts data on click */}
+            <ModalDtv>
+              <DtvModalAddTaskContent
+                searchServiceOrder={searchServiceOrder}
+                setSearchServiceOrder={(e) =>
+                  setSearchServiceOrder(e.target.value)
+                }
+                warranty={warranty}
+                ticket={ticket}
+                setTicket={(e) => setTicket(e.target.value)}
+                engineer={engineer}
+                postData={postData}
+              />
+            </ModalDtv>
+          </section>
+
+          <div className="max-h-[540px] overflow-y-auto">
+            <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
+              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] text-sm uppercase font-semibold">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <tr key={headerGroup.id} className=" font-semibold">
+                    <th className="px-4 py-3 cursor-pointer  font-semibold">
+                      Action
+                    </th>
+
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <th
+                          key={header.id}
+                          className="px-4 py-3 cursor-pointer  font-semibold"
+                        >
+                          {header.isPlaceholder ? null : (
+                            <div
+                              {...{
+                                className: header.column.getCanSort()
+                                  ? "cursor-pointer select-none"
+                                  : "",
+                                onClick:
+                                  header.column.getToggleSortingHandler(),
+                              }}
+                            >
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                              {{
+                                asc: " ▽",
+                                desc: " △",
+                              }[header.column.getIsSorted() as string] ?? null}
+                            </div>
+                          )}
+                        </th>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </thead>
+
+              <TableBody>
+                {table.getRowModel().rows.map((row: any) => (
+                  <tr
+                    key={row.id}
+                    onDoubleClick={(e) => handleUpdate(e, row.original.id)}
+                    className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
+                  >
+                    <td className="px-4 py-3  font-medium text-sm max-w-full">
+                      <button
+                        type="button"
+                        role="button"
+                        onClick={(e) => handleUpdate(e, row.original.id)}
+                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        Edit
+                      </button>
+                    </td>
+
+                    {row.getVisibleCells().map((cell: any) => (
+                      <td
+                        key={cell.id}
+                        className="px-4 py-3  font-medium text-sm max-w-full"
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </TableBody>
+            </table>
+          </div>
+          <div className="h-2" />
+          <Pagination table={table} />
+          <ToTopButton />
+        </Container>
+      </main>
+    </>
+  );
+};
+
+export default HomeComponent;

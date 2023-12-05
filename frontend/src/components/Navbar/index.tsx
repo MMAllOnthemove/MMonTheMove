@@ -8,7 +8,11 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 
 // Custom imports
-import { hhpNavItems, partsNavItems } from "../../../public/_data/navbar";
+import {
+  dtvNavItems,
+  hhpNavItems,
+  partsNavItems,
+} from "../../../public/_data/navbar";
 import logo from "../../../public/mmlogo.png";
 import { logoutUserFunction } from "@/functions/getLoggedInUserProfile";
 import { CurrentUserContext } from "../../../context/user";
@@ -28,10 +32,13 @@ const Navbar = () => {
   const toast = useToast();
   const router = useRouter();
   const [hhpSubMenuOpen, setHHPSubMenuOpen] = useState(false);
-  const [partsSubMenuOpen, sePartsSubMenuOpen] = useState(false);
+  const [partsSubMenuOpen, setPartsSubMenuOpen] = useState(false);
+  const [dtvSubMenuOpen, setDtvSubMenuOpen] = useState(false);
   // const [userData, setUserData] = useState("");
 
   const userData = useContext(CurrentUserContext);
+
+  // if(loading === true) return <p>Loading</p>
 
   const onSignout = async () => {
     // removeCookie("token");
@@ -168,7 +175,7 @@ const Navbar = () => {
           )}
           <button
             className={`open-submenu-btn dark:text-[#eee] text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
-            onClick={() => sePartsSubMenuOpen(!partsSubMenuOpen)}
+            onClick={() => setPartsSubMenuOpen(!partsSubMenuOpen)}
           >
             <span>Parts</span>
             <span>
@@ -182,6 +189,33 @@ const Navbar = () => {
           {partsSubMenuOpen && (
             <ul className="">
               {partsNavItems.map((item) => (
+                <li key={item?.id}>
+                  <Link
+                    href={item?.pageRoute}
+                    className={`sd-link dark:text-[#eee] dark:hover:dark:text-[#eee]`}
+                  >
+                    {item?.item}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+          <button
+            className={`open-submenu-btn dark:text-[#eee] text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
+            onClick={() => setDtvSubMenuOpen(!dtvSubMenuOpen)}
+          >
+            <span>Dtv</span>
+            <span>
+              {!dtvSubMenuOpen ? (
+                <ChevronDownIcon className="h-6 w-6 text-white dark:text-[#eee]" />
+              ) : (
+                <ChevronUpIcon className="h-6 w-6 text-white dark:text-[#eee]" />
+              )}
+            </span>
+          </button>
+          {dtvSubMenuOpen && (
+            <ul className="">
+              {dtvNavItems.map((item) => (
                 <li key={item?.id}>
                   <Link
                     href={item?.pageRoute}

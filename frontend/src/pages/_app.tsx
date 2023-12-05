@@ -9,6 +9,7 @@ import {
   ICurrentUserContextType,
 } from "../../context/user";
 import { useEffect, useState } from "react";
+import Spinner from "@/components/Spinner";
 
 // Instances of useSession will then have access to the session data and status. The <SessionProvider /> also takes care of keeping the session updated and synced between browser tabs and windows.
 const theme = extendTheme({
@@ -25,8 +26,11 @@ export default function App({
   pageProps: { ...pageProps },
 }: AppProps) {
   const [userData, setUserData] = useState<ICurrentUserContextType>();
+  const [loading, setLoading] = useState(false);
+
   const getProfile = async () => {
     try {
+      // setLoading(true); // Set loading before sending API request
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/`,
         {
@@ -42,16 +46,17 @@ export default function App({
       );
 
       const getUserData = await res.json();
-
       setUserData(getUserData.email);
+      //  setLoading(false); // Stop loading in case of error
     } catch (err) {
       // console.log(err);
     }
   };
-
   useEffect(() => {
     getProfile();
-  }, [userData]);
+  }, []);
+  // TODO: check loading states
+  // if (loading === true) return <p>Loading...</p>;
   return (
     <>
       <RecoilRoot>

@@ -17,7 +17,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const ModalManagement = (props: Props) => {
+const ModalManagement = ({ children }: Props) => {
   //   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalState, setModalState] = useRecoilState(partsModalState);
 
@@ -36,7 +36,7 @@ const ModalManagement = (props: Props) => {
             <h2 className=" text-slate-800">Fields will auto populate</h2>
           </ModalHeader>
           <ModalCloseButton />
-          <ModalBody>{props.children}</ModalBody>
+          <ModalBody>{children}</ModalBody>
 
           {/* <ModalFooter>
             <button

@@ -5,6 +5,7 @@ import {
   IpostBookingAgentsJobs,
   IgetStockOverviewInfo,
   IgetSOInfoAllParts,
+  IgetSOInfoAllDtv,
 } from "../../utils/interfaces";
 
 export async function getSOInfoAllFunction({
@@ -59,6 +60,63 @@ export async function getSOInfoAllFunction({
   setEngineerAssignDate(data?.Return?.EsScheInfo?.EngrAssignDate);
   setEngineerAssignTime(data?.Return?.EsScheInfo?.EngrAssignTime);
   setGSPNStatus(data?.EtFlowInfo?.results?.map((x: any) => x.StatusDesc));
+}
+export async function getSOInfoAllFunctionDtv(props: IgetSOInfoAllDtv) {
+  const options = {
+    IvSvcOrderNo: props.searchServiceOrder,
+    IsCommonHeader: {
+      Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
+      AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
+      Lang: `${process.env.NEXT_PUBLIC_LANG}`,
+      Country: `${process.env.NEXT_PUBLIC_COUNTRY}`,
+      Pac: `${process.env.NEXT_PUBLIC_PAC}`,
+    },
+  };
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_IPAAS_API_GETSOINFOALL}`,
+    {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
+      },
+      body: JSON.stringify(options),
+    }
+  )
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      props.setAcknowledgeDate(data?.Return.EsScheInfo.ASCAckDate);
+      props.setAcknowledgeTime(data?.Return.EsScheInfo.ASCAckTime);
+      props.setEngineerAssignDate(data?.Return.EsScheInfo.EngrAssignDate);
+      props.setEngineerAssignTime(data?.Return.EsScheInfo.EngrAssignTime);
+      props.setEngineer(data?.Return.EsScheInfo.EngineerName);
+      props.setModel(data?.Return.EsModelInfo.Model);
+      props.setRemark(data?.Return.EsModelInfo.Remark);
+      props.setSerialNumber(data?.Return.EsModelInfo.SerialNo);
+      props.setServiceOrder(data?.Return.EsHeaderInfo.SvcOrderNo);
+      props.setCreatedDate(data?.Return.EsHeaderInfo.CreateDate);
+      props.setCreatedTime(data?.Return.EsHeaderInfo.CreateTime);
+      props.setWarranty(data?.Return.EsModelInfo.WtyType);
+      props.setWarrantyRepairType(data?.Return.EsWtyInfo.WtyRepairType);
+      props.setFault(data?.Return.EsModelInfo.DefectDesc);
+      props.setImei(data?.Return.EsModelInfo.IMEI);
+      props.setCustomerEmail(data?.Return.EsBpInfo.CustEmail);
+      props.setCustomerFirstName(data?.Return.EsBpInfo.CustFirstName);
+      props.setCustomerLastName(data?.Return.EsBpInfo.CustLastName);
+      props.setCustomerStreetAddress(data?.Return.EsBpInfo.CustAddrStreet1);
+      props.setCustomerStreetAddressTwo(data?.Return.EsBpInfo.CustAddrStreet2);
+      props.setCustomerCity(data?.Return.EsBpInfo.CustCity);
+      props.setCustomerCountry(data?.Return.EsBpInfo.CustCountry);
+      props.setCustomerProvince(data?.Return.EsBpInfo.CustStateDesc);
+      props.setCustomerDistrict(data?.Return.EsBpInfo.CustDistrict);
+      props.setCustomerHomePhone(data?.Return.EsBpInfo.CustHomePhone);
+      props.setCustomerMobilePhone(data?.Return.EsBpInfo.CustMobilePhone);
+    });
 }
 export async function getSOStatusDescLatest(props: IgetSOStatusDescLatest) {
   const options = {
@@ -242,4 +300,49 @@ export async function getSOInfoAllFunctionForParts({
   setFault(data?.Return?.EsModelInfo?.DefectDesc);
   setImei(data?.Return?.EsModelInfo?.IMEI);
   setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
+}
+type TgetPartsInfoForServiceOrder = {
+  searchServiceOrder: string;
+  setPartsAssignedForJob: (order: string) => void;
+};
+export async function getPartsInfoForServiceOrder(
+  props: TgetPartsInfoForServiceOrder
+) {
+  const options = {
+    IsCommonHeader: {
+      Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
+      AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
+      Lang: `${process.env.NEXT_PUBLIC_LANG}`,
+      Country: `${process.env.NEXT_PUBLIC_COUNTRY}`,
+      Pac: `${process.env.NEXT_PUBLIC_PAC}`,
+    },
+    IvSvcOrderNo: props.searchServiceOrder,
+  };
+  try {
+    await fetch(`${process.env.NEXT_PUBLIC_IPAAS_API_SEARCH_PARTS}`, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
+      },
+      body: JSON.stringify(options),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        if (data?.EtPartsInfo !== null) {
+          const parts = data?.EtPartsInfo?.results?.map((i: any) => i.PartsNo);
+          console.log("parts", parts);
+          return props.setPartsAssignedForJob(parts);
+        } else {
+          return props.setPartsAssignedForJob("") as any;
+        }
+      });
+  } catch (error) {
+    console.log("Ipaas parts info error", error);
+  }
 }

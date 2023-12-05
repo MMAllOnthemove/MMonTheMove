@@ -59,6 +59,16 @@ export interface IPartsModalTabOneContent extends IHomepageModalTabOneContent {
     setDispatchAnalysis?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     children: React.ReactNode;
 }
+export interface IDtvModalAddTaskContent {
+    searchServiceOrder: string;
+    setSearchServiceOrder: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    warranty: string;
+    ticket: string;
+    setTicket: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    engineer: string;
+
+    postData: (e: React.SyntheticEvent) => void;
+}
 
 export interface IContainerWrapper {
     children: React.ReactNode;
@@ -112,12 +122,42 @@ export interface IgetSOInfoAll {
     setEngineerAssignTime: (order: string) => void;
     setGSPNStatus: (order: string) => void;
 }
+export interface IgetSOInfoAllDtv {
+    searchServiceOrder: string;
+    setAcknowledgeDate: (order: string) => void;
+    setAcknowledgeTime: (order: string) => void;
+    setEngineerAssignDate: (order: string) => void;
+    setEngineerAssignTime: (order: string) => void;
+    setEngineer: (order: string) => void;
+    setModel: (order: string) => void;
+    setRemark: (order: string) => void;
+    setSerialNumber: (order: string) => void;
+    setServiceOrder: (order: string) => void;
+    setCreatedDate: (order: string) => void;
+    setCreatedTime: (order: string) => void;
+    setWarranty: (order: string) => void;
+    setWarrantyRepairType: (order: string) => void;
+    setFault: (order: string) => void; //Defect Desc
+    setImei: (order: string) => void;
+    setCustomerEmail: (order: string) => void;
+    setCustomerFirstName: (order: string) => void;
+    setCustomerLastName: (order: string) => void;
+    setCustomerStreetAddress: (order: string) => void;
+    setCustomerStreetAddressTwo: (order: string) => void;
+    setCustomerCity: (order: string) => void;
+    setCustomerCountry: (order: string) => void;
+    setCustomerProvince: (order: string) => void;
+    setCustomerDistrict: (order: string) => void;
+    setCustomerHomePhone: (order: string) => void;
+    setCustomerMobilePhone: (order: string) => void;
+}
 
 export interface IgetSOInfoAllParts {
     searchServiceOrder: string;
     setServiceOrder: (order: string) => void;
     setModel: (order: string) => void;
     setWarranty: (order: string) => void;
+    setEngineer: (order: string) => void;
     setFault: (order: string) => void;
     setImei: (order: string) => void;
     setSerialNumber: (order: string) => void;
