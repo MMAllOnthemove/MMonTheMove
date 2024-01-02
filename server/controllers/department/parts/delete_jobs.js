@@ -1,18 +1,7 @@
-const pool = require("../../../db");
-const redis = require("redis");
-
-let redisClient;
-
-(async () => {
-  redisClient = redis.createClient();
-
-  redisClient.on("error", (error) => console.error(`Error : ${error}`));
-
-  await redisClient.connect();
-})();
+import { pool } from "../../../db.js";
 
 // Delete job by id
-const deleteJob = async (req, res) => {
+const DeleteJob = async (req, res) => {
   try {
     const { id } = req.params;
     const deleteQuery = await pool.query(
@@ -30,6 +19,4 @@ const deleteJob = async (req, res) => {
   }
 };
 
-module.exports = {
-  deleteJob,
-};
+export default DeleteJob;

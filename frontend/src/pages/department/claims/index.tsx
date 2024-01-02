@@ -1,33 +1,21 @@
 // External imports
+import { fetchTableData } from "@/hooks/useFetch";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 
 // Custom imports
-import { fetchDataCombinedData } from "@/functions/getCombinedFlatData";
-import { CurrentUserContext } from "../../../../context/user";
-
+import Container from "@/components/Container";
 // Dynamic imports
 const Navbar = dynamic(() => import("@/components/Navbar"));
-const NotLoggedIn = dynamic(() => import("@/components/NotLoggedIn"));
+const PageTitle = dynamic(() => import("@/components/PageTitle"));
 
-const Claims = () => {
+function Claims() {
+  const { hhpData } = fetchTableData();
   const [searchTerm, setSearchTerm] = useState("");
-  const [tableData, setTableData] = useState<string[] | any[]>([]);
-
   const router = useRouter();
-  const userData = useContext(CurrentUserContext);
-
-  // Fetches logged in user's data
-  useEffect(() => {
-    if (!userData) {
-      router.push("/auth/");
-    }
-    fetchDataCombinedData({ setTableData });
-  }, [userData]);
-
-  let filteredSearch = tableData.filter(
+  let filteredSearch = hhpData.filter(
     (item) => item.service_order_no === searchTerm
   );
 
@@ -35,7 +23,6 @@ const Claims = () => {
     e.stopPropagation();
     router.push(`/department/claims/edit/${id}`);
   };
-
   return (
     <>
       <Head>
@@ -43,11 +30,8 @@ const Claims = () => {
       </Head>
       <Navbar />
       <main className="space-between-navbar-and-content">
-        <section className="container mx-auto p-3">
-          <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-[#eee] md:text-5xl lg:text-6xl text-center">
-            Claims
-          </h1>
-
+        <Container>
+          <PageTitle title="Claims" hasSpan={false} />
           <section className="flex flex-col justify-center gap-3 py-4">
             <label htmlFor="searchServiceOrder" className="text-center sr-only">
               Search Service Order
@@ -108,9 +92,10 @@ const Claims = () => {
               </tbody>
             </table>
           </div>
-        </section>
+        </Container>
       </main>
     </>
   );
-};
+}
+
 export default Claims;

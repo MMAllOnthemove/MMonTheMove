@@ -1,19 +1,8 @@
-const pool = require("../../../db");
-const redis = require("redis");
-
-let redisClient;
-
-(async () => {
-  redisClient = redis.createClient();
-
-  redisClient.on("error", (error) => console.error(`Error : ${error}`));
-
-  await redisClient.connect();
-})();
+import { pool } from "../../../db.js";
 
 // Update job by id
 // get job by id
-const updateJobById = async (req, res) => {
+const UpdateJobById = async (req, res) => {
   try {
     const { id } = req.params;
     const { dispatchAnalysis, inHouseStatus, dateModified, dispatchBy } =
@@ -29,6 +18,4 @@ const updateJobById = async (req, res) => {
   }
 };
 
-module.exports = {
-  updateJobById,
-};
+export default UpdateJobById;

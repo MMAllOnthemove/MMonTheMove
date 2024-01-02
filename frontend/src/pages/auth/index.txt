@@ -1,0 +1,66 @@
+// External imports
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import Head from "next/head";
+
+// Dynamic imports
+const Signup = dynamic(() => import("@/components/Signup"), {
+  loading: () => (
+    <p className="text-center text-slate-950 font-semibold">
+      Loading signup...
+    </p>
+  ),
+});
+const Login = dynamic(() => import("@/components/Login"), {
+  loading: () => (
+    <p className="text-center text-slate-950 font-semibold">Loading login...</p>
+  ),
+});
+// Custom imports
+import logo from "../../../public/mmlogo.png";
+
+function Auth() {
+  return (
+    <>
+      <Head>
+        <title>Auth</title>
+      </Head>
+      <main className="auth">
+        <article className="auth_card  dark:bg-[#22303c] bg-gray-30 dark:border dark:border-[#eee]">
+          <div className="form_header">
+            <span className="auth_card_logo mb-3">
+              <Image
+                src={logo}
+                alt="allelectronics logo"
+                priority={true}
+                placeholder="blur"
+              />
+            </span>
+          </div>
+          <Tabs defaultIndex={0} isFitted>
+            <TabList>
+              <Tab fontFamily="inherit" fontWeight="500">
+                Signup
+              </Tab>
+
+              <Tab fontFamily="inherit" fontWeight="500">
+                Login
+              </Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <Signup />
+              </TabPanel>
+              <TabPanel>
+                <Login />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </article>
+      </main>
+    </>
+  );
+}
+
+export default Auth;

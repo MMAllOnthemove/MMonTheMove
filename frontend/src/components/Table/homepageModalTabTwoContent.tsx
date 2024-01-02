@@ -3,9 +3,7 @@ import { unitStatus } from "../../../public/_data/statuses";
 import { IHomepageModalTabTwoContent } from "../../../utils/interfaces";
 import Button from "../Buttons";
 
-export const HomepageModalTabTwoContent = (
-  props: IHomepageModalTabTwoContent
-) => {
+const HomepageModalTabTwoContent = (props: IHomepageModalTabTwoContent) => {
   const {
     searchTicket,
     setSearchTicket,
@@ -170,3 +168,4 @@ export const HomepageModalTabTwoContent = (
     </form>
   );
 };
+export default HomepageModalTabTwoContent;

@@ -157,10 +157,10 @@ export interface IgetSOInfoAllParts {
     setServiceOrder: (order: string) => void;
     setModel: (order: string) => void;
     setWarranty: (order: string) => void;
-    setEngineer: (order: string) => void;
     setFault: (order: string) => void;
     setImei: (order: string) => void;
     setSerialNumber: (order: string) => void;
+    setEngineer?: (order: string) => void;
 }
 export interface IgetSOStatusDescLatest {
     showServiceOrderNumber: string;
@@ -237,4 +237,43 @@ export interface IUnitsPendingJobDataModal {
     fetchJobsApprovedAndRejected: string[] | any;
     dateFrom: string | any;
     dateTo: string | any;
+}
+
+export interface IPopupModal {
+    isVisible: true | false;
+    title: string | number | any;
+    content: string | number | boolean | React.ReactNode | any;
+    onClose: () => void;
+    footer?: string | number | boolean | React.ReactNode | any;
+}
+
+export interface ISingleDTVJob {
+    id: string | number,
+    engineer: string,
+    model: string,
+    serial_number: string,
+    service_order_no: string,
+    created_date: string,
+    warranty: string,
+    warranty_repair_type: string,
+    fault: string,
+    imei: string,
+    customer_email: string,
+    customer_first_name: string,
+    customer_last_name: string,
+    customer_street_address: string,
+    customer_street_address_two: string,
+    customer_city: string,
+    customer_country: string,
+    customer_province: string,
+    customer_district: string,
+    customer_homephone: string,
+    customer_mobilephone: string,
+    ticket: string,
+    parts_list: string[],
+    added_by: null,
+    added_on: string,
+    engineer_phone_number: string,
+    job_status: boolean,
+    ticket_number_id: string
 }

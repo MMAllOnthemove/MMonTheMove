@@ -1,6 +1,6 @@
-const pool = require("../../../../db");
+import { pool } from "../../../../db.js";
 
-const updateTaskById = async (req, res) => {
+const UpdateTaskById = async (req, res) => {
   try {
     const { id } = req.params;
     const { isJobComplete, jobComment, updatedByWho, dateUpdated } = req.body;
@@ -13,4 +13,4 @@ const updateTaskById = async (req, res) => {
     console.log("update rows error", error);
   }
 };
-module.exports = { updateTaskById };
+export default UpdateTaskById;

@@ -1,5 +1,5 @@
 
-export const columns: any = [
+const columns: any = [
 
     {
         header: 'Service Order No',
@@ -59,3 +59,4 @@ export const columns: any = [
         accessorKey: 'department'
     }
 ]
+export default columns

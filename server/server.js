@@ -1,26 +1,26 @@
-const compression = require("compression");
-const express = require("express");
+import compression from "compression";
+import express from "express";
 const app = express();
-const helmet = require("helmet");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
-
-const hhpJobs = require("./routes/department/hhp/hhp_jobs_route");
-const hhpJobsHistory = require("./routes/history/hhp_jobs_history_routes");
-const feedback = require("./routes/feedback");
-const dashboard = require("./routes/department/hhp/dashboard");
+import helmet from "helmet";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
+import { router as hhpjobsrouter } from "./routes/department/hhp/hhp_jobs_route.js";
+import { router as hhpJobsHistory } from "./routes/history/hhp_jobs_history_routes.js";
+import { router as feedback } from "./routes/feedback.js";
+import { router as dashboard } from "./routes/department/hhp/dashboard.js";
 // const engineers = require("./routes/engineers");
-const qc = require("./routes/department/hhp/qc");
-const countEngineers = require("./routes/department/hhp/engineer_count_route");
-const bookingAgents = require("./routes/department/hhp/booking_agent_jobs_route");
-const partsDept = require("./routes/department/parts/parts_dept_routes");
-const partsHistory = require("../server/routes/history/parts_dept_routes");
-const auth = require("./routes/auth/auth_route");
-require("dotenv").config();
+import { router as qc } from "./routes/department/hhp/qc.js";
+import { router as countEngineers } from "./routes/department/hhp/engineer_count_route.js";
+import { router as bookingAgents } from "./routes/department/hhp/booking_agent_jobs_route.js";
+import { router as partsDept } from "./routes/department/parts/parts_dept_routes.js";
+import { router as partsHistory } from "../server/routes/history/parts_dept_routes.js";
+import { router as auth } from "./routes/auth/auth_route.js";
+import "dotenv/config";
 
-const dtvTasks = require("./routes/department/dtv/tasks");
-const dtvChecklists = require("./routes/department/dtv/checklists");
+import { router as dtvTasks } from "./routes/department/dtv/tasks.js";
+import { router as dtvChecklists } from "./routes/department/dtv/checklists.js";
+import { router as dtvAnalytics } from "./routes/department/dtv/analytics.js";
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet());
@@ -44,7 +44,7 @@ app.disable("x-powered-by");
 app.use("/auth", auth);
 
 // HHP jobs
-app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, hhpJobs);
+app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, hhpjobsrouter);
 app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, hhpJobsHistory);
 
 // Feedback
@@ -77,6 +77,9 @@ app.use("/drivers/api/v1/task", dtvTasks);
 
 // DTV Checklists route
 app.use("/drivers/api/v1/checklist", dtvChecklists);
+
+// DTV dashboard route
+app.use("/drivers/api/v1/analytics", dtvAnalytics);
 
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {

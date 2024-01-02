@@ -1,18 +1,7 @@
-const pool = require("./../../../db");
-const redis = require("redis");
-
-let redisClient;
-
-(async () => {
-  redisClient = redis.createClient();
-
-  redisClient.on("error", (error) => console.error(`Error : ${error}`));
-
-  await redisClient.connect();
-})();
+import { pool } from "./../../../db.js";
 
 // Post jobs to database
-const postJobs = async (req, res) => {
+const PostJobs = async (req, res) => {
   const {
     service_order,
     createdDate,
@@ -73,6 +62,4 @@ const postJobs = async (req, res) => {
   }
 };
 
-module.exports = {
-  postJobs,
-};
+export default PostJobs;

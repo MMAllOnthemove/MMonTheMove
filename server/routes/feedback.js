@@ -1,7 +1,7 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const pool = require("../db");
-const redis = require("redis");
+import { pool } from "../db.js";
+import redis from "redis";
 
 let redisClient;
 
@@ -58,4 +58,4 @@ router.get("/", async (req, res) => {
   }
 });
 
-module.exports = router;
+export { router };

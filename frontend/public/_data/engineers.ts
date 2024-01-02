@@ -10,3 +10,9 @@ export const engineers = [
     { id: 9, _name: "Ivan" },
     { id: 10, _name: "Raymond" },
 ]
+export const dtvEngineers = [
+    { id: 1, _name: "Prosper Kamuzonde" },
+    { id: 2, _name: "Andrea Likomba" },
+    { id: 3, _name: "Iven Maluleke" },
+    { id: 4, _name: "Raymond Mazwi" },
+    { id: 5, _name: "Samuel Chileshe" },]

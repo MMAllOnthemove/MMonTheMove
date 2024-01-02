@@ -1,5 +1,5 @@
-const pool = require("../../../../db");
-const redis = require("redis");
+import { pool } from "../../../../db.js";
+import redis from "redis";
 
 let redisClient;
 
@@ -12,7 +12,7 @@ let redisClient;
 })();
 
 // Get tasks
-const getChecklists = async (req, res) => {
+const GetChecklists = async (req, res) => {
   let newResults;
   let isCached = false;
   try {
@@ -43,4 +43,4 @@ const getChecklists = async (req, res) => {
   }
 };
 
-module.exports = { getChecklists };
+export default GetChecklists;

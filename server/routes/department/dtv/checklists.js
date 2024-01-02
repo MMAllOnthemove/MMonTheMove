@@ -1,14 +1,10 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-const {
-  createChecklist,
-} = require("../../../controllers/department/dtv/checklists/create_checklist");
-const {
-  getChecklists,
-} = require("../../../controllers/department/dtv/checklists/get_checklist");
+import CreateChecklist from "../../../controllers/department/dtv/checklists/create_checklist.js";
+import GetChecklists from "../../../controllers/department/dtv/checklists/get_checklist.js";
 
-router.post("/create", createChecklist);
-router.get("/get", getChecklists);
+router.post("/create", CreateChecklist);
+router.get("/get", GetChecklists);
 
-module.exports = router;
+export { router };

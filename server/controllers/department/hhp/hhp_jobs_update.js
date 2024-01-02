@@ -1,19 +1,8 @@
-const pool = require("./../../../db");
-const redis = require("redis");
-
-let redisClient;
-
-(async () => {
-  redisClient = redis.createClient();
-
-  redisClient.on("error", (error) => console.error(`Error : ${error}`));
-
-  await redisClient.connect();
-})();
+import { pool } from "./../../../db.js";
 
 // Update job by id
 
-const updateJob = async (req, res) => {
+const UpdateJob = async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -53,22 +42,19 @@ const updateJob = async (req, res) => {
 };
 
 // Update only one job gspn status
-const updateJobclaimsGSPNStatus = async (req, res) => {
+const UpdateJobclaimsGSPNStatus = async (req, res) => {
+  const { id } = req.params;
+  const { claimsGSPNStatus, userData, dateOfClaim } = req.body;
   try {
-    const { id } = req.params;
-    const { claimsGSPNStatus, userData, dateOfClaim } = req.body;
-    const editQuery = await pool.query(
+    const { rows } = await pool.query(
       "UPDATE units SET gspn_status = $1, claim_by = $2, claim_date = $3 WHERE id = $4 returning *",
       [claimsGSPNStatus, userData, dateOfClaim, id]
     );
-    // res.status(201).send(editQuery.rows);
-    console.log("editQuery", editQuery.rows);
+    res.status(201).send({ message: "Updated!" });
+    // console.log("editQuery", rows);
   } catch (error) {
-    console.log("update claims", error);
+    // console.log("update claims", error);
   }
 };
 
-module.exports = {
-  updateJob,
-  updateJobclaimsGSPNStatus,
-};
+export { UpdateJob, UpdateJobclaimsGSPNStatus };

@@ -1,14 +1,10 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-const {
-  getBookingAgentsJobs,
-} = require("../../../controllers/department/hhp/booking_agents_get");
-const {
-  postBookingAgentsJobs,
-} = require("../../../controllers/department/hhp/booking_agents_post");
+import GetBookingAgentsJobs from "../../../controllers/department/hhp/booking_agents_get.js";
+import PostBookingAgentsJobs from "../../../controllers/department/hhp/booking_agents_post.js";
 
-router.post("/booking-agents/jobs/add", postBookingAgentsJobs);
-router.get("/booking-agents/jobs/get", getBookingAgentsJobs);
+router.post("/booking-agents/jobs/add", PostBookingAgentsJobs);
+router.get("/booking-agents/jobs/get", GetBookingAgentsJobs);
 
-module.exports = router;
+export { router };

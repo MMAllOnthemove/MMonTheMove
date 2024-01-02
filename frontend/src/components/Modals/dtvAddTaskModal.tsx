@@ -30,7 +30,7 @@ const ModalDtv = ({ children }: Props) => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
-            <h2 className=" text-slate-800">Fields will auto populate</h2>
+            <h2 className="text-slate-800">Fields will auto populate</h2>
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>{children}</ModalBody>

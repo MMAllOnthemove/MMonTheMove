@@ -1,14 +1,14 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const {
-  qcEngineerJobs,
-  qcEngineerJobsToday,
-} = require("../../../controllers/department/hhp/qc_controllers");
+import {
+  QCEngineerJobs,
+  QCEngineerJobsToday,
+} from "../../../controllers/department/hhp/qc_controllers.js";
 
 // QC CHECKED ALL
-router.get("/", qcEngineerJobs);
+router.get("/", QCEngineerJobs);
 
 // QC CHECKED ALL TODAY
-router.get("/today", qcEngineerJobsToday);
+router.get("/today", QCEngineerJobsToday);
 
-module.exports = router;
+export { router };

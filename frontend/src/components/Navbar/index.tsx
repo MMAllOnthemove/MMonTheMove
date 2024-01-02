@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-
+import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 // Custom imports
 import {
   dtvNavItems,
@@ -14,7 +14,10 @@ import {
   partsNavItems,
 } from "../../../public/_data/navbar";
 import logo from "../../../public/mmlogo.png";
-import { logoutUserFunction } from "@/functions/getLoggedInUserProfile";
+import {
+  getProfile,
+  logoutUserFunction,
+} from "@/functions/getLoggedInUserProfile";
 import { CurrentUserContext } from "../../../context/user";
 
 // Dynamic imports
@@ -23,8 +26,12 @@ const ThemeChangerButton = dynamic(() => import("../Buttons/ThemeChanger"), {
   ssr: false,
 });
 
+type TUser = {
+  email: string;
+};
 const Navbar = () => {
   const [isOpen, setIsopen] = useState(false);
+  const [userData, setUserData] = useState("");
   const ToggleSidebar = () => {
     isOpen === true ? setIsopen(false) : setIsopen(true);
   };
@@ -36,9 +43,14 @@ const Navbar = () => {
   const [dtvSubMenuOpen, setDtvSubMenuOpen] = useState(false);
   // const [userData, setUserData] = useState("");
 
-  const userData = useContext(CurrentUserContext);
+  // const userData = useContext(CurrentUserContext);
 
   // if(loading === true) return <p>Loading</p>
+
+  // Fetches logged in user's data
+  useEffect(() => {
+    getProfile({ setUserData });
+  }, [userData]);
 
   const onSignout = async () => {
     // removeCookie("token");
