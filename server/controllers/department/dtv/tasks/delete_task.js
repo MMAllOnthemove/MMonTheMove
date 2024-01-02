@@ -1,7 +1,7 @@
-const pool = require("../../../../db");
+import { pool } from "../../../../db.js";
 
 // Delete job by id
-const deleteTaskById = async (req, res) => {
+const DeleteTaskById = async (req, res) => {
   try {
     const { id } = req.params;
     // console.log("req.params delete id", id);
@@ -15,4 +15,4 @@ const deleteTaskById = async (req, res) => {
     console.log("server job delete", error);
   }
 };
-module.exports = { deleteTaskById };
+export default DeleteTaskById;

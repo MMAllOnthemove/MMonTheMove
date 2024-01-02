@@ -1,4 +1,4 @@
-const logoutUser = async (req, res) => {
+const LogoutUser = async (req, res) => {
   try {
     res.clearCookie("token");
     res.redirect("/");
@@ -6,4 +6,4 @@ const logoutUser = async (req, res) => {
     // console.log("Logout error", e);
   }
 };
-module.exports = { logoutUser };
+export default LogoutUser;

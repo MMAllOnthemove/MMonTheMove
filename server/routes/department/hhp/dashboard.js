@@ -1,22 +1,8 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const pool = require("../../../db");
-const redis = require("redis");
-const limiter = require("../../../middleware/rateLimiter");
-const {
-  countAllTimeCompleteJobsAllTime,
-} = require("../../../controllers/department/hhp/analytics");
+import { limiter } from "../../../middleware/rateLimiter.js";
+import CountAllTimeCompleteJobsAllTime from "../../../controllers/department/hhp/analytics.js";
 
-let redisClient;
+router.get("/complete/all-time", limiter, CountAllTimeCompleteJobsAllTime);
 
-(async () => {
-  redisClient = redis.createClient();
-
-  redisClient.on("error", (error) => console.error(`Error : ${error}`));
-
-  await redisClient.connect();
-})();
-
-router.get("/complete/all-time", limiter, countAllTimeCompleteJobsAllTime);
-
-module.exports = router;
+export { router };

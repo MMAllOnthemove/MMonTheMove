@@ -3,9 +3,7 @@ import { unitStatus } from "../../../public/_data/statuses";
 import { IHomepageModalTabOneContent } from "../../../utils/interfaces";
 import Button from "../Buttons";
 
-export const HomepageModalTabOneContent = (
-  props: IHomepageModalTabOneContent
-) => {
+const HomepageModalTabOneContent = (props: IHomepageModalTabOneContent) => {
   const {
     searchServiceOrder,
     setSearchServiceOrder,
@@ -149,3 +147,4 @@ export const HomepageModalTabOneContent = (
     </>
   );
 };
+export default HomepageModalTabOneContent;

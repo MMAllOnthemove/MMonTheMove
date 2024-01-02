@@ -1,12 +1,10 @@
-const moment = require("moment");
-const pool = require("../../../../db");
-const express = require("express");
+import { pool } from "../../../../db.js";
 
-const createChecklist = async (req, res) => {
+const CreateChecklist = async (req, res) => {
   // const { id } = req.params;
   // console.log(id);
   const {
-    pageId,
+    id,
     selectCar,
     driver,
     odometer,
@@ -20,7 +18,6 @@ const createChecklist = async (req, res) => {
     tirePressureCheckIsEnabled,
     dateAddedFormatted,
   } = req.body;
-
   try {
     // If checklist for today for particular car has been done, cannot repeat same car for same day
     const findIfExists = await pool.query(
@@ -38,7 +35,7 @@ const createChecklist = async (req, res) => {
         .query(
           `INSERT INTO cars_checklist (job_id, car, car_odometer, car_driver, car_jack_check, car_spare_wheel_check, car_triangle_check, car_oil_check, car_water_check, car_tire_pressure_check, further_comments, checklist_created_by,date_added) VALUES ($1,$2,$3,$4,$5, $6,$7,$8,$9,$10,$11,$12, $13)`,
           [
-            pageId,
+            id,
             selectCar,
             odometer,
             driver,
@@ -61,4 +58,4 @@ const createChecklist = async (req, res) => {
   }
 };
 
-module.exports = { createChecklist };
+export default CreateChecklist;

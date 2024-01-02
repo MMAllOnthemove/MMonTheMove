@@ -1,6 +1,6 @@
-const pool = require("../../db");
+import { pool } from "../../db.js";
 
-const postPartsJobHistory = async (req, res) => {
+const PostPartsJobHistory = async (req, res) => {
   const {
     service_order,
     warranty,
@@ -50,14 +50,12 @@ const postPartsJobHistory = async (req, res) => {
     // console.log("parts post history error", e);
   }
 };
-const getPartsJobsHistory = async (req, res) => {
+const GetPartsJobsHistory = async (req, res) => {
   try {
-    const newResults = await pool.query(
-      "SELECT * FROM parts_department_history"
-    );
-    res.json(newResults.rows);
+    const { rows } = await pool.query("SELECT * FROM parts_department_history");
+    res.json(rows);
   } catch (error) {
     // console.log(err);
   }
 };
-module.exports = { postPartsJobHistory, getPartsJobsHistory };
+export { PostPartsJobHistory, GetPartsJobsHistory };

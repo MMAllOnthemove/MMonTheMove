@@ -1,16 +1,15 @@
-const bcrypt = require("bcrypt");
-const pool = require("../../db");
-const jwtGenerator = require("../../utils/jwt-helpers");
+import bcrypt from "bcrypt";
+import { pool } from "../../db.js";
 
-const registerUser = async (req, res) => {
+const SignupUser = async (req, res) => {
   const { fullName, username, email, password, createdAt } = req.body;
   let capitalizedUsername = username.toLowerCase();
   let capitalizedFullName = fullName.toLowerCase();
   let capitalizedEmail = email.toLowerCase();
-  const maxAge = 3 * 24 * 60 * 60;
+  const maxAge = 1 * 24 * 60 * 60;
   try {
     const user = await pool.query(
-      "SELECT * FROM company_people WHERE email = $1",
+      "SELECT email FROM company_people WHERE email = $1",
       [email]
     );
 
@@ -36,7 +35,7 @@ const registerUser = async (req, res) => {
       const jwtToken = jwtGenerator(newUser.rows[0].user_id);
       res.cookie("token", jwtToken, {
         withCredentials: true,
-        secure: (process.env.NODE_ENV = "development" ? false : true),
+        secure: process.env.NODE_ENV === "development" ? false : true,
         httpOnly: true,
         maxAge: maxAge * 1000,
       });
@@ -45,8 +44,8 @@ const registerUser = async (req, res) => {
       return res.status(400).json("Signup failed; Invalid email or password");
     }
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     res.status(500).json("Server error");
   }
 };
-module.exports = registerUser;
+export default SignupUser;

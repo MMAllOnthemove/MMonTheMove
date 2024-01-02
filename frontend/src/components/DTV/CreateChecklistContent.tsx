@@ -1,15 +1,16 @@
-import React, { useContext, useState } from "react";
+import { fetchCurrentUser } from "@/hooks/useFetch";
+import { useToast } from "@chakra-ui/react";
+import moment from "moment";
 import { useRouter } from "next/router";
+import React, { useState } from "react";
 import { cars, drivers } from "../../../public/_data/cars";
 import Button from "../Buttons";
-import moment from "moment";
-import { CurrentUserContext } from "../../../context/user";
-import { useToast } from "@chakra-ui/react";
 
 interface IProps {
-  pageId?: string | string[] | undefined;
+  id?: string | string[] | undefined;
 }
-function CreateChecklistContent({ pageId }: IProps) {
+function CreateChecklistContent({ id }: IProps) {
+  const { userData } = fetchCurrentUser();
   const [selectCar, setSelectCar] = useState("");
   const [driver, setDriver] = useState("");
   const [odometer, setOdometer] = useState("0");
@@ -19,7 +20,6 @@ function CreateChecklistContent({ pageId }: IProps) {
   const [imageThree, setImageThree] = useState<any>(null);
   const [imageFour, setImageFour] = useState<any>(null);
   const [carJasckIsEnabled, setCarJackIsEnabled] = useState(false);
-  const userData = useContext(CurrentUserContext);
   const [spareWheelCheckIsEnabled, setSpareWheelCheckIsEnabled] =
     useState(false);
   const [triagleCheckIsEnabled, setTriangleCheckIsEnabled] = useState(false);
@@ -28,16 +28,23 @@ function CreateChecklistContent({ pageId }: IProps) {
   const [tirePressureCheckIsEnabled, setTirePressureCheckIsEnabled] =
     useState(false);
 
+  const [file, setFile] = useState("");
+  function handleChange(e: any) {
+    // console.log(e.target.files);
+    // console.log(URL.createObjectURL(e.target.files));
+    setFile(URL.createObjectURL(e.target.files));
+  }
+
   const router = useRouter();
   // Chakra ui toast
   const toast = useToast();
 
-  const onSubmit = async (e: React.SyntheticEvent) => {
+  const onSubmitUserInput = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const dateAdded = new Date();
     const dateAddedFormatted = moment(dateAdded).format("YYYY-MM-DD");
     const infoToPost = {
-      pageId,
+      id,
       selectCar,
       driver,
       odometer,
@@ -51,7 +58,7 @@ function CreateChecklistContent({ pageId }: IProps) {
       tirePressureCheckIsEnabled,
       dateAddedFormatted,
     };
-    // console.log("infoToPost", infoToPost);
+
     // console.log(infoToPost);
     const requestOptions = {
       method: "POST",
@@ -62,31 +69,28 @@ function CreateChecklistContent({ pageId }: IProps) {
     // console.log(props.id);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_DTV}checklist/create}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_DTV}checklist/create`,
         requestOptions
       );
-
       if (response.ok) {
         await response.json();
-        toast({
-          title: "Checklist added.",
-          description: "",
-          status: "success",
-          duration: 9000,
-          isClosable: true,
-        });
+        window.alert("Checklist added.");
+        router.push("/department/dtv");
       } else {
-        toast({
-          title: "Checklist failed.",
-          description: "Checklist already exists.",
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
+        window.alert("Checklist failed.");
       }
     } catch (error) {
       console.log("create checklist error", error);
     }
+  };
+  const submitImagesUrl = async () => {
+    const formData = new FormData();
+    formData.append("image1", "checklist_image_1");
+  };
+
+  const onSubmit = async (e: any) => {
+    onSubmitUserInput(e);
+    submitImagesUrl();
   };
   return (
     <form
@@ -291,7 +295,13 @@ function CreateChecklistContent({ pageId }: IProps) {
           ></textarea>
         </span>
       </span>
-
+      <input
+        type="file"
+        multiple
+        name="checklist_image_1"
+        id="checklist_image_1"
+        onChange={handleChange}
+      />
       <div className="flex g-3 justify-between items-center">
         <Button
           type="submit"

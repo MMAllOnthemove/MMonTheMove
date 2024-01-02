@@ -1,22 +1,29 @@
+import { useEffect, useState } from "react";
 import {
   IfetchDataCombinedData,
   IgetBookingAgentJobs,
+  Itable,
 } from "../../utils/interfaces";
 
-export const fetchDataCombinedData = async (props: IfetchDataCombinedData) => {
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
-      {
-        method: "GET",
-      }
-    );
-    const data = await response.json();
-    // console.log(data);
-    props.setTableData(data);
-  } catch (error) {
-    // console.log("Error", error);
-  }
+export const fetchDataCombinedData = () => {
+  const [hhpData, setHHPData] = useState<Itable[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT}`,
+        {
+          method: "GET",
+        }
+      )
+        .then((res) => res.json)
+        .then((data) => {
+          console.log("data", hhpData);
+          setHHPData(hhpData);
+        });
+    };
+    fetchData();
+  }, []);
+  return hhpData;
 };
 
 export const getBookingAgentJobs = async (props: IgetBookingAgentJobs) => {

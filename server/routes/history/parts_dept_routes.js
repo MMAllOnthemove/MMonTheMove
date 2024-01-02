@@ -1,11 +1,11 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-const {
-  postPartsJobHistory,
-  getPartsJobsHistory,
-} = require("../../controllers/history/parts_dept");
+import {
+  PostPartsJobHistory,
+  GetPartsJobsHistory,
+} from "../../controllers/history/parts_dept.js";
 
-router.get("/get", getPartsJobsHistory);
-router.post("/post", postPartsJobHistory);
-module.exports = router;
+router.get("/get", GetPartsJobsHistory);
+router.post("/post", PostPartsJobHistory);
+export { router };

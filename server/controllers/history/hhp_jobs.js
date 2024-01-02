@@ -1,7 +1,7 @@
-const pool = require("../../db");
+import { pool } from "../../db.js";
 
 // Post repair jobs
-const postRepairJobsHistory = async (req, res) => {
+const PostRepairJobsHistory = async (req, res) => {
   const {
     repairServiceOrder,
     repairCreatedDate,
@@ -54,19 +54,19 @@ const postRepairJobsHistory = async (req, res) => {
 };
 
 // GET all table info from database
-const getAllJobsHistory = async (req, res) => {
+const GetAllJobsHistory = async (req, res) => {
   try {
-    const newResults = await pool.query(
+    const { rows } = await pool.query(
       "SELECT id, unique_id, (SELECT DISTINCT(service_order_no)) AS service_order_no, created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, in_house_status, engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, department, reassign_engineer, parts_list, UPPER(is_qc_checked::text) AS is_qc_checked, qc_comment, date_modified, gspn_status, date_added FROM units_history ORDER BY date_modified DESC"
     );
-    res.json(newResults.rows);
+    res.json(rows);
   } catch (err) {
     // console.log("getAllJobs", err);
   }
 };
 
 // Post jobs to database
-const postJobsHistory = async (req, res) => {
+const PostJobsHistory = async (req, res) => {
   const {
     service_order,
     createdDate,
@@ -127,8 +127,4 @@ const postJobsHistory = async (req, res) => {
   }
 };
 
-module.exports = {
-  postRepairJobsHistory,
-  getAllJobsHistory,
-  postJobsHistory,
-};
+export { PostRepairJobsHistory, GetAllJobsHistory, PostJobsHistory };

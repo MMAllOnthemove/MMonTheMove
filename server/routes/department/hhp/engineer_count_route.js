@@ -1,9 +1,7 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-const {
-  getEngineerHeadCount,
-} = require("../../../controllers/department/hhp/engineer_count");
+import GetEngineerHeadCount from "../../../controllers/department/hhp/engineer_count.js";
 
-router.get("/count", getEngineerHeadCount);
-module.exports = router;
+router.get("/count", GetEngineerHeadCount);
+export { router };

@@ -1,17 +1,6 @@
-const pool = require("./../../../db");
-const redis = require("redis");
+import { pool } from "./../../../db.js";
 
-let redisClient;
-
-(async () => {
-  redisClient = redis.createClient();
-
-  redisClient.on("error", (error) => console.error(`Error : ${error}`));
-
-  await redisClient.connect();
-})();
-
-const postBookingAgentsJobs = async (req, res) => {
+const PostBookingAgentsJobs = async (req, res) => {
   const {
     serviceOrder,
     createdDate,
@@ -48,4 +37,4 @@ const postBookingAgentsJobs = async (req, res) => {
   }
 };
 
-module.exports = { postBookingAgentsJobs };
+export default PostBookingAgentsJobs;

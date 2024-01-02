@@ -1,6 +1,5 @@
-const express = require("express");
-const pool = require("./../../../db");
-const redis = require("redis");
+import { pool } from "./../../../db.js";
+import redis from "redis";
 
 let redisClient;
 
@@ -13,7 +12,7 @@ let redisClient;
 })();
 
 // QC CHECKED ALL JOBS
-const qcEngineerJobs = async (req, res) => {
+const QCEngineerJobs = async (req, res) => {
   let newResults;
   let isCached = false;
   try {
@@ -45,7 +44,7 @@ const qcEngineerJobs = async (req, res) => {
 };
 
 // QC CHECKED ALL JOBS TODAY
-const qcEngineerJobsToday = async (req, res) => {
+const QCEngineerJobsToday = async (req, res) => {
   let newResults;
   let isCached = false;
   try {
@@ -76,4 +75,4 @@ const qcEngineerJobsToday = async (req, res) => {
   }
 };
 
-module.exports = { qcEngineerJobs, qcEngineerJobsToday };
+export { QCEngineerJobs, QCEngineerJobsToday };

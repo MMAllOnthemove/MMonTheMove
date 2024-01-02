@@ -1,18 +1,7 @@
-const pool = require("./../../../db");
-const redis = require("redis");
-
-let redisClient;
-
-(async () => {
-  redisClient = redis.createClient();
-
-  redisClient.on("error", (error) => console.error(`Error : ${error}`));
-
-  await redisClient.connect();
-})();
+import { pool } from "./../../../db.js";
 
 // Post repair jobs
-const postRepairJobs = async (req, res) => {
+const PostRepairJobs = async (req, res) => {
   const {
     repairServiceOrder,
     repairCreatedDate,
@@ -41,7 +30,7 @@ const postRepairJobs = async (req, res) => {
       res.status(400).json("Ticket already exists!");
       // console.log("Cell exists");
     } else {
-      const results = await pool.query(
+      await pool.query(
         "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket, department, job_added_by, date_added) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) returning *",
         [
           repairServiceOrder,
@@ -69,7 +58,4 @@ const postRepairJobs = async (req, res) => {
     // console.log("Create task error: ", err);
   }
 };
-
-module.exports = {
-  postRepairJobs,
-};
+export default PostRepairJobs;
