@@ -159,7 +159,7 @@ export async function getPartsInfoFunction(props: IgetPartsInfo) {
     IvPartsNo: props.debouncedSearch,
   };
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_IPAAS_API_SEARCH_PARTS}`,
+    `https://eu.ipaas.samsung.com/eu/gcic/GetPartsInfo/1.0/ImportSet`,
     {
       method: "POST",
       mode: "cors",
@@ -172,13 +172,11 @@ export async function getPartsInfoFunction(props: IgetPartsInfo) {
       body: JSON.stringify(options),
     }
   );
-  if (response.ok) {
-    const data = await response.json();
-    props.setData(data);
-  } else {
-    return <p>Loading...</p>;
-  }
+  const data = await response.json();
   // console.log(data);
+  if (data) {
+    props.setData(data);
+  }
 }
 
 export async function postBookingAgentsJobs({
@@ -240,18 +238,21 @@ export async function getStockOverviewInfo({
       Msgid: "",
     },
   };
-  await fetch(`${process.env.NEXT_PUBLIC_IPAAS_API_GetBranchStockOverview}`, {
-    method: "POST",
-    mode: "cors",
-    cache: "force-cache",
-    next: { revalidate: 10 },
-    credentials: "same-origin",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
-    },
-    body: JSON.stringify(options),
-  })
+  await fetch(
+    `https://eu.ipaas.samsung.com/eu/gcic/GetBranchStockOverview/1.0/ImportSet`,
+    {
+      method: "POST",
+      mode: "cors",
+      cache: "force-cache",
+      next: { revalidate: 10 },
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
+      },
+      body: JSON.stringify(options),
+    }
+  )
     .then((response) => response.json())
     .then((data) => {
       setStockData(data);

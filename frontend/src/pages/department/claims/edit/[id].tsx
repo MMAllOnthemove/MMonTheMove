@@ -1,12 +1,9 @@
 // External imports
-import { useToast } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 // Custom imports
-import { getProfile } from "@/functions/getLoggedInUserProfile";
-import { Alert } from "@/components/Alert";
 import { fetchCurrentUser } from "@/hooks/useFetch";
 import Head from "next/head";
 // Dynamic imports
@@ -90,66 +87,70 @@ function EditClaim() {
       </Head>
       <main>
         <section className="section container mx-auto p-2 lg:p-1">
-          <>
-            <span className="flex items-center justify-between my-2">
-              <Button
-                type="button"
-                onClick={() => history.back()}
-                className="bg-[#082f49]   font-semibold text-white dark:text-[#eee] hover:bg-blue-800 rounded-sm text-sm p-2.5 text-center"
-                text="Back"
-              />
-
-              <h1 className="text-center text-gray-900 dark:text-[#eee] font-semibold lg:text-2xl">
-                Editing service order:{" "}
-                <span className="text-sky-700 font-bold">
-                  {showServiceOrderNumber}
-                </span>
-              </h1>
-
-              <div />
-            </span>
-            <h3 className="text-center dark:text-[#eee] font-semibold my-2">
-              Editing as:{" "}
-              <span className="text-sky-700  font-bold">{userData}</span>
-            </h3>
-            <hr />
-
-            <form
-              className="my-3"
-              onSubmit={updateData}
-              id="updateclaimsGSPNStatusForm"
-            >
-              <span>
-                <label
-                  htmlFor="inHouseStatus"
-                  className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
-                >
-                  In house status
-                </label>
-                <select
-                  value={claimsGSPNStatus}
-                  onChange={(e) => setClaimsGSPNStatus(e.target.value)}
-                  id="inHouseStatus"
-                  className="mb-2 cursor-pointer bg-white dark:bg-[#22303C] dark:text-[#eee]  border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                >
-                  <option disabled value="">
-                    Choose status
-                  </option>
-                  <option value="Engineer Assigned">Engineer Assigned</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Repair Complete">Repair Complete</option>
-                  <option value="Goods Delivered">Goods Delivered</option>
-                </select>
-              </span>
-              <span>
+          {!userData ? (
+            <NotLoggedIn />
+          ) : (
+            <>
+              <span className="flex items-center justify-between my-2">
                 <Button
-                  type="submit"
-                  className="bg-[#082f49] w-full dark:text-[#eee] font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
-                  text="Update"
+                  type="button"
+                  onClick={() => history.back()}
+                  className="bg-[#082f49]   font-semibold text-white dark:text-[#eee] hover:bg-blue-800 rounded-sm text-sm p-2.5 text-center"
+                  text="Back"
                 />
+
+                <h1 className="text-center text-gray-900 dark:text-[#eee] font-semibold lg:text-2xl">
+                  Editing service order:{" "}
+                  <span className="text-sky-700 font-bold">
+                    {showServiceOrderNumber}
+                  </span>
+                </h1>
+
+                <div />
               </span>
-            </form>
-          </>
+              <h3 className="text-center dark:text-[#eee] font-semibold my-2">
+                Editing as:{" "}
+                <span className="text-sky-700  font-bold">{userData}</span>
+              </h3>
+              <hr />
+
+              <form
+                className="my-3"
+                onSubmit={updateData}
+                id="updateclaimsGSPNStatusForm"
+              >
+                <span>
+                  <label
+                    htmlFor="inHouseStatus"
+                    className="block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]"
+                  >
+                    In house status
+                  </label>
+                  <select
+                    value={claimsGSPNStatus}
+                    onChange={(e) => setClaimsGSPNStatus(e.target.value)}
+                    id="inHouseStatus"
+                    className="mb-2 cursor-pointer bg-white dark:bg-[#22303C] dark:text-[#eee]  border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  >
+                    <option disabled value="">
+                      Choose status
+                    </option>
+                    <option value="Engineer Assigned">Engineer Assigned</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Repair Complete">Repair Complete</option>
+                    <option value="Goods Delivered">Goods Delivered</option>
+                  </select>
+                </span>
+                <span>
+                  <Button
+                    type="submit"
+                    className="bg-[#082f49] w-full dark:text-[#eee] font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm px-5 py-2.5 text-cente my-3"
+                    text="Update"
+                  />
+                </span>
+              </form>
+            </>
+          )}
         </section>
       </main>
     </>

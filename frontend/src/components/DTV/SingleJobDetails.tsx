@@ -62,21 +62,10 @@ function SingleJobDetails({ id }: ISingleJobDetails) {
         }
       );
       if (!response.ok) {
-        toast({
-          title: "Job failed.",
-          description: "Job already exists.",
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
+        window.alert("Job failed, try again");
       } else {
-        toast({
-          title: "Job added.",
-          description: "You've added a job to the table.",
-          status: "success",
-          duration: 9000,
-          isClosable: true,
-        });
+        window.alert("You've added a job to the table.");
+
         router.push("/department/dtv/");
       }
     } catch (error) {}

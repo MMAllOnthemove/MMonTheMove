@@ -28,6 +28,7 @@ import PageTitle from "@/components/PageTitle";
 import DTVAddTaskModal from "@/components/PopupModal/dtv-add-task-modal";
 import { fetchCurrentUser, fetchDTVTableData } from "@/hooks/useFetch";
 import React from "react";
+import NotLoggedIn from "@/components/NotLoggedIn";
 
 // Dynamic imports
 const Pagination = dynamic(() => import("@/components/Table/Pagination"));
@@ -231,122 +232,129 @@ function DTVHome() {
         <meta name="robots" content="noindex"></meta>
         <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
-
+      <Navbar />
       <main className="space-between-navbar-and-content">
         <Container>
           <PageTitle title="Management" hasSpan={true} spanText={"DTV"} />
-          <section className="flex justify-between items-center py-5">
-            <ManagementSearchForm
-              filtering={filtering}
-              setFiltering={(e) => setFiltering(e.target.value)}
-            />
-            <button
-              className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer rounded-md p-3 my-2 dark:text-[#eee]"
-              type="button"
-              role="button"
-              onClick={() => setIsDTVAddTaskModalVisible(true)}
-            >
-              Add job
-            </button>
-            {/* Called the modal here and added a post data prop that posts data on click */}
-            <DTVAddTaskModal
-              isVisible={isDTVAddTaskModalVisible}
-              title="Add DTV task"
-              content={
-                <DtvModalAddTaskContent
-                  searchServiceOrder={searchServiceOrder}
-                  setSearchServiceOrder={(e) =>
-                    setSearchServiceOrder(e.target.value)
-                  }
-                  warranty={warranty}
-                  ticket={ticket}
-                  setTicket={(e) => setTicket(e.target.value)}
-                  engineer={engineer}
-                  postData={postData}
+          {!userData ? (
+            <NotLoggedIn />
+          ) : (
+            <>
+              <section className="flex justify-between items-center py-5">
+                <ManagementSearchForm
+                  filtering={filtering}
+                  setFiltering={(e) => setFiltering(e.target.value)}
                 />
-              }
-              onClose={() => setIsDTVAddTaskModalVisible(false)}
-            />
-          </section>
-          <div className="max-h-[540px] overflow-y-auto">
-            <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-              <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] text-sm uppercase font-semibold">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id} className=" font-semibold">
-                    <th className="px-4 py-3 cursor-pointer  font-semibold">
-                      Action
-                    </th>
-
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <th
-                          key={header.id}
-                          className="px-4 py-3 cursor-pointer  font-semibold"
-                        >
-                          {header.isPlaceholder ? null : (
-                            <div
-                              {...{
-                                className: header.column.getCanSort()
-                                  ? "cursor-pointer select-none"
-                                  : "",
-                                onClick:
-                                  header.column.getToggleSortingHandler(),
-                              }}
-                            >
-                              {flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                              {{
-                                asc: " ▽",
-                                desc: " △",
-                              }[header.column.getIsSorted() as string] ?? null}
-                            </div>
-                          )}
+                <button
+                  className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer rounded-md p-3 my-2 dark:text-[#eee]"
+                  type="button"
+                  role="button"
+                  onClick={() => setIsDTVAddTaskModalVisible(true)}
+                >
+                  Add job
+                </button>
+                {/* Called the modal here and added a post data prop that posts data on click */}
+                <DTVAddTaskModal
+                  isVisible={isDTVAddTaskModalVisible}
+                  title="Add DTV task"
+                  content={
+                    <DtvModalAddTaskContent
+                      searchServiceOrder={searchServiceOrder}
+                      setSearchServiceOrder={(e) =>
+                        setSearchServiceOrder(e.target.value)
+                      }
+                      warranty={warranty}
+                      ticket={ticket}
+                      setTicket={(e) => setTicket(e.target.value)}
+                      engineer={engineer}
+                      postData={postData}
+                    />
+                  }
+                  onClose={() => setIsDTVAddTaskModalVisible(false)}
+                />
+              </section>
+              <div className="max-h-[540px] overflow-y-auto">
+                <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
+                  <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] text-sm uppercase font-semibold">
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <tr key={headerGroup.id} className=" font-semibold">
+                        <th className="px-4 py-3 cursor-pointer  font-semibold">
+                          Action
                         </th>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </thead>
 
-              <TableBody>
-                {table.getRowModel().rows.map((row: any) => (
-                  <tr
-                    key={row.id}
-                    onDoubleClick={(e) => handleUpdate(e, row.original.id)}
-                    className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
-                  >
-                    <td className="px-4 py-3  font-medium text-sm max-w-full">
-                      <button
-                        type="button"
-                        role="button"
-                        onClick={(e) => handleUpdate(e, row.original.id)}
-                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                      >
-                        Edit
-                      </button>
-                    </td>
-
-                    {row.getVisibleCells().map((cell: any) => (
-                      <td
-                        key={cell.id}
-                        className="px-4 py-3  font-medium text-sm max-w-full"
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
+                        {headerGroup.headers.map((header) => {
+                          return (
+                            <th
+                              key={header.id}
+                              className="px-4 py-3 cursor-pointer  font-semibold"
+                            >
+                              {header.isPlaceholder ? null : (
+                                <div
+                                  {...{
+                                    className: header.column.getCanSort()
+                                      ? "cursor-pointer select-none"
+                                      : "",
+                                    onClick:
+                                      header.column.getToggleSortingHandler(),
+                                  }}
+                                >
+                                  {flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext()
+                                  )}
+                                  {{
+                                    asc: " ▽",
+                                    desc: " △",
+                                  }[header.column.getIsSorted() as string] ??
+                                    null}
+                                </div>
+                              )}
+                            </th>
+                          );
+                        })}
+                      </tr>
                     ))}
-                  </tr>
-                ))}
-              </TableBody>
-            </table>
-          </div>
-          <div className="h-2" />
-          <Pagination table={table} />
-          <ToTopButton />
+                  </thead>
+
+                  <TableBody>
+                    {table.getRowModel().rows.map((row: any) => (
+                      <tr
+                        key={row.id}
+                        onDoubleClick={(e) => handleUpdate(e, row.original.id)}
+                        className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
+                      >
+                        <td className="px-4 py-3  font-medium text-sm max-w-full">
+                          <button
+                            type="button"
+                            role="button"
+                            onClick={(e) => handleUpdate(e, row.original.id)}
+                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                          >
+                            Edit
+                          </button>
+                        </td>
+
+                        {row.getVisibleCells().map((cell: any) => (
+                          <td
+                            key={cell.id}
+                            className="px-4 py-3  font-medium text-sm max-w-full"
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </TableBody>
+                </table>
+              </div>
+              <div className="h-2" />
+              <Pagination table={table} />
+              <ToTopButton />
+            </>
+          )}
         </Container>
       </main>
     </>

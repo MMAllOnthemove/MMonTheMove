@@ -1,5 +1,4 @@
 import { fetchCurrentUser } from "@/hooks/useFetch";
-import { useToast } from "@chakra-ui/react";
 import moment from "moment";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
@@ -36,8 +35,6 @@ function CreateChecklistContent({ id }: IProps) {
   }
 
   const router = useRouter();
-  // Chakra ui toast
-  const toast = useToast();
 
   const onSubmitUserInput = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -72,6 +69,7 @@ function CreateChecklistContent({ id }: IProps) {
         `${process.env.NEXT_PUBLIC_BACKEND_DTV}checklist/create`,
         requestOptions
       );
+      console.log("checklist response", response);
       if (response.ok) {
         await response.json();
         window.alert("Checklist added.");

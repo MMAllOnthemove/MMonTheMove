@@ -1,24 +1,19 @@
 // External imports
-import { useToast } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
-import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
+import { useState } from "react";
 // Custom imports
+import { logoutUserFunction } from "@/functions/getLoggedInUserProfile";
+import { fetchCurrentUser } from "@/hooks/useFetch";
 import {
   dtvNavItems,
   hhpNavItems,
   partsNavItems,
 } from "../../../public/_data/navbar";
 import logo from "../../../public/mmlogo.png";
-import {
-  getProfile,
-  logoutUserFunction,
-} from "@/functions/getLoggedInUserProfile";
-import { CurrentUserContext } from "../../../context/user";
 
 // Dynamic imports
 const Button = dynamic(() => import("../Buttons"));
@@ -31,38 +26,21 @@ type TUser = {
 };
 const Navbar = () => {
   const [isOpen, setIsopen] = useState(false);
-  const [userData, setUserData] = useState("");
+
   const ToggleSidebar = () => {
     isOpen === true ? setIsopen(false) : setIsopen(true);
   };
-  // Chakra ui toast
-  const toast = useToast();
   const router = useRouter();
   const [hhpSubMenuOpen, setHHPSubMenuOpen] = useState(false);
   const [partsSubMenuOpen, setPartsSubMenuOpen] = useState(false);
   const [dtvSubMenuOpen, setDtvSubMenuOpen] = useState(false);
-  // const [userData, setUserData] = useState("");
 
-  // const userData = useContext(CurrentUserContext);
-
-  // if(loading === true) return <p>Loading</p>
-
-  // Fetches logged in user's data
-  useEffect(() => {
-    getProfile({ setUserData });
-  }, [userData]);
-
+  const { userData } = fetchCurrentUser();
   const onSignout = async () => {
     // removeCookie("token");
     logoutUserFunction();
     router.push("/auth/");
-    toast({
-      title: "Logout successful",
-      description: "Bye.",
-      status: "success",
-      duration: 9000,
-      isClosable: true,
-    });
+    window.alert("Logged out");
   };
 
   return (
