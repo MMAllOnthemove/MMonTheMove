@@ -17,7 +17,7 @@ export const fetchDataCombinedData = () => {
       )
         .then((res) => res.json)
         .then((data) => {
-          console.log("data", hhpData);
+          // console.log("data", hhpData);
           setHHPData(hhpData);
         });
     };

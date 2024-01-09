@@ -55,7 +55,7 @@ const GetPartsJobsHistory = async (req, res) => {
     const { rows } = await pool.query("SELECT * FROM parts_department_history");
     res.json(rows);
   } catch (error) {
-    // console.log(err);
+    console.log(err);
   }
 };
 export { PostPartsJobHistory, GetPartsJobsHistory };

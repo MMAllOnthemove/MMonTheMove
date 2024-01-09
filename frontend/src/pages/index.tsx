@@ -1,8 +1,5 @@
-import Spinner from "@/components/Spinner";
 import dynamic from "next/dynamic";
-const HomeComponent = dynamic(() => import("@/components/Home"), {
-  loading: () => <Spinner />,
-});
+const HomeComponent = dynamic(() => import("@/components/Home"));
 const Home = () => {
   return <HomeComponent />;
 };

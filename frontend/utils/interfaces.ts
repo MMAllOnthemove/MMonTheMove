@@ -21,9 +21,9 @@ export interface Itable {
     qc_completed_date: string | boolean;
     repair_completed_date: string | boolean;
     department: string;
-    reassignengineer: string;
-    partslist: string[];
-    isqcchecked: string | boolean;
+    reassign_engineer: string;
+    parts_list: string[];
+    is_qc_checked: string | boolean;
     qc_comment: string | boolean;
     date_modified: string;
     gspn_status: string;
@@ -245,6 +245,7 @@ export interface IPopupModal {
     content: string | number | boolean | React.ReactNode | any;
     onClose: () => void;
     footer?: string | number | boolean | React.ReactNode | any;
+
 }
 
 export interface ISingleDTVJob {

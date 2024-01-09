@@ -1,5 +1,7 @@
+import React from "react";
+
 function Tests() {
-  return "";
+  return <div>Tests</div>;
 }
 
 export default Tests;

@@ -1,12 +1,4 @@
 // External imports
-import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Box,
-} from "@chakra-ui/react";
 
 // Custom imports
 import Button from "../Buttons";

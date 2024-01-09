@@ -1,81 +1,36 @@
-interface IAccordion {
-  defaultIndex: string | number;
-  onItemClick: (data: string | number) => void;
-  children: React.ReactNode | string | any;
-}
-interface IAccordionItem {
-  label: string | number;
-  isCollapsed: any;
-  handleClick: () => void;
-  children: React.ReactNode;
-}
+import React, { useState } from "react";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 
-const AccordionItem = ({
-  label,
-  isCollapsed,
-  handleClick,
+const Accordion = ({
   children,
-}: IAccordionItem) => {
+  title,
+}: {
+  children: React.ReactNode | any;
+  title: string;
+}) => {
+  const [expand, setExpand] = useState(false);
   return (
-    <>
-      <button className="accordion-button" onClick={handleClick}>
-        {label}
-      </button>
+    <div className="accordion mb-2 w-full cursor-pointer text-sm text-slate-800 font-bold border border-[#eee] rounded-sm">
       <div
-        className={`accordion-item bg-sky-800 ${
-          isCollapsed ? "collapsed" : "expanded"
-        }`}
-        aria-expanded={isCollapsed}
+        className="accordion-title-box p-2"
+        onClick={() => setExpand((expand) => !expand)}
       >
-        {children}
+        <span className="flex items-center justify-between">
+          {title}
+          {!expand ? (
+            <ChevronDownIcon className="h-6 w-6 text-slate-800" />
+          ) : (
+            <ChevronUpIcon className="h-6 w-6 text-slate-800" />
+          )}
+        </span>
+
+        <div className="accordion-clearfix"></div>
       </div>
-    </>
-  );
-};
-
-const Accordion = ({ defaultIndex, onItemClick, children }: IAccordion) => {
-  const [bindIndex, setBindIndex] = React.useState(defaultIndex);
-
-  const changeItem = (itemIndex: string | number) => {
-    if (typeof onItemClick === "function") onItemClick(itemIndex);
-    if (itemIndex !== bindIndex) setBindIndex(itemIndex);
-  };
-  const items = children.filter(
-    (item: any) => item.type.name === "AccordionItem"
-  );
-
-  return (
-    <>
-      {items.map(
-        ({
-          index,
-          label,
-          children,
-        }: {
-          index: string | number;
-          label: string | number;
-          children: React.ReactNode | any;
-        }) => (
-          <AccordionItem
-            isCollapsed={bindIndex !== index}
-            label={label}
-            handleClick={() => changeItem(index)}
-            children={children}
-          />
-        )
+      {expand && (
+        <div className="accordion-content p-2 shadow-sm">{children}</div>
       )}
-    </>
+    </div>
   );
 };
 
-//   Use:
-{
-  /* <Accordion defaultIndex="1" onItemClick={console.log}>
-  <AccordionItem label="A" index="1">
-    Lorem ipsum
-  </AccordionItem>
-  <AccordionItem label="B" index="2">
-    Dolor sit amet
-  </AccordionItem>
-</Accordion>; */
-}
+export default Accordion;

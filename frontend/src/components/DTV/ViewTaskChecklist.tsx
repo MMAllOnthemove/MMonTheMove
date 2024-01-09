@@ -1,47 +1,20 @@
 import React, { useEffect, useState } from "react";
 import ChecklistCard from "./ChecklistCard";
+import { fetchSingleDTVChecklist } from "@/hooks/useFetch";
 
 type TViewTaskChecklist = {
-  pageid: string | string[] | undefined;
+  id: string | string[] | undefined;
 };
 
-function ViewTaskChecklist({ pageid }: TViewTaskChecklist) {
-  const [getChecklistData, setChecklistData] = useState<string[] | any>([]);
-  const [getFilteredChecklistData, setFilteredChecklistData] = useState<
-    string[] | any
-  >([]);
-
-  useEffect(() => {
-    fetchCheckistForThisJob();
-  }, []);
-
-  async function fetchCheckistForThisJob() {
-    try {
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_DTV}checklist/get`, {
-        method: "GET",
-        cache: "default",
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          // console.log("data", data);
-          let filteredData = [...data]
-            .map((x) => x)
-            .filter((x) => x.id === pageid);
-          //   console.log("filteredData", filteredData);
-          setChecklistData(data);
-          setFilteredChecklistData(filteredData);
-          return data;
-        });
-    } catch (error) {
-      // console.log(error);
-    }
-  }
+function ViewTaskChecklist({ id }: TViewTaskChecklist) {
+  const { dtvSingleChecklist } = fetchSingleDTVChecklist();
+  const filterChecklistByJobId = [...dtvSingleChecklist].filter(
+    (x) => x.id === id
+  );
   return (
     <section>
       <h2 className="my-2 text-slate-800 font-semibold">Task Checklist</h2>
-      {getFilteredChecklistData.map((x: string | any) => (
+      {filterChecklistByJobId.map((x: string | any) => (
         <div key={x.checklist_id}>
           <div className="p-5 border rounded border-[#eee]">
             <p className="text-slate-800 font-normal">
