@@ -11,8 +11,9 @@ import {
 } from "@/hooks/useFetch";
 import Login from "@/components/Login";
 import Signup from "@/components/Signup";
-import { Tabs, TabItem } from "@/components/Tabs";
 import NotLoggedIn from "@/components/NotLoggedIn";
+import TabPane from "@/components/Tabs/TabPane";
+import Tabs from "@/components/Tabs";
 
 // Custom imports
 
@@ -67,19 +68,18 @@ function EditTask() {
 
                 <div />
               </span>
-              <Tabs defaultIndex="1" onTabClick={console.log}>
-                <TabItem label="Job Details" index="1">
+              <Tabs>
+                <TabPane title="Job Details">
                   <section className="my-5">
                     <SingleJobDetails id={id} />
                   </section>
-                </TabItem>
-                <TabItem
-                  label={`${
+                </TabPane>
+                <TabPane
+                  title={`${
                     filterChecklistByJobId?.length > 0
                       ? "View Checklist"
                       : "Create Checklist"
                   }`}
-                  index="2"
                 >
                   <section className="my-5">
                     {filterChecklistByJobId?.length > 0 ? (
@@ -88,7 +88,7 @@ function EditTask() {
                       <CreateChecklistContent id={id} />
                     )}
                   </section>
-                </TabItem>
+                </TabPane>
               </Tabs>
             </>
           )}
