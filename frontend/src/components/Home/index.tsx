@@ -13,7 +13,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Tabs, TabItem } from "../Tabs";
+
 // Custom imports
 import TableBody from "@/components/Table/TableBody";
 import columns from "@/components/Table/homepageTableColumns";
@@ -43,6 +43,8 @@ import { fetchCurrentUser, fetchTableData } from "@/hooks/useFetch";
 import React from "react";
 import PageTitle from "../PageTitle";
 import NotLoggedIn from "../NotLoggedIn";
+import TabPane from "../Tabs/TabPane";
+import Tabs from "../Tabs";
 
 function HomeComponent() {
   const router = useRouter();
@@ -347,8 +349,8 @@ function HomeComponent() {
                   isVisible={isHHPAddTaskModalVisible}
                   title="Add HHP task"
                   content={
-                    <Tabs defaultIndex="1" onTabClick={console.log}>
-                      <TabItem label="Use service order" index="1">
+                    <Tabs>
+                      <TabPane title="Use service order">
                         <HomepageModalTabOneContent
                           searchServiceOrder={searchServiceOrder}
                           setSearchServiceOrder={(e) =>
@@ -371,8 +373,8 @@ function HomeComponent() {
                           setDepartment={(e) => setDepartment(e.target.value)}
                           postData={postData}
                         />
-                      </TabItem>
-                      <TabItem label="Use ticket number" index="2">
+                      </TabPane>
+                      <TabPane title="Use ticket number">
                         <HomepageModalTabTwoContent
                           repairAPILoading={repairAPILoading}
                           searchTicket={searchTicket}
@@ -402,7 +404,7 @@ function HomeComponent() {
                           }
                           postRepairData={postRepairData}
                         />
-                      </TabItem>
+                      </TabPane>
                     </Tabs>
                   }
                   onClose={() => setIsHHPAddTaskModalVisible(false)}

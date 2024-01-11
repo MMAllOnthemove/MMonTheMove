@@ -1,10 +1,10 @@
-import React from "react";
-import dynamic from "next/dynamic";
-const Login = dynamic(() => import("@/components/Login"));
-const Signup = dynamic(() => import("@/components/Signup"));
+import Login from "@/components/Login";
+import Signup from "@/components/Signup";
+
 import Image from "next/image";
 import logo from "../../../public/mmlogo.png";
-import { Tabs, TabItem } from "@/components/Tabs";
+import TabPane from "@/components/Tabs/TabPane";
+import Tabs from "@/components/Tabs";
 
 function Auth() {
   return (
@@ -21,13 +21,13 @@ function Auth() {
               />
             </span>
           </div>
-          <Tabs defaultIndex="1" onTabClick={console.log}>
-            <TabItem label="Signup" index="1">
+          <Tabs>
+            <TabPane title="Signup">
               <Signup />
-            </TabItem>
-            <TabItem label="Login" index="2">
+            </TabPane>
+            <TabPane title="Login">
               <Login />
-            </TabItem>
+            </TabPane>
           </Tabs>
         </article>
       </main>
