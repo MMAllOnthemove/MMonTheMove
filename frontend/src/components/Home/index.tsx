@@ -19,7 +19,12 @@ import TableBody from "@/components/Table/TableBody";
 import columns from "@/components/Table/homepageTableColumns";
 import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
-import { Itable } from "../../../utils/interfaces";
+import { fetchCurrentUser, fetchTableData } from "@/hooks/useFetch";
+import React from "react";
+import NotLoggedIn from "../NotLoggedIn";
+import PageTitle from "../PageTitle";
+import Tabs from "../Tabs";
+import TabPane from "../Tabs/TabPane";
 
 // Dynamic imports
 const ManagementSearchForm = dynamic(
@@ -39,12 +44,6 @@ const Pagination = dynamic(() => import("@/components/Table/Pagination"));
 const HHPAddTaskModal = dynamic(
   () => import("../PopupModal/hhp-add-task-modal")
 );
-import { fetchCurrentUser, fetchTableData } from "@/hooks/useFetch";
-import React from "react";
-import PageTitle from "../PageTitle";
-import NotLoggedIn from "../NotLoggedIn";
-import TabPane from "../Tabs/TabPane";
-import Tabs from "../Tabs";
 
 function HomeComponent() {
   const router = useRouter();

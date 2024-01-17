@@ -15,12 +15,12 @@ const Accordion = ({
         className="accordion-title-box p-2"
         onClick={() => setExpand((expand) => !expand)}
       >
-        <span className="flex items-center justify-between">
+        <span className="flex items-center justify-between dark:text-[#eee]">
           {title}
           {!expand ? (
-            <ChevronDownIcon className="h-6 w-6 text-slate-800" />
+            <ChevronDownIcon className="h-6 w-6 text-slate-800 dark:text-[#eee]" />
           ) : (
-            <ChevronUpIcon className="h-6 w-6 text-slate-800" />
+            <ChevronUpIcon className="h-6 w-6 text-slate-800 dark:text-[#eee]" />
           )}
         </span>
 
