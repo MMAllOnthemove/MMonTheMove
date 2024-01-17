@@ -2,18 +2,16 @@
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // External imports
-import { getProfile } from "@/functions/getLoggedInUserProfile";
-import { partsModalState } from "@/atoms/partsModalAtom";
+import PageTitle from "@/components/PageTitle";
 import PartsModalTabOneContent from "@/components/PartsTable/PartsModalTableContent";
 import { columns } from "@/components/PartsTable/PartsTableColumns";
+import PartsAddTaskModal from "@/components/PopupModal/parts-add-task-modal";
 import Pagination from "@/components/Table/Pagination";
 import { getSOInfoAllFunctionForParts } from "@/functions/ipass_api";
-import { useSetRecoilState } from "recoil";
 import { fetchCurrentUser, getPartsDepatmentJobs } from "@/hooks/useFetch";
-import PartsAddTaskModal from "@/components/PopupModal/parts-add-task-modal";
 import {
   SortingState,
   flexRender,
@@ -23,7 +21,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import PageTitle from "@/components/PageTitle";
 
 // Dynamic imports
 const Button = dynamic(() => import("@/components/Buttons"));
@@ -245,17 +242,20 @@ function Parts() {
                       <span>
                         <label
                           htmlFor="partNumber"
-                          className="block mb-2 text-sm font-medium  text-gray-900 "
+                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-[#eee]"
                         >
-                          Parts you are issuing. <small>Max = 10</small>
+                          Parts you are issuing.{" "}
+                          <small className="dark:text-[#eee]">Max = 10</small>
                           <br />
-                          <small>e.g. LED - GHS7-0000..</small>
+                          <small className="dark:text-[#eee]">
+                            e.g. LED - GHS7-0000..
+                          </small>
                         </label>
                         {partsList.map((singleService, index) => (
                           <div key={index} className="services">
                             <div className="first-division flex items-center gap-4">
                               <input
-                                className="my-2 border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 p-2.5"
+                                className=" dark:bg-[#22303C] dark:text-[#eee] my-2 border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 p-2.5"
                                 name="partNumber"
                                 type="text"
                                 id="partNumber"
@@ -268,7 +268,7 @@ function Parts() {
                                 required
                               />
                               <input
-                                className="my-2 border  border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500  p-2.5"
+                                className="dark:bg-[#22303C] dark:text-[#eee] my-2 border  border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500  p-2.5"
                                 name="sealNumber"
                                 type="text"
                                 id="sealNumber"
@@ -281,7 +281,7 @@ function Parts() {
                               {partsList.length - 1 === index &&
                                 partsList.length < 10 && (
                                   <Button
-                                    className="my-2 bg-[#082f49]   font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
+                                    className="my-2 bg-[#082f49]  font-semibold text-[#eee] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
                                     type="button"
                                     onClick={handleServiceAdd}
                                     text="+"
@@ -308,7 +308,7 @@ function Parts() {
                           </div>
                         ))}
                       </span>
-                      <p className=" font-semibold my-2">
+                      <p className=" font-semibold my-2 dark:text-[#eee] dark:font-normal">
                         <small> Parts being handed out complete?</small>
                       </p>
                       <span className="flex items-center gap-3">
@@ -326,7 +326,7 @@ function Parts() {
                           />
                           <label
                             htmlFor="partsCheckedYes"
-                            className="cursor-pointer text-sm font-medium  text-gray-900"
+                            className="cursor-pointer text-sm font-medium  text-gray-900 dark:text-[#eee]"
                           >
                             Yes
                           </label>
@@ -337,13 +337,13 @@ function Parts() {
                             id="partsCheckedNo"
                             name="partsChecked"
                             value={"No"}
-                            className="mr-2 cursor-pointer accent-sky-700"
+                            className="mr-2 cursor-pointer accent-sky-700 dark:accent-[#22303C]"
                             checked={partsChecked === "No"}
                             onChange={(e) => setPartsChecked(e.target.value)}
                           />
                           <label
                             htmlFor="partsCheckedNo"
-                            className="cursor-pointer text-sm font-medium  text-gray-900"
+                            className="cursor-pointer text-sm font-medium text-gray-900 dark:text-[#eee]"
                           >
                             No
                           </label>
@@ -353,7 +353,7 @@ function Parts() {
                         <span>
                           <label
                             htmlFor="reasonForIncompleteParts"
-                            className="block mb-2 text-sm font-medium  text-gray-900"
+                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-[#eee]"
                           >
                             Reason for incomplete parts
                           </label>

@@ -19,11 +19,11 @@ const TabTitle = (props: Props): JSX.Element => {
   return (
     <div
       className={`inline-flex rounded-md shadow-small ${
-        isActive ? "active" : ""
+        isActive ? "border-b border-sky-500 rounded-none" : ""
       }`}
     >
       <button
-        className="transition ease-in-out px-4 py-1 text-sm text-slate-800 text-center font-medium border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-sky-500 dark:hover:text-gray-300"
+        className="transition ease-in-out px-4 py-1 text-sm text-slate-800 dark:text-[#eee] text-center font-medium border-b border-transparent rounded-t-lg hover:text-gray-600 hover:border-sky-500 dark:hover:text-gray-300"
         onClick={handleOnClick}
       >
         {title}

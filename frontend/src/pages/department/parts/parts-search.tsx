@@ -544,7 +544,7 @@ function PartsSearch() {
                       </p>
                     </section>
                   ) : (
-                    <p className=" text-center font-semibold text-slate-950">
+                    <p className=" text-center font-semibold text-slate-950 dark:text-[#8899a6]">
                       No data available
                     </p>
                   )}
