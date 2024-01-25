@@ -203,6 +203,7 @@ function HomeComponent() {
         body: JSON.stringify(postThisInfo),
       }
     );
+    console.log("response for adding gspn atasks", response);
     if (
       searchServiceOrder.length < 10 ||
       searchServiceOrder.length < 0 ||

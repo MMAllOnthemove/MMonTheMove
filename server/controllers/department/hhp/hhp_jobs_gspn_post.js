@@ -29,7 +29,7 @@ const PostJobs = async (req, res) => {
     );
     if (findIfExists.rowCount > 0) {
       // Checking the ticket input as it is the one where user puts in info
-      res.status(400).json("Service order already exists!");
+      res.status(400).send("Service order already exists!");
       console.log("Cell exists");
     } else {
       await pool.query(

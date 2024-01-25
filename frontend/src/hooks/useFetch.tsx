@@ -225,3 +225,20 @@ export const getPartsDepatmentJobs = () => {
 
   return { partsDepartmentData };
 };
+
+export const fetchOTP = () => {
+  const [getOTP, setGetOTP] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_OTP}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setGetOTP(data);
+        });
+    };
+    fetchData();
+  }, [getOTP]);
+
+  return { getOTP };
+};
