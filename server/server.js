@@ -22,6 +22,8 @@ import { router as dtvTasks } from "./routes/department/dtv/tasks.js";
 import { router as dtvChecklists } from "./routes/department/dtv/checklists.js";
 import { router as dtvAnalytics } from "./routes/department/dtv/analytics.js";
 
+import { router as otpRoute } from "./routes/department/hhp/otp.js";
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(
@@ -42,6 +44,9 @@ app.disable("x-powered-by");
 
 // Authentication
 app.use("/auth", auth);
+
+// OTP
+app.use("/otp", otpRoute);
 
 // HHP jobs
 app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, hhpjobsrouter);

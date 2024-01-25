@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 // Custom imports
 import { logoutUserFunction } from "@/functions/getLoggedInUserProfile";
-import { fetchCurrentUser } from "@/hooks/useFetch";
+import { fetchCurrentUser, fetchOTP } from "@/hooks/useFetch";
 import {
   dtvNavItems,
   hhpNavItems,
@@ -36,6 +36,7 @@ const Navbar = () => {
   const [dtvSubMenuOpen, setDtvSubMenuOpen] = useState(false);
 
   const { userData } = fetchCurrentUser();
+  const { getOTP } = fetchOTP();
   const onSignout = async () => {
     // removeCookie("token");
     logoutUserFunction();
@@ -62,23 +63,26 @@ const Navbar = () => {
           {!userData || userData === "" ? (
             <div />
           ) : (
-            <button
-              role="button"
-              id="burger_menu"
-              className="burger_menu"
-              aria-label="burger_menu"
-              onClick={ToggleSidebar}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                className="dark:fill-white"
+            <div className="flex items-center gap-1">
+              <button
+                role="button"
+                id="burger_menu"
+                className="burger_menu"
+                aria-label="burger_menu"
+                onClick={ToggleSidebar}
               >
-                <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path>
-              </svg>
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  className="dark:fill-white"
+                >
+                  <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path>
+                </svg>
+              </button>
+              <p className="text-md font-medium dark:text-[#eee] text-slate-800">{getOTP}</p>
+            </div>
           )}
           <div className="flex items-center gap-1">
             <ThemeChangerButton />
