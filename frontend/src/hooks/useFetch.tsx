@@ -226,3 +226,18 @@ export const fetchOTP = () => {
 
   return { getOTP };
 };
+
+export const fetchAllOTP = () => {
+  const [getAllOTP, setGetAllOTP] = useState<string | any>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_OTP}/get/all`)
+        .then((response) => response.json())
+        .then((response) => setGetAllOTP(response));
+    };
+    fetchData();
+  }, [getAllOTP]);
+
+  return { getAllOTP };
+};
