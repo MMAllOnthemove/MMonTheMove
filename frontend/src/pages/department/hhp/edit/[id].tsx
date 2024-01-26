@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useCallback, useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 // Custom imports
 import { getSOStatusDescLatest } from "@/functions/ipass_api";
@@ -96,7 +97,7 @@ function EditRow() {
   const updateData = async (e: any) => {
     e.preventDefault();
     router.push("/");
-    window.alert("Edited");
+    toast.success("Successfully edited!");
     dateAdded;
     const putThisInfo = {
       engineerAnalysis,
@@ -112,7 +113,6 @@ function EditRow() {
       dateModified,
       warranty,
     };
-    // console.log("Update", putThisInfo);
     const putMethod = {
       method: "PUT", // Method itself
       headers: {
@@ -172,7 +172,7 @@ function EditRow() {
 
   async function deleteData() {
     router.push("/");
-    window.alert("Deleted");
+    toast.success("Deleted");
     const response = await UnitFinder.delete(`/${id}`);
   }
 

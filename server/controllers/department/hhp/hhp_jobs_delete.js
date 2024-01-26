@@ -13,9 +13,7 @@ const DeleteJob = async (req, res) => {
     } else if (res.status === 404 || res.status === 405) {
       res.send("Failed to delete");
     }
-  } catch (error) {
-    // console.log(error);
-  }
+  } catch (error) {}
 };
 
 export default DeleteJob;

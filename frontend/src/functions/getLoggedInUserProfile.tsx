@@ -14,10 +14,6 @@ export const getUserInfo = () => {
     },
     body: JSON.stringify({}),
   }).then((res) => res.json);
-
-  // const getUserData = await res.json();
-  // // console.log("getUserData", getUserData);
-  // if (getUserData !== "") setUserData(getUserData.email);
 };
 export const getProfile = async ({ setUserData }: IgetProfile) => {
   try {
@@ -35,11 +31,8 @@ export const getProfile = async ({ setUserData }: IgetProfile) => {
     );
 
     const getUserData = await res.json();
-    // console.log("getUserData", getUserData);
     if (getUserData !== "") setUserData(getUserData.email);
-  } catch (err) {
-    // console.log(err);
-  }
+  } catch (err) {}
 };
 
 export const logoutUserFunction = async () => {
@@ -50,7 +43,5 @@ export const logoutUserFunction = async () => {
         credentials: "include",
       }
     );
-  } catch (err) {
-    console.log(err);
-  }
+  } catch (err) {}
 };

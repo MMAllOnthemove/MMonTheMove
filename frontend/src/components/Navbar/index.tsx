@@ -14,6 +14,7 @@ import {
   partsNavItems,
 } from "../../../public/_data/navbar";
 import logo from "../../../public/mmlogo.png";
+import toast from "react-hot-toast";
 
 // Dynamic imports
 const Button = dynamic(() => import("../Buttons"));
@@ -41,7 +42,7 @@ const Navbar = () => {
     // removeCookie("token");
     logoutUserFunction();
     router.push("/auth/");
-    window.alert("Logged out");
+    toast.success("Logged out");
   };
 
   return (
@@ -81,7 +82,9 @@ const Navbar = () => {
                   <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path>
                 </svg>
               </button>
-              <p className="text-md font-medium dark:text-[#eee] text-slate-800">{getOTP}</p>
+              <p className="text-md font-medium dark:text-[#eee] text-slate-800">
+                {getOTP && getOTP.map((latest: any) => latest?.otp)}
+              </p>
             </div>
           )}
           <div className="flex items-center gap-1">

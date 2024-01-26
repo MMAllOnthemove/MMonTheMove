@@ -30,7 +30,6 @@ const PostJobs = async (req, res) => {
     if (findIfExists.rowCount > 0) {
       // Checking the ticket input as it is the one where user puts in info
       res.status(400).send("Service order already exists!");
-      console.log("Cell exists");
     } else {
       await pool.query(
         "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket, department, job_added_by, gspn_status, date_added) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) returning *",
@@ -57,9 +56,7 @@ const PostJobs = async (req, res) => {
       );
       res.status(201).json("Job added, thank you!");
     }
-  } catch (err) {
-    console.log("Create task error: ", err);
-  }
+  } catch (err) {}
 };
 
 export default PostJobs;

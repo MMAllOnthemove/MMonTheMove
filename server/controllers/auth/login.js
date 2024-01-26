@@ -39,7 +39,6 @@ const LoginUser = async (req, res) => {
       .status(200)
       .json({ message: "User identified", token: jwtToken });
   } catch (err) {
-    console.log("loginUser", err);
     res.status(500).json("Server error");
   }
 };

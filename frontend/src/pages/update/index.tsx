@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
+import toast, { Toaster } from "react-hot-toast";
 
 interface IOtpValues {
   otp: string;
@@ -10,14 +11,12 @@ function Update() {
   const [otp, setOtp] = useState("");
 
   const update = async () => {
-    await fetch(`${process.env.NEXT_API_IPIFY}`)
+    await fetch(`${process.env.NEXT_PUBLIC_API_IPIFY}`)
       .then((res) => res.json())
       .then((data) => {
-        // console.log(data.ip);
         setIp(data?.ip);
       });
   };
-  // console.log("update", update);
   useEffect(() => {
     update();
   }, [ipAddress]);
@@ -28,30 +27,31 @@ function Update() {
       otp,
     };
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_OTP}`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_OTP}/post`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
-        window.alert("Successful");
+        toast.success("Successfully created!");
       } else if (!response.ok) {
-        window.alert("Error, try gain");
+        toast.error("Error, try gain");
         return;
       }
-    } catch (error) {
-      // console.log(error);
-    }
+    } catch (error) {}
   };
 
   return (
     <main className="updatePage">
-      <article className="">
+      <article className="updatePageCard">
         <span className="mb-3 mt-4 form_input_row">
           <label
             htmlFor="otp"

@@ -42,9 +42,7 @@ const CountAllTimeCompleteJobsAllTime = async (req, res) => {
     //   fromCache: isCached,
     //   data: newResults.rows,
     // });
-  } catch (err) {
-    // console.log(err);
-  }
+  } catch (err) {}
 };
 
 export default CountAllTimeCompleteJobsAllTime;

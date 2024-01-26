@@ -61,7 +61,6 @@ const CreateTask = async (req, res) => {
       ifSerialNumberExists.rowCount > 0
     ) {
       res.status(400).json("Job exists");
-      console.log("Job exists");
     } else {
       const postData = await pool.query(
         "INSERT INTO driver_jobs (acknowledge_date, acknowledge_time, engineer_assign_date, engineer_assign_time, engineer, model, remark, serial_number, service_order_no, created_date, created_time, warranty, warranty_repair_type, fault, imei, customer_email, customer_first_name, customer_last_name, customer_street_address, customer_street_address_two, customer_city, customer_country, customer_province, customer_district, customer_homephone, customer_mobilephone, ticket, ticket_number_id, parts_list, added_on, job_status, engineer_phone_number, added_by) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33) returning *",
@@ -103,9 +102,6 @@ const CreateTask = async (req, res) => {
       );
       res.status(201).json({ created: true });
     }
-  } catch (e) {
-    // console.log(dbQuery.rows[0]);
-    console.log("Create task error: ", e);
-  }
+  } catch (e) {}
 };
 export default CreateTask;

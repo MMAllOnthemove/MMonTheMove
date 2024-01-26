@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 // Custom imports
 import PageTitle from "@/components/PageTitle";
@@ -72,10 +73,10 @@ function Reports() {
       }
     );
     if (!response.ok || bookingAgent === "") {
-      window.alert("Try again");
+      toast.error("Please try again");
     } else {
       await response.json();
-      window.alert("Job added");
+      toast.success("Successfully created!");
       // return json;
     }
   };

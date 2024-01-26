@@ -7,10 +7,7 @@ const GetActiveTasks = async (req, res) => {
     );
 
     res.json(rows);
-  } catch (e) {
-    // console.log("newResults.rows", newResults.rows);
-    console.log(e);
-  }
+  } catch (e) {}
 };
 const GetTasksForAnalytics = async (req, res) => {
   try {
@@ -18,9 +15,7 @@ const GetTasksForAnalytics = async (req, res) => {
       "SELECT engineer, job_status::TEXT AS job_status, DATE(added_on)::TEXT AS added_on FROM driver_jobs"
     );
     res.json(rows);
-  } catch (error) {
-    // console.log(error);
-  }
+  } catch (error) {}
 };
 
 const GetTaskById = async (req, res) => {
@@ -31,9 +26,7 @@ const GetTaskById = async (req, res) => {
       [id]
     );
     res.json(rows);
-  } catch (error) {
-    // console.log(error);
-  }
+  } catch (error) {}
 };
 
 export { GetActiveTasks, GetTaskById, GetTasksForAnalytics };
