@@ -3,6 +3,7 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 // Custom imports
 import { ILoginFormValues } from "../../../utils/interfaces";
@@ -45,15 +46,13 @@ const Login = () => {
 
               const data = await response.json();
               if (response.ok) {
-                window.alert("Successful");
+                toast.success("Successful");
                 router.push("/");
               } else {
-                window.alert("Error, try gain");
+                toast.error("Error, try gain");
                 return;
               }
-            } catch (error) {
-              // console.log(error);
-            }
+            } catch (error) {}
           }, 1000);
         }}
       >

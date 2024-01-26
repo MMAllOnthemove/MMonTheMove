@@ -24,7 +24,6 @@ function PartsSearch() {
   // Fetches logged in user's data
   const { userData } = fetchCurrentUser();
   const debouncedSearch = useDebounce(search, 500);
-  // console.log("debouncedSearch", debouncedSearch);
 
   useEffect(() => {
     getPartsInfoFunction({

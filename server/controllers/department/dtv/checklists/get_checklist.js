@@ -38,9 +38,7 @@ const GetChecklists = async (req, res) => {
     }
 
     res.json(newResults.rows);
-  } catch (e) {
-    console.log(e);
-  }
+  } catch (e) {}
 };
 
 export default GetChecklists;

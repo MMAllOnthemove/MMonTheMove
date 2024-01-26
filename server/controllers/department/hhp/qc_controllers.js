@@ -38,9 +38,7 @@ const QCEngineerJobs = async (req, res) => {
     }
 
     res.json(newResults.rows);
-  } catch (err) {
-    // console.log(err);
-  }
+  } catch (err) {}
 };
 
 // QC CHECKED ALL JOBS TODAY
@@ -70,9 +68,7 @@ const QCEngineerJobsToday = async (req, res) => {
     }
 
     res.json(newResults.rows);
-  } catch (err) {
-    // console.log(err);
-  }
+  } catch (err) {}
 };
 
 export { QCEngineerJobs, QCEngineerJobsToday };

@@ -44,7 +44,6 @@ const SignupUser = async (req, res) => {
       return res.status(400).json("Signup failed; Invalid email or password");
     }
   } catch (err) {
-    console.log(err);
     res.status(500).json("Server error");
   }
 };

@@ -9,8 +9,6 @@ const UpdateTaskById = async (req, res) => {
       [isJobComplete, updatedByWho, jobComment, dateUpdated, id]
     );
     res.json(rows);
-  } catch (error) {
-    console.log("update rows error", error);
-  }
+  } catch (error) {}
 };
 export default UpdateTaskById;

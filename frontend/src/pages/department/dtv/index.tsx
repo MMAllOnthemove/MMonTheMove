@@ -12,6 +12,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 // Custom imports
 import { columns } from "@/components/DTV/table-columns";
@@ -193,7 +194,7 @@ function DTVHome() {
     );
     if (!response.ok) {
       setIsDTVAddTaskModalVisible(false);
-      window.alert("Task failed, try again");
+      toast.error("Task failed, try again");
     } else {
       setIsDTVAddTaskModalVisible(false);
       await response.json();

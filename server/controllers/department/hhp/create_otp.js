@@ -19,7 +19,6 @@ const createOTP = async (req, res) => {
       [created_at]
     );
     if (hasOTPBeenUsed.rowCount > 0 || wasOTPCreatedToday.rowCount > 0) {
-      console.log("used before");
       res.status(400).send("OTP has been used before");
     } else {
       await pool.query(
@@ -28,9 +27,7 @@ const createOTP = async (req, res) => {
       );
       res.status(201).json("otp created, thank you!");
     }
-  } catch (e) {
-    console.log("error creating otp", e);
-  }
+  } catch (err) {}
 };
 
 export default createOTP;

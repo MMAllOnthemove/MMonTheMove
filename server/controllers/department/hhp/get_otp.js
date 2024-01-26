@@ -5,10 +5,9 @@ const getOTP = async (req, res) => {
     const { rows } = await pool.query(
       "SELECT otp from otp WHERE created_at::date = current_date"
     );
-    res.json(rows[0].otp);
-  } catch (error) {
-    console.log("error getting otp");
-  }
+
+    res.json(rows);
+  } catch (error) {}
 };
 
 export default getOTP;

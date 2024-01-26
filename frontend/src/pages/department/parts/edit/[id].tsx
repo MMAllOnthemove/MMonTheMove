@@ -1,15 +1,14 @@
 // External imports
-
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 // Custom imports
-import UnitFinder from "@/pages/api/UnitFinder";
-import { getProfile } from "@/functions/getLoggedInUserProfile";
-import { partsStatus } from "../../../../../public/_data/statuses";
 import { fetchCurrentUser, fetchPartsTableDataHistory } from "@/hooks/useFetch";
+import UnitFinder from "@/pages/api/UnitFinder";
+import { partsStatus } from "../../../../../public/_data/statuses";
 
 // Dynamic imports
 const Button = dynamic(() => import("@/components/Buttons"));
@@ -78,7 +77,7 @@ function PartsEdit() {
   const updateData = async (e: any) => {
     e.preventDefault();
     router.push("/department/parts");
-    window.alert("Job edited.");
+    toast.success("Job edited");
     const putThisInfo = {
       dispatchAnalysis,
       inHouseStatus,
@@ -86,7 +85,6 @@ function PartsEdit() {
       dispatchBy,
       id,
     };
-    // console.log(putThisInfo);
     const putMethod = {
       method: "PUT", // Method itself
       headers: {
@@ -146,7 +144,7 @@ function PartsEdit() {
 
   async function deleteData() {
     router.push("/department/parts");
-    window.alert("Job deleted");
+    toast.success("Successfully deleted!");
     const response = await UnitFinder.delete(`/parts/delete/${id}`);
   }
 

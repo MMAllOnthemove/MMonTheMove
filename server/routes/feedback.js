@@ -17,10 +17,7 @@ let redisClient;
 router.post("/", async (req, res) => {
   try {
     await pool.query("SELECT * FROM feedback ORDER BY date_created");
-    // console.log(rows[0]);
-  } catch (err) {
-    // console.log(err);
-  }
+  } catch (err) {}
 });
 
 // Get feedback to database
@@ -53,9 +50,7 @@ router.get("/", async (req, res) => {
       fromCache: isCached,
       data: newResults.rows,
     });
-  } catch (err) {
-    // console.log(err);
-  }
+  } catch (err) {}
 });
 
 export { router };

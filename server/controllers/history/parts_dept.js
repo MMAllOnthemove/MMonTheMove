@@ -46,16 +46,12 @@ const PostPartsJobHistory = async (req, res) => {
       ]
     );
     res.status(201).json("Job added, thank you!");
-  } catch (e) {
-    // console.log("parts post history error", e);
-  }
+  } catch (e) {}
 };
 const GetPartsJobsHistory = async (req, res) => {
   try {
     const { rows } = await pool.query("SELECT * FROM parts_department_history");
     res.json(rows);
-  } catch (error) {
-    console.log(err);
-  }
+  } catch (error) {}
 };
 export { PostPartsJobHistory, GetPartsJobsHistory };

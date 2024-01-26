@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 // External imports
 import PageTitle from "@/components/PageTitle";
@@ -151,7 +152,6 @@ function Parts() {
       partsChecked,
       reasonForIncompleteParts,
     };
-    // console.log(postThisInfo);
     const response1 = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/parts/post`,
       {
@@ -160,14 +160,13 @@ function Parts() {
         body: JSON.stringify(postThisInfo),
       }
     );
-    // console.log("Post parts response", response1);
     if (!response1.ok) {
       setIsPartsAddJobVisible(false);
-      window.alert("Please try again");
+      toast.error("Please try again");
     } else {
       setIsPartsAddJobVisible(false);
       await response1.json();
-      window.alert("Job added");
+      toast.success("Successfully created!");
 
       // window.location.reload();
     }
@@ -181,7 +180,9 @@ function Parts() {
       }
     )
       .then((res) => res.json())
-      .then((data) => console.log("data2", data));
+      .then((data) => {
+        //
+      });
   };
 
   return (

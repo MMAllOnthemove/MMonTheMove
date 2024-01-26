@@ -12,7 +12,8 @@ import {
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 // Custom imports
 import TableBody from "@/components/Table/TableBody";
@@ -127,23 +128,25 @@ function HomeComponent() {
   // Setting the user to email user is logged in with
   let repairUser = userData;
 
-  getSOInfoAllFunction({
-    searchServiceOrder,
-    setServiceOrder,
-    setCreatedDate,
-    setCreatedTime,
-    setModel,
-    setWarranty,
-    setFault,
-    setImei,
-    setSerialNumber,
-    setEngineerAssignDate,
-    setEngineerAssignTime,
-    setGSPNStatus,
-  });
+  useCallback(() => {
+    getSOInfoAllFunction({
+      searchServiceOrder,
+      setServiceOrder,
+      setCreatedDate,
+      setCreatedTime,
+      setModel,
+      setWarranty,
+      setFault,
+      setImei,
+      setSerialNumber,
+      setEngineerAssignDate,
+      setEngineerAssignTime,
+      setGSPNStatus,
+    });
+  }, []);
 
   // Fetches combined data
-  useEffect(() => {
+  useCallback(() => {
     getRepair({
       searchTicket,
       setRepairFault,
@@ -192,7 +195,6 @@ function HomeComponent() {
       GSPNStatusGetLastElement,
       dateAdded,
     };
-    // console.log(postThisInfo);
     let regexNumber = /^[0-9]+$/;
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
@@ -203,24 +205,23 @@ function HomeComponent() {
         body: JSON.stringify(postThisInfo),
       }
     );
-    console.log("response for adding gspn atasks", response);
     if (
       searchServiceOrder.length < 10 ||
       searchServiceOrder.length < 0 ||
       searchServiceOrder.length === 0
     ) {
       setIsHHPAddTaskModalVisible(false);
-      window.alert("Not enough characters.");
+      toast.error("Not enough characters.");
     } else if (!searchServiceOrder.match(regexNumber)) {
       setIsHHPAddTaskModalVisible(false);
-      window.alert("Only enter numeric characters.");
+      toast.error("Only enter numeric characters.");
     } else if (!response.ok) {
       setIsHHPAddTaskModalVisible(false);
-      window.alert("Please try again.");
+      toast.error("Please try again.");
     } else {
       setIsHHPAddTaskModalVisible(false);
       await response.json();
-      window.alert("You've added a job to the table.");
+      toast.success("Successfully created!");
       // window.location.reload();
     }
 
@@ -236,7 +237,6 @@ function HomeComponent() {
     )
       .then((res) => res.json())
       .then((data) => {});
-    // console.log("data2", data)
   };
 
   // Post repair data
@@ -262,7 +262,6 @@ function HomeComponent() {
       GSPNStatusGetLastElement,
       dateAdded,
     };
-    // console.log(postThisInfo);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/repair`,
       {
@@ -275,11 +274,11 @@ function HomeComponent() {
     );
     if (!response.ok) {
       setIsHHPAddTaskModalVisible(false);
-      window.alert("Please try again");
+      toast.error("Please try again");
     } else {
       await response.json();
       setIsHHPAddTaskModalVisible(false);
-      window.alert("You've added a job to the table");
+      toast.success("Successfully created!");
     }
 
     // This part will deposit the same data into our history table
@@ -292,9 +291,7 @@ function HomeComponent() {
       }
     )
       .then((res) => res.json())
-      .then((data) => {
-        // console.log("data2", data);
-      });
+      .then((data) => {});
   };
 
   // Redirects user to the edit table page

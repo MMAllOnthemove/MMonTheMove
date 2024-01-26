@@ -7,9 +7,7 @@ const GetBookingAgentsJobs = async (req, res) => {
       "SELECT DISTINCT booking_agent, id, created_date, service_order_no from booking_agents_jobs"
     );
     res.json(rows);
-  } catch (err) {
-    // console.log(err);
-  }
+  } catch (err) {}
 };
 
 export default GetBookingAgentsJobs;
