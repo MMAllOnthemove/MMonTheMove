@@ -48,7 +48,7 @@ export async function getSOInfoAllFunction({
   );
 
   const data = await response.json();
-
+  console.log(data);
   setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
   setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
   setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
@@ -173,6 +173,7 @@ export async function getPartsInfoFunction(props: IgetPartsInfo) {
     }
   );
   const data = await response.json();
+  // console.log(data);
   if (data) {
     props.setData(data);
   }
@@ -255,6 +256,7 @@ export async function getStockOverviewInfo({
     .then((response) => response.json())
     .then((data) => {
       setStockData(data);
+      // console.log(data);
     });
 }
 export async function getSOInfoAllFunctionForParts({
@@ -335,10 +337,13 @@ export async function getPartsInfoForServiceOrder(
       .then((data) => {
         if (data?.EtPartsInfo !== null) {
           const parts = data?.EtPartsInfo?.results?.map((i: any) => i.PartsNo);
+          console.log("parts", parts);
           return props.setPartsAssignedForJob(parts);
         } else {
           return props.setPartsAssignedForJob("") as any;
         }
       });
-  } catch (error) {}
+  } catch (error) {
+    console.log("Ipaas parts info error", error);
+  }
 }

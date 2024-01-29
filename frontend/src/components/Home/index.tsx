@@ -128,7 +128,7 @@ function HomeComponent() {
   // Setting the user to email user is logged in with
   let repairUser = userData;
 
-  useCallback(() => {
+  useEffect(() => {
     getSOInfoAllFunction({
       searchServiceOrder,
       setServiceOrder,
@@ -143,10 +143,10 @@ function HomeComponent() {
       setEngineerAssignTime,
       setGSPNStatus,
     });
-  }, []);
+  }, [searchServiceOrder]);
 
   // Fetches combined data
-  useCallback(() => {
+  useEffect(() => {
     getRepair({
       searchTicket,
       setRepairFault,
@@ -165,7 +165,7 @@ function HomeComponent() {
       searchServiceOrder,
       setTicket,
     });
-  }, []);
+  }, [searchTicket, searchServiceOrder]);
 
   // const user = session?.user?.email;
 
@@ -195,48 +195,49 @@ function HomeComponent() {
       GSPNStatusGetLastElement,
       dateAdded,
     };
-    let regexNumber = /^[0-9]+$/;
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
-      {
-        method: "POST",
-        cache: "default",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(postThisInfo),
-      }
-    );
-    if (
-      searchServiceOrder.length < 10 ||
-      searchServiceOrder.length < 0 ||
-      searchServiceOrder.length === 0
-    ) {
-      setIsHHPAddTaskModalVisible(false);
-      toast.error("Not enough characters.");
-    } else if (!searchServiceOrder.match(regexNumber)) {
-      setIsHHPAddTaskModalVisible(false);
-      toast.error("Only enter numeric characters.");
-    } else if (!response.ok) {
-      setIsHHPAddTaskModalVisible(false);
-      toast.error("Please try again.");
-    } else {
-      setIsHHPAddTaskModalVisible(false);
-      await response.json();
-      toast.success("Successfully created!");
-      // window.location.reload();
-    }
+    console.log("postThisInfo", postThisInfo);
+    // let regexNumber = /^[0-9]+$/;
+    // const response = await fetch(
+    //   `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
+    //   {
+    //     method: "POST",
+    //     cache: "default",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify(postThisInfo),
+    //   }
+    // );
+    // if (
+    //   searchServiceOrder.length < 10 ||
+    //   searchServiceOrder.length < 0 ||
+    //   searchServiceOrder.length === 0
+    // ) {
+    //   setIsHHPAddTaskModalVisible(false);
+    //   toast.error("Not enough characters.");
+    // } else if (!searchServiceOrder.match(regexNumber)) {
+    //   setIsHHPAddTaskModalVisible(false);
+    //   toast.error("Only enter numeric characters.");
+    // } else if (!response.ok) {
+    //   setIsHHPAddTaskModalVisible(false);
+    //   toast.error("Please try again.");
+    // } else {
+    //   setIsHHPAddTaskModalVisible(false);
+    //   await response.json();
+    //   toast.success("Successfully created!");
+    //   // window.location.reload();
+    // }
 
-    // // This part will deposit the same data into our history table
-    // For some reason it's not reading this function initially, only when user updates job
-    const response2 = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/units/history/post`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(postThisInfo),
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => {});
+    // // // This part will deposit the same data into our history table
+    // // For some reason it's not reading this function initially, only when user updates job
+    // const response2 = await fetch(
+    //   `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/units/history/post`,
+    //   {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify(postThisInfo),
+    //   }
+    // )
+    //   .then((res) => res.json())
+    //   .then((data) => {});
   };
 
   // Post repair data
