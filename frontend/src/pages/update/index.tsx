@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import * as Yup from "yup";
-import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 interface IOtpValues {
   otp: string;
@@ -9,6 +8,7 @@ interface IOtpValues {
 function Update() {
   const [ipAddress, setIp] = useState("");
   const [otp, setOtp] = useState("");
+  const router = useRouter();
 
   const update = async () => {
     await fetch(`${process.env.NEXT_PUBLIC_API_IPIFY}`)
@@ -42,6 +42,7 @@ function Update() {
       const data = await response.json();
       if (response.ok) {
         toast.success("Successfully created!");
+        router.push("/");
       } else if (!response.ok) {
         toast.error("Error, try gain");
         return;

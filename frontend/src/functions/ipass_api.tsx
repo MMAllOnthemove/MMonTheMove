@@ -48,7 +48,6 @@ export async function getSOInfoAllFunction({
   );
 
   const data = await response.json();
-  console.log(data);
   setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
   setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
   setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
@@ -337,13 +336,13 @@ export async function getPartsInfoForServiceOrder(
       .then((data) => {
         if (data?.EtPartsInfo !== null) {
           const parts = data?.EtPartsInfo?.results?.map((i: any) => i.PartsNo);
-          console.log("parts", parts);
+          // console.log("parts", parts);
           return props.setPartsAssignedForJob(parts);
         } else {
           return props.setPartsAssignedForJob("") as any;
         }
       });
   } catch (error) {
-    console.log("Ipaas parts info error", error);
+    // console.log("Ipaas parts info error", error);
   }
 }
