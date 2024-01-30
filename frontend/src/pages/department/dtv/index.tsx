@@ -229,14 +229,13 @@ function DTVHome() {
   return (
     <>
       <Head>
-        <title>DTV Management</title>
+        <title>DTV & HA Management</title>
         <meta name="robots" content="noindex"></meta>
-        <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
       <Navbar />
       <main className="space-between-navbar-and-content">
         <Container>
-          <PageTitle title="Management" hasSpan={true} spanText={"DTV"} />
+          <PageTitle title="Management" hasSpan={true} spanText={"DTV & HA"} />
           {!userData ? (
             <NotLoggedIn />
           ) : (
