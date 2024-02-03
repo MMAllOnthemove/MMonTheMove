@@ -8,8 +8,6 @@ export default function App({
   Component,
   pageProps: { ...pageProps },
 }: AppProps) {
-  // TODO: check loading states
-  // if (loading === true) return <p>Loading...</p>;
   return (
     <>
       <RecoilRoot>

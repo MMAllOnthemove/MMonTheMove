@@ -17,7 +17,10 @@ export const fetchCurrentUser = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          setUserData(data.email);
+          setUserData(data?.email);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -34,6 +37,9 @@ export const fetchTableData = () => {
         .then((res) => res.json())
         .then((data) => {
           setHHPData(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -52,6 +58,9 @@ export const fetchTableDataHistory = () => {
         .then((res) => res.json())
         .then((data) => {
           setHHPDataHistory(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -72,6 +81,9 @@ export const fetchPartsTableDataHistory = () => {
         .then((res) => res.json())
         .then((data) => {
           setPartsDataHistory(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -91,6 +103,9 @@ export const countJobsApprovedAndRejected = () => {
         .then((res) => res.json())
         .then((data) => {
           setFetchJobsApprovedAndRejected(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -108,6 +123,9 @@ export const fetchDTVTableData = () => {
         .then((res) => res.json())
         .then((data) => {
           setDTVData(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -125,6 +143,9 @@ export const fetchSingleDTVJob = (id: string | string[] | undefined) => {
         .then((res) => res.json())
         .then((data) => {
           setDTVSingleJobData(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData(id);
@@ -141,6 +162,9 @@ export const fetchSingleDTVChecklist = () => {
         .then((res) => res.json())
         .then((data) => {
           setDTVSingleChecklist(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -166,6 +190,9 @@ export const countEngineerRepairCompleteAlltimeJobs = () => {
         .then((res) => res.json())
         .then((data) => {
           setEngineerUnitsAdded(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -186,6 +213,9 @@ export const getBookingAgentJobs = () => {
         .then((res) => res.json())
         .then((data) => {
           setGetBookingAgentJobsData(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -204,6 +234,9 @@ export const getPartsDepatmentJobs = () => {
         .then((res) => res.json())
         .then((data) => {
           setPartsDepartmentData(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -219,7 +252,16 @@ export const fetchOTP = () => {
     const fetchData = async () => {
       await fetch(`${process.env.NEXT_PUBLIC_BACKEND_OTP}/get`)
         .then((response) => response.json())
-        .then((response) => setGetOTP(response));
+        .then((response) => {
+          if (response) {
+            setGetOTP(response);
+          } else {
+            setGetOTP("");
+          }
+        })
+        .then((error) => {
+          //
+        });
     };
     fetchData();
   }, [getOTP]);
@@ -234,7 +276,14 @@ export const fetchAllOTP = () => {
     const fetchData = async () => {
       await fetch(`${process.env.NEXT_PUBLIC_BACKEND_OTP}/get/all`)
         .then((response) => response.json())
-        .then((response) => setGetAllOTP(response));
+        .then((response) => {
+          if (response) {
+            setGetAllOTP(response);
+          }
+        })
+        .then((error) => {
+          //
+        });
     };
     fetchData();
   }, [getAllOTP]);

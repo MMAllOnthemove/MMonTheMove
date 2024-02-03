@@ -13,6 +13,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@heroicons/react": "^2.0.17",
+    "@tanstack/react-query": "^5.18.0",
     "@tanstack/react-table": "^8.9.3",
     "@types/react": "18.0.38",
     "autoprefixer": "^10.4.16",
@@ -45,7 +46,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@tanstack/eslint-plugin-query": "^5.12.1",
+    "@tanstack/eslint-plugin-query": "^5.18.0",
     "cypress": "^12.17.4"
   }
 }

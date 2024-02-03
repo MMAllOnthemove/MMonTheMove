@@ -90,7 +90,6 @@ function DTVHome() {
   const [customerMobilePhone, setCustomerMobilePhone] = useState("");
 
   const debouncedTicketSearch = useDebounce(ticket, 500);
-  // TODO: remove this - e.g ticket (99104)
   const [repairData] = useFetchRepairJobs(
     `https://allelectronics.repairshopr.com/api/v1/tickets?number=${ticket}`
   );
@@ -143,7 +142,6 @@ function DTVHome() {
       setPartsAssignedForJob,
     });
   }, [searchServiceOrder]);
-
   async function postData(e: React.SyntheticEvent) {
     e.preventDefault();
     const dateAdded = new Date();
@@ -182,25 +180,27 @@ function DTVHome() {
       engineerPhoneNumber,
       userData,
     };
-
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(infoToPost),
     };
+
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_DTV}task/create`,
+      `http://localhost:8000/drivers/api/v1/task/create`,
       requestOptions
     );
-    if (!response.ok) {
-      setIsDTVAddTaskModalVisible(false);
-      toast.error("Task failed, try again");
-    } else {
+
+    if (response.ok) {
       setIsDTVAddTaskModalVisible(false);
       await response.json();
-      // fetchTableData();
+      toast.success("Task added");
+    } else {
+      setIsDTVAddTaskModalVisible(false);
+      toast.error("Task failed, try again");
     }
   }
+
   // Table contents
 
   const table = useReactTable({
