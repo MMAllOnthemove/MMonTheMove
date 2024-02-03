@@ -11,6 +11,7 @@ import UnitFinder from "@/pages/api/UnitFinder";
 import { getProfile } from "@/functions/getLoggedInUserProfile";
 import { unitStatus } from "../../../../../public/_data/statuses";
 import { fetchCurrentUser, fetchTableDataHistory } from "@/hooks/useFetch";
+import { getRepairTicketId } from "@/functions/repair_api";
 
 // Dynamic imports
 const Button = dynamic(() => import("@/components/Buttons"));
@@ -23,6 +24,7 @@ function EditRow() {
   const router = useRouter();
   const { id } = router.query;
   const [showServiceOrderNumber, setShowServiceOrderNumber] = useState("");
+  const [ticketId, setTicketId] = useState("");
 
   // These are the ones use has to update
   const [inHouseStatus, setInHouseStatus] = useState("");
@@ -51,6 +53,9 @@ function EditRow() {
   const [partsList, setPartsList] = useState<string[] | any[]>([
     { partNumber: "" },
   ]);
+  useEffect(() => {
+    getRepairTicketId({ ticket, setTicketId });
+  }, [ticket]);
 
   // This is the parts list arr mapped from the partslist
   let partsArr = [...partsList].map((x) => x.partNumber.toUpperCase());
@@ -89,7 +94,8 @@ function EditRow() {
   }, [showServiceOrderNumber]);
 
   const handleQCisCheckedChange = () => {
-    setIsQCchecked(!isQCchecked);
+    // Test this
+    setIsQCchecked(true);
   };
 
   let dateModified = new Date();
@@ -113,6 +119,7 @@ function EditRow() {
       dateModified,
       warranty,
     };
+    // console.log("putThisInfo", putThisInfo);
     const putMethod = {
       method: "PUT", // Method itself
       headers: {
@@ -131,7 +138,7 @@ function EditRow() {
       .catch((e) => {
         //
       });
-
+    sendRepairShoprComment();
     const postThisInfo = {
       service_order,
       createdDate,
@@ -156,6 +163,7 @@ function EditRow() {
       GSPNStatusGetLastElement,
       dateAdded,
     };
+    // console.log("history entry", postThisInfo);
     const response2 = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/units/history/post`,
       {
@@ -170,11 +178,31 @@ function EditRow() {
       });
   };
 
-  async function deleteData() {
-    router.push("/");
-    toast.success("Deleted");
-    const response = await UnitFinder.delete(`/${id}`);
-  }
+  const sendRepairShoprComment = async () => {
+    const postThisInfo = {
+      subject: "This is a subject",
+      tech: userData,
+      body: engineerAnalysis,
+      hidden: false,
+      do_not_email: true,
+    };
+    // console.log("repair comment", postThisInfo);
+    const response = await fetch(
+      `https://allelectronics.repairshopr.com/api/v1/tickets/${ticket}/comment`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN,
+        },
+        body: JSON.stringify(postThisInfo),
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        //
+      });
+  };
 
   const handleServiceChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -381,7 +409,7 @@ function EditRow() {
                     name="engineerAnalysis"
                     id="engineerAnalysis"
                     className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee]  border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5 "
-                    value={engineerAnalysis}
+                    value={engineerAnalysis || ""}
                     onChange={(event) =>
                       setEngineerAnalysis(event.target.value)
                     }
@@ -418,13 +446,6 @@ function EditRow() {
                               onClick={handleServiceAdd}
                               text="Add a part"
                             />
-                            // <button
-                            //   className="my-2 bg-[#082f49]   font-semibold text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-sm text-sm p-2.5 text-center"
-                            //   type="button"
-                            //   onClick={handleServiceAdd}
-                            // >
-                            //   Add a part
-                            // </button>
                           )}
                       </div>
                       <div className="second-division">
@@ -498,9 +519,9 @@ function EditRow() {
                     <textarea
                       name="QCcomments"
                       id="QCcomments"
-                      value={QCcomments}
+                      value={QCcomments || ""}
                       onChange={(e) => setQCcomments(e.target.value)}
-                      className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5"
+                      className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#030303] border resize-none border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full outline-0 p-2.5"
                     ></textarea>
                   </span>
                 </>
@@ -513,15 +534,6 @@ function EditRow() {
                   />
                 </span>
               </form>
-              {/* TODO: Comment this out when done */}
-              {/* <span>
-                <Button
-                  type="button"
-                  className="bg-red-500 w-full  font-semibold text-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-sm text-sm px-5 py-2.5 text-center my-3"
-                  text="Delete"
-                  onClick={deleteData}
-                />
-              </span> */}
               <hr />
               <section className="my-4 flex flex-col gap-5 py-4">
                 <p className=" font-semibold text-slate-700 dark:text-[#eee]">

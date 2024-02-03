@@ -10,7 +10,7 @@ function Auth() {
   return (
     <>
       <main className="auth">
-        <article className="auth_card  dark:bg-[#22303c] bg-gray-30 dark:border dark:border-[#eee]">
+        <article className="auth_card dark:bg-[#22303c] bg-gray-30 dark:border dark:border-[#eee]">
           <div className="form_header">
             <span className="auth_card_logo mb-3">
               <Image
@@ -22,11 +22,11 @@ function Auth() {
             </span>
           </div>
           <Tabs>
-            <TabPane title="Signup">
-              <Signup />
-            </TabPane>
             <TabPane title="Login">
               <Login />
+            </TabPane>
+            <TabPane title="Signup">
+              <Signup />
             </TabPane>
           </Tabs>
         </article>
