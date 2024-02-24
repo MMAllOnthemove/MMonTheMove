@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { pool } from "../../db.js";
+import JwtGenerator from "../../utils/jwt-helpers.js";
 
 const SignupUser = async (req, res) => {
   const { fullName, username, email, password, createdAt } = req.body;
@@ -32,7 +33,7 @@ const SignupUser = async (req, res) => {
           createdAt,
         ]
       );
-      const jwtToken = jwtGenerator(newUser.rows[0].user_id);
+      const jwtToken = JwtGenerator(newUser.rows[0].user_id);
       res.cookie("token", jwtToken, {
         withCredentials: true,
         secure: process.env.NODE_ENV === "development" ? false : true,
@@ -44,7 +45,7 @@ const SignupUser = async (req, res) => {
       return res.status(400).json("Signup failed; Invalid email or password");
     }
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     res.status(500).json("Server error");
   }
 };

@@ -11,9 +11,6 @@ export const getDtvTasks = async ({ setDtvTasks }: IgetDtvTasks) => {
       }
     );
     const data = await response.json();
-    // console.log("data", data);
     setDtvTasks(data);
-  } catch (error) {
-    // console.log("Error", error);
-  }
+  } catch (error) {}
 };

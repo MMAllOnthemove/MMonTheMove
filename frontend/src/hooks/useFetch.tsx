@@ -17,8 +17,10 @@ export const fetchCurrentUser = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          // console.log("data", data);
-          setUserData(data.email);
+          setUserData(data?.email);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -34,8 +36,10 @@ export const fetchTableData = () => {
       await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`)
         .then((res) => res.json())
         .then((data) => {
-          // console.log("data", data);
           setHHPData(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -53,8 +57,10 @@ export const fetchTableDataHistory = () => {
       )
         .then((res) => res.json())
         .then((data) => {
-          // console.log("data", data);
           setHHPDataHistory(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -74,8 +80,10 @@ export const fetchPartsTableDataHistory = () => {
       )
         .then((res) => res.json())
         .then((data) => {
-          // console.log("data", data);
           setPartsDataHistory(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -94,8 +102,10 @@ export const countJobsApprovedAndRejected = () => {
       )
         .then((res) => res.json())
         .then((data) => {
-          // console.log("data", data);
           setFetchJobsApprovedAndRejected(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -112,8 +122,10 @@ export const fetchDTVTableData = () => {
       await fetch(`${process.env.NEXT_PUBLIC_BACKEND_DTV}task/get/`)
         .then((res) => res.json())
         .then((data) => {
-          // console.log("data", data);
           setDTVData(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -130,8 +142,10 @@ export const fetchSingleDTVJob = (id: string | string[] | undefined) => {
       await fetch(`${process.env.NEXT_PUBLIC_BACKEND_DTV}task/get/` + id)
         .then((res) => res.json())
         .then((data) => {
-          // console.log("data", data);
           setDTVSingleJobData(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData(id);
@@ -147,9 +161,10 @@ export const fetchSingleDTVChecklist = () => {
       await fetch(`${process.env.NEXT_PUBLIC_BACKEND_DTV}checklist/get/`)
         .then((res) => res.json())
         .then((data) => {
-          // console.log("data", data);
-          // const filteredData = [...data].filter((x) => x.id === id);
           setDTVSingleChecklist(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -174,8 +189,10 @@ export const countEngineerRepairCompleteAlltimeJobs = () => {
       )
         .then((res) => res.json())
         .then((data) => {
-          // console.log("all-time graph", data);
           setEngineerUnitsAdded(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -195,9 +212,10 @@ export const getBookingAgentJobs = () => {
       )
         .then((res) => res.json())
         .then((data) => {
-          // console.log("data", data);
-          // const filteredData = [...data].filter((x) => x.id === id);
           setGetBookingAgentJobsData(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
@@ -215,13 +233,60 @@ export const getPartsDepatmentJobs = () => {
       )
         .then((res) => res.json())
         .then((data) => {
-          // console.log("data", data);
-          // const filteredData = [...data].filter((x) => x.id === id);
           setPartsDepartmentData(data);
+        })
+        .then((error) => {
+          //
         });
     };
     fetchData();
   }, [partsDepartmentData]);
 
   return { partsDepartmentData };
+};
+
+export const fetchOTP = () => {
+  const [getOTP, setGetOTP] = useState<string | any>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_OTP}/get`)
+        .then((response) => response.json())
+        .then((response) => {
+          if (response) {
+            setGetOTP(response);
+          } else {
+            setGetOTP("");
+          }
+        })
+        .then((error) => {
+          //
+        });
+    };
+    fetchData();
+  }, [getOTP]);
+
+  return { getOTP };
+};
+
+export const fetchAllOTP = () => {
+  const [getAllOTP, setGetAllOTP] = useState<string | any>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_OTP}/get/all`)
+        .then((response) => response.json())
+        .then((response) => {
+          if (response) {
+            setGetAllOTP(response);
+          }
+        })
+        .then((error) => {
+          //
+        });
+    };
+    fetchData();
+  }, [getAllOTP]);
+
+  return { getAllOTP };
 };

@@ -7,13 +7,14 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 // Custom imports
 import { logoutUserFunction } from "@/functions/getLoggedInUserProfile";
-import { fetchCurrentUser } from "@/hooks/useFetch";
+import { fetchCurrentUser, fetchOTP } from "@/hooks/useFetch";
 import {
   dtvNavItems,
   hhpNavItems,
   partsNavItems,
 } from "../../../public/_data/navbar";
 import logo from "../../../public/mmlogo.png";
+import toast from "react-hot-toast";
 
 // Dynamic imports
 const Button = dynamic(() => import("../Buttons"));
@@ -36,11 +37,12 @@ const Navbar = () => {
   const [dtvSubMenuOpen, setDtvSubMenuOpen] = useState(false);
 
   const { userData } = fetchCurrentUser();
+  const { getOTP } = fetchOTP();
   const onSignout = async () => {
     // removeCookie("token");
     logoutUserFunction();
     router.push("/auth/");
-    window.alert("Logged out");
+    toast.success("Logged out");
   };
 
   return (
@@ -62,23 +64,28 @@ const Navbar = () => {
           {!userData || userData === "" ? (
             <div />
           ) : (
-            <button
-              role="button"
-              id="burger_menu"
-              className="burger_menu"
-              aria-label="burger_menu"
-              onClick={ToggleSidebar}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                className="dark:fill-white"
+            <div className="flex items-center gap-1">
+              <button
+                role="button"
+                id="burger_menu"
+                className="burger_menu"
+                aria-label="burger_menu"
+                onClick={ToggleSidebar}
               >
-                <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path>
-              </svg>
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  className="dark:fill-white"
+                >
+                  <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path>
+                </svg>
+              </button>
+              <p className="text-md font-medium dark:text-[#eee] text-slate-800">
+                {getOTP && getOTP.map((latest: any) => latest?.otp)}
+              </p>
+            </div>
           )}
           <div className="flex items-center gap-1">
             <ThemeChangerButton />
@@ -129,6 +136,7 @@ const Navbar = () => {
               width="24"
               height="24"
               viewBox="0 0 24 24"
+              className="dark:fill-white"
             >
               <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
               <path d="M0 0h24v24H0z" fill="none" />

@@ -1,8 +1,6 @@
 import { pool } from "../../../../db.js";
 
 const CreateChecklist = async (req, res) => {
-  // const { id } = req.params;
-  // console.log(id);
   const {
     id,
     selectCar,
@@ -28,7 +26,6 @@ const CreateChecklist = async (req, res) => {
       res
         .status(400)
         .json("Checklist for this car has already been done today");
-      console.log("Checklist exists");
     } else {
       const { rows } = await pool
         // table is using the original jobs foreign key, hence 'job_id'
@@ -50,12 +47,9 @@ const CreateChecklist = async (req, res) => {
             dateAddedFormatted,
           ]
         );
-      console.log(rows);
       res.status(201).json({ created: true });
     }
-  } catch (e) {
-    console.log("create checklist error", e);
-  }
+  } catch (e) {}
 };
 
 export default CreateChecklist;

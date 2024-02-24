@@ -8,8 +8,6 @@ const GetEngineerHeadCount = async (req, res) => {
       "SELECT COUNT(DISTINCT engineer) as engineers_count, engineer FROM units GROUP BY engineer"
     );
     res.json(rows);
-  } catch (error) {
-    // console.log("Error counting engineers", error);
-  }
+  } catch (error) {}
 };
 export default GetEngineerHeadCount;

@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { cars, drivers } from "../../../public/_data/cars";
 import Button from "../Buttons";
+import toast from "react-hot-toast";
 
 interface IProps {
   id?: string | string[] | undefined;
@@ -29,8 +30,6 @@ function CreateChecklistContent({ id }: IProps) {
 
   const [file, setFile] = useState("");
   function handleChange(e: any) {
-    // console.log(e.target.files);
-    // console.log(URL.createObjectURL(e.target.files));
     setFile(URL.createObjectURL(e.target.files));
   }
 
@@ -56,30 +55,25 @@ function CreateChecklistContent({ id }: IProps) {
       dateAddedFormatted,
     };
 
-    // console.log(infoToPost);
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(infoToPost),
     };
 
-    // console.log(props.id);
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_DTV}checklist/create`,
         requestOptions
       );
-      console.log("checklist response", response);
       if (response.ok) {
         await response.json();
-        window.alert("Checklist added.");
+        toast.success("Successfully created!");
         router.push("/department/dtv");
       } else {
-        window.alert("Checklist failed.");
+        toast.error("Checklist failed");
       }
-    } catch (error) {
-      console.log("create checklist error", error);
-    }
+    } catch (error) {}
   };
   const submitImagesUrl = async () => {
     const formData = new FormData();

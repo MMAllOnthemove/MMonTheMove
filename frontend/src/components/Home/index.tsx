@@ -12,14 +12,20 @@ import {
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { Tabs, TabItem } from "../Tabs";
+import { useEffect, useState, useCallback } from "react";
+import toast, { Toaster } from "react-hot-toast";
+
 // Custom imports
 import TableBody from "@/components/Table/TableBody";
 import columns from "@/components/Table/homepageTableColumns";
 import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
-import { Itable } from "../../../utils/interfaces";
+import { fetchCurrentUser, fetchTableData } from "@/hooks/useFetch";
+import React from "react";
+import NotLoggedIn from "../NotLoggedIn";
+import PageTitle from "../PageTitle";
+import Tabs from "../Tabs";
+import TabPane from "../Tabs/TabPane";
 
 // Dynamic imports
 const ManagementSearchForm = dynamic(
@@ -39,10 +45,6 @@ const Pagination = dynamic(() => import("@/components/Table/Pagination"));
 const HHPAddTaskModal = dynamic(
   () => import("../PopupModal/hhp-add-task-modal")
 );
-import { fetchCurrentUser, fetchTableData } from "@/hooks/useFetch";
-import React from "react";
-import PageTitle from "../PageTitle";
-import NotLoggedIn from "../NotLoggedIn";
 
 function HomeComponent() {
   const router = useRouter();
@@ -126,20 +128,22 @@ function HomeComponent() {
   // Setting the user to email user is logged in with
   let repairUser = userData;
 
-  getSOInfoAllFunction({
-    searchServiceOrder,
-    setServiceOrder,
-    setCreatedDate,
-    setCreatedTime,
-    setModel,
-    setWarranty,
-    setFault,
-    setImei,
-    setSerialNumber,
-    setEngineerAssignDate,
-    setEngineerAssignTime,
-    setGSPNStatus,
-  });
+  useEffect(() => {
+    getSOInfoAllFunction({
+      searchServiceOrder,
+      setServiceOrder,
+      setCreatedDate,
+      setCreatedTime,
+      setModel,
+      setWarranty,
+      setFault,
+      setImei,
+      setSerialNumber,
+      setEngineerAssignDate,
+      setEngineerAssignTime,
+      setGSPNStatus,
+    });
+  }, [searchServiceOrder]);
 
   // Fetches combined data
   useEffect(() => {
@@ -161,7 +165,7 @@ function HomeComponent() {
       searchServiceOrder,
       setTicket,
     });
-  }, []);
+  }, [searchTicket, searchServiceOrder]);
 
   // const user = session?.user?.email;
 
@@ -191,7 +195,7 @@ function HomeComponent() {
       GSPNStatusGetLastElement,
       dateAdded,
     };
-    // console.log(postThisInfo);
+    // console.log("postThisInfo", postThisInfo);
     let regexNumber = /^[0-9]+$/;
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
@@ -208,17 +212,17 @@ function HomeComponent() {
       searchServiceOrder.length === 0
     ) {
       setIsHHPAddTaskModalVisible(false);
-      window.alert("Not enough characters.");
+      toast.error("Not enough characters.");
     } else if (!searchServiceOrder.match(regexNumber)) {
       setIsHHPAddTaskModalVisible(false);
-      window.alert("Only enter numeric characters.");
+      toast.error("Only enter numeric characters.");
     } else if (!response.ok) {
       setIsHHPAddTaskModalVisible(false);
-      window.alert("Please try again.");
+      toast.error("Please try again.");
     } else {
       setIsHHPAddTaskModalVisible(false);
       await response.json();
-      window.alert("You've added a job to the table.");
+      toast.success("Successfully created!");
       // window.location.reload();
     }
 
@@ -234,7 +238,6 @@ function HomeComponent() {
     )
       .then((res) => res.json())
       .then((data) => {});
-    // console.log("data2", data)
   };
 
   // Post repair data
@@ -260,7 +263,6 @@ function HomeComponent() {
       GSPNStatusGetLastElement,
       dateAdded,
     };
-    // console.log(postThisInfo);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/repair`,
       {
@@ -273,11 +275,11 @@ function HomeComponent() {
     );
     if (!response.ok) {
       setIsHHPAddTaskModalVisible(false);
-      window.alert("Please try again");
+      toast.error("Please try again");
     } else {
       await response.json();
       setIsHHPAddTaskModalVisible(false);
-      window.alert("You've added a job to the table");
+      toast.success("Successfully created!");
     }
 
     // This part will deposit the same data into our history table
@@ -290,9 +292,7 @@ function HomeComponent() {
       }
     )
       .then((res) => res.json())
-      .then((data) => {
-        // console.log("data2", data);
-      });
+      .then((data) => {});
   };
 
   // Redirects user to the edit table page
@@ -347,8 +347,8 @@ function HomeComponent() {
                   isVisible={isHHPAddTaskModalVisible}
                   title="Add HHP task"
                   content={
-                    <Tabs defaultIndex="1" onTabClick={console.log}>
-                      <TabItem label="Use service order" index="1">
+                    <Tabs>
+                      <TabPane title="Use service order">
                         <HomepageModalTabOneContent
                           searchServiceOrder={searchServiceOrder}
                           setSearchServiceOrder={(e) =>
@@ -371,8 +371,8 @@ function HomeComponent() {
                           setDepartment={(e) => setDepartment(e.target.value)}
                           postData={postData}
                         />
-                      </TabItem>
-                      <TabItem label="Use ticket number" index="2">
+                      </TabPane>
+                      <TabPane title="Use ticket number">
                         <HomepageModalTabTwoContent
                           repairAPILoading={repairAPILoading}
                           searchTicket={searchTicket}
@@ -402,7 +402,7 @@ function HomeComponent() {
                           }
                           postRepairData={postRepairData}
                         />
-                      </TabItem>
+                      </TabPane>
                     </Tabs>
                   }
                   onClose={() => setIsHHPAddTaskModalVisible(false)}

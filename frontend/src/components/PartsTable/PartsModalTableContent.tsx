@@ -42,7 +42,7 @@ const PartsModalTabOneContent = (props: IPartsModalTabOneContent) => {
             name="ServiceOrder"
             placeholder="Service Order"
             id="ServiceOrder"
-            className="w-full outline-none py-2 px-2 border-2  font-semibold text-sm rounded-sm my-2"
+            className="w-full outline-none py-2 px-2 border-2 font-semibold text-sm rounded-sm my-2 dark:bg-[#22303C] dark:text-[#eee]"
             size={10}
             maxLength={10}
             value={searchServiceOrder}
@@ -59,7 +59,7 @@ const PartsModalTabOneContent = (props: IPartsModalTabOneContent) => {
             aria-required
             placeholder="Ticket number"
             id="ticket"
-            className="w-full outline-none py-2 px-2 border-2  font-semibold text-sm rounded-sm my-2"
+            className="w-full outline-none py-2 px-2 border-2 font-semibold text-sm rounded-sm my-2 dark:bg-[#22303C] dark:text-[#eee]"
             size={10}
             maxLength={10}
             defaultValue={ticket}
@@ -74,7 +74,7 @@ const PartsModalTabOneContent = (props: IPartsModalTabOneContent) => {
             name="warranty"
             placeholder="Warranty"
             id="warranty"
-            className="w-full disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none outline-none bg-white py-2 px-2 border-2 border-slate-400  font-semibold text-sm rounded-sm my-2"
+            className="w-full disabled:bg-slate-50 disabled:text-slate-500 disabled:dark:bg-[#22303C] disabled:dark:text-[#eee] disabled:dark:border-slate-200 disabled:shadow-none outline-none bg-white py-2 px-2 border-2 border-slate-400 font-semibold text-sm rounded-sm my-2"
             value={warranty}
             disabled
           />
@@ -87,7 +87,7 @@ const PartsModalTabOneContent = (props: IPartsModalTabOneContent) => {
             required
             aria-required
             id="inHouseStatus"
-            className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            className="cursor-pointer mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
           >
             <option disabled value="">
               Choose status
@@ -119,7 +119,7 @@ const PartsModalTabOneContent = (props: IPartsModalTabOneContent) => {
           <select
             name="engineer"
             id="engineer"
-            className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+            className="cursor-pointer mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             value={engineer}
             onChange={setEngineer}
             required
@@ -141,7 +141,7 @@ const PartsModalTabOneContent = (props: IPartsModalTabOneContent) => {
           <select
             name="department"
             id="department"
-            className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+            className="cursor-pointer mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             value={department}
             onChange={setDepartment}
             required

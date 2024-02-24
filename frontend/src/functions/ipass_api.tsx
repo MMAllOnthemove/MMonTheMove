@@ -48,7 +48,6 @@ export async function getSOInfoAllFunction({
   );
 
   const data = await response.json();
-
   setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
   setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
   setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
@@ -90,32 +89,63 @@ export async function getSOInfoAllFunctionDtv(props: IgetSOInfoAllDtv) {
       return res.json();
     })
     .then((data) => {
-      props.setAcknowledgeDate(data?.Return.EsScheInfo.ASCAckDate);
-      props.setAcknowledgeTime(data?.Return.EsScheInfo.ASCAckTime);
-      props.setEngineerAssignDate(data?.Return.EsScheInfo.EngrAssignDate);
-      props.setEngineerAssignTime(data?.Return.EsScheInfo.EngrAssignTime);
-      props.setEngineer(data?.Return.EsScheInfo.EngineerName);
-      props.setModel(data?.Return.EsModelInfo.Model);
-      props.setRemark(data?.Return.EsModelInfo.Remark);
-      props.setSerialNumber(data?.Return.EsModelInfo.SerialNo);
-      props.setServiceOrder(data?.Return.EsHeaderInfo.SvcOrderNo);
-      props.setCreatedDate(data?.Return.EsHeaderInfo.CreateDate);
-      props.setCreatedTime(data?.Return.EsHeaderInfo.CreateTime);
-      props.setWarranty(data?.Return.EsModelInfo.WtyType);
-      props.setWarrantyRepairType(data?.Return.EsWtyInfo.WtyRepairType);
-      props.setFault(data?.Return.EsModelInfo.DefectDesc);
-      props.setImei(data?.Return.EsModelInfo.IMEI);
-      props.setCustomerEmail(data?.Return.EsBpInfo.CustEmail);
-      props.setCustomerFirstName(data?.Return.EsBpInfo.CustFirstName);
-      props.setCustomerLastName(data?.Return.EsBpInfo.CustLastName);
-      props.setCustomerStreetAddress(data?.Return.EsBpInfo.CustAddrStreet1);
-      props.setCustomerStreetAddressTwo(data?.Return.EsBpInfo.CustAddrStreet2);
-      props.setCustomerCity(data?.Return.EsBpInfo.CustCity);
-      props.setCustomerCountry(data?.Return.EsBpInfo.CustCountry);
-      props.setCustomerProvince(data?.Return.EsBpInfo.CustStateDesc);
-      props.setCustomerDistrict(data?.Return.EsBpInfo.CustDistrict);
-      props.setCustomerHomePhone(data?.Return.EsBpInfo.CustHomePhone);
-      props.setCustomerMobilePhone(data?.Return.EsBpInfo.CustMobilePhone);
+      if (data) {
+        props.setAcknowledgeDate(data?.Return?.EsScheInfo?.ASCAckDate);
+        props.setAcknowledgeTime(data?.Return.EsScheInfo?.ASCAckTime);
+        props.setEngineerAssignDate(data?.Return?.EsScheInfo?.EngrAssignDate);
+        props.setEngineerAssignTime(data?.Return?.EsScheInfo?.EngrAssignTime);
+        props.setEngineer(data?.Return?.EsScheInfo?.EngineerName);
+        props.setModel(data?.Return?.EsModelInfo?.Model);
+        props.setRemark(data?.Return?.EsModelInfo?.Remark);
+        props.setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
+        props.setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
+        props.setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
+        props.setCreatedTime(data?.Return?.EsHeaderInfo.CreateTime);
+        props.setWarranty(data?.Return?.EsModelInfo?.WtyType);
+        props.setWarrantyRepairType(data?.Return?.EsWtyInfo?.WtyRepairType);
+        props.setFault(data?.Return?.EsModelInfo?.DefectDesc);
+        props.setImei(data?.Return?.EsModelInfo?.IMEI);
+        props.setCustomerEmail(data?.Return?.EsBpInfo?.CustEmail);
+        props.setCustomerFirstName(data?.Return?.EsBpInfo?.CustFirstName);
+        props.setCustomerLastName(data?.Return?.EsBpInfo?.CustLastName);
+        props.setCustomerStreetAddress(data?.Return?.EsBpInfo?.CustAddrStreet1);
+        props.setCustomerStreetAddressTwo(
+          data?.Return?.EsBpInfo.CustAddrStreet2
+        );
+        props.setCustomerCity(data?.Return?.EsBpInfo?.CustCity);
+        props.setCustomerCountry(data?.Return?.EsBpInfo?.CustCountry);
+        props.setCustomerProvince(data?.Return?.EsBpInfo?.CustStateDesc);
+        props.setCustomerDistrict(data?.Return?.EsBpInfo?.CustDistrict);
+        props.setCustomerHomePhone(data?.Return?.EsBpInfo?.CustHomePhone);
+        props.setCustomerMobilePhone(data?.Return?.EsBpInfo?.CustMobilePhone);
+      } else {
+        props.setAcknowledgeDate("");
+        props.setAcknowledgeTime("");
+        props.setEngineerAssignDate("");
+        props.setEngineerAssignTime("");
+        props.setEngineer("");
+        props.setModel("");
+        props.setRemark("");
+        props.setSerialNumber("");
+        props.setServiceOrder("");
+        props.setCreatedDate("");
+        props.setCreatedTime("");
+        props.setWarranty("");
+        props.setWarrantyRepairType("");
+        props.setFault("");
+        props.setImei("");
+        props.setCustomerEmail("");
+        props.setCustomerFirstName("");
+        props.setCustomerLastName("");
+        props.setCustomerStreetAddress("");
+        props.setCustomerStreetAddressTwo("");
+        props.setCustomerCity("");
+        props.setCustomerCountry("");
+        props.setCustomerProvince("");
+        props.setCustomerDistrict("");
+        props.setCustomerHomePhone("");
+        props.setCustomerMobilePhone("");
+      }
     });
 }
 export async function getSOStatusDescLatest(props: IgetSOStatusDescLatest) {
@@ -144,7 +174,11 @@ export async function getSOStatusDescLatest(props: IgetSOStatusDescLatest) {
     }
   );
   const data = await response.json();
-  props.setGSPNStatus(data?.EtLogInfo?.results?.map((x: any) => x.StatusDesc));
+  if (data) {
+    props.setGSPNStatus(
+      data?.EtLogInfo?.results?.map((x: any) => x.StatusDesc)
+    );
+  }
 }
 
 export async function getPartsInfoFunction(props: IgetPartsInfo) {
@@ -212,10 +246,12 @@ export async function postBookingAgentsJobs({
   );
 
   const data = await response.json();
-  setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
-  setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
-  setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
-  setWarranty(data?.Return?.EsModelInfo?.WtyType);
+  if (data) {
+    setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
+    setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
+    setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
+    setWarranty(data?.Return?.EsModelInfo?.WtyType);
+  }
 }
 
 export async function getStockOverviewInfo({
@@ -255,7 +291,9 @@ export async function getStockOverviewInfo({
   )
     .then((response) => response.json())
     .then((data) => {
-      setStockData(data);
+      if (data) {
+        setStockData(data);
+      }
       // console.log(data);
     });
 }
@@ -295,12 +333,14 @@ export async function getSOInfoAllFunctionForParts({
 
   const data = await response.json();
 
-  setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
-  setModel(data?.Return?.EsModelInfo?.Model);
-  setWarranty(data?.Return?.EsModelInfo?.WtyType);
-  setFault(data?.Return?.EsModelInfo?.DefectDesc);
-  setImei(data?.Return?.EsModelInfo?.IMEI);
-  setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
+  if (data) {
+    setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
+    setModel(data?.Return?.EsModelInfo?.Model);
+    setWarranty(data?.Return?.EsModelInfo?.WtyType);
+    setFault(data?.Return?.EsModelInfo?.DefectDesc);
+    setImei(data?.Return?.EsModelInfo?.IMEI);
+    setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
+  }
 }
 type TgetPartsInfoForServiceOrder = {
   searchServiceOrder: string;
@@ -337,13 +377,13 @@ export async function getPartsInfoForServiceOrder(
       .then((data) => {
         if (data?.EtPartsInfo !== null) {
           const parts = data?.EtPartsInfo?.results?.map((i: any) => i.PartsNo);
-          console.log("parts", parts);
+          // console.log("parts", parts);
           return props.setPartsAssignedForJob(parts);
-        } else {
-          return props.setPartsAssignedForJob("") as any;
+        } else if (data?.EtPartsInfo === null) {
+          return props.setPartsAssignedForJob(data?.Return?.EvRetMsg);
         }
       });
   } catch (error) {
-    console.log("Ipaas parts info error", error);
+    // console.log("Ipaas parts info error", error);
   }
 }

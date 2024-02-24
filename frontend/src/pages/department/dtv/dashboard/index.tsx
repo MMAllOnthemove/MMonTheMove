@@ -29,7 +29,6 @@ function Dashboard() {
   const { userData } = fetchCurrentUser();
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
-  // console.log("dtvData", dtvData);
   var today = new Date().toISOString().split("T")[0].toString();
   return (
     <>

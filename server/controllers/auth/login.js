@@ -35,9 +35,10 @@ const LoginUser = async (req, res) => {
       httpOnly: true,
       maxAge: maxAge * 1000,
     });
-    return res.json({ jwtToken });
+    return res
+      .status(200)
+      .json({ message: "User identified", token: jwtToken });
   } catch (err) {
-    console.log("loginUser", err);
     res.status(500).json("Server error");
   }
 };

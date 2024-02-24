@@ -12,6 +12,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 // Custom imports
 import { columns } from "@/components/DTV/table-columns";
@@ -89,7 +90,6 @@ function DTVHome() {
   const [customerMobilePhone, setCustomerMobilePhone] = useState("");
 
   const debouncedTicketSearch = useDebounce(ticket, 500);
-  // TODO: remove this - e.g ticket (99104)
   const [repairData] = useFetchRepairJobs(
     `https://allelectronics.repairshopr.com/api/v1/tickets?number=${ticket}`
   );
@@ -142,7 +142,6 @@ function DTVHome() {
       setPartsAssignedForJob,
     });
   }, [searchServiceOrder]);
-
   async function postData(e: React.SyntheticEvent) {
     e.preventDefault();
     const dateAdded = new Date();
@@ -181,25 +180,27 @@ function DTVHome() {
       engineerPhoneNumber,
       userData,
     };
-
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(infoToPost),
     };
+
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_DTV}task/create`,
+      `http://localhost:8000/drivers/api/v1/task/create`,
       requestOptions
     );
-    if (!response.ok) {
-      setIsDTVAddTaskModalVisible(false);
-      window.alert("Task failed, try again");
-    } else {
+
+    if (response.ok) {
       setIsDTVAddTaskModalVisible(false);
       await response.json();
-      // fetchTableData();
+      toast.success("Task added");
+    } else {
+      setIsDTVAddTaskModalVisible(false);
+      toast.error("Task failed, try again");
     }
   }
+
   // Table contents
 
   const table = useReactTable({
@@ -228,14 +229,13 @@ function DTVHome() {
   return (
     <>
       <Head>
-        <title>DTV Management</title>
+        <title>DTV & HA Management</title>
         <meta name="robots" content="noindex"></meta>
-        <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
       <Navbar />
       <main className="space-between-navbar-and-content">
         <Container>
-          <PageTitle title="Management" hasSpan={true} spanText={"DTV"} />
+          <PageTitle title="Management" hasSpan={true} spanText={"DTV & HA"} />
           {!userData ? (
             <NotLoggedIn />
           ) : (

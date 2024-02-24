@@ -140,3 +140,9 @@ CREATE TABLE company_people (
     user_role text,
     is_user_blocked boolean
 );
+
+CREATE TABLE otp (
+    ip_address text,
+    created_at timestamp,
+    otp text
+)
