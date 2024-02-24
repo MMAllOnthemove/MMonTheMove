@@ -87,6 +87,8 @@ const CreateTask = async (req, res) => {
       );
       res.status(201).send("Task added");
     }
-  } catch (e) {}
+  } catch (e) {
+    // console.log("dtv error", e);
+  }
 };
 export default CreateTask;
