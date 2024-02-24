@@ -48,9 +48,7 @@ const PostRepairJobsHistory = async (req, res) => {
       ]
     );
     res.status(200).json("Job added, thank you!");
-  } catch (err) {
-    // console.log("Create task error: ", err);
-  }
+  } catch (err) {}
 };
 
 // GET all table info from database
@@ -60,9 +58,7 @@ const GetAllJobsHistory = async (req, res) => {
       "SELECT id, unique_id, (SELECT DISTINCT(service_order_no)) AS service_order_no, created_date, model, warranty, engineer, UPPER(fault) AS fault, imei, serial_number, in_house_status, engineer_assign_date, ticket, UPPER(engineer_analysis) AS engineer_analysis, department, reassign_engineer, parts_list, UPPER(is_qc_checked::text) AS is_qc_checked, qc_comment, date_modified, gspn_status, date_added FROM units_history ORDER BY date_modified DESC"
     );
     res.json(rows);
-  } catch (err) {
-    // console.log("getAllJobs", err);
-  }
+  } catch (err) {}
 };
 
 // Post jobs to database
@@ -122,9 +118,7 @@ const PostJobsHistory = async (req, res) => {
     );
 
     res.status(201).json("Job added, thank you!");
-  } catch (err) {
-    // console.log("Create task error: ", err);
-  }
+  } catch (err) {}
 };
 
 export { PostRepairJobsHistory, GetAllJobsHistory, PostJobsHistory };

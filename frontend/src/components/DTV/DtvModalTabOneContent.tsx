@@ -30,7 +30,7 @@ function DtvModalAddTaskContent({
           name="ServiceOrder"
           placeholder="Service Order"
           id="ServiceOrder"
-          className="w-full outline-none py-2 px-2 border-2  font-semibold text-sm rounded-sm my-2"
+          className="w-full outline-none py-2 px-2 border-2 font-semibold text-sm rounded-sm my-2 dark:bg-[#22303C] dark:text-[#eee]"
           size={10}
           maxLength={10}
           value={searchServiceOrder}
@@ -47,7 +47,7 @@ function DtvModalAddTaskContent({
           aria-required
           placeholder="Ticket number"
           id="ticket"
-          className="w-full outline-none py-2 px-2 border-2  font-semibold text-sm rounded-sm my-2"
+          className="w-full outline-none py-2 px-2 border-2 font-semibold text-sm rounded-sm my-2 dark:bg-[#22303C] dark:text-[#eee]"
           size={10}
           maxLength={10}
           defaultValue={ticket}
@@ -62,7 +62,7 @@ function DtvModalAddTaskContent({
           name="warranty"
           placeholder="Warranty"
           id="warranty"
-          className="w-full disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none outline-none bg-white py-2 px-2 border-2 border-slate-400  font-semibold text-sm rounded-sm my-2"
+          className="w-full disabled:bg-slate-50 disabled:text-slate-500 disabled:dark:bg-[#22303C] disabled:dark:text-[#eee] disabled:dark:border-slate-200 disabled:shadow-none outline-none bg-white py-2 px-2 border-2 border-slate-400 font-semibold text-sm rounded-sm my-2"
           defaultValue={warranty}
           disabled
         />
@@ -79,7 +79,7 @@ function DtvModalAddTaskContent({
           name="engineer"
           placeholder="Engineer"
           id="engineer"
-          className="w-full disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none outline-none bg-white py-2 px-2 border-2 border-slate-400  font-semibold text-sm rounded-sm my-2"
+          className="w-full disabled:bg-slate-50 disabled:text-slate-500 disabled:dark:bg-[#22303C] disabled:dark:text-[#eee] disabled:dark:border-slate-200 disabled:shadow-none outline-none bg-white py-2 px-2 border-2 border-slate-400 font-semibold text-sm rounded-sm my-2"
           defaultValue={engineer}
           disabled
         />

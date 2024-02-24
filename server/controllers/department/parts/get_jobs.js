@@ -6,9 +6,7 @@ const GetPartsJobs = async (req, res) => {
       "SELECT id, unique_id, service_order, warranty, model, imei, fault, serial_number, engineer, dispatch_analysis, in_house_status, ticket, department, dispatch_by, added_by, all_parts, TO_CHAR(job_added_date::date, 'YYYY-MM-DD') AS job_added_date, parts_checked, reason_for_incomplete_parts, DATE(job_modified_date) AS job_modified_date FROM parts_department ORDER BY job_added_date DESC"
     );
     res.json(rows);
-  } catch (error) {
-    // console.log(error);
-  }
+  } catch (error) {}
 };
 
 // get job by id
@@ -20,9 +18,7 @@ const GetJobById = async (req, res) => {
       [id]
     );
     res.json(rows);
-  } catch (err) {
-    // console.log(err);
-  }
+  } catch (err) {}
 };
 
 export { GetPartsJobs, GetJobById };

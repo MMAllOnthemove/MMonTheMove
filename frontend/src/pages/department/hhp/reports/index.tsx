@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 // Custom imports
 import PageTitle from "@/components/PageTitle";
@@ -72,10 +73,10 @@ function Reports() {
       }
     );
     if (!response.ok || bookingAgent === "") {
-      window.alert("Try again");
+      toast.error("Please try again");
     } else {
       await response.json();
-      window.alert("Job added");
+      toast.success("Successfully created!");
       // return json;
     }
   };
@@ -245,22 +246,6 @@ function Reports() {
                           dateFrom,
                           dateTo,
                           "shanes300123"
-                        )}
-                      </td>
-                    </tr>
-                    <tr
-                      onClick={() => setIsAgentTwoModalVisible(true)}
-                      className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
-                    >
-                      <td className="px-4 py-3  font-medium text-sm max-w-full">
-                        Nigel
-                      </td>
-                      <td className="px-4 py-3  font-medium text-sm max-w-full">
-                        {bookingAgentFunc(
-                          getBookingAgentJobsData,
-                          dateFrom,
-                          dateTo,
-                          "nigelc01"
                         )}
                       </td>
                     </tr>

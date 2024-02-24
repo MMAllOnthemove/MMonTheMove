@@ -3,12 +3,12 @@ import { useRouter } from "next/router";
 import Button from "../Buttons";
 import Link from "next/link";
 import { fetchCurrentUser, fetchSingleDTVJob } from "@/hooks/useFetch";
+import toast from "react-hot-toast";
 
 interface ISingleJobDetails {
   id: string | string[] | undefined;
 }
 function SingleJobDetails({ id }: ISingleJobDetails) {
-  // const [dtvSingleJobData, setGetData] = useState<string[] | any>([]);
   const [isJobComplete, setIsJobsComplete] = useState(false);
   const [jobComment, setJobComment] = useState("");
   const [updatedByWho, setUpdatedByWho] = useState("");
@@ -17,7 +17,6 @@ function SingleJobDetails({ id }: ISingleJobDetails) {
   const { userData } = fetchCurrentUser();
   const dateUpdated = new Date();
   const { dtvSingleJobData } = fetchSingleDTVJob(id);
-  // console.log("dtvSingleJobData", dtvSingleJobData);
   useEffect(() => {
     setUpdatedByWho(userData);
   }, [userData]);
@@ -47,10 +46,7 @@ function SingleJobDetails({ id }: ISingleJobDetails) {
       body: JSON.stringify(options),
     })
       .then((res) => res.json())
-      .then((data) => {
-        // console.log("data", data);
-      })
-      .catch((e) => console.log("repair comment error", e));
+      .then((data) => {});
   }
 
   const deleteTask = async () => {
@@ -62,9 +58,9 @@ function SingleJobDetails({ id }: ISingleJobDetails) {
         }
       );
       if (!response.ok) {
-        window.alert("Job failed, try again");
+        toast.error("Job failed, try again");
       } else {
-        window.alert("You've added a job to the table.");
+        toast.success("Successfully created!");
 
         router.push("/department/dtv/");
       }
@@ -91,11 +87,11 @@ function SingleJobDetails({ id }: ISingleJobDetails) {
         putMethod
       );
       if (!response.ok) {
-        window.alert("Please try again");
+        toast.error("Please try again");
       } else {
         postRepairShprComment();
         await response.json();
-        window.alert("Job updated");
+        toast.success("Successfully updated!");
         router.push("/department/dtv/");
       }
     } catch (e) {}

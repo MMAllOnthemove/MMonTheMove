@@ -200,6 +200,10 @@ export interface IRepairTicketInfo {
     searchTicketNumber: string;
     setTicketNumber: (order: string) => void;
 }
+export interface IRepairTicketId {
+    ticket: string | number;
+    setTicketId: (order: string) => void;
+}
 export interface IgetStockOverviewInfo {
     debouncedSearch: string | any;
     setStockData: (stockDataResponse: any) => void;

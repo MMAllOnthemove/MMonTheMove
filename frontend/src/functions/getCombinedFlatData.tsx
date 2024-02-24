@@ -17,7 +17,6 @@ export const fetchDataCombinedData = () => {
       )
         .then((res) => res.json)
         .then((data) => {
-          // console.log("data", hhpData);
           setHHPData(hhpData);
         });
     };
@@ -36,7 +35,6 @@ export const getBookingAgentJobs = async (props: IgetBookingAgentJobs) => {
       }
     );
     const json = await response.json();
-    // console.log(json)
     props.setGetBookingAgentJobsData(json);
   } catch (error) {}
 };

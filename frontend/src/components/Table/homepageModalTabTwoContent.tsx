@@ -33,7 +33,7 @@ const HomepageModalTabTwoContent = (props: IHomepageModalTabTwoContent) => {
         type="text"
         name="searchTicket"
         id="searchTicket"
-        className="w-full outline-none py-2 px-2 border-2  font-semibold text-sm rounded-sm my-2"
+        className="w-full outline-none py-2 px-2 border-2 font-semibold text-sm rounded-sm my-2 dark:bg-[#22303C] dark:text-[#eee]"
         placeholder="Search Ticket"
         value={searchTicket}
         onChange={setSearchTicket}
@@ -51,7 +51,7 @@ const HomepageModalTabTwoContent = (props: IHomepageModalTabTwoContent) => {
             name="subject"
             id="subject"
             placeholder="Subject"
-            className="w-full disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none outline-none bg-white py-2 px-2 border-2 border-slate-400  font-semibold text-sm rounded-sm my-2"
+            className="w-full disabled:bg-slate-50 disabled:text-slate-500 disabled:dark:bg-[#22303C] disabled:dark:text-[#eee] disabled:dark:border-slate-200 disabled:shadow-none outline-none bg-white py-2 px-2 border-2 border-slate-400  font-semibold text-sm rounded-sm my-2"
             defaultValue={repairFault}
             disabled
             aria-disabled
@@ -62,7 +62,7 @@ const HomepageModalTabTwoContent = (props: IHomepageModalTabTwoContent) => {
           <select
             name="repairWarranty"
             id="repairWarranty"
-            className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+            className="cursor-pointer mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] outline-none border outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             value={repairWarranty || ""}
             onChange={setRepairWarranty}
           >
@@ -80,7 +80,7 @@ const HomepageModalTabTwoContent = (props: IHomepageModalTabTwoContent) => {
             name="repairImei"
             id="repairImei"
             placeholder="IMEI"
-            className="w-full outline-none py-2 px-2 border-2  font-semibold text-sm rounded-sm my-2"
+            className="w-full outline-none py-2 px-2 border-2 font-semibold text-sm rounded-sm my-2 dark:bg-[#22303C] dark:text-[#eee]"
             value={repairImei || ""}
             onChange={setRepairImei}
           />
@@ -92,7 +92,7 @@ const HomepageModalTabTwoContent = (props: IHomepageModalTabTwoContent) => {
             name="repairSerialNumber"
             id="repairSerialNumber"
             placeholder="Serial Number"
-            className="w-full outline-none py-2 px-2 border-2  font-semibold text-sm rounded-sm my-2"
+            className="w-full outline-none py-2 px-2 border-2 font-semibold text-sm rounded-sm my-2 dark:bg-[#22303C] dark:text-[#eee]"
             value={repairSerialNumber || ""}
             onChange={setRepairSerialNumber}
             required
@@ -105,7 +105,7 @@ const HomepageModalTabTwoContent = (props: IHomepageModalTabTwoContent) => {
             type="text"
             name="repairModel"
             id="repairModel"
-            className="w-full outline-none py-2 px-2 border-2  font-semibold text-sm rounded-sm my-2"
+            className="w-full outline-none py-2 px-2 border-2 font-semibold text-sm rounded-sm my-2 dark:bg-[#22303C] dark:text-[#eee]"
             placeholder="Model"
             value={repairModel}
             onChange={setRepairModel}
@@ -119,7 +119,7 @@ const HomepageModalTabTwoContent = (props: IHomepageModalTabTwoContent) => {
             required
             aria-required
             id="repairInHouseStatus"
-            className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            className="cursor-pointer mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
           >
             <option disabled value="">
               Choose status
@@ -138,7 +138,7 @@ const HomepageModalTabTwoContent = (props: IHomepageModalTabTwoContent) => {
             id="repairEngineer"
             required
             aria-required
-            className="cursor-pointer mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+            className="cursor-pointer mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             value={repairEngineer || ""}
             onChange={setRepairEngineer}
           >

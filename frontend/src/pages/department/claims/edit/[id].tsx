@@ -2,6 +2,7 @@
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 // Custom imports
 import { fetchCurrentUser } from "@/hooks/useFetch";
@@ -16,25 +17,17 @@ function EditClaim() {
   const [showServiceOrderNumber, setShowServiceOrderNumber] = useState("");
   const [claimsGSPNStatus, setClaimsGSPNStatus] = useState("");
   let dateOfClaim = new Date();
-  // const [userData, setUserData] = useState("");
 
   const { userData } = fetchCurrentUser();
-  // console.log("userData", userData);
   const router = useRouter();
 
   const { id } = router.query;
-  // Fetches logged in user's data
-  // useEffect(() => {
-  //   // getProfile({ setUserData });
-  //   if (!userData) router.push("/auth");
-  // }, [userData]);
 
   useEffect(() => {
     const fetchData = async () => {
       await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/` + id)
         .then((res) => res.json())
         .then((data) => {
-          // console.log("data", data);
           setShowServiceOrderNumber(data[0]?.service_order_no);
           setClaimsGSPNStatus(data[0]?.gspn_status);
         });
@@ -43,14 +36,12 @@ function EditClaim() {
   }, []);
   const updateData = async (e: any) => {
     e.preventDefault();
-    // router.push("/");
     const putThisInfo = {
       claimsGSPNStatus,
       userData,
       dateOfClaim,
       id,
     };
-    // console.log(putThisInfo);
     const putMethod = {
       method: "PUT", // Method itself
       headers: {
@@ -63,20 +54,12 @@ function EditClaim() {
       putMethod
     );
     let json = await response.json();
-    console.log("response", response);
     if (!response.ok) {
       // <Alert type="info" message="Please try again" />;
-      window.alert("Please try again");
+      toast.error("Please try again");
     } else if (response.ok) {
       router.push("/department/claims");
-      window.alert("Job edited");
-      // toast({
-      //   title: "Job edited.",
-      //   description: "You've successfully edited the job.",
-      //   status: "success",
-      //   duration: 9000,
-      //   isClosable: true,
-      // });
+      toast.success("Successfully edited!");
     }
   };
 

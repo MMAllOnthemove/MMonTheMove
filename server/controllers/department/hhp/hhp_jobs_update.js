@@ -36,9 +36,7 @@ const UpdateJob = async (req, res) => {
       ]
     );
     res.status(201).send(editQuery.rows);
-  } catch (error) {
-    // console.log("editQuery", error);
-  }
+  } catch (error) {}
 };
 
 // Update only one job gspn status
@@ -51,10 +49,7 @@ const UpdateJobclaimsGSPNStatus = async (req, res) => {
       [claimsGSPNStatus, userData, dateOfClaim, id]
     );
     res.status(201).send({ message: "Updated!" });
-    // console.log("editQuery", rows);
-  } catch (error) {
-    // console.log("update claims", error);
-  }
+  } catch (error) {}
 };
 
 export { UpdateJob, UpdateJobclaimsGSPNStatus };

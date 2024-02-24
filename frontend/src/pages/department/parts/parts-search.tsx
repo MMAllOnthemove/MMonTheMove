@@ -7,13 +7,14 @@ import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import NotLoggedIn from "@/components/NotLoggedIn";
 import PageTitle from "@/components/PageTitle";
-import { TabItem, Tabs } from "@/components/Tabs";
 import useDebounce from "@/components/useDebounce";
 import {
   getPartsInfoFunction,
   getStockOverviewInfo,
 } from "@/functions/ipass_api";
 import { fetchCurrentUser } from "@/hooks/useFetch";
+import Tabs from "@/components/Tabs";
+import TabPane from "@/components/Tabs/TabPane";
 
 function PartsSearch() {
   const [data, setData] = useState<null | any>(null);
@@ -23,7 +24,6 @@ function PartsSearch() {
   // Fetches logged in user's data
   const { userData } = fetchCurrentUser();
   const debouncedSearch = useDebounce(search, 500);
-  // console.log("debouncedSearch", debouncedSearch);
 
   useEffect(() => {
     getPartsInfoFunction({
@@ -88,8 +88,8 @@ function PartsSearch() {
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </section>
-              <Tabs defaultIndex="1" onTabClick={console.log}>
-                <TabItem label="Search part" index="1">
+              <Tabs>
+                <TabPane title="Search part">
                   <section className="my-5">
                     <h2 className="mb-4 text-3xl dark:text-[#eee] font-bold leading-none tracking-tight text-gray-900 text-center">
                       Get info for a specific part
@@ -198,8 +198,8 @@ function PartsSearch() {
                       </p>
                     )}
                   </section>
-                </TabItem>
-                <TabItem label="Stock overview" index="2">
+                </TabPane>
+                <TabPane title="Stock overview">
                   <section className="my-5">
                     <h2 className="mb-4 text-3xl dark:text-white  font-bold leading-none tracking-tight text-gray-900 text-center">
                       Get stock overview
@@ -543,11 +543,11 @@ function PartsSearch() {
                       </p>
                     </section>
                   ) : (
-                    <p className=" text-center font-semibold text-slate-950">
+                    <p className=" text-center font-semibold text-slate-950 dark:text-[#8899a6]">
                       No data available
                     </p>
                   )}
-                </TabItem>
+                </TabPane>
               </Tabs>
             </>
           )}
