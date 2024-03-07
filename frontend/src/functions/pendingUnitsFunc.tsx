@@ -132,3 +132,40 @@ export const getEngineerJobsByStatusCount = (
       : [];
   return arr.length;
 };
+export const getDTVEngineerJobsByStatus = (
+  arr: string[] | any,
+  dateFrom: string,
+  dateTo: string,
+  statusName: string,
+  engineerFilter: string
+) => {
+  arr =
+    dateFrom.length > 0 && dateTo.length > 0
+      ? arr.filter((item: string | any) => {
+          let date = moment(item.date_modified).format("YYYY-MM-DD");
+          return (
+            date >= dateFrom &&
+            item.job_status === statusName &&
+            item.engineer === engineerFilter &&
+            date <= dateTo &&
+            item.job_status === statusName &&
+            item.engineer === engineerFilter
+          );
+        })
+      : [];
+  return arr.length;
+};
+export const getDTVEngineerJobsAllTime = (
+  arr: string[] | any,
+  dateFrom: string,
+  dateTo: string,
+) => {
+  arr =
+    dateFrom.length > 0 && dateTo.length > 0
+      ? arr.filter((item: any) => {
+          let date = moment(item.date_modified).format("YYYY-MM-DD");
+          return date >= dateFrom && date <= dateTo;
+        })
+      : [];
+  return arr.length;
+};

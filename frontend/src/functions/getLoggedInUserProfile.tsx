@@ -4,24 +4,35 @@ interface IgetProfile {
   setUserData: (value: string | any) => void;
 }
 
+export const getUserInfo = () => {
+  fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/me`, {
+    method: "POST",
+    credentials: "include",
+    cache: "default",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({}),
+  }).then((res) => res.json);
+};
 export const getProfile = async ({ setUserData }: IgetProfile) => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/`, {
-      method: "POST",
-      credentials: "include",
-      cache: "default",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({}),
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/me`,
+      {
+        method: "POST",
+        credentials: "include",
+        cache: "default",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      }
+    );
 
     const getUserData = await res.json();
-
-    setUserData(getUserData.email);
-  } catch (err) {
-    // console.log(err);
-  }
+    if (getUserData !== "") setUserData(getUserData.email);
+  } catch (err) {}
 };
 
 export const logoutUserFunction = async () => {
@@ -32,7 +43,5 @@ export const logoutUserFunction = async () => {
         credentials: "include",
       }
     );
-  } catch (err) {
-    console.log(err);
-  }
+  } catch (err) {}
 };

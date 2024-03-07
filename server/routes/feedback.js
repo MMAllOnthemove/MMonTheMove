@@ -1,7 +1,7 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const pool = require("../db");
-const redis = require("redis");
+import { pool } from "../db.js";
+import redis from "redis";
 
 let redisClient;
 
@@ -16,13 +16,8 @@ let redisClient;
 // Post feedback to database
 router.post("/", async (req, res) => {
   try {
-    const { rows } = await pool.query(
-      "SELECT * FROM feedback ORDER BY date_created"
-    );
-    // console.log(rows[0]);
-  } catch (err) {
-    // console.log(err);
-  }
+    await pool.query("SELECT * FROM feedback ORDER BY date_created");
+  } catch (err) {}
 });
 
 // Get feedback to database
@@ -55,9 +50,7 @@ router.get("/", async (req, res) => {
       fromCache: isCached,
       data: newResults.rows,
     });
-  } catch (err) {
-    // console.log(err);
-  }
+  } catch (err) {}
 });
 
-module.exports = router;
+export { router };

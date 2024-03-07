@@ -1,7 +1,4 @@
 
-
-
-
 export const pendingStatus = [
     { id: 1, _status: "Booked in" },
     { id: 2, _status: "Repair in progress" },
@@ -28,4 +25,5 @@ export const pendingStatus = [
     { id: 23, _status: "For invoicing" },
     { id: 24, _status: "SO cancel" },
     { id: 25, _status: "Parts DNA" },
+    { id: 26, _status: "Resolved" }
 ]
