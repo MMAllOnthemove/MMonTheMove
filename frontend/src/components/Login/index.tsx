@@ -1,9 +1,9 @@
 // External imports
-import { useToast } from "@chakra-ui/react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 // Custom imports
 import { ILoginFormValues } from "../../../utils/interfaces";
@@ -18,8 +18,6 @@ const Login = () => {
     // inverse the boolean state of passwordShown
     setPasswordShown(!passwordShown);
   };
-  // Chakra ui toast
-  const toast = useToast();
 
   const initialValues: ILoginFormValues = {
     email: "",
@@ -47,30 +45,14 @@ const Login = () => {
               );
 
               const data = await response.json();
-              // console.log(data);
               if (response.ok) {
-                // localStorage.setItem("token", data.jwtToken);
-                toast({
-                  title: "Successful.",
-                  description: ``,
-                  status: "success",
-                  duration: 9000,
-                  isClosable: true,
-                });
+                toast.success("Successful");
                 router.push("/");
               } else {
-                toast({
-                  title: "Error.",
-                  description: `${data}`,
-                  status: "error",
-                  duration: 9000,
-                  isClosable: true,
-                });
+                toast.error("Error, try gain");
                 return;
               }
-            } catch (error) {
-              // console.log(error);
-            }
+            } catch (error) {}
           }, 1000);
         }}
       >

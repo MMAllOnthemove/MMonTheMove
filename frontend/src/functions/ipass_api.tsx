@@ -5,11 +5,25 @@ import {
   IpostBookingAgentsJobs,
   IgetStockOverviewInfo,
   IgetSOInfoAllParts,
+  IgetSOInfoAllDtv,
 } from "../../utils/interfaces";
 
-export async function getSOInfoAllFunction(props: IgetSOInfoAll) {
+export async function getSOInfoAllFunction({
+  searchServiceOrder,
+  setServiceOrder,
+  setCreatedDate,
+  setCreatedTime,
+  setModel,
+  setWarranty,
+  setFault,
+  setImei,
+  setSerialNumber,
+  setEngineerAssignDate,
+  setEngineerAssignTime,
+  setGSPNStatus,
+}: IgetSOInfoAll) {
   const options = {
-    IvSvcOrderNo: props.searchServiceOrder,
+    IvSvcOrderNo: searchServiceOrder,
     IsCommonHeader: {
       Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
       AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
@@ -34,18 +48,105 @@ export async function getSOInfoAllFunction(props: IgetSOInfoAll) {
   );
 
   const data = await response.json();
-
-  props.setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
-  props.setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
-  props.setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
-  props.setModel(data?.Return?.EsModelInfo?.Model);
-  props.setWarranty(data?.Return?.EsModelInfo?.WtyType);
-  props.setFault(data?.Return?.EsModelInfo?.DefectDesc);
-  props.setImei(data?.Return?.EsModelInfo?.IMEI);
-  props.setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
-  props.setEngineerAssignDate(data?.Return?.EsScheInfo?.EngrAssignDate);
-  props.setEngineerAssignTime(data?.Return?.EsScheInfo?.EngrAssignTime);
-  props.setGSPNStatus(data?.EtFlowInfo?.results?.map((x: any) => x.StatusDesc));
+  setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
+  setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
+  setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
+  setModel(data?.Return?.EsModelInfo?.Model);
+  setWarranty(data?.Return?.EsModelInfo?.WtyType);
+  setFault(data?.Return?.EsModelInfo?.DefectDesc);
+  setImei(data?.Return?.EsModelInfo?.IMEI);
+  setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
+  setEngineerAssignDate(data?.Return?.EsScheInfo?.EngrAssignDate);
+  setEngineerAssignTime(data?.Return?.EsScheInfo?.EngrAssignTime);
+  setGSPNStatus(data?.EtFlowInfo?.results?.map((x: any) => x.StatusDesc));
+}
+export async function getSOInfoAllFunctionDtv(props: IgetSOInfoAllDtv) {
+  const options = {
+    IvSvcOrderNo: props.searchServiceOrder,
+    IsCommonHeader: {
+      Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
+      AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
+      Lang: `${process.env.NEXT_PUBLIC_LANG}`,
+      Country: `${process.env.NEXT_PUBLIC_COUNTRY}`,
+      Pac: `${process.env.NEXT_PUBLIC_PAC}`,
+    },
+  };
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_IPAAS_API_GETSOINFOALL}`,
+    {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
+      },
+      body: JSON.stringify(options),
+    }
+  )
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      if (data) {
+        props.setAcknowledgeDate(data?.Return?.EsScheInfo?.ASCAckDate);
+        props.setAcknowledgeTime(data?.Return.EsScheInfo?.ASCAckTime);
+        props.setEngineerAssignDate(data?.Return?.EsScheInfo?.EngrAssignDate);
+        props.setEngineerAssignTime(data?.Return?.EsScheInfo?.EngrAssignTime);
+        props.setEngineer(data?.Return?.EsScheInfo?.EngineerName);
+        props.setModel(data?.Return?.EsModelInfo?.Model);
+        props.setRemark(data?.Return?.EsModelInfo?.Remark);
+        props.setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
+        props.setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
+        props.setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
+        props.setCreatedTime(data?.Return?.EsHeaderInfo.CreateTime);
+        props.setWarranty(data?.Return?.EsModelInfo?.WtyType);
+        props.setWarrantyRepairType(data?.Return?.EsWtyInfo?.WtyRepairType);
+        props.setFault(data?.Return?.EsModelInfo?.DefectDesc);
+        props.setImei(data?.Return?.EsModelInfo?.IMEI);
+        props.setCustomerEmail(data?.Return?.EsBpInfo?.CustEmail);
+        props.setCustomerFirstName(data?.Return?.EsBpInfo?.CustFirstName);
+        props.setCustomerLastName(data?.Return?.EsBpInfo?.CustLastName);
+        props.setCustomerStreetAddress(data?.Return?.EsBpInfo?.CustAddrStreet1);
+        props.setCustomerStreetAddressTwo(
+          data?.Return?.EsBpInfo.CustAddrStreet2
+        );
+        props.setCustomerCity(data?.Return?.EsBpInfo?.CustCity);
+        props.setCustomerCountry(data?.Return?.EsBpInfo?.CustCountry);
+        props.setCustomerProvince(data?.Return?.EsBpInfo?.CustStateDesc);
+        props.setCustomerDistrict(data?.Return?.EsBpInfo?.CustDistrict);
+        props.setCustomerHomePhone(data?.Return?.EsBpInfo?.CustHomePhone);
+        props.setCustomerMobilePhone(data?.Return?.EsBpInfo?.CustMobilePhone);
+      } else {
+        props.setAcknowledgeDate("");
+        props.setAcknowledgeTime("");
+        props.setEngineerAssignDate("");
+        props.setEngineerAssignTime("");
+        props.setEngineer("");
+        props.setModel("");
+        props.setRemark("");
+        props.setSerialNumber("");
+        props.setServiceOrder("");
+        props.setCreatedDate("");
+        props.setCreatedTime("");
+        props.setWarranty("");
+        props.setWarrantyRepairType("");
+        props.setFault("");
+        props.setImei("");
+        props.setCustomerEmail("");
+        props.setCustomerFirstName("");
+        props.setCustomerLastName("");
+        props.setCustomerStreetAddress("");
+        props.setCustomerStreetAddressTwo("");
+        props.setCustomerCity("");
+        props.setCustomerCountry("");
+        props.setCustomerProvince("");
+        props.setCustomerDistrict("");
+        props.setCustomerHomePhone("");
+        props.setCustomerMobilePhone("");
+      }
+    });
 }
 export async function getSOStatusDescLatest(props: IgetSOStatusDescLatest) {
   const options = {
@@ -73,7 +174,11 @@ export async function getSOStatusDescLatest(props: IgetSOStatusDescLatest) {
     }
   );
   const data = await response.json();
-  props.setGSPNStatus(data?.EtLogInfo?.results?.map((x: any) => x.StatusDesc));
+  if (data) {
+    props.setGSPNStatus(
+      data?.EtLogInfo?.results?.map((x: any) => x.StatusDesc)
+    );
+  }
 }
 
 export async function getPartsInfoFunction(props: IgetPartsInfo) {
@@ -88,7 +193,7 @@ export async function getPartsInfoFunction(props: IgetPartsInfo) {
     IvPartsNo: props.debouncedSearch,
   };
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_IPAAS_API_SEARCH_PARTS}`,
+    `https://eu.ipaas.samsung.com/eu/gcic/GetPartsInfo/1.0/ImportSet`,
     {
       method: "POST",
       mode: "cors",
@@ -101,18 +206,22 @@ export async function getPartsInfoFunction(props: IgetPartsInfo) {
       body: JSON.stringify(options),
     }
   );
-  if (response.ok) {
-    const data = await response.json();
-    props.setData(data);
-  } else {
-    return <p>Loading...</p>;
-  }
+  const data = await response.json();
   // console.log(data);
+  if (data) {
+    props.setData(data);
+  }
 }
 
-export async function postBookingAgentsJobs(props: IpostBookingAgentsJobs) {
+export async function postBookingAgentsJobs({
+  searchServiceOrder,
+  setServiceOrder,
+  setCreatedDate,
+  setCreatedTime,
+  setWarranty,
+}: IpostBookingAgentsJobs) {
   const options = {
-    IvSvcOrderNo: props.searchServiceOrder,
+    IvSvcOrderNo: searchServiceOrder,
     IsCommonHeader: {
       Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
       AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
@@ -137,19 +246,24 @@ export async function postBookingAgentsJobs(props: IpostBookingAgentsJobs) {
   );
 
   const data = await response.json();
-  props.setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
-  props.setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
-  props.setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
-  props.setWarranty(data?.Return?.EsModelInfo?.WtyType);
+  if (data) {
+    setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
+    setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
+    setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
+    setWarranty(data?.Return?.EsModelInfo?.WtyType);
+  }
 }
 
-export async function getStockOverviewInfo(props: IgetStockOverviewInfo) {
+export async function getStockOverviewInfo({
+  debouncedSearch,
+  setStockData,
+}: IgetStockOverviewInfo) {
   const options = {
     IvCompany: `${process.env.NEXT_PUBLIC_COMPANY}`,
     IvLanguage: `${process.env.NEXT_PUBLIC_LANG}`,
     IvAscAcctno: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
     IvAscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
-    IvPartsCode: props.debouncedSearch,
+    IvPartsCode: debouncedSearch,
     IsCommonHeader: {
       Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
       AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
@@ -160,27 +274,40 @@ export async function getStockOverviewInfo(props: IgetStockOverviewInfo) {
       Msgid: "",
     },
   };
-  await fetch(`${process.env.NEXT_PUBLIC_IPAAS_API_GetBranchStockOverview}`, {
-    method: "POST",
-    mode: "cors",
-    cache: "force-cache",
-    next: { revalidate: 10 },
-    credentials: "same-origin",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
-    },
-    body: JSON.stringify(options),
-  })
+  await fetch(
+    `https://eu.ipaas.samsung.com/eu/gcic/GetBranchStockOverview/1.0/ImportSet`,
+    {
+      method: "POST",
+      mode: "cors",
+      cache: "force-cache",
+      next: { revalidate: 10 },
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
+      },
+      body: JSON.stringify(options),
+    }
+  )
     .then((response) => response.json())
     .then((data) => {
-      props.setStockData(data);
+      if (data) {
+        setStockData(data);
+      }
       // console.log(data);
     });
 }
-export async function getSOInfoAllFunctionForParts(props: IgetSOInfoAllParts) {
+export async function getSOInfoAllFunctionForParts({
+  searchServiceOrder,
+  setServiceOrder,
+  setModel,
+  setWarranty,
+  setFault,
+  setImei,
+  setSerialNumber,
+}: IgetSOInfoAllParts) {
   const options = {
-    IvSvcOrderNo: props.searchServiceOrder,
+    IvSvcOrderNo: searchServiceOrder,
     IsCommonHeader: {
       Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
       AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
@@ -206,10 +333,57 @@ export async function getSOInfoAllFunctionForParts(props: IgetSOInfoAllParts) {
 
   const data = await response.json();
 
-  props.setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
-  props.setModel(data?.Return?.EsModelInfo?.Model);
-  props.setWarranty(data?.Return?.EsModelInfo?.WtyType);
-  props.setFault(data?.Return?.EsModelInfo?.DefectDesc);
-  props.setImei(data?.Return?.EsModelInfo?.IMEI);
-  props.setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
+  if (data) {
+    setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
+    setModel(data?.Return?.EsModelInfo?.Model);
+    setWarranty(data?.Return?.EsModelInfo?.WtyType);
+    setFault(data?.Return?.EsModelInfo?.DefectDesc);
+    setImei(data?.Return?.EsModelInfo?.IMEI);
+    setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
+  }
+}
+type TgetPartsInfoForServiceOrder = {
+  searchServiceOrder: string;
+  setPartsAssignedForJob: (order: string) => void;
+};
+export async function getPartsInfoForServiceOrder(
+  props: TgetPartsInfoForServiceOrder
+) {
+  const options = {
+    IsCommonHeader: {
+      Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
+      AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
+      Lang: `${process.env.NEXT_PUBLIC_LANG}`,
+      Country: `${process.env.NEXT_PUBLIC_COUNTRY}`,
+      Pac: `${process.env.NEXT_PUBLIC_PAC}`,
+    },
+    IvSvcOrderNo: props.searchServiceOrder,
+  };
+  try {
+    await fetch(`${process.env.NEXT_PUBLIC_IPAAS_API_SEARCH_PARTS}`, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
+      },
+      body: JSON.stringify(options),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        if (data?.EtPartsInfo !== null) {
+          const parts = data?.EtPartsInfo?.results?.map((i: any) => i.PartsNo);
+          // console.log("parts", parts);
+          return props.setPartsAssignedForJob(parts);
+        } else if (data?.EtPartsInfo === null) {
+          return props.setPartsAssignedForJob(data?.Return?.EvRetMsg);
+        }
+      });
+  } catch (error) {
+    // console.log("Ipaas parts info error", error);
+  }
 }

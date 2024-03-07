@@ -1,59 +1,37 @@
-// External imports
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
-import dynamic from "next/dynamic";
-import Image from "next/image";
+import Login from "@/components/Login";
+import Signup from "@/components/Signup";
 
-// Dynamic imports
-const Signup = dynamic(() => import("@/components/Signup"), {
-  loading: () => (
-    <p className="text-center text-slate-950 font-semibold">
-      Loading signup...
-    </p>
-  ),
-});
-const Login = dynamic(() => import("@/components/Login"), {
-  loading: () => (
-    <p className="text-center text-slate-950 font-semibold">Loading login...</p>
-  ),
-});
-// Custom imports
+import Image from "next/image";
 import logo from "../../../public/mmlogo.png";
+import TabPane from "@/components/Tabs/TabPane";
+import Tabs from "@/components/Tabs";
 
 function Auth() {
   return (
-    <main className="auth">
-      <article className="auth_card  dark:bg-[#22303c] bg-gray-30 dark:border dark:border-[#eee]">
-        <div className="form_header">
-          <span className="auth_card_logo mb-3">
-            <Image
-              src={logo}
-              alt="allelectronics logo"
-              priority={true}
-              placeholder="blur"
-            />
-          </span>
-        </div>
-        <Tabs defaultIndex={0} isFitted>
-          <TabList>
-            <Tab fontFamily="inherit" fontWeight="500">
-              Signup
-            </Tab>
-
-            <Tab fontFamily="inherit" fontWeight="500">
-              Login
-            </Tab>
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              <Signup />
-            </TabPanel>
-            <TabPanel>
+    <>
+      <main className="auth">
+        <article className="auth_card dark:bg-[#22303c] bg-gray-30 dark:border dark:border-[#eee]">
+          <div className="form_header">
+            <span className="auth_card_logo mb-3">
+              <Image
+                src={logo}
+                alt="allelectronics logo"
+                priority={true}
+                placeholder="blur"
+              />
+            </span>
+          </div>
+          <Tabs>
+            <TabPane title="Login">
               <Login />
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
-      </article>
-    </main>
+            </TabPane>
+            <TabPane title="Signup">
+              <Signup />
+            </TabPane>
+          </Tabs>
+        </article>
+      </main>
+    </>
   );
 }
 

@@ -1,16 +1,20 @@
 // External imports
-import { useToast } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-
+import { useState } from "react";
 // Custom imports
-import { hhpNavItems, partsNavItems } from "../../../public/_data/navbar";
-import logo from "../../../public/mmlogo.png";
 import { logoutUserFunction } from "@/functions/getLoggedInUserProfile";
+import { fetchCurrentUser, fetchOTP } from "@/hooks/useFetch";
+import {
+  dtvNavItems,
+  hhpNavItems,
+  partsNavItems,
+} from "../../../public/_data/navbar";
+import logo from "../../../public/mmlogo.png";
+import toast from "react-hot-toast";
 
 // Dynamic imports
 const Button = dynamic(() => import("../Buttons"));
@@ -18,55 +22,27 @@ const ThemeChangerButton = dynamic(() => import("../Buttons/ThemeChanger"), {
   ssr: false,
 });
 
+type TUser = {
+  email: string;
+};
 const Navbar = () => {
   const [isOpen, setIsopen] = useState(false);
+
   const ToggleSidebar = () => {
     isOpen === true ? setIsopen(false) : setIsopen(true);
   };
-  // Chakra ui toast
-  const toast = useToast();
   const router = useRouter();
   const [hhpSubMenuOpen, setHHPSubMenuOpen] = useState(false);
-  const [partsSubMenuOpen, sePartsSubMenuOpen] = useState(false);
-  const [userData, setUserData] = useState("");
+  const [partsSubMenuOpen, setPartsSubMenuOpen] = useState(false);
+  const [dtvSubMenuOpen, setDtvSubMenuOpen] = useState(false);
 
-  const getProfile = async () => {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({}),
-        }
-      );
-
-      const getUserData = await res.json();
-
-      setUserData(getUserData.email);
-    } catch (err) {
-      // console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    getProfile();
-  }, [userData]);
-
+  const { userData } = fetchCurrentUser();
+  const { getOTP } = fetchOTP();
   const onSignout = async () => {
     // removeCookie("token");
     logoutUserFunction();
     router.push("/auth/");
-    toast({
-      title: "Logout successful",
-      description: "Bye.",
-      status: "success",
-      duration: 9000,
-      isClosable: true,
-    });
+    toast.success("Logged out");
   };
 
   return (
@@ -88,23 +64,28 @@ const Navbar = () => {
           {!userData || userData === "" ? (
             <div />
           ) : (
-            <button
-              role="button"
-              id="burger_menu"
-              className="burger_menu"
-              aria-label="burger_menu"
-              onClick={ToggleSidebar}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                className="dark:fill-white"
+            <div className="flex items-center gap-1">
+              <button
+                role="button"
+                id="burger_menu"
+                className="burger_menu"
+                aria-label="burger_menu"
+                onClick={ToggleSidebar}
               >
-                <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path>
-              </svg>
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  className="dark:fill-white"
+                >
+                  <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path>
+                </svg>
+              </button>
+              <p className="text-md font-medium dark:text-[#eee] text-slate-800">
+                {getOTP && getOTP.map((latest: any) => latest?.otp)}
+              </p>
+            </div>
           )}
           <div className="flex items-center gap-1">
             <ThemeChangerButton />
@@ -155,6 +136,7 @@ const Navbar = () => {
               width="24"
               height="24"
               viewBox="0 0 24 24"
+              className="dark:fill-white"
             >
               <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
               <path d="M0 0h24v24H0z" fill="none" />
@@ -191,7 +173,7 @@ const Navbar = () => {
           )}
           <button
             className={`open-submenu-btn dark:text-[#eee] text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
-            onClick={() => sePartsSubMenuOpen(!partsSubMenuOpen)}
+            onClick={() => setPartsSubMenuOpen(!partsSubMenuOpen)}
           >
             <span>Parts</span>
             <span>
@@ -205,6 +187,33 @@ const Navbar = () => {
           {partsSubMenuOpen && (
             <ul className="">
               {partsNavItems.map((item) => (
+                <li key={item?.id}>
+                  <Link
+                    href={item?.pageRoute}
+                    className={`sd-link dark:text-[#eee] dark:hover:dark:text-[#eee]`}
+                  >
+                    {item?.item}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+          <button
+            className={`open-submenu-btn dark:text-[#eee] text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
+            onClick={() => setDtvSubMenuOpen(!dtvSubMenuOpen)}
+          >
+            <span>Dtv</span>
+            <span>
+              {!dtvSubMenuOpen ? (
+                <ChevronDownIcon className="h-6 w-6 text-white dark:text-[#eee]" />
+              ) : (
+                <ChevronUpIcon className="h-6 w-6 text-white dark:text-[#eee]" />
+              )}
+            </span>
+          </button>
+          {dtvSubMenuOpen && (
+            <ul className="">
+              {dtvNavItems.map((item) => (
                 <li key={item?.id}>
                   <Link
                     href={item?.pageRoute}

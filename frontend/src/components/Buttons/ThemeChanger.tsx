@@ -7,6 +7,7 @@ const ThemeChangerButton = () => {
 
   return (
     <button
+      type="button"
       onClick={() => (theme == "dark" ? setTheme("light") : setTheme("dark"))}
       className="p-2 outline-0 cursor-pointer"
     >

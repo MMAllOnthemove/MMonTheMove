@@ -1,8 +1,8 @@
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
-const pool = require("../db");
+import jwt from "jsonwebtoken";
+import "dotenv/config";
+import { pool } from "../db.js";
 
-function userVerification(req, res, next) {
+function UserVerification(req, res, next) {
   // Get token from header
   // const token = req.header("jwt_token");
   const token = req.cookies.token;
@@ -26,4 +26,4 @@ function userVerification(req, res, next) {
     }
   );
 }
-module.exports = userVerification;
+export default UserVerification;
