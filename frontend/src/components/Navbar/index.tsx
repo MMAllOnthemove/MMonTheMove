@@ -107,9 +107,8 @@ const Navbar = () => {
       </nav>
 
       <aside
-        className={`sidebar dark:bg-[#15202B] ${
-          isOpen === true ? "active" : ""
-        }`}
+        className={`sidebar dark:bg-[#15202B] ${isOpen === true ? "active" : ""
+          }`}
       >
         <div className="sd-header">
           <Link
@@ -202,7 +201,7 @@ const Navbar = () => {
             className={`open-submenu-btn dark:text-[#eee] text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
             onClick={() => setDtvSubMenuOpen(!dtvSubMenuOpen)}
           >
-            <span>Dtv</span>
+            <span>Dtv/HA</span>
             <span>
               {!dtvSubMenuOpen ? (
                 <ChevronDownIcon className="h-6 w-6 text-white dark:text-[#eee]" />
