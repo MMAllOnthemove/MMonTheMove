@@ -187,7 +187,7 @@ function DTVHome() {
     };
 
     const response = await fetch(
-      `http://localhost:8000/drivers/api/v1/task/create`,
+      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/drivers/api/v1/task/create`,
       requestOptions
     );
 
