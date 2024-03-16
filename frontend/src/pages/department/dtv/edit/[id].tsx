@@ -45,7 +45,7 @@ function EditTask() {
   return (
     <>
       <Head>
-        <title>DTV edit task</title>
+        <title>DTV | HA edit task</title>
       </Head>
 
       <main>
@@ -75,11 +75,10 @@ function EditTask() {
                   </section>
                 </TabPane>
                 <TabPane
-                  title={`${
-                    filterChecklistByJobId?.length > 0
+                  title={`${filterChecklistByJobId?.length > 0
                       ? "View Checklist"
                       : "Create Checklist"
-                  }`}
+                    }`}
                 >
                   <section className="my-5">
                     {filterChecklistByJobId?.length > 0 ? (

@@ -290,3 +290,24 @@ export const fetchAllOTP = () => {
 
   return { getAllOTP };
 };
+export const fetchTickets = () => {
+  const [getAllTickets, setGetAllTickets] = useState<string | any>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetch(`${process.env.NEXT_PUBLIC_TICKETS}/tickets`)
+        .then((response) => response.json())
+        .then((response) => {
+          if (response) {
+            setGetAllTickets(response);
+          }
+        })
+        .then((error) => {
+          //
+        });
+    };
+    fetchData();
+  }, [getAllTickets]);
+
+  return { getAllTickets };
+};

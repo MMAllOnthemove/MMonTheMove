@@ -1,5 +1,5 @@
 // External imports
-
+import React from "react";
 import {
   SortingState,
   flexRender,
@@ -21,7 +21,6 @@ import columns from "@/components/Table/homepageTableColumns";
 import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
 import { fetchCurrentUser, fetchTableData } from "@/hooks/useFetch";
-import React from "react";
 import NotLoggedIn from "../NotLoggedIn";
 import PageTitle from "../PageTitle";
 import Tabs from "../Tabs";
@@ -237,7 +236,7 @@ function HomeComponent() {
       }
     )
       .then((res) => res.json())
-      .then((data) => {});
+      .then((data) => { });
   };
 
   // Post repair data
@@ -292,7 +291,7 @@ function HomeComponent() {
       }
     )
       .then((res) => res.json())
-      .then((data) => {});
+      .then((data) => { });
   };
 
   // Redirects user to the edit table page

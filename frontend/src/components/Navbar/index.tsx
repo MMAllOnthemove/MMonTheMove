@@ -3,7 +3,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router'
 import { useState } from "react";
 // Custom imports
 import { logoutUserFunction } from "@/functions/getLoggedInUserProfile";
@@ -12,6 +12,7 @@ import {
   dtvNavItems,
   hhpNavItems,
   partsNavItems,
+  ticketNavItems,
 } from "../../../public/_data/navbar";
 import logo from "../../../public/mmlogo.png";
 import toast from "react-hot-toast";
@@ -22,19 +23,18 @@ const ThemeChangerButton = dynamic(() => import("../Buttons/ThemeChanger"), {
   ssr: false,
 });
 
-type TUser = {
-  email: string;
-};
+
 const Navbar = () => {
   const [isOpen, setIsopen] = useState(false);
 
   const ToggleSidebar = () => {
     isOpen === true ? setIsopen(false) : setIsopen(true);
   };
-  const router = useRouter();
+  const router = useRouter()
   const [hhpSubMenuOpen, setHHPSubMenuOpen] = useState(false);
   const [partsSubMenuOpen, setPartsSubMenuOpen] = useState(false);
   const [dtvSubMenuOpen, setDtvSubMenuOpen] = useState(false);
+  const [ticketsSubMenuOpen, setTicketsSubMenuOpen] = useState(false);
 
   const { userData } = fetchCurrentUser();
   const { getOTP } = fetchOTP();
@@ -213,6 +213,33 @@ const Navbar = () => {
           {dtvSubMenuOpen && (
             <ul className="">
               {dtvNavItems.map((item) => (
+                <li key={item?.id}>
+                  <Link
+                    href={item?.pageRoute}
+                    className={`sd-link dark:text-[#eee] dark:hover:dark:text-[#eee]`}
+                  >
+                    {item?.item}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+          <button
+            className={`open-submenu-btn dark:text-[#eee] text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
+            onClick={() => setTicketsSubMenuOpen(!ticketsSubMenuOpen)}
+          >
+            <span>Tickets</span>
+            <span>
+              {!dtvSubMenuOpen ? (
+                <ChevronDownIcon className="h-6 w-6 text-white dark:text-[#eee]" />
+              ) : (
+                <ChevronUpIcon className="h-6 w-6 text-white dark:text-[#eee]" />
+              )}
+            </span>
+          </button>
+          {ticketsSubMenuOpen && (
+            <ul className="">
+              {ticketNavItems.map((item) => (
                 <li key={item?.id}>
                   <Link
                     href={item?.pageRoute}

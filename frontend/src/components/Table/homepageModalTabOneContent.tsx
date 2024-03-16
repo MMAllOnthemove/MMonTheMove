@@ -2,6 +2,7 @@
 import { unitStatus } from "../../../public/_data/statuses";
 import { IHomepageModalTabOneContent } from "../../../utils/interfaces";
 import Button from "../Buttons";
+import { engineers } from "../../../public/_data/engineers";
 
 const HomepageModalTabOneContent = (props: IHomepageModalTabOneContent) => {
   const {
@@ -116,18 +117,17 @@ const HomepageModalTabOneContent = (props: IHomepageModalTabOneContent) => {
           className="cursor-pointer mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
           value={engineer}
           onChange={setEngineer}
-          // required
-          // aria-required
+        // required
+        // aria-required
         >
           <option value="" disabled>
             Select engineer
           </option>
-          <option value="Acklas Sakala">Acklas Sakala</option>
-          <option value="Manuel Kaba">Manuel Kaba</option>
-          <option value="Olivier Munguakolwa">Olivier Munguakolwa</option>
-          <option value="Paulas Gambu">Paulas Gambu</option>
-          <option value="Pule Mokoena">Pule Mokoena</option>
-          <option value="Sizwe Phungwayo">Sizwe Phungwayo</option>
+          {engineers.map((engineer) => (
+            <option key={engineer.id} value={`${engineer._name}`}>
+              {engineer?._name}
+            </option>
+          ))}
         </select>
 
         <div className="flex g-3 justify-between items-center">
