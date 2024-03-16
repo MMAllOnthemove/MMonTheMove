@@ -1,5 +1,4 @@
 export const engineers = [
-  { id: 1, _name: "Acklas Sakala" },
   { id: 2, _name: "Manuel Kaba" },
   { id: 4, _name: "Olivier Munguakolwa" },
   { id: 5, _name: "Paulas Gambu" },
@@ -13,6 +12,6 @@ export const dtvEngineers = [
   { id: 1, _name: "Prosper Kamuzonde" },
   { id: 2, _name: "Andrea Likomba" },
   { id: 3, _name: "Iven Maluleke" },
-  { id: 4, _name: "Bongi" },
+  { id: 4, _name: "Bongani" },
   { id: 5, _name: "Samuel Chileshe" },
 ];

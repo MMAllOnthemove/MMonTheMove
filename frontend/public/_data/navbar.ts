@@ -16,3 +16,7 @@ export const dtvNavItems = [
   { id: 2, item: "Dashboard", pageRoute: "/department/dtv/dashboard" },
   // { id: 3, item: "Track", pageRoute: "/department/dtv/track_driver" },
 ];
+export const ticketNavItems = [
+  { id: 1, item: "HHP", pageRoute: "/tickets/hhp" },
+  { id: 2, item: "DTV/HA", pageRoute: "/tickets/dtv-ha" },
+];

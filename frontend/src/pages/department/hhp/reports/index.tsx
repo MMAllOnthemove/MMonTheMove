@@ -233,22 +233,7 @@ function Reports() {
                     </tr>
                   </thead>
                   <tbody className="z-0">
-                    <tr
-                      onClick={() => setIsAgentOneModalVisible(true)}
-                      className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
-                    >
-                      <td className="px-4 py-3  font-medium text-sm max-w-full">
-                        Shane
-                      </td>
-                      <td className="px-4 py-3  font-medium text-sm max-w-full">
-                        {bookingAgentFunc(
-                          getBookingAgentJobsData,
-                          dateFrom,
-                          dateTo,
-                          "shanes300123"
-                        )}
-                      </td>
-                    </tr>
+
                     <tr
                       onClick={() => setIsAgentThreeModalVisible(true)}
                       className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
@@ -281,6 +266,22 @@ function Reports() {
                         )}
                       </td>
                     </tr>
+                    <tr
+                      onClick={() => setIsAgentFourModalVisible(true)}
+                      className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
+                    >
+                      <td className="px-4 py-3  font-medium text-sm max-w-full">
+                        Kirsty
+                      </td>
+                      <td className="px-4 py-3  font-medium text-sm max-w-full">
+                        {bookingAgentFunc(
+                          getBookingAgentJobsData,
+                          dateFrom,
+                          dateTo,
+                          "kirsty01"
+                        )}
+                      </td>
+                    </tr>
                     <tr className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]">
                       <td className="px-4 py-3  font-bold text-sm max-w-full">
                         Total
@@ -297,28 +298,6 @@ function Reports() {
                 </table>
               </div>
               {/* /Modals */}
-              <BookingAgentsModal
-                title="Shane"
-                isVisible={isAgentOneModalVisible}
-                content={bookingAgentMapOverJobs(
-                  getBookingAgentJobsData,
-                  dateFrom,
-                  dateTo,
-                  "shanes300123"
-                )}
-                onClose={() => setIsAgentOneModalVisible(false)}
-              />
-              <BookingAgentsModal
-                title="Nigel"
-                isVisible={isAgentTwoModalVisible}
-                content={bookingAgentMapOverJobs(
-                  getBookingAgentJobsData,
-                  dateFrom,
-                  dateTo,
-                  "nigelc01"
-                )}
-                onClose={() => setIsAgentTwoModalVisible(false)}
-              />
               <BookingAgentsModal
                 title="Sherry"
                 isVisible={isAgentThreeModalVisible}
@@ -338,6 +317,17 @@ function Reports() {
                   dateFrom,
                   dateTo,
                   "lavonaj01"
+                )}
+                onClose={() => setIsAgentFourModalVisible(false)}
+              />
+              <BookingAgentsModal
+                title="Kirsty"
+                isVisible={isAgentFourModalVisible}
+                content={bookingAgentMapOverJobs(
+                  getBookingAgentJobsData,
+                  dateFrom,
+                  dateTo,
+                  "kirsty01"
                 )}
                 onClose={() => setIsAgentFourModalVisible(false)}
               />

@@ -33,7 +33,7 @@ function Dashboard() {
   return (
     <>
       <Head>
-        <title>DTV Dashboard</title>
+        <title>DTV | HA Dashboard</title>
         <meta name="robots" content="noindex, nofollow"></meta>
       </Head>
       <Navbar />
