@@ -1,5 +1,5 @@
 // External imports
-import React from "react";
+
 import {
   SortingState,
   flexRender,
@@ -12,15 +12,16 @@ import {
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState, useCallback } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 // Custom imports
 import TableBody from "@/components/Table/TableBody";
 import columns from "@/components/Table/homepageTableColumns";
-import { getRepair, getTicketNumberOnJobAdd } from "@/functions/getRepairJobs";
+import { getRepair } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
 import { fetchCurrentUser, fetchTableData } from "@/hooks/useFetch";
+import React from "react";
 import NotLoggedIn from "../NotLoggedIn";
 import PageTitle from "../PageTitle";
 import Tabs from "../Tabs";
@@ -160,11 +161,7 @@ function HomeComponent() {
       setRepairDepartment,
       setRepairAPILoading,
     });
-    getTicketNumberOnJobAdd({
-      searchServiceOrder,
-      setTicket,
-    });
-  }, [searchTicket, searchServiceOrder]);
+  }, [searchTicket]);
 
   // const user = session?.user?.email;
 

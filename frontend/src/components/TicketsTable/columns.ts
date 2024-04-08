@@ -9,7 +9,7 @@ const columns: any = [
   },
   {
     header: "Created",
-    accessorKey: "created_at",
+    accessorKey: "created_date",
   },
   {
     header: "Unit type",

@@ -230,7 +230,7 @@ const Navbar = () => {
           >
             <span>Tickets</span>
             <span>
-              {!dtvSubMenuOpen ? (
+              {!ticketsSubMenuOpen ? (
                 <ChevronDownIcon className="h-6 w-6 text-white dark:text-[#eee]" />
               ) : (
                 <ChevronUpIcon className="h-6 w-6 text-white dark:text-[#eee]" />

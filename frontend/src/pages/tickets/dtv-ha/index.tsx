@@ -21,6 +21,7 @@ import columns from "@/components/TicketsTable/columns";
 import NotLoggedIn from "@/components/NotLoggedIn";
 import PageTitle from "@/components/PageTitle";
 import { fetchCurrentUser, fetchTickets } from "@/hooks/useFetch";
+import TicketsModal from "@/components/PopupModal/tickets-modal";
 const Container = dynamic(() => import("@/components/Container"));
 const Navbar = dynamic(() => import("@/components/Navbar"));
 const ToTopButton = dynamic(() => import("@/components/ToTopButton"));
@@ -49,6 +50,8 @@ function DtvHaTickets() {
         onSortingChange: setSorting,
         onGlobalFilterChange: setFiltering,
     });
+    // console.log(table.getRowModel().rows)
+    const [isTicketModalVisible, setIsTicketModalVisible] = useState(false)
 
     return (
         <>
@@ -105,24 +108,37 @@ function DtvHaTickets() {
                                     </thead>
                                     <TableBody>
                                         {table.getRowModel().rows.map((row: any) => (
-                                            <tr
-                                                key={row.id}
-                                                className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
-                                            >
-                                                {row.getVisibleCells().map((cell: any) => (
-                                                    <td
-                                                        key={cell.id}
-                                                        className="px-4 py-3  font-medium text-sm max-w-full"
-                                                    >
-                                                        {flexRender(
-                                                            cell.column.columnDef.cell,
-                                                            cell.getContext()
-                                                        )}
-                                                    </td>
-                                                ))}
-                                            </tr>
+                                            <>
+
+                                                <TicketsModal
+                                                    title="Ticket info"
+                                                    isVisible={isTicketModalVisible}
+                                                    content={<p>{row?.original.unit_fault}</p>}
+                                                    onClose={() => setIsTicketModalVisible(false)}
+
+
+                                                />
+                                                <tr
+                                                    key={row.id}
+                                                    className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
+                                                    onClick={() => setIsTicketModalVisible(true)}
+                                                >
+                                                    {row.getVisibleCells().map((cell: any) => (
+                                                        <td
+                                                            key={cell.id}
+                                                            className="px-4 py-3  font-medium text-sm max-w-full"
+                                                        >
+                                                            {flexRender(
+                                                                cell.column.columnDef.cell,
+                                                                cell.getContext()
+                                                            )}
+                                                        </td>
+                                                    ))}
+                                                </tr>
+                                            </>
                                         ))}
                                     </TableBody>
+
                                 </table>
                             </div>
                             <div className="h-2" />

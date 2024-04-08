@@ -497,3 +497,43 @@ th {
   padding: 1rem;
   margin: -1rem -1rem -1rem auto;
 }
+
+/* Dropdowns in edit ticket */
+.dropdown {
+  margin: 1rem auto;
+  z-index: 10000;
+  /* width: 300px; */
+  position: relative;
+}
+.dropdown,
+.dropdown * {
+  z-index: 10;
+}
+.dropdown .dropdown-btn {
+  cursor: pointer;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  color: #777;
+  font-weight: 500;
+}
+.dropdown-content {
+  /* position: absolute; */
+  /* top: 110%; */
+  left: 0;
+  width: 100%;
+  border-bottom: 1px solid #eee;
+}
+.dropdown-content .item {
+  padding: 10px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+.dropdown-content .item:hover {
+  background: #fcfcfc;
+}

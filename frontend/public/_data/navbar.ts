@@ -18,5 +18,4 @@ export const dtvNavItems = [
 ];
 export const ticketNavItems = [
   { id: 1, item: "HHP", pageRoute: "/tickets/hhp" },
-  { id: 2, item: "DTV/HA", pageRoute: "/tickets/dtv-ha" },
 ];
