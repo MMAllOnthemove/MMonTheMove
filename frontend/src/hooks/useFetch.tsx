@@ -302,7 +302,7 @@ export const fetchTickets = () => {
             setGetAllTickets(response);
           }
         })
-        .then((error) => {
+        .catch((error) => {
           //
         });
     };
@@ -310,4 +310,26 @@ export const fetchTickets = () => {
   }, [getAllTickets]);
 
   return { getAllTickets };
+};
+export const fetchTicketById = (id: string | number | any) => {
+  const [getTicketByid, setGetTicketByid] = useState<string | any>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetch(`${process.env.NEXT_PUBLIC_TICKETS}/tickets/${id}`)
+        .then((response) => response.json())
+        .then((response) => {
+          if (response) {
+
+            setGetTicketByid(response);
+          }
+        })
+        .catch((error) => {
+          //
+        });
+    };
+    fetchData();
+  }, [getTicketByid]);
+
+  return { getTicketByid };
 };

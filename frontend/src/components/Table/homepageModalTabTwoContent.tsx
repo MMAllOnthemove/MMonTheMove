@@ -1,4 +1,5 @@
 // Custom imports
+import { engineers } from "../../../public/_data/engineers";
 import { unitStatus } from "../../../public/_data/statuses";
 import { IHomepageModalTabTwoContent } from "../../../utils/interfaces";
 import Button from "../Buttons";
@@ -145,12 +146,11 @@ const HomepageModalTabTwoContent = (props: IHomepageModalTabTwoContent) => {
             <option value="" disabled>
               Select engineer
             </option>
-            <option value="Acklas Sakala">Acklas Sakala</option>
-            <option value="Manuel Kaba">Manuel Kaba</option>
-            <option value="Olivier Munguakolwa">Olivier Munguakolwa</option>
-            <option value="Paulas Gambu">Paulas Gambu</option>
-            <option value="Pule Mokoena">Pule Mokoena</option>
-            <option value="Sizwe Phungwayo">Sizwe Phungwayo</option>
+            {engineers.map((engineer) => (
+              <option key={engineer.id} value={`${engineer._name}`}>
+                {engineer?._name}
+              </option>
+            ))}
           </select>
           <Button
             type="submit"
