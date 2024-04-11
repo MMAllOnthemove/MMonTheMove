@@ -21,6 +21,7 @@ import columns from "@/components/Table/homepageTableColumns";
 import { getRepair } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
 import { fetchCurrentUser, fetchTableData } from "@/hooks/useFetch";
+import axios from "axios";
 import React from "react";
 import NotLoggedIn from "../NotLoggedIn";
 import PageTitle from "../PageTitle";
@@ -192,35 +193,19 @@ function HomeComponent() {
       dateAdded,
     };
     // console.log("postThisInfo", postThisInfo);
-    let regexNumber = /^[0-9]+$/;
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`,
-      {
-        method: "POST",
-        cache: "default",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(postThisInfo),
-      }
-    );
-    if (
-      searchServiceOrder.length < 10 ||
-      searchServiceOrder.length < 0 ||
-      searchServiceOrder.length === 0
-    ) {
-      setIsHHPAddTaskModalVisible(false);
-      toast.error("Not enough characters.");
-    } else if (!searchServiceOrder.match(regexNumber)) {
-      setIsHHPAddTaskModalVisible(false);
-      toast.error("Only enter numeric characters.");
-    } else if (!response.ok) {
-      setIsHHPAddTaskModalVisible(false);
-      toast.error("Please try again.");
-    } else {
-      setIsHHPAddTaskModalVisible(false);
-      await response.json();
-      toast.success("Successfully created!");
-      // window.location.reload();
-    }
+    axios.post(`${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`, postThisInfo)
+      .then((response) => {
+        if (response) {
+          setIsHHPAddTaskModalVisible(false);
+          toast.success("Successfully created!");
+        }
+      })
+      .catch(function (error) {
+        toast.error(`${error.response.data}`);
+
+      });
+
+
 
     // // This part will deposit the same data into our history table
     // For some reason it's not reading this function initially, only when user updates job
