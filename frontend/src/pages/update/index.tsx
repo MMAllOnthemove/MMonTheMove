@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import axios from "axios"
 
 interface IOtpValues {
   otp: string;
@@ -26,28 +27,23 @@ function Update() {
       ipAddress,
       otp,
     };
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_OTP}/post`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        }
-      );
 
-      const data = await response.json();
-      if (response.ok) {
+    axios.post(
+      `${process.env.NEXT_PUBLIC_BACKEND_OTP}/post`,
+      values
+    ).then(function (response) {
+      console.log(response);
+      if (response) {
         toast.success("Successfully created!");
         router.push("/");
-      } else if (!response.ok) {
-        toast.error("Error, try gain");
-        return;
       }
-    } catch (error) {}
+    })
+      .catch(function (error) {
+        router.push("/");
+        toast.error(`${error.response.data}`);
+
+      });
+
   };
 
   return (
