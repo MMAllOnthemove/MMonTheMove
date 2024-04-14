@@ -7813,7 +7813,7 @@ export default function EditTicket() {
                             }
                         </div>
 
-                        <button type="submit">Send</button>
+                        <button type="submit" className="bg-[#082f49] font-semibold text-white dark:text-[#eee] hover:bg-blue-800 rounded-sm text-sm p-2.5 text-center">Send to GSPN</button>
                     </form>
                 </>}
             </Container>
