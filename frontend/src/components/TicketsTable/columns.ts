@@ -16,10 +16,6 @@ const columns: any = [
     accessorKey: "warranty_period",
   },
   {
-    header: "Fault",
-    accessorKey: "unit_fault",
-  },
-  {
     header: "Model",
     accessorKey: "model_number",
   },
