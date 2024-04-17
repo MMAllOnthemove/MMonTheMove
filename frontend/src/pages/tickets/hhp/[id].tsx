@@ -21,6 +21,7 @@ export default function EditTicket() {
 
     const [createSOModalVisible, setCreateSOModalVisble] = useState(false);
     const [createSOSuccess, setCreateSOSuccess] = useState('')
+    const [getServiceOrderNumber, setGetServicOrderNumber] = useState("")
 
     const ticketNumber = getTicketByid[0]?.ticket_number;
     const unitFault = getTicketByid[0]?.unit_fault;
@@ -159,12 +160,14 @@ export default function EditTicket() {
                 Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS} `
             },
         }).then(function (response) {
+            console.log(response)
             setCreateSOSuccess(response?.data.Return.EvRetMsg);
+            setGetServicOrderNumber(response?.data.Return.EvSvcOrderNo);
             setCreateSOModalVisble(true)
 
         })
             .catch(function (error) {
-                // 
+                console.log(error)
             });
 
     }
@@ -204,6 +207,7 @@ export default function EditTicket() {
                         title="Create service order"
                         content={
                             <>
+                                <p>{getServiceOrderNumber}</p>
                                 <p>{createSOSuccess}</p>
                             </>
                         }

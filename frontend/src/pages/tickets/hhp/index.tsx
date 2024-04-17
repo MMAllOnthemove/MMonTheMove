@@ -22,6 +22,7 @@ import NotLoggedIn from "@/components/NotLoggedIn";
 import PageTitle from "@/components/PageTitle";
 import { fetchCurrentUser, fetchTicketById, fetchTickets } from "@/hooks/useFetch";
 import TicketsModal from "@/components/PopupModal/tickets-modal";
+import ManagementSearchForm from "@/components/Table/managementSearchForm";
 const Container = dynamic(() => import("@/components/Container"));
 const Navbar = dynamic(() => import("@/components/Navbar"));
 const ToTopButton = dynamic(() => import("@/components/ToTopButton"));
@@ -60,7 +61,15 @@ function HHPTickets() {
         e.stopPropagation();
         router.push(`/tickets/hhp/${unique_id}`);
     };
+    const [selectedRow, setSelectedRow] = useState(false);
 
+    const openModal = (row) => {
+        setIsTicketModalVisible(row);
+    };
+
+    const closeModal = () => {
+        setIsTicketModalVisible(false);
+    };
     return (
         <>
             <Head>
@@ -76,6 +85,15 @@ function HHPTickets() {
                         <>
 
                             <PageTitle title="Tickets" hasSpan={false} />
+
+                            <div className="flex justify-between items-center py-5">
+                                <ManagementSearchForm
+                                    filtering={filtering}
+                                    setFiltering={(e) => setFiltering(e.target.value)}
+                                />
+                                <div />
+                            </div>
+
                             <div className="max-h-[540px] overflow-y-auto">
                                 <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
                                     <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] text-sm uppercase font-semibold">
@@ -123,7 +141,7 @@ function HHPTickets() {
                                             <tr
                                                 key={row.id}
                                                 className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
-                                                onClick={() => setIsTicketModalVisible(true)}
+                                                onClick={() => openModal(row.original)}
                                             >
                                                 <td className="px-4 py-3  font-medium text-sm max-w-full">
                                                     <button
@@ -153,6 +171,20 @@ function HHPTickets() {
                                     </TableBody>
 
                                 </table>
+
+                                <TicketsModal isVisible={isTicketModalVisible} title="" content={isTicketModalVisible && (
+                                    <div>
+                                        <h2>Row Details</h2>
+                                        <p>Customer: {isTicketModalVisible?.customer_fullname}</p>
+                                        <p>Unit: {isTicketModalVisible?.type_of_unit}</p>
+                                        <p>Warranty: {isTicketModalVisible?.warranty_period}</p>
+                                        <p>Serial number: {isTicketModalVisible?.serial_number}</p>
+                                        <p>Ticket: {isTicketModalVisible?.ticket_number}</p>
+                                        <button onClick={closeModal}>Close Modal</button>
+                                    </div>
+                                )} onClose={closeModal} />
+
+
                             </div>
                             <div className="h-2" />
                             <Pagination table={table} />
