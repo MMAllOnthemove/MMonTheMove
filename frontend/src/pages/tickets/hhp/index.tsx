@@ -53,7 +53,7 @@ function HHPTickets() {
         onGlobalFilterChange: setFiltering,
     });
     // console.log(table.getRowModel().rows)
-    const [isTicketModalVisible, setIsTicketModalVisible] = useState(false)
+    const [isTicketModalVisible, setIsTicketModalVisible] = useState<any>()
 
     const router = useRouter();
     // Redirects user to the edit table page
@@ -63,7 +63,7 @@ function HHPTickets() {
     };
     const [selectedRow, setSelectedRow] = useState(false);
 
-    const openModal = (row) => {
+    const openModal = (row: any) => {
         setIsTicketModalVisible(row);
     };
 
