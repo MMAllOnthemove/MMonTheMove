@@ -59,7 +59,6 @@ html {
   padding: 0;
   margin: 0;
   font-family: Inter, sans-serif !important;
-  font-family: var(--font-inter);
   height: 100vh;
   max-height: 1000vh;
   min-height: 100vh;

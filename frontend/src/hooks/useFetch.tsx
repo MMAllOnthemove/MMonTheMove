@@ -17,6 +17,7 @@ export const fetchCurrentUser = () => {
       })
         .then((res) => res.json())
         .then((data) => {
+
           setUserData(data?.email);
         })
         .then((error) => {
