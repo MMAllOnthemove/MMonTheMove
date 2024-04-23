@@ -78,7 +78,7 @@ function Tookan() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="mb-4">
                                         <label htmlFor='firstname'>First Name</label>
-                                        <input type="text" value={firstname} onChange={(e) => setFirstname(e.target.value)} name='firstname' id='firstname' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="First Name" />
+                                        <input type="text" value={firstname} onChange={(e) => setFirstname(e.target.value)} name='firstname' id='firstname' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
 
                                     </div>
                                     <div className="mb-4">
@@ -90,7 +90,7 @@ function Tookan() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="mb-4">
                                         <label htmlFor='email'>Email</label>
-                                        <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} name='email' id='email' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="First Name" />
+                                        <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} name='email' id='email' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
 
                                     </div>
                                     <div className="mb-4">
@@ -102,7 +102,7 @@ function Tookan() {
                                 <div className="grid grid-cols-1 gap-4">
                                     <div className="mb-4">
                                         <label htmlFor='serviceOrder'>Service order/ticket no</label>
-                                        <input type="text" value={serviceOrder} onChange={(e) => setServiceOrder(e.target.value)} name='serviceOrder' id='serviceOrder' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="First Name" />
+                                        <input type="text" value={serviceOrder} onChange={(e) => setServiceOrder(e.target.value)} name='serviceOrder' id='serviceOrder' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
 
                                     </div>
                                 </div>
