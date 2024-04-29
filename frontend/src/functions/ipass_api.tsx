@@ -6,6 +6,7 @@ import {
   IgetStockOverviewInfo,
   IgetSOInfoAllParts,
   IgetSOInfoAllDtv,
+  IgetSOInfoTookan,
 } from "../../utils/interfaces";
 
 export async function getSOInfoAllFunction({
@@ -386,4 +387,45 @@ export async function getPartsInfoForServiceOrder(
   } catch (error) {
     // console.log("Ipaas parts info error", error);
   }
+}
+
+export async function getSOInfoAllTookan({
+  serviceOrder,
+  setFirstname,
+  setLastname,
+  setEmail,
+  setPhone,
+  setFault,
+}: IgetSOInfoTookan) {
+  const options = {
+    IvSvcOrderNo: serviceOrder,
+    IsCommonHeader: {
+      Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
+      AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
+      Lang: `${process.env.NEXT_PUBLIC_LANG}`,
+      Country: `${process.env.NEXT_PUBLIC_COUNTRY}`,
+      Pac: `${process.env.NEXT_PUBLIC_PAC}`,
+    },
+  };
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_IPAAS_API_GETSOINFOALL}`,
+    {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
+      },
+      body: JSON.stringify(options),
+    }
+  );
+
+  const data = await response.json();
+  setFirstname(data?.Return?.EsBpInfo?.CustFirstName)
+  setLastname(data?.Return?.EsBpInfo?.CustLastName)
+  setEmail(data?.Return?.EsBpInfo?.CustEmail)
+  setPhone(data?.Return?.EsModelInfo?.CustMobilePhone);
+  setFault(data?.Return?.EsModelInfo?.DefectDesc);
 }

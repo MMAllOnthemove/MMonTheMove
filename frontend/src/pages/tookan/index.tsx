@@ -1,8 +1,9 @@
 import axios from 'axios'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { datetimestamp } from '../../../utils/datemin';
 import moment from 'moment';
 import Head from 'next/head';
+import { getSOInfoAllTookan } from '@/functions/ipass_api';
 function Tookan() {
 
     let formattedStartTime = moment(datetimestamp).format("YYYY-MM-DD 09:30:00")
@@ -15,6 +16,20 @@ function Tookan() {
     const startTime = datetimestamp
     const endTime = datetimestamp
     const [fault, setFault] = useState("")
+
+
+    useEffect(() => {
+        getSOInfoAllTookan({
+            serviceOrder,
+            setFirstname,
+            setLastname,
+            setEmail,
+            setPhone,
+            setFault,
+        });
+    }, [serviceOrder]);
+
+
     const createTookanTask = async (e: React.SyntheticEvent) => {
         e.preventDefault();
 
@@ -35,6 +50,7 @@ function Tookan() {
             "timezone": "+2",
             "api_key": `${process.env.NEXT_PUBLIC_TOOKAN_API_TOKEN}`
         }
+
         await axios.post(`${process.env.NEXT_PUBLIC_TOOKAN_LINK}`, values, {
             headers: {
                 'Content-Type': 'application/json',
@@ -53,7 +69,7 @@ function Tookan() {
             }
 
         }).then((error) => {
-            console.log(error)
+            // console.log(error)
         })
 
     }
@@ -69,7 +85,7 @@ function Tookan() {
                 >
                     <div className="flex items-center p-[1rem] border-b border-blue-[#eee]">
                         <h3 className="text-slate-800 font-medium dark:text-[#eee]">
-                            Create task
+                            Create Tookan task
                         </h3>
                     </div>
                     <div className="overflow-auto">
@@ -78,24 +94,24 @@ function Tookan() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="mb-4">
                                         <label htmlFor='firstname'>First Name</label>
-                                        <input type="text" value={firstname} onChange={(e) => setFirstname(e.target.value)} name='firstname' id='firstname' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                                        <input type="text" defaultValue={firstname} name='firstname' id='firstname' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
 
                                     </div>
                                     <div className="mb-4">
                                         <label htmlFor='lastname'>Last Name</label>
-                                        <input type="text" value={lastname} onChange={(e) => setLastname(e.target.value)} id='lastname' name='lastname' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                                        <input type="text" defaultValue={lastname} id='lastname' name='lastname' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
 
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="mb-4">
                                         <label htmlFor='email'>Email</label>
-                                        <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} name='email' id='email' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                                        <input type="text" defaultValue={email} name='email' id='email' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
 
                                     </div>
                                     <div className="mb-4">
                                         <label htmlFor='phone'>Telephone</label>
-                                        <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} id='phone' name='phone' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                                        <input type="text" defaultValue={phone} id='phone' name='phone' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
 
                                     </div>
                                 </div>
@@ -110,7 +126,7 @@ function Tookan() {
                                     <div className="mb-4">
                                         <label htmlFor='fault'>Fault (description)</label>
 
-                                        <textarea value={fault} name='fault' id='fault' onChange={(e) => setFault(e.target.value)} className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></textarea>
+                                        <textarea defaultValue={fault} name='fault' id='fault' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></textarea>
 
                                     </div>
                                 </div>
@@ -118,6 +134,7 @@ function Tookan() {
                                     Create task
                                 </button>
                             </form>
+                            <small className='font-medium text-slate-700'>Type in the service order to auto populate</small>
                         </div>
                     </div>
                 </div>
