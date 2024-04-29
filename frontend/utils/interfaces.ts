@@ -289,4 +289,5 @@ export interface IgetSOInfoTookan {
   setEmail: (order: string) => void;
   setPhone: (order: string) => void;
   setFault: (order: string) => void;
+  setAddress: (order: string) => void;
 }

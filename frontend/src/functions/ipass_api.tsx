@@ -252,6 +252,7 @@ export async function postBookingAgentsJobs({
     setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
     setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
     setWarranty(data?.Return?.EsModelInfo?.WtyType);
+
   }
 }
 
@@ -395,6 +396,7 @@ export async function getSOInfoAllTookan({
   setLastname,
   setEmail,
   setPhone,
+  setAddress,
   setFault,
 }: IgetSOInfoTookan) {
   const options = {
@@ -426,6 +428,7 @@ export async function getSOInfoAllTookan({
   setFirstname(data?.Return?.EsBpInfo?.CustFirstName)
   setLastname(data?.Return?.EsBpInfo?.CustLastName)
   setEmail(data?.Return?.EsBpInfo?.CustEmail)
-  setPhone(data?.Return?.EsModelInfo?.CustMobilePhone);
+  setPhone(data?.Return?.EsBpInfo?.CustMobilePhone || "");
+  setAddress(data?.Return?.EsBpInfo?.CustAddrStreet1)
   setFault(data?.Return?.EsModelInfo?.DefectDesc);
 }
