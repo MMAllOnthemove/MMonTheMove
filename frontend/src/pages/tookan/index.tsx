@@ -4,6 +4,7 @@ import { datetimestamp } from '../../../utils/datemin';
 import moment from 'moment';
 import Head from 'next/head';
 import { getSOInfoAllTookan } from '@/functions/ipass_api';
+import { capitalizeFirstLetter } from '../../../utils/capitalize';
 function Tookan() {
 
     let formattedStartTime = moment(datetimestamp).format("YYYY-MM-DD 09:30:00")
@@ -12,6 +13,7 @@ function Tookan() {
     const [lastname, setLastname] = useState("")
     const [email, setEmail] = useState("")
     const [phone, setPhone] = useState("")
+    const [address, setAddress] = useState("")
     const [serviceOrder, setServiceOrder] = useState("")
     const startTime = datetimestamp
     const endTime = datetimestamp
@@ -25,6 +27,7 @@ function Tookan() {
             setLastname,
             setEmail,
             setPhone,
+            setAddress,
             setFault,
         });
     }, [serviceOrder]);
@@ -36,10 +39,11 @@ function Tookan() {
 
         let username = firstname + " " + lastname;
         const values = {
-            "customer_username": username,
             "customer_email": email,
-            "customer_phone": phone,
             "order_id": serviceOrder,
+            "customer_username": capitalizeFirstLetter(username),
+            "customer_phone": phone,
+            "customer_address": address,
             "job_description": fault,
             "job_pickup_datetime": formattedStartTime,
             "job_delivery_datetime": formattedEndTime,
@@ -58,6 +62,7 @@ function Tookan() {
         }).then((res) => {
 
             if (res.data) {
+                console.log(res.data)
                 alert(res.data.message);
                 setFirstname("")
                 setLastname("")
@@ -69,7 +74,7 @@ function Tookan() {
             }
 
         }).then((error) => {
-            // console.log(error)
+            // 
         })
 
     }
