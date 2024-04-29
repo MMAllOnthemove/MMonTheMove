@@ -62,7 +62,6 @@ function Tookan() {
         }).then((res) => {
 
             if (res.data) {
-                console.log(res.data)
                 alert(res.data.message);
                 setFirstname("")
                 setLastname("")
