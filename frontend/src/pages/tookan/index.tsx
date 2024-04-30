@@ -38,19 +38,22 @@ function Tookan() {
 
     function addToLocalStorage(job_id: string) {
         if (typeof window !== "undefined" && window.localStorage) {
-            localStorage.setItem("service_order", serviceOrder);
-            localStorage.setItem("job_id", job_id);
+            window.localStorage.setItem("service_order", serviceOrder);
+            window.localStorage.setItem("job_id", job_id);
 
         }
     }
 
     useEffect(() => {
-        if (typeof window !== "undefined" && window.localStorage) {
-            let jobId = JSON.parse(localStorage.getItem("job_id") || '"')
-            let service_order = JSON.parse(localStorage.getItem("service_order") || '"')
-            setPopupServiceOrder(service_order)
-            setPopJobId(jobId)
+        const loadFromStorage = () => {
+            if (typeof window !== "undefined" && window.localStorage) {
+                let jobId = JSON.parse(localStorage.getItem("job_id") || '""')
+                let service_order = JSON.parse(localStorage.getItem("service_order") || '""')
+                setPopupServiceOrder(service_order)
+                setPopJobId(jobId)
+            }
         }
+        loadFromStorage()
     }, [])
 
 
@@ -120,7 +123,9 @@ function Tookan() {
 
     }
 
-
+    const clearLocalStorage = () => {
+        if (typeof window !== "undefined" && window.localStorage) localStorage.clear();
+    }
     const assignToTeam = async (e: React.SyntheticEvent) => {
         e.preventDefault()
         const values = {
@@ -138,6 +143,7 @@ function Tookan() {
             if (res.status === 200) {
                 alert(res.data.message);
                 setIsModalOpen(false);
+                clearLocalStorage()
             }
 
         }).then((error) => {
@@ -151,8 +157,6 @@ function Tookan() {
             <div
                 className="fixed top-0 bottom-0 left-0 right-0 w-full flex items-center justify-center rounded-sm"
             >
-                {/* TODO: delete later */}
-                <button className='border cursor-pointer' onClick={() => setIsModalOpen(true)}>Open</button>
                 <div
                     className="w-full max-w-[550px] bg-white dark:bg-[#22303C] relative my-0 mx-[20px] text-left flex flex-col overflow-hidden popup-modal-dialog"
                     onClick={(e) => e.stopPropagation()}
