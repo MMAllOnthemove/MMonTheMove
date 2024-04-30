@@ -5,6 +5,8 @@ import moment from 'moment';
 import Head from 'next/head';
 import { getSOInfoAllTookan } from '@/functions/ipass_api';
 import { capitalizeFirstLetter } from '../../../utils/capitalize';
+import TicketsModal from '@/components/PopupModal/tickets-modal';
+import { tookan_departments, tookan_status } from '../../../utils/tookan';
 function Tookan() {
 
     let formattedStartTime = moment(datetimestamp).format("YYYY-MM-DD 09:30:00")
@@ -14,10 +16,42 @@ function Tookan() {
     const [email, setEmail] = useState("")
     const [phone, setPhone] = useState("")
     const [address, setAddress] = useState("")
+    const [address2, setAddress2] = useState("")
+    const [city, setCity] = useState("")
+    const [state, setState] = useState("")
+    const [zip, setZip] = useState("")
+    const [country, setCountry] = useState("")
     const [serviceOrder, setServiceOrder] = useState("")
     const startTime = datetimestamp
     const endTime = datetimestamp
     const [fault, setFault] = useState("")
+
+
+    // For the popup modal
+    const [modalOpen, setIsModalOpen] = useState(false)
+    const [popupServiceOrder, setPopupServiceOrder] = useState<string>("")
+    const [tookanStatus, setTookanStatus] = useState("")
+    const [department, setDepartment] = useState("")
+    const [popupJobId, setPopJobId] = useState<string>("")
+
+
+
+    function addToLocalStorage(job_id: string) {
+        if (typeof window !== "undefined" && window.localStorage) {
+            localStorage.setItem("service_order", serviceOrder);
+            localStorage.setItem("job_id", job_id);
+
+        }
+    }
+
+    useEffect(() => {
+        if (typeof window !== "undefined" && window.localStorage) {
+            let jobId = JSON.parse(localStorage.getItem("job_id") || '"')
+            let service_order = JSON.parse(localStorage.getItem("service_order") || '"')
+            setPopupServiceOrder(service_order)
+            setPopJobId(jobId)
+        }
+    }, [])
 
 
     useEffect(() => {
@@ -28,9 +62,15 @@ function Tookan() {
             setEmail,
             setPhone,
             setAddress,
+            setAddress2,
+            setCity,
+            setState,
+            setZip,
+            setCountry,
             setFault,
         });
     }, [serviceOrder]);
+
 
 
     const createTookanTask = async (e: React.SyntheticEvent) => {
@@ -38,13 +78,14 @@ function Tookan() {
 
 
         let username = firstname + " " + lastname;
+        let fullAddress = address + " " + address2 + " " + city + " " + country;
         const values = {
             "customer_email": email,
             "order_id": serviceOrder,
             "customer_username": capitalizeFirstLetter(username),
             "customer_phone": phone,
-            "customer_address": address,
-            "job_description": fault,
+            "customer_address": fullAddress,
+            "job_description": capitalizeFirstLetter(fault),
             "job_pickup_datetime": formattedStartTime,
             "job_delivery_datetime": formattedEndTime,
             "has_pickup": "0",
@@ -54,35 +95,64 @@ function Tookan() {
             "timezone": "+2",
             "api_key": `${process.env.NEXT_PUBLIC_TOOKAN_API_TOKEN}`
         }
-
-        await axios.post(`${process.env.NEXT_PUBLIC_TOOKAN_LINK}`, values, {
+        // console.log(values)
+        await axios.post(`${process.env.NEXT_PUBLIC_TOOKAN_LINK}/create_task`, values, {
             headers: {
                 'Content-Type': 'application/json',
             },
         }).then((res) => {
-
-            if (res.data) {
+            // console.log(res)
+            if (res.status === 200) {
                 alert(res.data.message);
+                addToLocalStorage(res?.data?.data?.job_id);
                 setFirstname("")
                 setLastname("")
                 setEmail("")
                 setPhone("")
                 setServiceOrder("")
                 setFault("")
-
+                setIsModalOpen(true)
             }
 
         }).then((error) => {
-            // 
+            // console.log("error", error)
         })
 
+    }
+
+
+    const assignToTeam = async (e: React.SyntheticEvent) => {
+        e.preventDefault()
+        const values = {
+            "job_id": popupJobId,
+            "team_id": department,
+            "job_status": tookanStatus,
+            "api_key": `${process.env.NEXT_PUBLIC_TOOKAN_API_TOKEN}`
+        }
+        await axios.post(`${process.env.NEXT_PUBLIC_TOOKAN_LINK}/assign_task`, values, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then((res) => {
+            // console.log(res)
+            if (res.status === 200) {
+                alert(res.data.message);
+                setIsModalOpen(false);
+            }
+
+        }).then((error) => {
+            // console.log("error", error)
+        })
     }
     return (
         <>
             <Head><title>Tookan | MM ALL ELECTRONICS</title></Head>
+
             <div
                 className="fixed top-0 bottom-0 left-0 right-0 w-full flex items-center justify-center rounded-sm"
             >
+                {/* TODO: delete later */}
+                <button className='border cursor-pointer' onClick={() => setIsModalOpen(true)}>Open</button>
                 <div
                     className="w-full max-w-[550px] bg-white dark:bg-[#22303C] relative my-0 mx-[20px] text-left flex flex-col overflow-hidden popup-modal-dialog"
                     onClick={(e) => e.stopPropagation()}
@@ -129,12 +199,10 @@ function Tookan() {
                                 <div className="grid grid-cols-1">
                                     <div className="mb-4">
                                         <label htmlFor='fault'>Fault (description)</label>
-
                                         <textarea defaultValue={fault} name='fault' id='fault' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></textarea>
-
                                     </div>
                                 </div>
-                                <button type="submit" className="text-white bg-gray-900 hover:bg-gray-800 border border-gray-200 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 mb-2">
+                                <button type="submit" className="text-white bg-gray-900 hover:bg-gray-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 mb-2">
                                     Create task
                                 </button>
                             </form>
@@ -143,6 +211,46 @@ function Tookan() {
                     </div>
                 </div>
             </div>
+
+
+            <TicketsModal
+                isVisible={modalOpen}
+                title="Assign service order"
+                content={
+                    <>
+                        <form onSubmit={assignToTeam}>
+                            <div className="mb-4">
+                                <label htmlFor='popupServiceOrder'>Service Order</label>
+                                <input type="text" value={popupServiceOrder} onChange={(e) => setPopupServiceOrder(e.target.value)} id='popupServiceOrder' name='popupServiceOrder' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                            </div>
+                            <div className="mb-4">
+                                <select name="department" id="department" className="cursor-pointer bg-white outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value={department} onChange={(e) => setDepartment(e.target.value)}>
+                                    <option value="" disabled>Assign to department</option>
+                                    {tookan_departments.map((dep) => (
+                                        <option key={dep.id} value={dep._value}>{dep._name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="mb-4">
+                                <select name="tookan_status" id="tookan_status" className="cursor-pointer bg-white outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value={tookanStatus} onChange={(e) => setTookanStatus(e.target.value)}>
+                                    <option value="" disabled>Choose status</option>
+                                    {tookan_status.map((dep) => (
+                                        <option key={dep.id} value={dep._value}>{dep._name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <button type="submit" className="text-white bg-gray-900 hover:bg-gray-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 mb-2">
+                                Assign task
+                            </button>
+                        </form>
+
+                    </>
+                }
+                onClose={() => setIsModalOpen(false)}
+
+            />
+
+
         </>
     )
 }
