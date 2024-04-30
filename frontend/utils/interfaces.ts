@@ -290,4 +290,9 @@ export interface IgetSOInfoTookan {
   setPhone: (order: string) => void;
   setFault: (order: string) => void;
   setAddress: (order: string) => void;
+  setAddress2: (order: string) => void;
+  setCity: (order: string) => void;
+  setState: (order: string) => void;
+  setCountry: (order: string) => void;
+  setZip: (order: string) => void;
 }
