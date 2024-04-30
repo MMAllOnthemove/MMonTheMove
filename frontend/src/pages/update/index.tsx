@@ -32,7 +32,7 @@ function Update() {
       `${process.env.NEXT_PUBLIC_BACKEND_OTP}/post`,
       values
     ).then(function (response) {
-      console.log(response);
+      // console.log(response);
       if (response) {
         toast.success("Successfully created!");
         router.push("/");

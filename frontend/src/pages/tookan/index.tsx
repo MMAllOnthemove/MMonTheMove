@@ -9,8 +9,6 @@ import TicketsModal from '@/components/PopupModal/tickets-modal';
 import { tookan_departments, tookan_status } from '../../../utils/tookan';
 function Tookan() {
 
-    let formattedStartTime = moment(datetimestamp).format("YYYY-MM-DD 09:30:00")
-    let formattedEndTime = moment(datetimestamp).format("YYYY-MM-DD 17:00:00")
     const [firstname, setFirstname] = useState("")
     const [lastname, setLastname] = useState("")
     const [email, setEmail] = useState("")
@@ -22,39 +20,55 @@ function Tookan() {
     const [zip, setZip] = useState("")
     const [country, setCountry] = useState("")
     const [serviceOrder, setServiceOrder] = useState("")
-    const startTime = datetimestamp
-    const endTime = datetimestamp
+    const [startDate, setStartDate] = useState("")
+    const [endDate, setEndDate] = useState("")
     const [fault, setFault] = useState("")
 
-
+    let d = datetimestamp;
+    let formattedStartTime = moment(d).format("YYYY-MM-DD 09:30:00")
+    let formattedEndTime = moment(d).format("YYYY-MM-DD 17:00:00")
     // For the popup modal
     const [modalOpen, setIsModalOpen] = useState(false)
-    const [popupServiceOrder, setPopupServiceOrder] = useState<string>("")
+    const [popupServiceOrder, setPopupServiceOrder] = useState("")
     const [tookanStatus, setTookanStatus] = useState("")
     const [department, setDepartment] = useState("")
-    const [popupJobId, setPopJobId] = useState<string>("")
+    const [popupJobId, setPopJobId] = useState("")
 
 
 
     function addToLocalStorage(job_id: string) {
+        const values = {
+            "job_id": job_id,
+            "service_order": serviceOrder
+        }
+        const infoString = JSON.stringify(values);
         if (typeof window !== "undefined" && window.localStorage) {
-            window.localStorage.setItem("service_order", serviceOrder);
-            window.localStorage.setItem("job_id", job_id);
-
+            window.localStorage.setItem("info", infoString);
+            // console.log('Dummy object stored successfully!');
+            // router.push("/device_inspection")
         }
     }
 
     useEffect(() => {
         const loadFromStorage = () => {
-            if (typeof window !== "undefined" && window.localStorage) {
-                let jobId = JSON.parse(localStorage?.getItem("job_id") as any)
-                let service_order = JSON.parse(localStorage?.getItem("service_order") as any)
-                setPopupServiceOrder(service_order)
-                setPopJobId(jobId)
+            if (typeof window !== 'undefined' && window.localStorage) {
+                const storedData = localStorage.getItem('info');
+                // console.log('Stored data:', storedData); // Log the retrieved data
+                try {
+                    const parsedData = JSON.parse(storedData || '{}');
+                    // console.log('Parsed data:', parsedData); // Log the parsed data
+                    if (parsedData !== null) {
+                        setPopupServiceOrder(parsedData.service_order);
+                        setPopJobId(parsedData.job_id);
+                    }
+                } catch (error) {
+                    // console.error('Error parsing data:', error); // Log any parsing errors
+                }
             }
-        }
-        loadFromStorage()
-    }, [])
+        };
+        loadFromStorage();
+    }, []);
+
 
 
     useEffect(() => {
@@ -79,18 +93,17 @@ function Tookan() {
     const createTookanTask = async (e: React.SyntheticEvent) => {
         e.preventDefault();
 
-
-        let username = firstname + " " + lastname;
+        let username = capitalizeFirstLetter(firstname) + " " + capitalizeFirstLetter(lastname);
         let fullAddress = address + " " + address2 + " " + city + " " + country;
         const values = {
-            "customer_email": email,
+            "customer_email": email?.toLowerCase(),
             "order_id": serviceOrder,
-            "customer_username": capitalizeFirstLetter(username),
+            "customer_username": username,
             "customer_phone": phone,
             "customer_address": fullAddress,
             "job_description": capitalizeFirstLetter(fault),
-            "job_pickup_datetime": formattedStartTime,
-            "job_delivery_datetime": formattedEndTime,
+            "job_pickup_datetime": `${startDate} 09:30:00`,
+            "job_delivery_datetime": `${endDate} 17:00:00`,
             "has_pickup": "0",
             "has_delivery": "0",
             "layout_type": "1",
@@ -172,24 +185,36 @@ function Tookan() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="mb-4">
                                         <label htmlFor='firstname'>First Name</label>
-                                        <input type="text" defaultValue={firstname} name='firstname' id='firstname' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                                        <input type="text" value={capitalizeFirstLetter(firstname)} onChange={(e) => setFirstname(e.target.value)} name='firstname' id='firstname' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
 
                                     </div>
                                     <div className="mb-4">
                                         <label htmlFor='lastname'>Last Name</label>
-                                        <input type="text" defaultValue={lastname} id='lastname' name='lastname' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                                        <input type="text" value={capitalizeFirstLetter(lastname)} onChange={(e) => setLastname(e.target.value)} id='lastname' name='lastname' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
 
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="mb-4">
                                         <label htmlFor='email'>Email</label>
-                                        <input type="text" defaultValue={email} name='email' id='email' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                                        <input type="text" value={email?.toLowerCase()} onChange={(e) => setEmail(e.target.value)} name='email' id='email' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
 
                                     </div>
                                     <div className="mb-4">
                                         <label htmlFor='phone'>Telephone</label>
-                                        <input type="text" defaultValue={phone} id='phone' name='phone' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                                        <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} id='phone' name='phone' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="mb-4">
+                                        <label htmlFor='startDate'>Start date</label>
+                                        <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} name='startDate' id='startDate' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+
+                                    </div>
+                                    <div className="mb-4">
+                                        <label htmlFor='endDate'>End date</label>
+                                        <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} name='endDate' id='endDate' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
 
                                     </div>
                                 </div>
@@ -203,7 +228,7 @@ function Tookan() {
                                 <div className="grid grid-cols-1">
                                     <div className="mb-4">
                                         <label htmlFor='fault'>Fault (description)</label>
-                                        <textarea defaultValue={fault} name='fault' id='fault' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></textarea>
+                                        <textarea value={fault} onChange={(e) => setFault(e.target.value)} name='fault' id='fault' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></textarea>
                                     </div>
                                 </div>
                                 <button type="submit" className="text-white bg-gray-900 hover:bg-gray-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 mb-2">
@@ -225,7 +250,7 @@ function Tookan() {
                         <form onSubmit={assignToTeam}>
                             <div className="mb-4">
                                 <label htmlFor='popupServiceOrder'>Service Order</label>
-                                <input type="text" value={popupServiceOrder} onChange={(e) => setPopupServiceOrder(e.target.value)} id='popupServiceOrder' name='popupServiceOrder' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                                <input type="text" defaultValue={popupServiceOrder} id='popupServiceOrder' name='popupServiceOrder' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
                             </div>
                             <div className="mb-4">
                                 <select name="department" id="department" className="cursor-pointer bg-white outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value={department} onChange={(e) => setDepartment(e.target.value)}>
