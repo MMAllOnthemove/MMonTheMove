@@ -47,8 +47,8 @@ function Tookan() {
     useEffect(() => {
         const loadFromStorage = () => {
             if (typeof window !== "undefined" && window.localStorage) {
-                let jobId = JSON.parse(localStorage.getItem("job_id") || '""')
-                let service_order = JSON.parse(localStorage.getItem("service_order") || '""')
+                let jobId = JSON.parse(localStorage?.getItem("job_id") as any)
+                let service_order = JSON.parse(localStorage?.getItem("service_order") as any)
                 setPopupServiceOrder(service_order)
                 setPopJobId(jobId)
             }
