@@ -397,11 +397,6 @@ export async function getSOInfoAllTookan({
   setEmail,
   setPhone,
   setAddress,
-  setAddress2,
-  setCity,
-  setState,
-  setZip,
-  setCountry,
   setFault,
 }: IgetSOInfoTookan) {
   const options = {
@@ -430,16 +425,13 @@ export async function getSOInfoAllTookan({
   );
 
   const data = await response.json();
+  const fullAddress = data?.Return?.EsBpInfo?.CustAddrStreet1 + " " + data?.Return?.EsBpInfo?.CustAddrStreet2 || "" + "" + data?.Return?.EsBpInfo?.CustCity || "" + "" + data?.Return?.EsBpInfo?.CustCountry || "";
+  // console.log(data)
   setFirstname(data?.Return?.EsBpInfo?.CustFirstName)
   setLastname(data?.Return?.EsBpInfo?.CustLastName)
   setEmail(data?.Return?.EsBpInfo?.CustEmail)
   setPhone(data?.Return?.EsBpInfo?.CustMobilePhone || "");
-  setAddress(data?.Return?.EsBpInfo?.CustAddrStreet1)
-  setAddress2(data?.Return?.EsBpInfo?.CustAddrStreet2 || "")
+  setAddress(fullAddress)
   setFault(data?.Return?.EsModelInfo?.DefectDesc);
-  setCity(data?.Return?.EsBpInfo?.CustCity || "");
-  setState(data?.Return?.EsBpInfo?.CustState || "");
-  setZip(data?.Return?.EsBpInfo?.CustZipcode || "");
-  setCountry(data?.Return?.EsBpInfo?.CustCountry || "");
 
 }
