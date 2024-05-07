@@ -65,11 +65,13 @@ html {
   --scrollbarBG: #dee2da;
   --thumbBG: #6c757d;
 }
-body::-webkit-scrollbar {
+body::-webkit-scrollbar,
+::-webkit-scrollbar {
   height: 12px;
   width: 12px;
 }
-body::-webkit-scrollbar-track {
+body::-webkit-scrollbar-track,
+::-webkit-scrollbar-track {
   background: #dee2da;
 }
 ::-webkit-scrollbar-thumb:vertical,

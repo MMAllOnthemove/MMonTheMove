@@ -40,11 +40,6 @@ function Tookan() {
             setEmail,
             setPhone,
             setAddress,
-            setAddress2,
-            setCity,
-            setState,
-            setZip,
-            setCountry,
             setFault,
         });
     }, [serviceOrder]);
@@ -54,13 +49,13 @@ function Tookan() {
         e.preventDefault();
 
         let username = capitalizeFirstLetter(firstname) + " " + capitalizeFirstLetter(lastname);
-        let fullAddress = address + " " + address2 + " " + city + " " + country;
+
         const values = {
             "customer_email": email?.toLowerCase(),
             "order_id": serviceOrder,
             "customer_username": username,
             "customer_phone": phone,
-            "customer_address": fullAddress,
+            "customer_address": address,
             "job_description": capitalizeFirstLetter(fault),
             "job_pickup_datetime": `${startDate} 09:30:00`,
             "job_delivery_datetime": `${endDate} 17:00:00`,
@@ -107,6 +102,17 @@ function Tookan() {
             if (res.status === 200) {
                 alert(res.data.message);
                 setIsModalOpen(false);
+                setFirstname("");
+                setLastname("");
+                setEmail("");
+                setPhone("");
+                setAddress("");
+                setAddress2("");
+                setCity("");
+                setState("");
+                setZip("");
+                setCountry("");
+                setFault("");
             }
 
         }).then((error) => {
@@ -121,7 +127,7 @@ function Tookan() {
                 className="fixed top-0 bottom-0 left-0 right-0 w-full flex items-center justify-center rounded-sm"
             >
                 <div
-                    className="w-full max-w-[550px] bg-white dark:bg-[#22303C] relative my-0 mx-[20px] text-left flex flex-col overflow-hidden popup-modal-dialog"
+                    className="w-full md:max-w-[700px] max-w-[550px] bg-white dark:bg-[#22303C] relative my-0 mx-[20px] text-left flex flex-col overflow-hidden popup-modal-dialog"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="flex items-center p-[1rem] border-b border-blue-[#eee]">
@@ -132,55 +138,63 @@ function Tookan() {
                     <div className="overflow-auto">
                         <div className="p-[1rem]">
                             <form onSubmit={createTookanTask}>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="mb-4">
-                                        <label htmlFor='firstname' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>First Name</label>
-                                        <input type="text" value={capitalizeFirstLetter(firstname)} onChange={(e) => setFirstname(e.target.value)} name='firstname' id='firstname' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
-
-                                    </div>
-                                    <div className="mb-4">
-                                        <label htmlFor='lastname' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Last Name</label>
-                                        <input type="text" value={capitalizeFirstLetter(lastname)} onChange={(e) => setLastname(e.target.value)} id='lastname' name='lastname' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
-
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="mb-4">
-                                        <label htmlFor='email' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Email</label>
-                                        <input type="text" value={email?.toLowerCase()} onChange={(e) => setEmail(e.target.value)} name='email' id='email' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
-
-                                    </div>
-                                    <div className="mb-4">
-                                        <label htmlFor='phone' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Telephone</label>
-                                        <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} id='phone' name='phone' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
-
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="mb-4">
-                                        <label htmlFor='startDate' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Start date</label>
-                                        <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} name='startDate' id='startDate' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
-
-                                    </div>
-                                    <div className="mb-4">
-                                        <label htmlFor='endDate' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>End date</label>
-                                        <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} name='endDate' id='endDate' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
-
-                                    </div>
-                                </div>
                                 <div className="grid grid-cols-1 gap-4">
-                                    <div className="mb-4">
+                                    <div className="mb-1">
                                         <label htmlFor='serviceOrder' className='block mb-2 text-sm font-medium text-gray-900 dark:text-[#eee]'>Service order/ticket no</label>
-                                        <input type="text" value={serviceOrder} onChange={(e) => setServiceOrder(e.target.value)} name='serviceOrder' id='serviceOrder' className="mb-2 dark:bg-[#22303C] dark:text-[#eee] bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                                        <input type="text" value={serviceOrder} onChange={(e) => setServiceOrder(e.target.value)} name='serviceOrder' id='serviceOrder' className="mb-2 dark:bg-[#22303C] dark:text-[#eee] bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5" />
 
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1">
-                                    <div className="mb-4">
+                                    <div className="mb-1">
                                         <label htmlFor='fault' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Fault (description)</label>
-                                        <textarea value={fault} onChange={(e) => setFault(e.target.value)} name='fault' id='fault' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></textarea>
+                                        <textarea value={fault} onChange={(e) => setFault(e.target.value)} name='fault' id='fault' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"></textarea>
                                     </div>
                                 </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="mb-1">
+                                        <label htmlFor='firstname' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>First Name</label>
+                                        <input type="text" value={capitalizeFirstLetter(firstname)} onChange={(e) => setFirstname(e.target.value)} name='firstname' id='firstname' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5" />
+
+                                    </div>
+                                    <div className="mb-1">
+                                        <label htmlFor='lastname' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Last Name</label>
+                                        <input type="text" value={capitalizeFirstLetter(lastname)} onChange={(e) => setLastname(e.target.value)} id='lastname' name='lastname' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5" />
+
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="mb-1">
+                                        <label htmlFor='email' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Email</label>
+                                        <input type="text" value={email?.toLowerCase()} onChange={(e) => setEmail(e.target.value)} name='email' id='email' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5" />
+
+                                    </div>
+                                    <div className="mb-1">
+                                        <label htmlFor='phone' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Telephone</label>
+                                        <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} id='phone' name='phone' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5" />
+
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1">
+                                    <div className="mb-1">
+                                        <label htmlFor='address' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Address</label>
+                                        <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} name='address' id='address' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5" />
+
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="mb-1">
+                                        <label htmlFor='startDate' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Task start date</label>
+                                        <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} name='startDate' id='startDate' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5" />
+
+                                    </div>
+                                    <div className="mb-1">
+                                        <label htmlFor='endDate' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Task end date</label>
+                                        <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} name='endDate' id='endDate' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5" />
+
+                                    </div>
+                                </div>
+
                                 <button type="submit" className="text-white bg-gray-900 hover:bg-gray-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 mb-2">
                                     Create task
                                 </button>
