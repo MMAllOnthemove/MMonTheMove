@@ -7,6 +7,7 @@ import { getSOInfoAllTookan } from '@/functions/ipass_api';
 import { capitalizeFirstLetter } from '../../../utils/capitalize';
 import TicketsModal from '@/components/PopupModal/tickets-modal';
 import { tookan_departments, tookan_status } from '../../../utils/tookan';
+import Link from 'next/link';
 function Tookan() {
 
     const [firstname, setFirstname] = useState("")
@@ -23,6 +24,8 @@ function Tookan() {
     const [startDate, setStartDate] = useState("")
     const [endDate, setEndDate] = useState("")
     const [fault, setFault] = useState("")
+    const [latitude, setLatitude] = useState("")
+    const [longitude, setLongitude] = useState("")
 
     // For the popup modal
     const [modalOpen, setIsModalOpen] = useState(false)
@@ -59,6 +62,8 @@ function Tookan() {
             "job_description": capitalizeFirstLetter(fault),
             "job_pickup_datetime": `${startDate} 09:30:00`,
             "job_delivery_datetime": `${endDate} 17:00:00`,
+            'job_pickup_latitude': latitude,
+            'job_pickup_longitude': longitude,
             "has_pickup": "0",
             "has_delivery": "0",
             "layout_type": "1",
@@ -175,10 +180,26 @@ function Tookan() {
 
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-1">
+
+                                <div>
+                                    <label htmlFor='address' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Address</label>
+
+                                    <div className="flex items-center justify-between gap-2 mb-4">
+                                        <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} name='address' id='address' className=" bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 w-full p-1.5 flex flex-grow" />
+
+                                        <Link href={`http://maps.google.com/?q=${address}`} target="_blank" rel="noopener noreferrer" className='text-white bg-gray-900 hover:bg-gray-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5'>Map</Link>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="mb-1">
-                                        <label htmlFor='address' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Address</label>
-                                        <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} name='address' id='address' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5" />
+                                        <label htmlFor='latitude' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Latitude</label>
+                                        <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} name='latitude' id='latitude' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5" />
+
+                                    </div>
+                                    <div className="mb-1">
+                                        <label htmlFor='longitude' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Longitude</label>
+                                        <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} id='longitude' name='longitude' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5" />
 
                                     </div>
                                 </div>
