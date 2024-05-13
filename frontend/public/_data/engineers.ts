@@ -7,6 +7,7 @@ export const engineers = [
   { id: 8, _name: "Andrea Likomba" },
   { id: 9, _name: "Iven Maluleke" },
   { id: 10, _name: "Joseph Sithole" },
+  { id: 11, _name: "William Kgatle" },
 ];
 export const dtvEngineers = [
   { id: 1, _name: "Prosper Kamuzonde" },
