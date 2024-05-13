@@ -138,7 +138,8 @@ CREATE TABLE company_people (
     created_at date,
     updated_at date,
     user_role text,
-    is_user_blocked boolean
+    is_user_blocked boolean,
+    date_added text
 );
 
 CREATE TABLE otp (

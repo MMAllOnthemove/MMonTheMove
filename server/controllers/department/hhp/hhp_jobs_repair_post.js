@@ -51,8 +51,10 @@ const PostRepairJobs = async (req, res) => {
           dateAdded,
         ]
       );
-      res.status(200).json("Job added, thank you!");
+      res.status(201).json("Job added, thank you!");
     }
-  } catch (err) {}
+  } catch (err) {
+    // console.log("repair jobs post error", err);
+  }
 };
 export default PostRepairJobs;

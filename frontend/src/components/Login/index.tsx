@@ -52,7 +52,7 @@ const Login = () => {
                 toast.error("Error, try gain");
                 return;
               }
-            } catch (error) {}
+            } catch (error) { }
           }, 1000);
         }}
       >

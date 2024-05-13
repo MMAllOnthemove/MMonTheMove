@@ -58,7 +58,7 @@ const Signup = () => {
                 toast.error("Please try again");
                 return;
               }
-            } catch (error) {}
+            } catch (error) { }
           }, 1000);
         }}
       >
