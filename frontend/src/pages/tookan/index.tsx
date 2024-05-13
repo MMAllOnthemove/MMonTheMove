@@ -24,14 +24,17 @@ function Tookan() {
     const [startDate, setStartDate] = useState("")
     const [endDate, setEndDate] = useState("")
     const [fault, setFault] = useState("")
-    const [latitude, setLatitude] = useState("")
-    const [longitude, setLongitude] = useState("")
+    const [latitudeLogintude, setLatitudeLongitude] = useState("")
 
     // For the popup modal
     const [modalOpen, setIsModalOpen] = useState(false)
     const [tookanStatus, setTookanStatus] = useState("")
     const [department, setDepartment] = useState("")
     const [popupJobId, setPopJobId] = useState("")
+
+
+    const latitude = latitudeLogintude?.split(", ")[0]
+    const longitude = latitudeLogintude?.split(", ")[1]
 
 
 
@@ -72,6 +75,7 @@ function Tookan() {
             "api_key": `${process.env.NEXT_PUBLIC_TOOKAN_API_TOKEN}`
         }
         // console.log(values)
+
         await axios.post(`${process.env.NEXT_PUBLIC_TOOKAN_LINK}/create_task`, values, {
             headers: {
                 'Content-Type': 'application/json',
@@ -81,6 +85,15 @@ function Tookan() {
             if (res.status === 200) {
                 alert(res.data.message);
                 setPopJobId(res?.data?.data?.job_id);
+                setFault("")
+                setFirstname("")
+                setLastname("")
+                setEmail("")
+                setPhone("")
+                setAddress("")
+                setLatitudeLongitude("")
+                setStartDate("")
+                setEndDate("")
                 setIsModalOpen(true)
             }
 
@@ -184,6 +197,7 @@ function Tookan() {
                                 <div>
                                     <label htmlFor='address' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Address</label>
 
+                                    <small>Please copy the address, open google maps, and ensure the address is correct</small>
                                     <div className="flex items-center justify-between gap-2 mb-4">
                                         <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} name='address' id='address' className=" bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 w-full p-1.5 flex flex-grow" />
 
@@ -191,17 +205,17 @@ function Tookan() {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 gap-4">
                                     <div className="mb-1">
-                                        <label htmlFor='latitude' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Latitude</label>
-                                        <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} name='latitude' id='latitude' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5" />
+                                        <label htmlFor='latitude_longitude' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Latitude and Longitude</label>
+                                        <input type="text" value={latitudeLogintude} onChange={(e) => setLatitudeLongitude(e.target.value)} name='latitude_longitude' id='latitude_longitude' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5" />
 
                                     </div>
-                                    <div className="mb-1">
+                                    {/* <div className="mb-1">
                                         <label htmlFor='longitude' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Longitude</label>
                                         <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} id='longitude' name='longitude' className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee] border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5" />
 
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="mb-1">
@@ -235,11 +249,11 @@ function Tookan() {
                         {popupJobId}
                         <form onSubmit={assignToTeam}>
                             <div className="mb-4">
-                                <label htmlFor='popupServiceOrder'>Service Order</label>
-                                <input type="text" defaultValue={serviceOrder} id='popupServiceOrder' name='popupServiceOrder' className="mb-2 bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                                <label htmlFor='popupServiceOrder' className='block mb-2 text-sm font-medium  text-gray-900 dark:text-[#eee]'>Service Order</label>
+                                <input type="text" defaultValue={serviceOrder} id='popupServiceOrder' name='popupServiceOrder' className="mb-2 dark:bg-[#22303C] dark:text-[#eee] bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5" />
                             </div>
                             <div className="mb-4">
-                                <select name="department" id="department" className="cursor-pointer bg-white outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value={department} onChange={(e) => setDepartment(e.target.value)}>
+                                <select name="department" id="department" className="mb-2 dark:bg-[#22303C] dark:text-[#eee] bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5" value={department} onChange={(e) => setDepartment(e.target.value)}>
                                     <option value="" disabled>Assign to department</option>
                                     {tookan_departments.map((dep) => (
                                         <option key={dep.id} value={dep._value}>{dep._name}</option>
@@ -247,7 +261,7 @@ function Tookan() {
                                 </select>
                             </div>
                             <div className="mb-4">
-                                <select name="tookan_status" id="tookan_status" className="cursor-pointer bg-white outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value={tookanStatus} onChange={(e) => setTookanStatus(e.target.value)}>
+                                <select name="tookan_status" id="tookan_status" className="mb-2 dark:bg-[#22303C] dark:text-[#eee] bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 cursor-pointer" value={tookanStatus} onChange={(e) => setTookanStatus(e.target.value)}>
                                     <option value="" disabled>Choose status</option>
                                     {tookan_status.map((dep) => (
                                         <option key={dep.id} value={dep._value}>{dep._name}</option>
