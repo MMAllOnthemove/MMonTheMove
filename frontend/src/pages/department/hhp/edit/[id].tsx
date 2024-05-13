@@ -256,7 +256,7 @@ function EditRow() {
                   <h1 className="text-center py-2 text-gray-900 dark:text-[#eee] font-semibold lg:text-2xl">
                     Editing service order:{" "}
                     {showServiceOrderNumber === "" ||
-                    showServiceOrderNumber === null ? (
+                      showServiceOrderNumber === null ? (
                       <span className="text-slate-700  font-bold">
                         Not available
                       </span>
@@ -277,7 +277,7 @@ function EditRow() {
 
               <form className="my-3" onSubmit={updateData} id="updateJobForm">
                 {showServiceOrderNumber === "" ||
-                showServiceOrderNumber === null ? (
+                  showServiceOrderNumber === null ? (
                   <span>
                     <label
                       htmlFor="showServiceOrderNumber"
@@ -343,7 +343,7 @@ function EditRow() {
                   <select
                     name="warranty"
                     id="warranty"
-                    className="mb-2 bg-white dark:bg-[#22303C] dark:text-[#eee]  outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    className="my-2 cursor-pointer bg-white dark:bg-[#22303C] dark:text-[#eee]  outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                     value={warranty}
                     onChange={(e) => setWarranty(e.target.value)}
                   >
@@ -541,55 +541,55 @@ function EditRow() {
                 </p>
                 {hhpDataHistory.length > 0
                   ? hhpDataHistory
-                      .filter(
-                        (onlyThisJob) =>
-                          onlyThisJob.service_order_no === service_order
-                      )
-                      .map((jobHistory: string | any) => (
-                        <article
-                          className="job_history_card border rounded-sm padding border-[#eee] p-2 flex flex-col gap-4"
-                          key={jobHistory?.id}
-                        >
-                          <div className="top_row flex items-center justify-between">
-                            <h3 className=" text-slate-800 font-semibold dark:text-[#eee]">
-                              {jobHistory?.engineer}
-                            </h3>
-                            <p className=" text-slate-800  font-semibold dark:text-[#eee]">
-                              {jobHistory?.service_order_no}
-                            </p>
-                            <p className=" text-slate-800  font-semibold dark:text-[#eee]">
-                              {jobHistory?.date_modified === null || ""
-                                ? ""
-                                : new Date(
-                                    jobHistory?.date_modified
-                                  ).toDateString()}
-                            </p>
-                          </div>
-                          <hr />
-                          <div className="rounded-sm flex justify-between items-center">
-                            <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
-                              Assigned to:{" "}
-                            </h5>
-                            <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
-                              {jobHistory?.engineer}
-                            </h5>
-                          </div>
-                          <div className="rounded-sm flex justify-between items-center">
-                            <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
-                              In house status:{" "}
-                            </h5>
-                            <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
-                              {jobHistory?.in_house_status}
-                            </h5>
-                          </div>
+                    .filter(
+                      (onlyThisJob) =>
+                        onlyThisJob.service_order_no === service_order
+                    )
+                    .map((jobHistory: string | any) => (
+                      <article
+                        className="job_history_card border rounded-sm padding border-[#eee] p-2 flex flex-col gap-4"
+                        key={jobHistory?.id}
+                      >
+                        <div className="top_row flex items-center justify-between">
+                          <h3 className=" text-slate-800 font-semibold dark:text-[#eee]">
+                            {jobHistory?.engineer}
+                          </h3>
+                          <p className=" text-slate-800  font-semibold dark:text-[#eee]">
+                            {jobHistory?.service_order_no}
+                          </p>
+                          <p className=" text-slate-800  font-semibold dark:text-[#eee]">
+                            {jobHistory?.date_modified === null || ""
+                              ? ""
+                              : new Date(
+                                jobHistory?.date_modified
+                              ).toDateString()}
+                          </p>
+                        </div>
+                        <hr />
+                        <div className="rounded-sm flex justify-between items-center">
+                          <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
+                            Assigned to:{" "}
+                          </h5>
+                          <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
+                            {jobHistory?.engineer}
+                          </h5>
+                        </div>
+                        <div className="rounded-sm flex justify-between items-center">
+                          <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
+                            In house status:{" "}
+                          </h5>
+                          <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
+                            {jobHistory?.in_house_status}
+                          </h5>
+                        </div>
 
-                          <div className="bg-[#f8f9fa] dark:bg-[#22303C]">
-                            <p className=" text-slate-800  dark:text-[#eee] font-medium">
-                              {jobHistory?.engineer_analysis.toUpperCase()}
-                            </p>
-                          </div>
-                        </article>
-                      ))
+                        <div className="bg-[#f8f9fa] dark:bg-[#22303C]">
+                          <p className=" text-slate-800  dark:text-[#eee] font-medium">
+                            {jobHistory?.engineer_analysis.toUpperCase()}
+                          </p>
+                        </div>
+                      </article>
+                    ))
                   : "History not available"}
               </section>
             </section>

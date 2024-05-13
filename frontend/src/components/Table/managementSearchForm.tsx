@@ -28,7 +28,7 @@ const ManagementSearchForm = ({ filtering, setFiltering }: ISearchForm) => {
           className="bg-gray-50 dark:bg-[#22303C] border border-gray-300 text-gray-900 dark:text-[#eee] text-sm rounded-lg focus:outline-none focus:border-primary-500 block w-full pl-10 p-2"
           placeholder="Search"
           maxLength={10}
-          value={filtering?.trim()}
+          value={filtering}
           onChange={setFiltering}
         />
       </div>
