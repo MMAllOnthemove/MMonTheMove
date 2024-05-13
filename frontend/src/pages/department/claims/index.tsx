@@ -56,51 +56,53 @@ function Claims() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </section>
-              <div className="max-h-[540px] overflow-y-auto">
-                <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 dark:text-[#eee] table-auto">
-                  <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] text-sm uppercase font-semibold">
-                    <tr className=" font-semibold">
-                      <th className="px-4 py-3 cursor-pointer  font-semibold">
-                        Service Order
-                      </th>
-                      <th className="px-4 py-3 cursor-pointer  font-semibold">
-                        GSPN Status
-                      </th>
-                      <th className="px-4 py-3 cursor-pointer  font-semibold">
-                        Edit
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="z-0">
-                    {filteredSearch.map((item, index) => (
-                      <tr
-                        key={index}
-                        className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
-                      >
-                        <td className="px-4 py-3  font-medium text-sm max-w-full">
-                          {item?.service_order_no}
-                        </td>
-                        <td className="px-4 py-3  font-medium text-sm max-w-full">
-                          {item?.gspn_status}
-                        </td>
-                        <td className="px-4 py-3  font-medium text-sm max-w-full">
-                          {searchTerm.length > 0 && (
-                            <button
-                              role="button"
-                              id="update-button"
-                              type="button"
-                              onClick={(e) => handleUpdate(e, item.id)}
-                              className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                            >
-                              Edit
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              {hhpData ? (
+                  <div className="max-h-[540px] overflow-y-auto">
+                    <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 dark:text-[#eee] table-auto">
+                      <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] text-sm uppercase font-semibold">
+                        <tr className=" font-semibold">
+                          <th className="px-4 py-3 cursor-pointer  font-semibold">
+                            Service Order
+                          </th>
+                          <th className="px-4 py-3 cursor-pointer  font-semibold">
+                            GSPN Status
+                          </th>
+                          <th className="px-4 py-3 cursor-pointer  font-semibold">
+                            Edit
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="z-0">
+                        {filteredSearch.map((item, index) => (
+                          <tr
+                            key={index}
+                            className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
+                          >
+                            <td className="px-4 py-3  font-medium text-sm max-w-full">
+                              {item?.service_order_no}
+                            </td>
+                            <td className="px-4 py-3  font-medium text-sm max-w-full">
+                              {item?.gspn_status}
+                            </td>
+                            <td className="px-4 py-3  font-medium text-sm max-w-full">
+                              {searchTerm.length > 0 && (
+                                <button
+                                  role="button"
+                                  id="update-button"
+                                  type="button"
+                                  onClick={(e) => handleUpdate(e, item.id)}
+                                  className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                                >
+                                  Edit
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+              ):null}
             </>
           )}
         </Container>

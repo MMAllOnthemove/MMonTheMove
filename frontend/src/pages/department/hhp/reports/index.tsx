@@ -157,25 +157,25 @@ function Reports() {
               {searchServiceOrder.length === 10 ? (
                 <div className="max-h-[540px] overflow-y-auto my-5">
                   <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-                    <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white  text-sm uppercase font-semibold">
+                    <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white text-sm uppercase font-semibold">
                       <tr className=" font-semibold">
-                        <th className="px-4 py-3 cursor-pointer  font-semibold">
+                        <th className="px-4 py-3 cursor-pointer font-semibold">
                           Service Order No
                         </th>
-                        <th className="px-4 py-3 cursor-pointer  font-semibold">
+                        <th className="px-4 py-3 cursor-pointer font-semibold">
                           Agent
                         </th>
-                        <th className="px-4 py-3 cursor-pointer  font-semibold">
+                        <th className="px-4 py-3 cursor-pointer font-semibold">
                           Action
                         </th>
                       </tr>
                     </thead>
                     <tbody className="z-0">
                       <tr className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]">
-                        <td className="px-4 py-3  font-medium text-sm max-w-full">
+                        <td className="px-4 py-3 font-medium text-sm max-w-full">
                           {serviceOrder}
                         </td>
-                        <td className="px-4 py-3  font-medium text-sm max-w-full">
+                        <td className="px-4 py-3 font-medium text-sm max-w-full">
                           <span>
                             <label
                               htmlFor="bookingAgent"

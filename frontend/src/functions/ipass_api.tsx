@@ -6,6 +6,7 @@ import {
   IgetStockOverviewInfo,
   IgetSOInfoAllParts,
   IgetSOInfoAllDtv,
+  IgetSOInfoTookan,
 } from "../../utils/interfaces";
 
 export async function getSOInfoAllFunction({
@@ -251,6 +252,7 @@ export async function postBookingAgentsJobs({
     setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
     setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
     setWarranty(data?.Return?.EsModelInfo?.WtyType);
+
   }
 }
 
@@ -386,4 +388,50 @@ export async function getPartsInfoForServiceOrder(
   } catch (error) {
     // console.log("Ipaas parts info error", error);
   }
+}
+
+export async function getSOInfoAllTookan({
+  serviceOrder,
+  setFirstname,
+  setLastname,
+  setEmail,
+  setPhone,
+  setAddress,
+  setFault,
+}: IgetSOInfoTookan) {
+  const options = {
+    IvSvcOrderNo: serviceOrder,
+    IsCommonHeader: {
+      Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
+      AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
+      Lang: `${process.env.NEXT_PUBLIC_LANG}`,
+      Country: `${process.env.NEXT_PUBLIC_COUNTRY}`,
+      Pac: `${process.env.NEXT_PUBLIC_PAC}`,
+    },
+  };
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_IPAAS_API_GETSOINFOALL}`,
+    {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
+      },
+      body: JSON.stringify(options),
+    }
+  );
+
+  const data = await response.json();
+  const fullAddress = data?.Return?.EsBpInfo?.CustAddrStreet1 + " " + data?.Return?.EsBpInfo?.CustAddrStreet2 || "" + "" + data?.Return?.EsBpInfo?.CustCity || "" + "" + data?.Return?.EsBpInfo?.CustCountry || "";
+  // console.log(data)
+  setFirstname(data?.Return?.EsBpInfo?.CustFirstName)
+  setLastname(data?.Return?.EsBpInfo?.CustLastName)
+  setEmail(data?.Return?.EsBpInfo?.CustEmail)
+  setPhone(data?.Return?.EsBpInfo?.CustMobilePhone || "");
+  setAddress(fullAddress)
+  setFault(data?.Return?.EsModelInfo?.DefectDesc);
+
 }

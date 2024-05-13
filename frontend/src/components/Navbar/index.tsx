@@ -35,6 +35,7 @@ const Navbar = () => {
   const [partsSubMenuOpen, setPartsSubMenuOpen] = useState(false);
   const [dtvSubMenuOpen, setDtvSubMenuOpen] = useState(false);
   const [ticketsSubMenuOpen, setTicketsSubMenuOpen] = useState(false);
+  const [tookanSubMenuOpen, setTookanSubMenuOpen] = useState(false);
 
   const { userData } = fetchCurrentUser();
   const { getOTP } = fetchOTP();
@@ -60,7 +61,7 @@ const Navbar = () => {
             </p>
           )}
         </div>
-        <div className="navbar_second_row flex justify-between items-center py-2  px-4 dark:bg-[#15202B]">
+        <div className="navbar_second_row flex justify-between items-center py-2 px-4 dark:bg-[#15202B]">
           {!userData || userData === "" ? (
             <div />
           ) : (
@@ -224,13 +225,13 @@ const Navbar = () => {
               ))}
             </ul>
           )}
-          <button
+          {/* <button
             className={`open-submenu-btn dark:text-[#eee] text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
             onClick={() => setTicketsSubMenuOpen(!ticketsSubMenuOpen)}
           >
             <span>Tickets</span>
             <span>
-              {!dtvSubMenuOpen ? (
+              {!ticketsSubMenuOpen ? (
                 <ChevronDownIcon className="h-6 w-6 text-white dark:text-[#eee]" />
               ) : (
                 <ChevronUpIcon className="h-6 w-6 text-white dark:text-[#eee]" />
@@ -250,7 +251,35 @@ const Navbar = () => {
                 </li>
               ))}
             </ul>
+          )} */}
+          <button
+            className={`open-submenu-btn dark:text-[#eee] text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
+            onClick={() => setTookanSubMenuOpen(!tookanSubMenuOpen)}
+          >
+            <span>Tookan</span>
+            <span>
+              {!tookanSubMenuOpen ? (
+                <ChevronDownIcon className="h-6 w-6 text-white dark:text-[#eee]" />
+              ) : (
+                <ChevronUpIcon className="h-6 w-6 text-white dark:text-[#eee]" />
+              )}
+            </span>
+          </button>
+          {tookanSubMenuOpen && (
+            <ul className="">
+
+              <li>
+                <Link
+                  href={"/tookan"}
+                  className={`sd-link dark:text-[#eee] dark:hover:dark:text-[#eee]`}
+                >
+                  Task
+                </Link>
+              </li>
+
+            </ul>
           )}
+
         </div>
 
         <div className="login_details flex flex-col mt-auto px-[15px] absolute bottom-10 w-full">
