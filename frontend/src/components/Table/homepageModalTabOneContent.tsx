@@ -3,6 +3,7 @@ import { unitStatus } from "../../../public/_data/statuses";
 import { IHomepageModalTabOneContent } from "../../../utils/interfaces";
 import Button from "../Buttons";
 import { engineers } from "../../../public/_data/engineers";
+import { fetchEngineers } from "@/hooks/useFetch";
 
 const HomepageModalTabOneContent = (props: IHomepageModalTabOneContent) => {
   const {
@@ -22,6 +23,7 @@ const HomepageModalTabOneContent = (props: IHomepageModalTabOneContent) => {
     postData,
   } = props;
 
+  const { getEngineers } = fetchEngineers()
   return (
     <>
       <form
@@ -123,9 +125,9 @@ const HomepageModalTabOneContent = (props: IHomepageModalTabOneContent) => {
           <option value="" disabled>
             Select engineer
           </option>
-          {engineers.map((engineer) => (
-            <option key={engineer.id} value={`${engineer._name}`}>
-              {engineer?._name}
+          {getEngineers.map((engineer: any) => (
+            <option key={engineer.id} value={`${engineer.engineer_firstname} ${engineer.engineer_lastname}`}>
+              {engineer?.engineer_firstname} {engineer?.engineer_lastname}
             </option>
           ))}
         </select>

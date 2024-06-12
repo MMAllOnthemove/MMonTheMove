@@ -1,29 +1,26 @@
-import compression from "compression";
-import express from "express";
-const app = express();
-import helmet from "helmet";
-import cors from "cors";
-import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
+import compression from "compression";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import express from "express";
+import helmet from "helmet";
 import { router as hhpjobsrouter } from "./routes/department/hhp/hhp_jobs_route.js";
 import { router as hhpJobsHistory } from "./routes/history/hhp_jobs_history_routes.js";
-import { router as feedback } from "./routes/feedback.js";
-import { router as dashboard } from "./routes/department/hhp/dashboard.js";
+const app = express();
 // const engineers = require("./routes/engineers");
-import { router as qc } from "./routes/department/hhp/qc.js";
-import { router as countEngineers } from "./routes/department/hhp/engineer_count_route.js";
-import { router as bookingAgents } from "./routes/department/hhp/booking_agent_jobs_route.js";
-import { router as partsDept } from "./routes/department/parts/parts_dept_routes.js";
+import "dotenv/config";
 import { router as partsHistory } from "../server/routes/history/parts_dept_routes.js";
 import { router as auth } from "./routes/auth/auth_route.js";
-import "dotenv/config";
+import { router as bookingAgents } from "./routes/department/hhp/booking_agent_jobs_route.js";
+import { router as qc } from "./routes/department/hhp/qc.js";
+import { router as partsDept } from "./routes/department/parts/parts_dept_routes.js";
 
-import { router as dtvTasks } from "./routes/department/dtv/tasks.js";
-import { router as dtvChecklists } from "./routes/department/dtv/checklists.js";
 import { router as dtvAnalytics } from "./routes/department/dtv/analytics.js";
+import { router as dtvChecklists } from "./routes/department/dtv/checklists.js";
+import { router as dtvTasks } from "./routes/department/dtv/tasks.js";
 
 import { router as otpRoute } from "./routes/department/hhp/otp.js";
-
+import { router as engineersRoute } from "./routes/engineers/index.js";
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(
@@ -49,42 +46,33 @@ app.use("/auth", auth);
 app.use("/otp", otpRoute);
 
 // HHP jobs
-app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, hhpjobsrouter);
-app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT, hhpJobsHistory);
-
-// Feedback
-app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_FEEDBACK, feedback);
-
-// HHP dashboard begins here
-app.use(
-  process.env.NEXT_PUBLIC_SERVER_API_URL_DASHBOARD_UNITS_COUNT,
-  dashboard
-);
+app.use("/api/v1/hhp/jobs", hhpjobsrouter);
+app.use("/api/v1/hhp/jobs", hhpJobsHistory);
 
 // HHP Engineer graphs
 // app.use(process.env.NEXT_PUBLIC_SERVER_ENGINEER_JOBS_COUNT_OVERVIEW, engineers);
 
 // HHP QC graphs
-app.use(process.env.NEXT_PUBLIC_SERVER_QC_CHECKED_JOBS_COUNT_OVERVIEW, qc);
-
-// HHP Count engineers
-app.use(process.env.NEXT_PUBLIC_SERVER_COUNT_ALL_ENGINEERS, countEngineers);
+app.use("/api/v1/hhp/dashboard/qc-jobs-count/overview", qc);
 
 // HHP Booking agents
-app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_AGENTS, bookingAgents);
+app.use("/api/v1/hhp/agents", bookingAgents);
 
 // Parts dept
-app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_PARTS, partsDept);
-app.use(process.env.NEXT_PUBLIC_BACKEND_MANAGEMENT_PARTS_HISTORY, partsHistory);
+app.use("/api/v1/parts/jobs", partsDept);
+app.use("/api/v1/parts/jobs/history", partsHistory);
 
 // DTV Tasks route
 app.use("/drivers/api/v1/task", dtvTasks);
 
 // DTV Checklists route
-app.use("/drivers/api/v1/checklist", dtvChecklists);
+app.use("/api/v1/dtv/checklist", dtvChecklists);
 
 // DTV dashboard route
-app.use("/drivers/api/v1/analytics", dtvAnalytics);
+app.use("/api/v1/dtv/analytics", dtvAnalytics);
+
+// Engineers
+app.use("/engineers", engineersRoute);
 
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {

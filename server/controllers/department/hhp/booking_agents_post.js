@@ -15,7 +15,7 @@ const PostBookingAgentsJobs = async (req, res) => {
       "SELECT id from booking_agents_jobs where service_order_no = $1",
       [serviceOrder]
     );
-    if (findIfExists.rowCount > 0 || bookingAgent === "") {
+    if (findIfExists.rows.length > 0 || bookingAgent === "") {
       res.status(400).json("Job already exists! or no agent name");
     } else {
       await pool.query(

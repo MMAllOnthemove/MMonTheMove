@@ -25,7 +25,7 @@ function EditClaim() {
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/` + id)
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_SERVER_API}/api/v1/hhp/jobs/` + id)
         .then((res) => res.json())
         .then((data) => {
           setShowServiceOrderNumber(data[0]?.service_order_no);
@@ -50,7 +50,7 @@ function EditClaim() {
       body: JSON.stringify(putThisInfo), // We send data in JSON format
     };
     let response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/claims/` + id,
+      `${process.env.NEXT_PUBLIC_BACKEND_SERVER_API}/claims/` + id,
       putMethod
     );
     let json = await response.json();

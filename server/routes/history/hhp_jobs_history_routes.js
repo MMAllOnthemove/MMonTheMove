@@ -7,7 +7,7 @@ import {
   PostJobsHistory,
 } from "../../controllers/history/hhp_jobs.js";
 
-router.get("/units/history/get", GetAllJobsHistory);
-router.post("/units/history/post", PostJobsHistory);
-router.post("/repair/units/history/post", PostRepairJobsHistory);
+router.get("/history", GetAllJobsHistory);
+router.post("/history", PostJobsHistory);
+router.post("/repair/history", PostRepairJobsHistory);
 export { router };
