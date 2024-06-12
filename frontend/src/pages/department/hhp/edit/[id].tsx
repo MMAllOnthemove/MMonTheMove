@@ -61,7 +61,7 @@ function EditRow() {
   let partsArr = [...partsList].map((x) => x.partNumber.toUpperCase());
 
   const getThis = useCallback(async () => {
-    await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/` + id)
+    await fetch(`${process.env.NEXT_PUBLIC_BACKEND_SERVER_API}/api/v1/hhp/jobs/` + id)
       .then((res) => res.json())
       .then((data) => {
         setShowServiceOrderNumber(data[0]?.service_order_no);
@@ -128,7 +128,7 @@ function EditRow() {
       body: JSON.stringify(putThisInfo), // We send data in JSON format
     };
     await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/` + id,
+      `${process.env.NEXT_PUBLIC_BACKEND_SERVER_API}/api/v1/hhp/jobs/` + id,
       putMethod
     )
       .then((res) => res.json())
@@ -165,7 +165,7 @@ function EditRow() {
     };
     // console.log("history entry", postThisInfo);
     const response2 = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/units/history/post`,
+      `${process.env.NEXT_PUBLIC_BACKEND_SERVER_API}/api/v1/hhp/jobs/history`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

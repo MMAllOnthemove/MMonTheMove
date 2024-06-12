@@ -146,4 +146,10 @@ CREATE TABLE otp (
     ip_address text,
     created_at timestamp,
     otp text
+) CREATE TABLE engineers (
+    id BIGSERIAL PRIMARY KEY UNIQUE,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    engineer_firstname text,
+    engineer_lastname text,
+    active boolean
 )

@@ -190,7 +190,6 @@ function Parts() {
       <Head>
         <title>Parts Management</title>
         <meta name="robots" content="noindex"></meta>
-        <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
       <Navbar />
 

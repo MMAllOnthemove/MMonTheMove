@@ -29,7 +29,7 @@ function Update() {
     };
 
     axios.post(
-      `${process.env.NEXT_PUBLIC_BACKEND_OTP}/post`,
+      `${process.env.NEXT_PUBLIC_BACKEND_OTP}`,
       values
     ).then(function (response) {
       // console.log(response);

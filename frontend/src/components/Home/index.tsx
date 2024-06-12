@@ -302,7 +302,6 @@ function HomeComponent() {
       <Head>
         <title>HHP Management</title>
         <meta name="robots" content="noindex"></meta>
-        <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
       <Navbar />
       <main className="space-between-navbar-and-content">

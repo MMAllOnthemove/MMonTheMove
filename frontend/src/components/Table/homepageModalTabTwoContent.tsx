@@ -1,4 +1,5 @@
 // Custom imports
+import { fetchEngineers } from "@/hooks/useFetch";
 import { engineers } from "../../../public/_data/engineers";
 import { unitStatus } from "../../../public/_data/statuses";
 import { IHomepageModalTabTwoContent } from "../../../utils/interfaces";
@@ -24,6 +25,8 @@ const HomepageModalTabTwoContent = (props: IHomepageModalTabTwoContent) => {
     postRepairData,
     repairAPILoading,
   } = props;
+
+  const { getEngineers } = fetchEngineers()
   return (
     <form
       onSubmit={postRepairData}
@@ -146,9 +149,9 @@ const HomepageModalTabTwoContent = (props: IHomepageModalTabTwoContent) => {
             <option value="" disabled>
               Select engineer
             </option>
-            {engineers.map((engineer) => (
-              <option key={engineer.id} value={`${engineer._name}`}>
-                {engineer?._name}
+            {getEngineers.map((engineer: any) => (
+              <option key={engineer.id} value={`${engineer.engineer_firstname} ${engineer.engineer_lastname}`}>
+                {engineer?.engineer_firstname} {engineer?.engineer_lastname}
               </option>
             ))}
           </select>

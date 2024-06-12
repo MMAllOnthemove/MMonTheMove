@@ -19,6 +19,8 @@ const GetJobById = async (req, res) => {
       id,
     ]);
     res.json(rows);
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+  }
 };
 export { GetAllJobs, GetJobById };

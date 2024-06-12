@@ -1,21 +1,13 @@
 // External imports
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 import { useState } from "react";
 // Custom imports
 import { logoutUserFunction } from "@/functions/getLoggedInUserProfile";
 import { fetchCurrentUser, fetchOTP } from "@/hooks/useFetch";
-import {
-  dtvNavItems,
-  hhpNavItems,
-  partsNavItems,
-  ticketNavItems,
-} from "../../../public/_data/navbar";
-import logo from "../../../public/mmlogo.png";
 import toast from "react-hot-toast";
+import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 
 // Dynamic imports
 const Button = dynamic(() => import("../Buttons"));
@@ -23,19 +15,29 @@ const ThemeChangerButton = dynamic(() => import("../Buttons/ThemeChanger"), {
   ssr: false,
 });
 
-
+const menuItems = [
+  {
+    label: 'HHP',
+    sublinks: [
+      { id: 1, item: "Home", pageRoute: "/" },
+      { id: 2, item: "Dashboard", pageRoute: "/department/hhp/dashboard" },
+      { id: 3, item: "Bookings report", pageRoute: "/department/hhp/reports" }],
+  },
+  {
+    label: 'Claims',
+    sublinks: [{ id: 4, item: "Home", pageRoute: "/department/claims" },],
+  },
+  {
+    label: 'Parts',
+    sublinks: [{ id: 5, item: "Part search", pageRoute: "/department/parts/parts-search" },
+    { id: 6, item: "Parts", pageRoute: "/department/parts" },],
+  },
+];
 const Navbar = () => {
   const [isOpen, setIsopen] = useState(false);
 
-  const ToggleSidebar = () => {
-    isOpen === true ? setIsopen(false) : setIsopen(true);
-  };
+
   const router = useRouter()
-  const [hhpSubMenuOpen, setHHPSubMenuOpen] = useState(false);
-  const [partsSubMenuOpen, setPartsSubMenuOpen] = useState(false);
-  const [dtvSubMenuOpen, setDtvSubMenuOpen] = useState(false);
-  const [ticketsSubMenuOpen, setTicketsSubMenuOpen] = useState(false);
-  const [tookanSubMenuOpen, setTookanSubMenuOpen] = useState(false);
 
   const { userData } = fetchCurrentUser();
   const { getOTP } = fetchOTP();
@@ -45,257 +47,81 @@ const Navbar = () => {
     router.push("/auth/");
     toast.success("Logged out");
   };
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+
+  const toggleDropdown = (index: null | any) => {
+    setOpenDropdown(openDropdown === index ? null : index);
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const toggleUserDropdown = () => {
+    setIsUserDropdownOpen(!isUserDropdownOpen);
+  };
 
   return (
-    <>
-      <nav className="navbar">
-        <div className="navbar_first_row bg-[#082f49]">
-          {!userData || userData === "" ? (
-            <p className=" dark:text-[#eee] text-[#eee] text-sm text-center">
-              Please login
-            </p>
-          ) : (
-            <p className=" dark:text-[#eee] text-[#eee] text-sm text-center">
-              Logged in as{" "}
-              <span className="text-sky-500 font-semibold">{userData}</span>
-            </p>
-          )}
+    <div className="relative z-10">
+      <button
+        className="m-4 p-2 bg-blue-500 text-white rounded"
+        onClick={toggleSidebar}
+      >
+        {isSidebarOpen ? 'Close Sidebar' : 'Open Sidebar'}
+      </button>
+      <aside
+        className={`bg-gray-800 text-white transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          } w-64 h-screen fixed top-0 left-0 flex flex-col`}
+      >
+        <div className="p-4 text-lg font-semibold flex justify-between items-center">
+          <span>Dashboard</span>
+          <button onClick={toggleSidebar} className="text-lg font-normal text-[#eee]">×</button>
         </div>
-        <div className="navbar_second_row flex justify-between items-center py-2 px-4 dark:bg-[#15202B]">
-          {!userData || userData === "" ? (
-            <div />
-          ) : (
-            <div className="flex items-center gap-1">
-              <button
-                role="button"
-                id="burger_menu"
-                className="burger_menu"
-                aria-label="burger_menu"
-                onClick={ToggleSidebar}
+        <div className="flex-1 overflow-y-auto z-10">
+          {menuItems.map((item, index) => (
+            <div key={index} className="px-4 py-2">
+              <div
+                className="cursor-pointer flex justify-between items-center text-[#eee]"
+                onClick={() => toggleDropdown(index)}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  className="dark:fill-white"
-                >
-                  <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path>
-                </svg>
-              </button>
-              <p className="text-md font-medium dark:text-[#eee] text-slate-800">
-                {getOTP && getOTP.map((latest: any) => latest?.otp)}
-              </p>
+                <span>{item.label}</span>
+                <span>{openDropdown === index ? '-' : '+'}</span>
+              </div>
+              <div
+                className={`overflow-hidden cursor-pointer transition-all duration-300 flex flex-col ${openDropdown === index ? 'max-h-full' : 'max-h-0'}`}
+              >
+                {item.sublinks.map((sublink, subIndex) => (
+                  <Link href={sublink.pageRoute} key={sublink.id} className={`pl-2 py-1 text-sm text-[#eee] hover:text-sky-600 my-1`}>
+                    {sublink.item}
+                  </Link>
+                ))}
+              </div>
             </div>
-          )}
-          <div className="flex items-center gap-1">
-            <ThemeChangerButton />
-            <Link
-              className="logo overflow-hidden flex justify-center items-center flex-col p-1"
-              href="/"
+          ))}
+        </div>
+        <div className="p-4 border-t border-gray-700 relative">
+          <div>
+            <button
+              onClick={toggleUserDropdown}
+              className="w-full text-left flex items-center justify-between text-sm text-[#eee]"
             >
-              <Image
-                src={logo}
-                alt="allelectronics logo"
-                width={50}
-                height={40}
-                priority={true}
-                placeholder="blur"
-              />
-            </Link>
+              <span className="overflow-hidden">{userData?.email}</span> <span>
+                <EllipsisVerticalIcon className="h-4 w-4 text-blue-500" />
+              </span>
+            </button>
+            {isUserDropdownOpen && (
+              <div className="absolute bottom-full mb-2 w-full bg-gray-800 border border-gray-700">
+                <button className="w-full text-left px-4 py-2 text-[#eee] hover:bg-gray-700">Profile</button>
+                <button className="w-full text-left px-4 py-2 text-[#eee] hover:bg-gray-700">Settings</button>
+                <button className="w-full text-left px-4 py-2 text-[#eee] hover:bg-gray-700">Sign Out</button>
+              </div>
+            )}
           </div>
         </div>
-      </nav>
-
-      <aside
-        className={`sidebar dark:bg-[#15202B] ${isOpen === true ? "active" : ""
-          }`}
-      >
-        <div className="sd-header">
-          <Link
-            className="logo overflow-hidden flex justify-center items-center flex-col p-1"
-            href="/"
-          >
-            <Image
-              src={logo}
-              alt="allelectronics logo"
-              priority={true}
-              placeholder="blur"
-              style={{ objectFit: "cover" }}
-            />
-          </Link>
-          <button
-            role="button"
-            id="close_button"
-            className="btn close_button"
-            onClick={ToggleSidebar}
-            aria-label="close button"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              className="dark:fill-white"
-            >
-              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-              <path d="M0 0h24v24H0z" fill="none" />
-            </svg>
-          </button>
-        </div>
-        <div className="sd-body">
-          <button
-            className={`open-submenu-btn dark:text-[#eee] text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
-            onClick={() => setHHPSubMenuOpen(!hhpSubMenuOpen)}
-          >
-            <span>HHP</span>
-            <span>
-              {!hhpSubMenuOpen ? (
-                <ChevronDownIcon className="h-6 w-6 text-white dark:text-[#eee]" />
-              ) : (
-                <ChevronUpIcon className="h-6 w-6 text-white dark:text-[#eee]" />
-              )}
-            </span>
-          </button>
-          {hhpSubMenuOpen && (
-            <ul className="">
-              {hhpNavItems.map((item) => (
-                <li key={item?.id}>
-                  <Link
-                    href={item?.pageRoute}
-                    className={`sd-link dark:text-[#eee] dark:hover:dark:text-[#eee]`}
-                  >
-                    {item?.item}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-          <button
-            className={`open-submenu-btn dark:text-[#eee] text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
-            onClick={() => setPartsSubMenuOpen(!partsSubMenuOpen)}
-          >
-            <span>Parts</span>
-            <span>
-              {!partsSubMenuOpen ? (
-                <ChevronDownIcon className="h-6 w-6 text-white dark:text-[#eee]" />
-              ) : (
-                <ChevronUpIcon className="h-6 w-6 text-white dark:text-[#eee]" />
-              )}
-            </span>
-          </button>
-          {partsSubMenuOpen && (
-            <ul className="">
-              {partsNavItems.map((item) => (
-                <li key={item?.id}>
-                  <Link
-                    href={item?.pageRoute}
-                    className={`sd-link dark:text-[#eee] dark:hover:dark:text-[#eee]`}
-                  >
-                    {item?.item}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-          <button
-            className={`open-submenu-btn dark:text-[#eee] text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
-            onClick={() => setDtvSubMenuOpen(!dtvSubMenuOpen)}
-          >
-            <span>Dtv/HA</span>
-            <span>
-              {!dtvSubMenuOpen ? (
-                <ChevronDownIcon className="h-6 w-6 text-white dark:text-[#eee]" />
-              ) : (
-                <ChevronUpIcon className="h-6 w-6 text-white dark:text-[#eee]" />
-              )}
-            </span>
-          </button>
-          {dtvSubMenuOpen && (
-            <ul className="">
-              {dtvNavItems.map((item) => (
-                <li key={item?.id}>
-                  <Link
-                    href={item?.pageRoute}
-                    className={`sd-link dark:text-[#eee] dark:hover:dark:text-[#eee]`}
-                  >
-                    {item?.item}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-          {/* <button
-            className={`open-submenu-btn dark:text-[#eee] text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
-            onClick={() => setTicketsSubMenuOpen(!ticketsSubMenuOpen)}
-          >
-            <span>Tickets</span>
-            <span>
-              {!ticketsSubMenuOpen ? (
-                <ChevronDownIcon className="h-6 w-6 text-white dark:text-[#eee]" />
-              ) : (
-                <ChevronUpIcon className="h-6 w-6 text-white dark:text-[#eee]" />
-              )}
-            </span>
-          </button>
-          {ticketsSubMenuOpen && (
-            <ul className="">
-              {ticketNavItems.map((item) => (
-                <li key={item?.id}>
-                  <Link
-                    href={item?.pageRoute}
-                    className={`sd-link dark:text-[#eee] dark:hover:dark:text-[#eee]`}
-                  >
-                    {item?.item}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )} */}
-          <button
-            className={`open-submenu-btn dark:text-[#eee] text-white font-semibold px-3 py-2 rounded-sm bg-[#082f49] w-full flex flex-row justify-between items-center`}
-            onClick={() => setTookanSubMenuOpen(!tookanSubMenuOpen)}
-          >
-            <span>Tookan</span>
-            <span>
-              {!tookanSubMenuOpen ? (
-                <ChevronDownIcon className="h-6 w-6 text-white dark:text-[#eee]" />
-              ) : (
-                <ChevronUpIcon className="h-6 w-6 text-white dark:text-[#eee]" />
-              )}
-            </span>
-          </button>
-          {tookanSubMenuOpen && (
-            <ul className="">
-
-              <li>
-                <Link
-                  href={"/tookan"}
-                  className={`sd-link dark:text-[#eee] dark:hover:dark:text-[#eee]`}
-                >
-                  Task
-                </Link>
-              </li>
-
-            </ul>
-          )}
-
-        </div>
-
-        <div className="login_details flex flex-col mt-auto px-[15px] absolute bottom-10 w-full">
-          <Button
-            type="button"
-            className="bg-gray-900 text-md flex justify-center text-center text-white w-full mx-auto  rounded p-3 my-2"
-            text="Logout"
-            onClick={onSignout}
-          />
-        </div>
       </aside>
-      <div
-        className={`sidebar-overlay ${isOpen === true ? "active" : ""}`}
-        onClick={ToggleSidebar}
-      ></div>
-    </>
+    </div >
   );
 };
 
