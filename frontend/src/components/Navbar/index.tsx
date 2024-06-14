@@ -32,6 +32,10 @@ const menuItems = [
     sublinks: [{ id: 5, item: "Part search", pageRoute: "/department/parts/parts-search" },
     { id: 6, item: "Parts", pageRoute: "/department/parts" },],
   },
+  {
+    label: 'Tookan',
+    sublinks: [{ id: 6, item: "Tookan", pageRoute: "/tookan" }],
+  },
 ];
 const Navbar = () => {
   const [isOpen, setIsopen] = useState(false);
@@ -111,13 +115,13 @@ const Navbar = () => {
                 <EllipsisVerticalIcon className="h-4 w-4 text-blue-500" />
               </span>
             </button>
-            {isUserDropdownOpen && (
+            {/* {isUserDropdownOpen && (
               <div className="absolute bottom-full mb-2 w-full bg-gray-800 border border-gray-700">
                 <button className="w-full text-left px-4 py-2 text-[#eee] hover:bg-gray-700">Profile</button>
                 <button className="w-full text-left px-4 py-2 text-[#eee] hover:bg-gray-700">Settings</button>
-                <button className="w-full text-left px-4 py-2 text-[#eee] hover:bg-gray-700">Sign Out</button>
+                <button className="w-full text-left px-4 py-2 text-[#eee] hover:bg-gray-700 cursor-pointer border" onClick={onSignout}>Sign Out</button>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </aside>

@@ -1,9 +1,11 @@
+import React from 'react'
+
 function Tests() {
+  return (
+    <div>
 
-
-  return <div>
-
-  </div>;
+    </div>
+  )
 }
 
-export default Tests;
+export default Tests

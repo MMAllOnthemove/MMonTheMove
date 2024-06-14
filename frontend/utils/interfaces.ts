@@ -90,7 +90,6 @@ export interface IHomepageModalTabTwoContent {
   repairEngineer: string | undefined;
   setRepairEngineer: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   postRepairData: (e: React.SyntheticEvent) => void;
-  repairAPILoading: boolean;
 }
 
 export interface ISearchForm {
@@ -118,8 +117,6 @@ export interface IgetSOInfoAll {
   setFault: (order: string) => void;
   setImei: (order: string) => void;
   setSerialNumber: (order: string) => void;
-  setEngineerAssignDate: (order: string) => void;
-  setEngineerAssignTime: (order: string) => void;
   setGSPNStatus: (order: string) => void;
 }
 export interface IgetSOInfoAllDtv {
@@ -182,15 +179,12 @@ export interface IgetRepair {
   searchTicket: string | number;
   setRepairFault: (order: string) => void;
   setRepairCreatedDate: (order: string) => void;
-  setRepairCreatedTime: (order: string) => void;
-  setRepairEngineerAssignDate: (order: string) => void;
-  setRepairEngineerAssignTime: (order: string) => void;
   setRepairImei: (order: string) => void;
   setRepairServiceOrder: (order: string) => void;
   setRepairTicket: (order: string) => void;
+  setRepairId: (order: string) => void;
   setRepairEngineerAnalysis: (order: string) => void;
   setRepairDepartment: (order: string) => void;
-  setRepairAPILoading: (order: boolean) => void;
 }
 export interface IgetTicketNumberOnJobAdd {
   searchServiceOrder: string;

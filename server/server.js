@@ -14,7 +14,7 @@ import { router as auth } from "./routes/auth/auth_route.js";
 import { router as bookingAgents } from "./routes/department/hhp/booking_agent_jobs_route.js";
 import { router as qc } from "./routes/department/hhp/qc.js";
 import { router as partsDept } from "./routes/department/parts/parts_dept_routes.js";
-
+import { router as getAgents } from "./routes/agents/index.js";
 import { router as dtvAnalytics } from "./routes/department/dtv/analytics.js";
 import { router as dtvChecklists } from "./routes/department/dtv/checklists.js";
 import { router as dtvTasks } from "./routes/department/dtv/tasks.js";
@@ -55,8 +55,8 @@ app.use("/api/v1/hhp/jobs", hhpJobsHistory);
 // HHP QC graphs
 app.use("/api/v1/hhp/dashboard/qc-jobs-count/overview", qc);
 
-// HHP Booking agents
-app.use("/api/v1/hhp/agents", bookingAgents);
+// HHP Booking agents jobs
+app.use("/api/v1/hhp/agents/jobs", bookingAgents);
 
 // Parts dept
 app.use("/api/v1/parts/jobs", partsDept);
@@ -73,6 +73,9 @@ app.use("/api/v1/dtv/analytics", dtvAnalytics);
 
 // Engineers
 app.use("/engineers", engineersRoute);
+
+// Booking agents
+app.use("/agents", getAgents);
 
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {

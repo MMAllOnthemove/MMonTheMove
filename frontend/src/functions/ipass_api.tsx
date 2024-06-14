@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   IgetSOInfoAll,
   IgetSOStatusDescLatest,
@@ -19,8 +20,6 @@ export async function getSOInfoAllFunction({
   setFault,
   setImei,
   setSerialNumber,
-  setEngineerAssignDate,
-  setEngineerAssignTime,
   setGSPNStatus,
 }: IgetSOInfoAll) {
   const options = {
@@ -33,33 +32,34 @@ export async function getSOInfoAllFunction({
       Pac: `${process.env.NEXT_PUBLIC_PAC}`,
     },
   };
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_IPAAS_API_GETSOINFOALL}`,
-    {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
-      },
-      body: JSON.stringify(options),
-    }
-  );
 
-  const data = await response.json();
-  setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
-  setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
-  setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
-  setModel(data?.Return?.EsModelInfo?.Model);
-  setWarranty(data?.Return?.EsModelInfo?.WtyType);
-  setFault(data?.Return?.EsModelInfo?.DefectDesc);
-  setImei(data?.Return?.EsModelInfo?.IMEI);
-  setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
-  setEngineerAssignDate(data?.Return?.EsScheInfo?.EngrAssignDate);
-  setEngineerAssignTime(data?.Return?.EsScheInfo?.EngrAssignTime);
-  setGSPNStatus(data?.EtFlowInfo?.results?.map((x: any) => x.StatusDesc));
+  try {
+    const { data } = await axios.post(
+      `${process.env.NEXT_PUBLIC_IPAAS_API_GETSOINFOALL}`,
+      options,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
+        },
+      }
+    );
+    setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
+    setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
+    setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
+    setModel(data?.Return?.EsModelInfo?.Model);
+    setWarranty(data?.Return?.EsModelInfo?.WtyType);
+    setFault(data?.Return?.EsModelInfo?.DefectDesc);
+    setImei(data?.Return?.EsModelInfo?.IMEI);
+    setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
+    setGSPNStatus(data?.EtLogInfo.results[data?.EtLogInfo.results.length - 1].StatusDesc);
+    // console.log("gspn apidata", data);
+    console.log("gspn apidata", data?.EtLogInfo.results[data?.EtLogInfo.results.length - 1].StatusDesc);
+  } catch (error) {
+    // console.log("client gspn error", error);
+  }
+
+
 }
 export async function getSOInfoAllFunctionDtv(props: IgetSOInfoAllDtv) {
   const options = {
@@ -219,7 +219,7 @@ export async function postBookingAgentsJobs({
   setServiceOrder,
   setCreatedDate,
   setCreatedTime,
-  setWarranty,
+  setWarranty
 }: IpostBookingAgentsJobs) {
   const options = {
     IvSvcOrderNo: searchServiceOrder,
@@ -247,6 +247,7 @@ export async function postBookingAgentsJobs({
   );
 
   const data = await response.json();
+  // console.log(data?.EtLogInfo?.results[0]?.ChangedBy)
   if (data) {
     setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
     setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
