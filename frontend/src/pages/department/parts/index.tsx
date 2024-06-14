@@ -12,7 +12,7 @@ import { columns } from "@/components/PartsTable/PartsTableColumns";
 import PartsAddTaskModal from "@/components/PopupModal/parts-add-task-modal";
 import Pagination from "@/components/Table/Pagination";
 import { getSOInfoAllFunctionForParts } from "@/functions/ipass_api";
-import { fetchCurrentUser, getPartsDepatmentJobs } from "@/hooks/useFetch";
+import { fetchCurrentUser, } from "@/hooks/useFetch";
 import {
   SortingState,
   flexRender,
@@ -35,7 +35,6 @@ const NotLoggedIn = dynamic(() => import("@/components/NotLoggedIn"));
 
 function Parts() {
   const { userData } = fetchCurrentUser();
-  const { partsDepartmentData } = getPartsDepatmentJobs();
   let dispatchBy = userData;
   // Not to be confused with 'setServiceOrder'
   const [searchServiceOrder, setSearchServiceOrder] = useState("");

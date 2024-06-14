@@ -5,10 +5,7 @@ import {
 } from "../../../controllers/department/hhp/hhp_jobs_get.js";
 import PostJobs from "../../../controllers/department/hhp/hhp_jobs_gspn_post.js";
 import PostRepairJobs from "../../../controllers/department/hhp/hhp_jobs_repair_post.js";
-import {
-  UpdateJob,
-  UpdateJobclaimsGSPNStatus,
-} from "../../../controllers/department/hhp/hhp_jobs_update.js";
+import { UpdateJob } from "../../../controllers/department/hhp/hhp_jobs_update.js";
 const router = express.Router();
 
 import DeleteJob from "../../../controllers/department/hhp/hhp_jobs_delete.js";
@@ -35,7 +32,7 @@ router.post("/", limiter, PostJobs);
 // Update single row on database
 // Using COALESCE to prevent null values when updating
 router.put("/:id", limiter, UpdateJob);
-router.put("/claims/:id", UpdateJobclaimsGSPNStatus);
+// router.put("/claims/:id", UpdateJobclaimsGSPNStatus);
 
 // Delete single row on database
 router.delete("/:id", DeleteJob);

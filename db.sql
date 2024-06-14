@@ -56,8 +56,6 @@ CREATE TABLE units (
     imei text,
     serial_number text,
     in_house_status text,
-    engineer_assign_date text,
-    engineer_assign_time text,
     ticket text,
     engineer_analysis text,
     department text,
@@ -111,8 +109,6 @@ CREATE TABLE units_history (
     imei text,
     serial_number text,
     in_house_status text,
-    engineer_assign_date text,
-    engineer_assign_time text,
     ticket text,
     engineer_analysis text,
     department text,
@@ -146,10 +142,30 @@ CREATE TABLE otp (
     ip_address text,
     created_at timestamp,
     otp text
-) CREATE TABLE engineers (
+);
+
+CREATE TABLE engineers (
     id BIGSERIAL PRIMARY KEY UNIQUE,
     unique_id uuid DEFAULT gen_random_uuid(),
     engineer_firstname text,
     engineer_lastname text,
     active boolean
+);
+
+CREATE TABLE booking_agents (
+    user_id BIGSERIAL PRIMARY KEY,
+    user_unique_id uuid DEFAULT gen_random_uuid(),
+    gspn_username text,
 )
+INSERT INTO
+    booking_agents (gspn_username)
+VALUES
+('sherryl060223');
+INSERT INTO
+    booking_agents (gspn_username)
+VALUES
+('lavonaj01');
+INSERT INTO
+    booking_agents (gspn_username)
+VALUES
+('nokuthulat04');

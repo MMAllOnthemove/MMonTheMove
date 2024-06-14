@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { ISingleDTVJob, Itable } from "../../utils/interfaces";
 import axios from "axios";
+import moment from "moment";
 
 
 type TUser = {
-    user_id: string;
-    full_name: string;
-    user_name: string;
-    email: string;
-    user_role: string;
-    department: string;
+  user_id: string;
+  full_name: string;
+  user_name: string;
+  email: string;
+  user_role: string;
+  department: string;
 }
 
 
@@ -117,7 +118,7 @@ export const getBookingAgentJobs = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/agents`)
+      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/agents/jobs`)
       setGetBookingAgentJobsData(data)
 
     };
@@ -170,3 +171,20 @@ export const fetchEngineers = () => {
 
   return { getEngineers };
 };
+
+// Engineers
+export const fetchBookingAgents = () => {
+  const [getBookingAgents, setGetBookingAgents] = useState<string | any>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_SERVER_API}/agents`);
+      setGetBookingAgents(data);
+    };
+    fetchData();
+  }, [getBookingAgents]);
+
+  return { getBookingAgents };
+};
+
+
