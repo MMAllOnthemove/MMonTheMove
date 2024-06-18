@@ -78,7 +78,6 @@ const PostJobs = async (req, res) => {
       res.status(201).json("Successfully created!");
     }
   } catch (err) {
-    console.log("hhp jobs error", err);
     res.status(500).json(err.message);
   }
 };

@@ -36,7 +36,6 @@ const SignupUser = async (req, res) => {
       [fullName, username, capitalizedEmail, hashedPassword, createdAt]
     );
     const user = result.rows[0];
-    console.log("user", user);
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
     res.cookie("refreshToken", refreshToken, {
@@ -44,7 +43,6 @@ const SignupUser = async (req, res) => {
     });
     res.status(201).json({ accessToken });
   } catch (error) {
-    console.log("error,", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

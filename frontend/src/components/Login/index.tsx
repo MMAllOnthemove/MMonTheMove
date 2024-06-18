@@ -41,11 +41,9 @@ const Login = () => {
                 withCredentials: true
               });
               // alert(response.data.message)
-              console.log(response.data); // Log response data on success
               if (response.data) router.push("/")
             } catch (error: any) {
               alert(error?.response?.data.errors); // Log error response data on failure, if available
-              console.log(error?.response?.data.errors); // Log error response data on failure, if available
             }
             // try {
             //   const response = await fetch(

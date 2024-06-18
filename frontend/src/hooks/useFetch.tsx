@@ -30,8 +30,7 @@ export const fetchCurrentUser = () => {
           setUserData(data?.user)
         }
       } catch (error) {
-        // console.log(error);
-
+// 
       }
 
     }
@@ -50,11 +49,10 @@ export const fetchTableData = () => {
 
       axios.get(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs`)
         .then((response) => {
-          // console.log(data)
           setHHPData(response?.data)
         })
         .then((e) => {
-          // console.log("error", e)
+          // 
         })
 
     }

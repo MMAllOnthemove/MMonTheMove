@@ -27,7 +27,7 @@ const createOTP = async (req, res) => {
       res.status(201).json("otp created, thank you!");
     }
   } catch (err) {
-    //  console.log(err)
+    // 
   }
 };
 

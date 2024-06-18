@@ -48,7 +48,6 @@ const PostBookingAgentsJobs = async (req, res) => {
       res.status(201).json("Successfully created!");
     }
   } catch (err) {
-    console.log("booking agent jobs error", err);
     res.status(500).json(err.message);
   }
 };

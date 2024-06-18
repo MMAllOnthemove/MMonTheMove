@@ -53,10 +53,8 @@ export async function getSOInfoAllFunction({
     setImei(data?.Return?.EsModelInfo?.IMEI);
     setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
     setGSPNStatus(data?.EtLogInfo.results[data?.EtLogInfo.results.length - 1].StatusDesc);
-    // console.log("gspn apidata", data);
-    console.log("gspn apidata", data?.EtLogInfo.results[data?.EtLogInfo.results.length - 1].StatusDesc);
   } catch (error) {
-    // console.log("client gspn error", error);
+    // 
   }
 
 
@@ -208,7 +206,6 @@ export async function getPartsInfoFunction(props: IgetPartsInfo) {
     }
   );
   const data = await response.json();
-  // console.log(data);
   if (data) {
     props.setData(data);
   }
@@ -247,7 +244,6 @@ export async function postBookingAgentsJobs({
   );
 
   const data = await response.json();
-  // console.log(data?.EtLogInfo?.results[0]?.ChangedBy)
   if (data) {
     setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
     setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
@@ -297,7 +293,6 @@ export async function getStockOverviewInfo({
       if (data) {
         setStockData(data);
       }
-      // console.log(data);
     });
 }
 export async function getSOInfoAllFunctionForParts({
@@ -380,14 +375,12 @@ export async function getPartsInfoForServiceOrder(
       .then((data) => {
         if (data?.EtPartsInfo !== null) {
           const parts = data?.EtPartsInfo?.results?.map((i: any) => i.PartsNo);
-          // console.log("parts", parts);
           return props.setPartsAssignedForJob(parts);
         } else if (data?.EtPartsInfo === null) {
           return props.setPartsAssignedForJob(data?.Return?.EvRetMsg);
         }
       });
   } catch (error) {
-    // console.log("Ipaas parts info error", error);
   }
 }
 
@@ -427,7 +420,6 @@ export async function getSOInfoAllTookan({
 
   const data = await response.json();
   const fullAddress = data?.Return?.EsBpInfo?.CustAddrStreet1 + " " + data?.Return?.EsBpInfo?.CustAddrStreet2 || "" + "" + data?.Return?.EsBpInfo?.CustCity || "" + "" + data?.Return?.EsBpInfo?.CustCountry || "";
-  // console.log(data)
   setFirstname(data?.Return?.EsBpInfo?.CustFirstName)
   setLastname(data?.Return?.EsBpInfo?.CustLastName)
   setEmail(data?.Return?.EsBpInfo?.CustEmail)

@@ -127,7 +127,7 @@ function EditRow() {
       const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_SERVER_API}/api/v1/hhp/jobs/` + id, putThisInfo);
 
     } catch (error) {
-      console.log("update hhp job error", error)
+      // 
     }
 
     sendRepairShoprComment();
@@ -205,7 +205,7 @@ function EditRow() {
     setPartsList([...partsList, { partNumber: "" }]);
   };
 
- 
+
   return (
     <>
       <Head>
@@ -482,7 +482,7 @@ function EditRow() {
                 </span>
               </form>
               <hr />
-     
+
             </section>
           )}
         </Container>

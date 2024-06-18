@@ -8,8 +8,6 @@ export function authenticateToken(req, res, next) {
   const token = req.cookies.refreshToken;
   jwt.verify(token, `${process.env.JWT_TOKEN_KEY}`, (err, user) => {
     if (err) return res.sendStatus(403);
-    // console.log("err", err);
-    // console.log("user", user);
 
     req.user = user; // Attach user object to the request
     next();

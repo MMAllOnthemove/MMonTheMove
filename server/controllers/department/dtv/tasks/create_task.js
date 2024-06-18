@@ -44,7 +44,6 @@ const CreateTask = async (req, res) => {
     );
 
     if (ifServiceOrderExists.rows.length > 0) {
-      // console.log("Task exists");
       return res.status(400).send("Task exists");
     } else {
       await pool.query(
@@ -88,7 +87,7 @@ const CreateTask = async (req, res) => {
       res.status(201).send("Task added");
     }
   } catch (e) {
-    // console.log("dtv error", e);
+    // 
   }
 };
 export default CreateTask;
