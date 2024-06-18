@@ -24,7 +24,6 @@ const PostRepairJobs = async (req, res) => {
   const {
     repairServiceOrder,
     repairCreatedDate,
-    repairCreatedTime,
     repairModel,
     repairWarranty,
     repairEngineer,
@@ -32,11 +31,11 @@ const PostRepairJobs = async (req, res) => {
     repairImei,
     repairSerialNumber,
     repairInHouseStatus,
-    repairEngineerAssignDate,
     repairEngineerAnalysis,
     repairTicket,
     repairDepartment,
     repairUser,
+    GSPNStatus,
     dateAdded,
   } = req.body;
   try {
@@ -47,12 +46,11 @@ const PostRepairJobs = async (req, res) => {
     if (findIfExists.rows.length > 0) {
       res.status(400).json("Ticket already exists!");
     } else {
-      await pool.query(
-        "INSERT INTO units (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_analysis, ticket, department, job_added_by, date_added) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning *",
+      const { rows } = await pool.query(
+        "INSERT INTO units (service_order_no, created_date, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_analysis, ticket, department, job_added_by, gspn_status, date_added) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning *",
         [
           repairServiceOrder,
           repairCreatedDate,
-          repairCreatedTime,
           repairModel,
           repairWarranty,
           repairEngineer,
@@ -60,15 +58,16 @@ const PostRepairJobs = async (req, res) => {
           repairImei,
           repairSerialNumber,
           repairInHouseStatus,
-          repairEngineerAssignDate,
           repairEngineerAnalysis,
           repairTicket,
           repairDepartment,
           repairUser,
+          GSPNStatus,
           dateAdded,
         ]
       );
       res.status(201).json("Successfully created!");
+      // console.log("repair backend data hhp", rows);
     }
   } catch (err) {
     console.log("RS jobs error", err);

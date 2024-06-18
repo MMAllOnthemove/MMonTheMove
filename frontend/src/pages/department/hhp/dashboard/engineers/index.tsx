@@ -34,7 +34,7 @@ function Engineers() {
       <Navbar />
       <main className="space-between-navbar-and-content">
         <PageTitle title="Engineers breakdown" hasSpan={false} />
-        {!userData ? (
+        {!userData?.email ? (
           <NotLoggedIn />
         ) : (
           <section className="container mx-auto stat_cards max-w-6xl py-4 px-3 lg:px-0">
@@ -160,7 +160,7 @@ function Engineers() {
             </p>
             <p className="text-center font-medium dark:text-[#eee] text-sm my-3">
               Logged in as{" "}
-              <span className="text-sky-700 font-semibold">{userData}</span>
+              <span className="text-sky-700 font-semibold">{userData?.email}</span>
             </p>
             <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3 my-3">
               <UnitsPendingCard
