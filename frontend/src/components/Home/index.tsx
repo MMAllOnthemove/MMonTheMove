@@ -148,7 +148,6 @@ function HomeComponent() {
         },
       });
       if (data?.tickets[0]?.number == searchTicket) {
-        // console.log("data by query", data)
         setRepairServiceOrder(data?.tickets[0]["properties"]["Service Order No."])
         setRepairTicket(data?.tickets[0]?.number)
         setRepairId(data?.tickets[0]?.id)
@@ -226,14 +225,11 @@ function HomeComponent() {
       GSPNStatus,
       dateAdded,
     };
-    // console.log(postThisInfo)
     try {
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs`, postThisInfo)
-      console.log('response client hhp add', response)
       setIsHHPAddTaskModalVisible(false);
       toast.success(`${response.data}`);
     } catch (error: any) {
-      console.log("frontend hhp add job error", error?.response?.data)
       toast.error(`${error?.response?.data}`);
     }
 
@@ -275,7 +271,6 @@ function HomeComponent() {
       GSPNStatus,
       dateAdded,
     };
-    // console.log(postThisInfo)
     try {
       const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/repair`, postThisInfo, {
         headers: {
@@ -285,9 +280,7 @@ function HomeComponent() {
       toast.success(`${data}`);
       setIsHHPAddTaskModalVisible(false);
     } catch (error) {
-      console.log("RS ADD tasks error", error)
-      // console.log("frontend hhp add job error", error?.response?.data)
-      // toast.error(`${error?.response?.data}`);
+      // 
     }
 
 

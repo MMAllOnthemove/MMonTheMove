@@ -65,11 +65,9 @@ function Reports() {
     };
     try {
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/agents/jobs`, postThisInfo)
-      console.log('response client booking add', response)
       toast.success(`${response.data}`);
     } catch (error: any) {
-      console.log("frontend booking add job error", error?.response?.data)
-      toast.error(`${error?.response?.data}`);
+      // 
     }
 
   };

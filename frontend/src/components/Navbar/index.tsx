@@ -67,7 +67,7 @@ const Navbar = () => {
 
   return (
     <div className="relative z-10">
-      <nav className="flex items-center">
+      <nav className="flex items-center justify-between">
         <div className="flex items-center">
           <button
             className="m-4 p-2 bg-white rounded"
@@ -82,6 +82,7 @@ const Navbar = () => {
           </button>
           <p className="text-slate-800 font-medium">{getOTP}</p>
         </div>
+        <ThemeChangerButton />
       </nav>
       <aside
         className={`bg-gray-800 text-white transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'

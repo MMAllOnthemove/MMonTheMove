@@ -27,7 +27,6 @@ function Claims() {
   let filteredSearch = hhpData.filter(
     (item) => item?.service_order_no === searchTerm
   );
-  // console.log("filteredSearch", !filteredSearch)
   const handleUpdate = (e: React.SyntheticEvent, id: any) => {
     e.stopPropagation();
     router.push(`/department/claims/edit/${id}`);
@@ -49,8 +48,6 @@ function Claims() {
       dateOfClaim,
       id,
     };
-
-    // console.log("putThisInfo", putThisInfo)
 
     try {
       const { data } = await axios.patch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/claims/` + id, putThisInfo);

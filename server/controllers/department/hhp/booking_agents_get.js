@@ -8,7 +8,7 @@ const GetBookingAgentsJobs = async (req, res) => {
     );
     res.json(rows);
   } catch (err) {
-    console.log(err);
+    // 
   }
 };
 

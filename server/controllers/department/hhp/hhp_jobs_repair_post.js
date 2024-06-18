@@ -67,10 +67,8 @@ const PostRepairJobs = async (req, res) => {
         ]
       );
       res.status(201).json("Successfully created!");
-      // console.log("repair backend data hhp", rows);
     }
   } catch (err) {
-    console.log("RS jobs error", err);
     res.status(500).json(err.message);
   }
 };

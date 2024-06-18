@@ -77,14 +77,12 @@ function Tookan() {
             "timezone": "+2",
             "api_key": `${process.env.NEXT_PUBLIC_TOOKAN_API_TOKEN}`
         }
-        // console.log(values)
 
         await axios.post(`${process.env.NEXT_PUBLIC_TOOKAN_LINK}/create_task`, values, {
             headers: {
                 'Content-Type': 'application/json',
             },
         }).then((res) => {
-            // console.log(res)
             if (res.status === 200) {
                 alert(res.data.message);
                 setPopJobId(res?.data?.data?.job_id);
@@ -101,7 +99,7 @@ function Tookan() {
             }
 
         }).then((error) => {
-            // console.log("error", error)
+            // 
         })
 
     }
@@ -137,7 +135,7 @@ function Tookan() {
             }
 
         }).then((error) => {
-            // console.log("error", error)
+            //
         })
     }
     return (
