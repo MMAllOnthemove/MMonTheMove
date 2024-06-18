@@ -18,16 +18,15 @@ import toast from "react-hot-toast";
 // Custom imports
 import TableBody from "@/components/Table/TableBody";
 import columns from "@/components/Table/homepageTableColumns";
-import { getRepair } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
-import { fetchCurrentUser, fetchRepairshoprTicket, fetchTableData } from "@/hooks/useFetch";
+import { fetchCurrentUser, fetchTableData } from "@/hooks/useFetch";
 import axios from "axios";
+import moment from "moment";
 import React from "react";
 import NotLoggedIn from "../NotLoggedIn";
 import PageTitle from "../PageTitle";
 import Tabs from "../Tabs";
 import TabPane from "../Tabs/TabPane";
-import moment from "moment";
 
 // Dynamic imports
 const ManagementSearchForm = dynamic(
@@ -271,13 +270,12 @@ function HomeComponent() {
       repairInHouseStatus,
       repairEngineerAnalysis,
       repairTicket,
-      repairId,
       repairDepartment,
       repairUser,
       GSPNStatus,
       dateAdded,
     };
-
+    // console.log(postThisInfo)
     try {
       const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/repair`, postThisInfo, {
         headers: {

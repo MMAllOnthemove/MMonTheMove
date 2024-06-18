@@ -144,7 +144,7 @@ function Pending() {
       <main className="space-between-navbar-and-content">
         <PageTitle hasSpan={false} title={"Units pending"} />
 
-        {!userData ? (
+        {!userData?.email ? (
           <NotLoggedIn />
         ) : (
           <>
@@ -243,7 +243,7 @@ function Pending() {
               </p>
               <p className="text-center font-medium dark:text-[#eee] text-sm my-3">
                 Logged in as{" "}
-                <span className="text-sky-700 font-semibold">{userData}</span>
+                <span className="text-sky-700 font-semibold">{userData?.email}</span>
               </p>
               <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3 my-3">
                 <UnitsPendingCard

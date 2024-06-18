@@ -7,7 +7,7 @@ import { useState } from "react";
 import { logoutUserFunction } from "@/functions/getLoggedInUserProfile";
 import { fetchCurrentUser, fetchOTP } from "@/hooks/useFetch";
 import toast from "react-hot-toast";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import { EllipsisVerticalIcon, Bars2Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 // Dynamic imports
 const Button = dynamic(() => import("../Buttons"));
@@ -30,7 +30,7 @@ const menuItems = [
   {
     label: 'Parts',
     sublinks: [{ id: 5, item: "Part search", pageRoute: "/department/parts/parts-search" },
-    { id: 6, item: "Parts", pageRoute: "/department/parts" },],
+    ],
   },
   {
     label: 'Tookan',
@@ -38,8 +38,6 @@ const menuItems = [
   },
 ];
 const Navbar = () => {
-  const [isOpen, setIsopen] = useState(false);
-
 
   const router = useRouter()
 
@@ -69,12 +67,22 @@ const Navbar = () => {
 
   return (
     <div className="relative z-10">
-      <button
-        className="m-4 p-2 bg-blue-500 text-white rounded"
-        onClick={toggleSidebar}
-      >
-        {isSidebarOpen ? 'Close Sidebar' : 'Open Sidebar'}
-      </button>
+      <nav className="flex items-center">
+        <div className="flex items-center">
+          <button
+            className="m-4 p-2 bg-white rounded"
+            onClick={toggleSidebar}
+          >
+            {/* {isSidebarOpen ? 'Close Sidebar' : 'Open Sidebar'} */}
+            {isSidebarOpen ?
+              <XMarkIcon className="h-6 w-6 text-slate-800" /> :
+              <Bars2Icon className="h-6 w-6 text-slate-800" />
+            }
+
+          </button>
+          <p className="text-slate-800 font-medium">{getOTP}</p>
+        </div>
+      </nav>
       <aside
         className={`bg-gray-800 text-white transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
           } w-64 h-screen fixed top-0 left-0 flex flex-col`}
@@ -105,21 +113,25 @@ const Navbar = () => {
             </div>
           ))}
         </div>
+
         <div className="p-4 border-t border-gray-700 relative">
           <div>
             <button
-              onClick={toggleUserDropdown}
+              // onClick={toggleUserDropdown}
+              onDoubleClick={onSignout}
               className="w-full text-left flex items-center justify-between text-sm text-[#eee]"
             >
               <span className="overflow-hidden">{userData?.email}</span> <span>
                 <EllipsisVerticalIcon className="h-4 w-4 text-blue-500" />
               </span>
             </button>
+
+
             {/* {isUserDropdownOpen && (
               <div className="absolute bottom-full mb-2 w-full bg-gray-800 border border-gray-700">
-                <button className="w-full text-left px-4 py-2 text-[#eee] hover:bg-gray-700">Profile</button>
-                <button className="w-full text-left px-4 py-2 text-[#eee] hover:bg-gray-700">Settings</button>
-                <button className="w-full text-left px-4 py-2 text-[#eee] hover:bg-gray-700 cursor-pointer border" onClick={onSignout}>Sign Out</button>
+                 <button className="w-full text-left px-4 py-2 text-[#eee] hover:bg-gray-700">Profile</button>
+                <button className="w-full text-left px-4 py-2 text-[#eee] hover:bg-gray-700">Settings</button> 
+                <button className="w-full text-left px-4 py-2 text-[#eee] hover:bg-gray-700 cursor-pointer border border-red-500" type="button" onClick={() => console.log("clicked")}>Sign Out</button>
               </div>
             )} */}
           </div>

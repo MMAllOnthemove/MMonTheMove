@@ -86,7 +86,7 @@ body::-webkit-scrollbar-thumb {
   z-index: 1;
 }
 .space-between-navbar-and-content {
-  margin-top: calc(100vh - 89vh);
+  /* margin-top: calc(100vh - 89vh); */
   height: 100%;
 }
 .nav_links {
