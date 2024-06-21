@@ -1,7 +1,7 @@
 import React from "react";
 import { IPopupModal } from "../../../utils/interfaces";
 
-function CreateSOModal({
+function Modal({
     isVisible = false,
     title,
     content,
@@ -55,4 +55,4 @@ function CreateSOModal({
     );
 }
 
-export default CreateSOModal;
+export default Modal;

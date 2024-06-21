@@ -2,7 +2,6 @@
 import { fetchCurrentUser, fetchTableData } from "@/hooks/useFetch";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import CreateSOModal from "@/components/PopupModal/so_create_modal";
 
 // Custom imports
 import Container from "@/components/Container";
@@ -12,6 +11,7 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import axios from "axios";
 import Button from "@/components/Buttons";
+import Modal from "@/components/PopupModal";
 // Dynamic imports
 const Navbar = dynamic(() => import("@/components/Navbar"));
 const PageTitle = dynamic(() => import("@/components/PageTitle"));
@@ -135,7 +135,7 @@ function Claims() {
                       </tr> : null}
 
 
-                    <CreateSOModal title="" isVisible={openModal} onClose={closeModal} content={
+                    <Modal title="" isVisible={openModal} onClose={closeModal} content={
                       <>
 
                         {openModal && (

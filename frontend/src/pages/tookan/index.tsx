@@ -5,11 +5,12 @@ import moment from 'moment';
 import Head from 'next/head';
 import { getSOInfoAllTookan } from '@/functions/ipass_api';
 import { capitalizeFirstLetter } from '../../../utils/capitalize';
-import TicketsModal from '@/components/PopupModal/tickets-modal';
 import { tookan_departments, tookan_status } from '../../../utils/tookan';
 import Link from 'next/link';
 import NotLoggedIn from '@/components/NotLoggedIn';
 import { fetchCurrentUser } from '@/hooks/useFetch';
+import Modal from '@/components/PopupModal';
+import Navbar from '@/components/Navbar';
 function Tookan() {
     const { userData } = fetchCurrentUser();
 
@@ -146,13 +147,12 @@ function Tookan() {
                 <NotLoggedIn />
             ) : (
                 <>
-
+                    <Navbar />
                     <div
                         className="fixed top-0 bottom-0 left-0 right-0 w-full flex items-center justify-center rounded-sm"
                     >
                         <div
                             className="w-full md:max-w-[700px] max-w-[550px] bg-white dark:bg-[#22303C] relative my-0 mx-[20px] text-left flex flex-col overflow-hidden popup-modal-dialog"
-                            onClick={(e) => e.stopPropagation()}
                         >
                             <div className="flex items-center p-[1rem] border-b border-blue-[#eee]">
                                 <h3 className="text-slate-800 font-medium dark:text-[#eee]">
@@ -247,7 +247,7 @@ function Tookan() {
                     </div>
 
 
-                    <TicketsModal
+                    <Modal
                         isVisible={modalOpen}
                         title="Assign service order"
                         content={

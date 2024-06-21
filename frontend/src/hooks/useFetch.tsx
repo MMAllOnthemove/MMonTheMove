@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
-import { ISingleDTVJob, Itable } from "../../utils/interfaces";
 import axios from "axios";
-import moment from "moment";
+import { useEffect, useState } from "react";
+import { Itable } from "../../utils/interfaces";
 
 
 type TUser = {
@@ -17,7 +16,6 @@ type TUser = {
 export const fetchCurrentUser = () => {
   const [userData, setUserData] = useState<TUser | null>(null);
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -30,7 +28,7 @@ export const fetchCurrentUser = () => {
           setUserData(data?.user)
         }
       } catch (error) {
-// 
+        // 
       }
 
     }
@@ -39,6 +37,32 @@ export const fetchCurrentUser = () => {
 
 
   return { userData };
+};
+export const fetchAdminUser = () => {
+  const [adminData, setAdminData] = useState<TUser | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/admin/resource`, {
+          method: 'GET',
+          credentials: 'include'
+        })
+        if (response.ok) {
+          const data = await response.json();
+          setAdminData(data?.user)
+        }
+      } catch (error) {
+
+        // 
+      }
+
+    }
+    fetchData()
+  }, [adminData])
+
+
+  return { adminData };
 };
 export const fetchTableData = () => {
   const [hhpData, setHHPData] = useState<Itable[]>([]);

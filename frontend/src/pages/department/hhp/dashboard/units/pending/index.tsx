@@ -18,71 +18,13 @@ import {
   fetchTableData,
 } from "@/hooks/useFetch";
 import { minDate } from "../../../../../../../utils/datemin";
+import Modal from "@/components/PopupModal";
 
 // Dynamic imports
 const Navbar = dynamic(() => import("@/components/Navbar"));
 const UnitsPendingCard = dynamic(() => import("@/components/UnitsPendingCard"));
 const NotLoggedIn = dynamic(() => import("@/components/NotLoggedIn"));
-const BookedinUnitsModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/bookedin")
-);
-const RepairInProgressModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/repair_in_progress")
-);
-const WaitingForPartsModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/waiting_for_parts")
-);
-const PartsIssuedModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/parts_issued")
-);
-const PartsToBeOrderedModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/parts_to_be_ordered")
-);
-const CustomerReplyModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/customer_reply")
-);
-const QualityControlModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/quality_control")
-);
-const AssignedToTechModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/assigned_to_tech")
-);
-const FirstApprovalModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/first_approval")
-);
-const QuotePendingModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/quote_pending")
-);
-const QuoteApprovedModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/quote_approved")
-);
-const WaitingForCustomerModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/waiting_for_customer")
-);
-const WaitingSAWModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/waiting_saw")
-);
-const QCFailedModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/qc_failed")
-);
-const SOCancelModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/so_cancel")
-);
-const ScrapApprovedModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/scrap_approved")
-);
-const QuoteRejectedModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/quote_rejected")
-);
-const ForInvoicingModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/for_invoicing")
-);
-const PartsDNAModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/parts_dna")
-);
-const RepairCompleteModal = dynamic(
-  () => import("@/components/PopupModal/units-pending/repair_complete")
-);
+
 
 function Pending() {
   var today = new Date().toISOString().split("T")[0].toString();
@@ -478,13 +420,13 @@ function Pending() {
               </div>
             </section>
             {/* Modals */}
-            <BookedinUnitsModal
+            <Modal
               isVisible={isBookedInUnitsModalVisible}
               title={"Booked in"}
               content={getMappedBookedInJobs(hhpData, dateFrom, dateTo)}
               onClose={() => setIsBookedInUnitsModalVisible(false)}
             />
-            <RepairInProgressModal
+            <Modal
               isVisible={isRepairInProgressModalVisible}
               title={"Repair in progress"}
               content={getMappedJobsByStatusCount(
@@ -495,7 +437,7 @@ function Pending() {
               )}
               onClose={() => setIsRepairInProgressModalVisible(false)}
             />
-            <WaitingForPartsModal
+            <Modal
               isVisible={isWaitingForPartsModalVisible}
               title={"Waiting for parts"}
               content={getMappedJobsByStatusCount(
@@ -506,7 +448,7 @@ function Pending() {
               )}
               onClose={() => setIsWaitingForPartsModalVisible(false)}
             />
-            <PartsIssuedModal
+            <Modal
               isVisible={isPartsIssuedModalVisible}
               title={"Parts issued"}
               content={getMappedJobsByStatusCount(
@@ -517,7 +459,7 @@ function Pending() {
               )}
               onClose={() => setIsPartsIssuedModalVisible(false)}
             />
-            <PartsToBeOrderedModal
+            <Modal
               isVisible={isPartsOrderedModalVisible}
               title={"Parts to be ordered"}
               content={getMappedJobsByStatusCount(
@@ -528,7 +470,7 @@ function Pending() {
               )}
               onClose={() => setIsPartsOrderedModalVisible(false)}
             />
-            <PartsToBeOrderedModal
+            <Modal
               isVisible={isScheduledModalVisible}
               title={"Scheduled"}
               content={getMappedJobsByStatusCount(
@@ -539,7 +481,7 @@ function Pending() {
               )}
               onClose={() => setIsScheduledModalVisible(false)}
             />
-            <CustomerReplyModal
+            <Modal
               isVisible={isCustomerReplyModalVisible}
               title={"Customer reply"}
               content={getMappedJobsByStatusCount(
@@ -550,7 +492,7 @@ function Pending() {
               )}
               onClose={() => setIsCustomerReplyModalVisible(false)}
             />
-            <QualityControlModal
+            <Modal
               isVisible={isQualityControlModalVisible}
               title={"Quality Control (QC)"}
               content={getMappedJobsByStatusCount(
@@ -561,7 +503,7 @@ function Pending() {
               )}
               onClose={() => setIsQualityControlModalVisible(false)}
             />
-            <AssignedToTechModal
+            <Modal
               isVisible={isAssignedToTechModalVisible}
               title={"Assigned to tech"}
               content={getMappedJobsByStatusCount(
@@ -572,7 +514,7 @@ function Pending() {
               )}
               onClose={() => setIsAssignedToTechModalVisible(false)}
             />
-            <FirstApprovalModal
+            <Modal
               isVisible={isFirstApprovalModalVisible}
               title={"Parts request 1st approval"}
               content={getMappedJobsByStatusCount(
@@ -583,7 +525,7 @@ function Pending() {
               )}
               onClose={() => setIsFirstApprovalModalVisible(false)}
             />
-            <QuotePendingModal
+            <Modal
               isVisible={isQuotePendingModalVisible}
               title={"Quote pending"}
               content={getMappedJobsByStatusCount(
@@ -594,7 +536,7 @@ function Pending() {
               )}
               onClose={() => setIsQuotePendingModalVisible(false)}
             />
-            <QuoteApprovedModal
+            <Modal
               isVisible={isQuoteApprovedModalVisible}
               title={"Quote approved"}
               content={getMappedJobsByStatusCount(
@@ -605,7 +547,7 @@ function Pending() {
               )}
               onClose={() => setIsQuoteApprovedModalVisible(false)}
             />
-            <WaitingForCustomerModal
+            <Modal
               isVisible={isWaitingCustomerModalVisible}
               title={"Waiting for customer"}
               content={getMappedJobsByStatusCount(
@@ -616,7 +558,7 @@ function Pending() {
               )}
               onClose={() => setIsWaitingCustomerModalVisible(false)}
             />
-            <WaitingSAWModal
+            <Modal
               isVisible={isWaitingSAWModalVisible}
               title={"Waiting SAW"}
               content={getMappedJobsByStatusCount(
@@ -627,7 +569,7 @@ function Pending() {
               )}
               onClose={() => setIsWaitingSAWModalVisible(false)}
             />
-            <QCFailedModal
+            <Modal
               isVisible={isQCFailedModalVisible}
               title={"QC completed"}
               content={getMappedJobsByStatusCount(
@@ -638,7 +580,7 @@ function Pending() {
               )}
               onClose={() => setIsQCFailedModalVisible(false)}
             />
-            <QCFailedModal
+            <Modal
               isVisible={isQCCompletedModalVisible}
               title={"QC completed"}
               content={getMappedJobsByStatusCount(
@@ -649,7 +591,7 @@ function Pending() {
               )}
               onClose={() => setIsQCCompletedModalVisible(false)}
             />
-            <QCFailedModal
+            <Modal
               isVisible={isQPendingQAodalVisible}
               title={"Pending Q&A"}
               content={getMappedJobsByStatusCount(
@@ -660,7 +602,7 @@ function Pending() {
               )}
               onClose={() => setIsPendingQAModalVisible(false)}
             />
-            <SOCancelModal
+            <Modal
               isVisible={isSOCancelodalVisible}
               title={"SO cancel"}
               content={getMappedJobsByStatusCount(
@@ -671,7 +613,7 @@ function Pending() {
               )}
               onClose={() => setIsSOCancelModalVisible(false)}
             />
-            <ScrapApprovedModal
+            <Modal
               isVisible={isScrapApprovedVisible}
               title={"Scrap approved"}
               content={getMappedJobsByStatusCount(
@@ -682,7 +624,7 @@ function Pending() {
               )}
               onClose={() => setIsScrapApprovedModalVisible(false)}
             />
-            <QuoteRejectedModal
+            <Modal
               isVisible={isQuoteRejectedVisible}
               title={"Quote rejected"}
               content={getMappedJobsByStatusCount(
@@ -693,7 +635,7 @@ function Pending() {
               )}
               onClose={() => setIsQuoteRejectedModalVisible(false)}
             />
-            <ForInvoicingModal
+            <Modal
               isVisible={isForInvoicingVisible}
               title={"For invoicing"}
               content={getMappedJobsByStatusCount(
@@ -704,7 +646,7 @@ function Pending() {
               )}
               onClose={() => setIsForInvoicingModalVisible(false)}
             />
-            <PartsDNAModal
+            <Modal
               isVisible={isPartsDNAVisible}
               title={"Parts DNA"}
               content={getMappedJobsByStatusCount(
@@ -715,7 +657,7 @@ function Pending() {
               )}
               onClose={() => setIsPartsDNAModalVisible(false)}
             />
-            <RepairCompleteModal
+            <Modal
               isVisible={isRepairCompleteVisible}
               title={"Repair complete"}
               content={getMappedJobsByStatusCount(
