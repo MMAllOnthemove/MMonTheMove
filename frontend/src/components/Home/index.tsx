@@ -27,6 +27,7 @@ import NotLoggedIn from "../NotLoggedIn";
 import PageTitle from "../PageTitle";
 import Tabs from "../Tabs";
 import TabPane from "../Tabs/TabPane";
+import Modal from "../PopupModal";
 
 // Dynamic imports
 const ManagementSearchForm = dynamic(
@@ -43,9 +44,6 @@ const HomepageModalTabTwoContent = dynamic(
   () => import("@/components/Table/homepageModalTabTwoContent")
 );
 const Pagination = dynamic(() => import("@/components/Table/Pagination"));
-const HHPAddTaskModal = dynamic(
-  () => import("../PopupModal/hhp-add-task-modal")
-);
 
 function HomeComponent() {
   const router = useRouter();
@@ -345,7 +343,7 @@ function HomeComponent() {
                   className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer dark:text-[#eee] rounded-md p-3 my-2"
                   onClick={() => setIsHHPAddTaskModalVisible(true)}
                 />
-                <HHPAddTaskModal
+                <Modal
                   isVisible={isHHPAddTaskModalVisible}
                   title="Add HHP task"
                   content={

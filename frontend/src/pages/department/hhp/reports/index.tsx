@@ -7,7 +7,6 @@ import toast from "react-hot-toast";
 
 // Custom imports
 import PageTitle from "@/components/PageTitle";
-import BookingAgentsModal from "@/components/PopupModal/booking_agents";
 import {
   bookingAgentFunc,
   bookingAgentFuncTotal,
@@ -19,6 +18,7 @@ import { bookingAgents } from "../../../../../public/_data/booking_agents";
 import { minDate } from "../../../../../utils/datemin";
 import NotLoggedIn from "@/components/NotLoggedIn";
 import axios from "axios";
+import Modal from "@/components/PopupModal";
 
 // Dynamic imports
 const Navbar = dynamic(() => import("@/components/Navbar"));
@@ -290,7 +290,7 @@ function Reports() {
                 </table>
               </div>
               {/* /Modals */}
-              <BookingAgentsModal
+              <Modal
                 title="Sherry"
                 isVisible={isAgentThreeModalVisible}
                 content={bookingAgentMapOverJobs(
@@ -301,7 +301,7 @@ function Reports() {
                 )}
                 onClose={() => setIsAgentThreeModalVisible(false)}
               />
-              <BookingAgentsModal
+              <Modal
                 title="Lavona"
                 isVisible={isAgentFourModalVisible}
                 content={bookingAgentMapOverJobs(
@@ -312,14 +312,14 @@ function Reports() {
                 )}
                 onClose={() => setIsAgentFourModalVisible(false)}
               />
-              <BookingAgentsModal
-                title="Kirsty"
+              <Modal
+                title="Nokuthula"
                 isVisible={isAgentFourModalVisible}
                 content={bookingAgentMapOverJobs(
                   getBookingAgentJobsData,
                   dateFrom,
                   dateTo,
-                  "kirsty01"
+                  "nokuthulat04"
                 )}
                 onClose={() => setIsAgentFourModalVisible(false)}
               />

@@ -1,26 +1,31 @@
+// Imports
 import bodyParser from "body-parser";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import "dotenv/config";
 import express from "express";
 import helmet from "helmet";
-import { router as hhpjobsrouter } from "./routes/department/hhp/hhp_jobs_route.js";
-import { router as hhpJobsHistory } from "./routes/history/hhp_jobs_history_routes.js";
+import { createServer } from "http";
+import { Server } from "socket.io";
+import jwt from "jsonwebtoken";
 const app = express();
-// const engineers = require("./routes/engineers");
-import "dotenv/config";
+
+// Routes
 import { router as partsHistory } from "../server/routes/history/parts_dept_routes.js";
-import { router as auth } from "./routes/auth/auth_route.js";
-import { router as bookingAgents } from "./routes/department/hhp/booking_agent_jobs_route.js";
-import { router as qc } from "./routes/department/hhp/qc.js";
-import { router as partsDept } from "./routes/department/parts/parts_dept_routes.js";
 import { router as getAgents } from "./routes/agents/index.js";
+import { router as auth } from "./routes/auth/auth_route.js";
 import { router as dtvAnalytics } from "./routes/department/dtv/analytics.js";
 import { router as dtvChecklists } from "./routes/department/dtv/checklists.js";
 import { router as dtvTasks } from "./routes/department/dtv/tasks.js";
-
+import { router as bookingAgents } from "./routes/department/hhp/booking_agent_jobs_route.js";
+import { router as hhpjobsrouter } from "./routes/department/hhp/hhp_jobs_route.js";
 import { router as otpRoute } from "./routes/department/hhp/otp.js";
+import { router as qc } from "./routes/department/hhp/qc.js";
+import { router as partsDept } from "./routes/department/parts/parts_dept_routes.js";
 import { router as engineersRoute } from "./routes/engineers/index.js";
+import { router as hhpJobsHistory } from "./routes/history/hhp_jobs_history_routes.js";
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(
@@ -76,6 +81,8 @@ app.use("/engineers", engineersRoute);
 
 // Booking agents
 app.use("/agents", getAgents);
+
+// Socket io
 
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {

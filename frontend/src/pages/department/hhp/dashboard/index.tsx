@@ -2,14 +2,9 @@
 import {
   fetchCurrentUser,
 } from "@/hooks/useFetch";
-import axios from "axios";
-import moment from "moment";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { useEffect, useRef, useState } from "react";
-import { BarChart, Card, DatePicker } from '@tremor/react'
-import { service_types } from "../../../../../public/_data/service_types";
-import { warranty_types } from "../../../../../public/_data/warranty_types";
+import { useState } from "react";
 
 // Dynamic imports
 const Navbar = dynamic(() => import("@/components/Navbar"));

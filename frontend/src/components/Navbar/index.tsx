@@ -2,13 +2,13 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from 'next/router';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // Custom imports
 import { logoutUserFunction } from "@/functions/getLoggedInUserProfile";
 import { fetchCurrentUser, fetchOTP } from "@/hooks/useFetch";
 import toast from "react-hot-toast";
 import { EllipsisVerticalIcon, Bars2Icon, XMarkIcon } from "@heroicons/react/24/outline";
-
+import io from 'socket.io-client';
 // Dynamic imports
 const Button = dynamic(() => import("../Buttons"));
 const ThemeChangerButton = dynamic(() => import("../Buttons/ThemeChanger"), {
@@ -37,6 +37,7 @@ const menuItems = [
     sublinks: [{ id: 6, item: "Tookan", pageRoute: "/tookan" }],
   },
 ];
+
 const Navbar = () => {
 
   const router = useRouter()
@@ -64,6 +65,8 @@ const Navbar = () => {
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen(!isUserDropdownOpen);
   };
+
+
 
   return (
     <div className="relative z-10">
