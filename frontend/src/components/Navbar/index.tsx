@@ -52,6 +52,7 @@ const Navbar = () => {
   };
   const [openDropdown, setOpenDropdown] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [adminArea, setAdminArea] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
   const toggleDropdown = (index: null | any) => {
@@ -61,11 +62,13 @@ const Navbar = () => {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+  const toggleAdminArea = () => {
+    setAdminArea(!adminArea);
+  };
 
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen(!isUserDropdownOpen);
   };
-
 
 
   return (
@@ -116,6 +119,8 @@ const Navbar = () => {
               </div>
             </div>
           ))}
+
+
         </div>
 
         <div className="p-4 border-t border-gray-700 relative">

@@ -6,9 +6,6 @@ import cors from "cors";
 import "dotenv/config";
 import express from "express";
 import helmet from "helmet";
-import { createServer } from "http";
-import { Server } from "socket.io";
-import jwt from "jsonwebtoken";
 const app = express();
 
 // Routes
@@ -25,7 +22,6 @@ import { router as qc } from "./routes/department/hhp/qc.js";
 import { router as partsDept } from "./routes/department/parts/parts_dept_routes.js";
 import { router as engineersRoute } from "./routes/engineers/index.js";
 import { router as hhpJobsHistory } from "./routes/history/hhp_jobs_history_routes.js";
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(
@@ -82,7 +78,7 @@ app.use("/engineers", engineersRoute);
 // Booking agents
 app.use("/agents", getAgents);
 
-// Socket io
+
 
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {

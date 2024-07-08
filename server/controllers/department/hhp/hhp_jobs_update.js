@@ -115,7 +115,8 @@ const UpdateJob = async (req, res) => {
         id,
       ]
     );
-    res.status(201).send(editQuery.rows);
+      res.status(201).send("Succesfully updated!");
+
   } catch (error) {}
 };
 

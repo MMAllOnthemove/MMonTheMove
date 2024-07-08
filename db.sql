@@ -160,12 +160,29 @@ CREATE TABLE booking_agents (
 INSERT INTO
     booking_agents (gspn_username)
 VALUES
-('sherryl060223');
+    ('sherryl060223');
+
 INSERT INTO
     booking_agents (gspn_username)
 VALUES
-('lavonaj01');
+    ('lavonaj01');
+
 INSERT INTO
     booking_agents (gspn_username)
 VALUES
-('nokuthulat04');
+    ('nokuthulat04');
+
+CREATE TABLE staff_attendance (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    staff_firstname text,
+    staff_lastname text,
+    staff_department text,
+    staff_clock_in time,
+    staff_clock_out time,
+    staff_lunch_out time,
+    staff_lunch_in time,
+    -- it will be 'P' for present and 'A' for absent
+    staff_is_present varchar(1),
+    created_at date
+);
