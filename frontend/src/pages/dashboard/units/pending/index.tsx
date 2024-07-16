@@ -17,7 +17,7 @@ import {
   fetchCurrentUser,
   fetchTableData,
 } from "@/hooks/useFetch";
-import { minDate } from "../../../../../../../utils/datemin";
+import { minDate } from "../../../../../utils/datemin";
 import Modal from "@/components/PopupModal";
 
 // Dynamic imports

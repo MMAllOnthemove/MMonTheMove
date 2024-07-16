@@ -12,8 +12,8 @@ const UnitsPendingCard = dynamic(() => import("@/components/UnitsPendingCard"));
 import { getEngineerJobsByStatusCount } from "@/functions/pendingUnitsFunc";
 import { fetchCurrentUser, fetchTableData } from "@/hooks/useFetch";
 import { useState } from "react";
-import { engineers } from "../../../../../../public/_data/engineers";
-import { minDate } from "../../../../../../utils/datemin";
+import { engineers } from "../../../../public/_data/engineers";
+import { minDate } from "../../../../utils/datemin";
 import PageTitle from "@/components/PageTitle";
 import NotLoggedIn from "@/components/NotLoggedIn";
 
