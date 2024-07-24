@@ -36,6 +36,10 @@ const menuItems = [
     label: 'Tookan',
     sublinks: [{ id: 6, item: "Tookan", pageRoute: "/tookan" }],
   },
+  {
+    label: 'Analytics',
+    sublinks: [{ id: 7, item: "By GSPN", pageRoute: "/dashboard/gspn" }, { id: 8, item: "By Repairshopr", pageRoute: "/dashboard/rs" }],
+  },
 ];
 
 const Navbar = () => {
