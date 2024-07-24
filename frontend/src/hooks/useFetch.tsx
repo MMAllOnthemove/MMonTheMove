@@ -209,3 +209,44 @@ export const fetchBookingAgents = () => {
   return { getBookingAgents };
 };
 
+export const fetchIPAASSoInfolIST = (dateFrom: string, setFilteredData?: (data: string | any) => void) => {
+  const [findAllJobsGSPN, setFindAllJobsGSPN] = useState<string | any>([]);
+
+
+  const options = {
+    IsCommonHeader: {
+      Company: `${process.env.NEXT_PUBLIC_COMPANY}`,
+      AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
+      Lang: `${process.env.NEXT_PUBLIC_LANG}`,
+      Country: `${process.env.NEXT_PUBLIC_COUNTRY}`,
+      Pac: `${process.env.NEXT_PUBLIC_PAC}`,
+    },
+    IsBasicCond: {
+      AscCode: `${process.env.NEXT_PUBLIC_ASC_CODE}`,
+      ReqDateFrom: `${dateFrom}`,
+      ReqDateTo: ""
+    }
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data } = await axios.post(`${process.env.NEXT_PUBLIC_IPAAS_API_GETSOINFOLIST}`, options, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
+        },
+      });
+      if (data) {
+        // console.log("data", data?.EtSvcInfo?.results)
+        setFindAllJobsGSPN(data?.EtSvcInfo?.results);
+        // setFilteredData(data?.EtSvcInfo?.results);
+      } else {
+        setFindAllJobsGSPN([])
+      }
+
+    };
+    fetchData();
+  }, [dateFrom, findAllJobsGSPN]);
+
+  return { findAllJobsGSPN };
+};
+
