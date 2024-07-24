@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 // Custom imports
 import { ILoginFormValues } from "../../../utils/interfaces";
 import { LoginvalidateSchema } from "../../../utils/validateSchema";
+import axios from "axios";
 
 const Login = () => {
   const [passwordShown, setPasswordShown] = useState(false);
@@ -32,27 +33,40 @@ const Login = () => {
         onSubmit={(values, actions) => {
           setTimeout(async () => {
             try {
-              const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/login`,
-                {
-                  method: "POST",
-                  credentials: "include",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify(values),
-                }
-              );
+              const response = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/login`, values, {
+                headers: {
+                  'Content-Type': 'application/json',
 
-              const data = await response.json();
-              if (response.ok) {
-                toast.success("Successful");
-                router.push("/");
-              } else {
-                toast.error("Error, try gain");
-                return;
-              }
-            } catch (error) { }
+                },
+                withCredentials: true
+              });
+              // alert(response.data.message)
+              if (response.data) router.push("/")
+            } catch (error: any) {
+              alert(error?.response?.data.errors); // Log error response data on failure, if available
+            }
+            // try {
+            //   const response = await fetch(
+            //     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/login`,
+            //     {
+            //       method: "POST",
+            //       credentials: "include",
+            //       headers: {
+            //         "Content-Type": "application/json",
+            //       },
+            //       body: JSON.stringify(values),
+            //     }
+            //   );
+
+            //   const data = await response.json();
+            //   if (response.ok) {
+            //     toast.success("Successful");
+            //     router.push("/");
+            //   } else {
+            //     toast.error("Error, try gain");
+            //     return;
+            //   }
+            // } catch (error) { }
           }, 1000);
         }}
       >

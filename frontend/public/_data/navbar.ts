@@ -4,7 +4,9 @@ export const hhpNavItems = [
   { id: 1, item: "Home", pageRoute: "/" },
   { id: 2, item: "Dashboard", pageRoute: "/department/hhp/dashboard" },
   { id: 3, item: "Bookings report", pageRoute: "/department/hhp/reports" },
-  { id: 4, item: "Claims", pageRoute: "/department/claims" },
+];
+export const claimsNavItems = [
+  { id: 1, item: "Home", pageRoute: "/department/claims" },
 ];
 export const partsNavItems = [
   { id: 1, item: "Part search", pageRoute: "/department/parts/parts-search" },

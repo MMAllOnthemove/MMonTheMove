@@ -56,8 +56,6 @@ CREATE TABLE units (
     imei text,
     serial_number text,
     in_house_status text,
-    engineer_assign_date text,
-    engineer_assign_time text,
     ticket text,
     engineer_analysis text,
     department text,
@@ -111,8 +109,6 @@ CREATE TABLE units_history (
     imei text,
     serial_number text,
     in_house_status text,
-    engineer_assign_date text,
-    engineer_assign_time text,
     ticket text,
     engineer_analysis text,
     department text,
@@ -146,4 +142,47 @@ CREATE TABLE otp (
     ip_address text,
     created_at timestamp,
     otp text
+);
+
+CREATE TABLE engineers (
+    id BIGSERIAL PRIMARY KEY UNIQUE,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    engineer_firstname text,
+    engineer_lastname text,
+    active boolean
+);
+
+CREATE TABLE booking_agents (
+    user_id BIGSERIAL PRIMARY KEY,
+    user_unique_id uuid DEFAULT gen_random_uuid(),
+    gspn_username text,
 )
+INSERT INTO
+    booking_agents (gspn_username)
+VALUES
+    ('sherryl060223');
+
+INSERT INTO
+    booking_agents (gspn_username)
+VALUES
+    ('lavonaj01');
+
+INSERT INTO
+    booking_agents (gspn_username)
+VALUES
+    ('nokuthulat04');
+
+CREATE TABLE staff_attendance (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    staff_firstname text,
+    staff_lastname text,
+    staff_department text,
+    staff_clock_in time,
+    staff_clock_out time,
+    staff_lunch_out time,
+    staff_lunch_in time,
+    -- it will be 'P' for present and 'A' for absent
+    staff_is_present varchar(1),
+    created_at date
+);

@@ -12,6 +12,7 @@ import { getProfile } from "@/functions/getLoggedInUserProfile";
 import { unitStatus } from "../../../../../public/_data/statuses";
 import { fetchCurrentUser, fetchTableDataHistory } from "@/hooks/useFetch";
 import { getRepairTicketId } from "@/functions/repair_api";
+import axios from "axios";
 
 // Dynamic imports
 const Button = dynamic(() => import("@/components/Buttons"));
@@ -20,7 +21,7 @@ const NotLoggedIn = dynamic(() => import("@/components/NotLoggedIn"));
 
 function EditRow() {
   const { userData } = fetchCurrentUser();
-  let user = userData;
+  let user = userData?.email;
   const router = useRouter();
   const { id } = router.query;
   const [showServiceOrderNumber, setShowServiceOrderNumber] = useState("");
@@ -60,30 +61,32 @@ function EditRow() {
   // This is the parts list arr mapped from the partslist
   let partsArr = [...partsList].map((x) => x.partNumber.toUpperCase());
 
-  const getThis = useCallback(async () => {
-    await fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/` + id)
-      .then((res) => res.json())
-      .then((data) => {
-        setShowServiceOrderNumber(data[0]?.service_order_no);
-        setServiceOrder(data[0]?.service_order_no);
-        setCreatedDate(data[0]?.created_date);
-        setCreatedTime(data[0]?.created_time);
-        setModel(data[0]?.model);
-        setWarranty(data[0]?.warranty);
-        setInHouseStatus(data[0]?.in_house_status);
-        setImei(data[0]?.imei);
-        setSerialNumber(data[0]?.serial_number);
-        setEngineerAnalysis(data[0]?.engineer_analysis);
-        setFault(data[0]?.fault);
-        setEngineer(data[0]?.engineer);
-        setEngineerAssignDate(data[0]?.engineer_assign_date);
-        setEngineerAssignTime(data[0]?.engineer_assign_time);
-        setTicket(data[0]?.ticket);
-        setQCcomments(data[0]?.qc_comment);
-        setDepartment(data[0]?.department);
-        setDateAdded(data[0]?.date_added);
-      });
-  }, []);
+  const getThis = async () => {
+    try {
+      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_SERVER_API}/api/v1/hhp/jobs/` + id)
+      setShowServiceOrderNumber(data[0]?.service_order_no);
+      setServiceOrder(data[0]?.service_order_no);
+      setCreatedDate(data[0]?.created_date);
+      setCreatedTime(data[0]?.created_time);
+      setModel(data[0]?.model);
+      setWarranty(data[0]?.warranty);
+      setInHouseStatus(data[0]?.in_house_status);
+      setImei(data[0]?.imei);
+      setSerialNumber(data[0]?.serial_number);
+      setEngineerAnalysis(data[0]?.engineer_analysis);
+      setFault(data[0]?.fault);
+      setEngineer(data[0]?.engineer);
+      setEngineerAssignDate(data[0]?.engineer_assign_date);
+      setEngineerAssignTime(data[0]?.engineer_assign_time);
+      setTicket(data[0]?.ticket);
+      setQCcomments(data[0]?.qc_comment);
+      setDepartment(data[0]?.department);
+      setDateAdded(data[0]?.date_added);
+    } catch (error) {
+      // 
+    }
+
+  }
 
   useEffect(() => {
     getThis();
@@ -119,25 +122,14 @@ function EditRow() {
       dateModified,
       warranty,
     };
-    // console.log("putThisInfo", putThisInfo);
-    const putMethod = {
-      method: "PUT", // Method itself
-      headers: {
-        "Content-type": "application/json; charset=UTF-8", // Indicates the content
-      },
-      body: JSON.stringify(putThisInfo), // We send data in JSON format
-    };
-    await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/` + id,
-      putMethod
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        //
-      })
-      .catch((e) => {
-        //
-      });
+
+    try {
+      const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_SERVER_API}/api/v1/hhp/jobs/` + id, putThisInfo);
+
+    } catch (error) {
+      // 
+    }
+
     sendRepairShoprComment();
     const postThisInfo = {
       service_order,
@@ -150,8 +142,6 @@ function EditRow() {
       imei,
       serial_number,
       inHouseStatus,
-      engineerAssignDate,
-      engineerAssignTime,
       ticket,
       engineerAnalysis,
       department,
@@ -163,45 +153,36 @@ function EditRow() {
       GSPNStatusGetLastElement,
       dateAdded,
     };
-    // console.log("history entry", postThisInfo);
-    const response2 = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/units/history/post`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(postThisInfo),
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        //
-      });
+    try {
+      const response2 = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_SERVER_API}/api/v1/hhp/jobs/history`, postThisInfo);
+
+    } catch (error) {
+      // 
+    }
+
   };
 
   const sendRepairShoprComment = async () => {
     const postThisInfo = {
       subject: "This is a subject",
-      tech: userData,
+      tech: userData?.full_name,
       body: engineerAnalysis,
       hidden: false,
       do_not_email: true,
     };
-    // console.log("repair comment", postThisInfo);
-    const response = await fetch(
-      `https://allelectronics.repairshopr.com/api/v1/tickets/${ticket}/comment`,
-      {
+    try {
+      const response = await axios.post(`https://allelectronics.repairshopr.com/api/v1/tickets/${ticket}/comment`, postThisInfo, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN,
-        },
-        body: JSON.stringify(postThisInfo),
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        //
+        }
       });
+
+    } catch (error) {
+      // 
+    }
+
   };
 
   const handleServiceChange = (
@@ -224,14 +205,7 @@ function EditRow() {
     setPartsList([...partsList, { partNumber: "" }]);
   };
 
-  const { hhpDataHistory } = fetchTableDataHistory();
 
-  // Sort history cards by latest
-  hhpDataHistory.sort((a: any, b: any) => {
-    return (
-      new Date(b.date_modified).getTime() - new Date(a.date_modified).getTime()
-    );
-  });
   return (
     <>
       <Head>
@@ -268,7 +242,7 @@ function EditRow() {
                   </h1>
                   <h3 className="text-center dark:text-[#eee] font-semibold">
                     You are editing as:{" "}
-                    <span className="text-sky-700  font-bold">{userData}</span>
+                    <span className="text-sky-700  font-bold">{userData?.email}</span>
                   </h3>
                 </div>
                 <div />
@@ -370,34 +344,7 @@ function EditRow() {
                     disabled
                   />
                 </span>
-                {userData === process.env.NEXT_PUBLIC_ADMIN_EMAIL ? (
-                  <span>
-                    <label htmlFor="reassignEngineer" className="sr-only">
-                      Ressign to another engineer
-                    </label>
-                    <select
-                      name="reassignEngineer"
-                      id="reassignEngineer"
-                      className="mb-2 bg-white outline-none border border-gray-300 outline-0 text-gray-900  font-semibold text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                      value={reassignEngineer}
-                      onChange={(e) => setReassignEngineer(e.target.value)}
-                    >
-                      <option value="" disabled>
-                        Ressign to another engineer
-                      </option>
-                      <option value="Acklas Sakala">Acklas Sakala</option>
-                      <option value="Manuel Kaba">Manuel Kaba</option>
-                      <option value="Olivier Munguakolwa">
-                        Olivier Munguakolwa
-                      </option>
-                      <option value="Paulas Gambu">Paulas Gambu</option>
-                      <option value="Pule Mokoena">Pule Mokoena</option>
-                      <option value="Sizwe Phungwayo">Sizwe Phungwayo</option>
-                    </select>
-                  </span>
-                ) : (
-                  ""
-                )}
+
                 <span>
                   <label
                     htmlFor="engineerAnalysis"
@@ -535,63 +482,7 @@ function EditRow() {
                 </span>
               </form>
               <hr />
-              <section className="my-4 flex flex-col gap-5 py-4">
-                <p className=" font-semibold text-slate-700 dark:text-[#eee]">
-                  History
-                </p>
-                {hhpDataHistory.length > 0
-                  ? hhpDataHistory
-                    .filter(
-                      (onlyThisJob) =>
-                        onlyThisJob.service_order_no === service_order
-                    )
-                    .map((jobHistory: string | any) => (
-                      <article
-                        className="job_history_card border rounded-sm padding border-[#eee] p-2 flex flex-col gap-4"
-                        key={jobHistory?.id}
-                      >
-                        <div className="top_row flex items-center justify-between">
-                          <h3 className=" text-slate-800 font-semibold dark:text-[#eee]">
-                            {jobHistory?.engineer}
-                          </h3>
-                          <p className=" text-slate-800  font-semibold dark:text-[#eee]">
-                            {jobHistory?.service_order_no}
-                          </p>
-                          <p className=" text-slate-800  font-semibold dark:text-[#eee]">
-                            {jobHistory?.date_modified === null || ""
-                              ? ""
-                              : new Date(
-                                jobHistory?.date_modified
-                              ).toDateString()}
-                          </p>
-                        </div>
-                        <hr />
-                        <div className="rounded-sm flex justify-between items-center">
-                          <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
-                            Assigned to:{" "}
-                          </h5>
-                          <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
-                            {jobHistory?.engineer}
-                          </h5>
-                        </div>
-                        <div className="rounded-sm flex justify-between items-center">
-                          <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
-                            In house status:{" "}
-                          </h5>
-                          <h5 className=" text-slate-800 font-medium dark:text-[#eee]">
-                            {jobHistory?.in_house_status}
-                          </h5>
-                        </div>
 
-                        <div className="bg-[#f8f9fa] dark:bg-[#22303C]">
-                          <p className=" text-slate-800  dark:text-[#eee] font-medium">
-                            {jobHistory?.engineer_analysis.toUpperCase()}
-                          </p>
-                        </div>
-                      </article>
-                    ))
-                  : "History not available"}
-              </section>
             </section>
           )}
         </Container>

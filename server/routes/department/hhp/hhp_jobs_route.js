@@ -35,7 +35,7 @@ router.post("/", limiter, PostJobs);
 // Update single row on database
 // Using COALESCE to prevent null values when updating
 router.put("/:id", limiter, UpdateJob);
-router.put("/claims/:id", UpdateJobclaimsGSPNStatus);
+router.patch("/claims/:id", UpdateJobclaimsGSPNStatus);
 
 // Delete single row on database
 router.delete("/:id", DeleteJob);

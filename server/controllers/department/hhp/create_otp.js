@@ -13,7 +13,7 @@ const createOTP = async (req, res) => {
 
   try {
     const hasOTPBeenUsed = await pool.query(
-      "SELECT otp from otp where otp = $1 AND date_added = $2",
+      "SELECT otp from otp where otp = $1 AND date_added = $2 LIMIT 1",
       [otp, date_added]
     );
 
@@ -27,7 +27,7 @@ const createOTP = async (req, res) => {
       res.status(201).json("otp created, thank you!");
     }
   } catch (err) {
-    //  console.log(err)
+    // 
   }
 };
 

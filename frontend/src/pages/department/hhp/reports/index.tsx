@@ -7,17 +7,18 @@ import toast from "react-hot-toast";
 
 // Custom imports
 import PageTitle from "@/components/PageTitle";
-import BookingAgentsModal from "@/components/PopupModal/booking_agents";
 import {
   bookingAgentFunc,
   bookingAgentFuncTotal,
   bookingAgentMapOverJobs,
 } from "@/components/Reports";
 import { postBookingAgentsJobs } from "@/functions/ipass_api";
-import { fetchCurrentUser, getBookingAgentJobs } from "@/hooks/useFetch";
+import { fetchBookingAgents, fetchCurrentUser, getBookingAgentJobs } from "@/hooks/useFetch";
 import { bookingAgents } from "../../../../../public/_data/booking_agents";
 import { minDate } from "../../../../../utils/datemin";
 import NotLoggedIn from "@/components/NotLoggedIn";
+import axios from "axios";
+import Modal from "@/components/PopupModal";
 
 // Dynamic imports
 const Navbar = dynamic(() => import("@/components/Navbar"));
@@ -33,8 +34,6 @@ function Reports() {
   const [bookingAgent, setBookingAgent] = useState("");
   const [dateFrom, setDateFrom] = useState<string | number | Date | any>("");
   const [dateTo, setDateTo] = useState<string | number | Date | any>("");
-  const [isAgentOneModalVisible, setIsAgentOneModalVisible] = useState(false);
-  const [isAgentTwoModalVisible, setIsAgentTwoModalVisible] = useState(false);
   const [isAgentThreeModalVisible, setIsAgentThreeModalVisible] =
     useState(false);
   const [isAgentFourModalVisible, setIsAgentFourModalVisible] = useState(false);
@@ -42,18 +41,19 @@ function Reports() {
   var today = new Date().toISOString().split("T")[0].toString();
   var addTwoMoreDays = new Date().getDate() + 2; // does not work
   const router = useRouter();
-
+  const { getBookingAgents } = fetchBookingAgents()
   useEffect(() => {
     postBookingAgentsJobs({
       searchServiceOrder,
       setCreatedDate,
       setCreatedTime,
       setWarranty,
-      setServiceOrder,
+      setServiceOrder
     });
   }, [searchServiceOrder]);
 
   const postData = async (e: React.SyntheticEvent) => {
+    let agentEmail = userData?.email;
     e.preventDefault();
     const postThisInfo = {
       serviceOrder,
@@ -61,24 +61,15 @@ function Reports() {
       createdTime,
       warranty,
       bookingAgent,
-      userData,
+      agentEmail,
     };
-
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/agents/booking-agents/jobs/add`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(postThisInfo),
-      }
-    );
-    if (!response.ok || bookingAgent === "") {
-      toast.error("Please try again");
-    } else {
-      await response.json();
-      toast.success("Successfully created!");
-      // return json;
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/agents/jobs`, postThisInfo)
+      toast.success(`${response.data}`);
+    } catch (error: any) {
+      // 
     }
+
   };
   return (
     <>
@@ -142,7 +133,7 @@ function Reports() {
                       Search Service Order
                     </label>
                     <input
-                      type="text"
+                      type="number"
                       id="searchServiceOrder"
                       name="searchServiceOrder"
                       placeholder="Search service order"
@@ -154,7 +145,7 @@ function Reports() {
                   </span>
                 </div>
               </section>
-              {searchServiceOrder.length === 10 ? (
+              {searchServiceOrder.length > 2 ? (
                 <div className="max-h-[540px] overflow-y-auto my-5">
                   <table className="relative w-full max-w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
                     <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white text-sm uppercase font-semibold">
@@ -186,18 +177,19 @@ function Reports() {
                             <select
                               value={bookingAgent}
                               onChange={(e) => setBookingAgent(e.target.value)}
+                              name="bookingAgent"
                               id="bookingAgent"
                               className="mb-2 bg-white border cursor-pointer border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-sm p-2.5"
                             >
                               <option disabled value="">
                                 Select agent
                               </option>
-                              {bookingAgents.map((stat) => (
+                              {getBookingAgents.map((stat: any) => (
                                 <option
-                                  key={stat.id}
-                                  value={`${stat.agentName}`}
+                                  key={stat.user_id}
+                                  value={`${stat.gspn_username}`}
                                 >
-                                  {stat?.agentName}
+                                  {stat?.gspn_username}
                                 </option>
                               ))}
                             </select>
@@ -238,10 +230,10 @@ function Reports() {
                       onClick={() => setIsAgentThreeModalVisible(true)}
                       className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
                     >
-                      <td className="px-4 py-3  font-medium text-sm max-w-full">
+                      <td className="px-4 py-3 font-medium text-sm max-w-full">
                         Sherry
                       </td>
-                      <td className="px-4 py-3  font-medium text-sm max-w-full">
+                      <td className="px-4 py-3 font-medium text-sm max-w-full">
                         {bookingAgentFunc(
                           getBookingAgentJobsData,
                           dateFrom,
@@ -271,14 +263,14 @@ function Reports() {
                       className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]"
                     >
                       <td className="px-4 py-3  font-medium text-sm max-w-full">
-                        Kirsty
+                        Nokuthula
                       </td>
                       <td className="px-4 py-3  font-medium text-sm max-w-full">
                         {bookingAgentFunc(
                           getBookingAgentJobsData,
                           dateFrom,
                           dateTo,
-                          "kirsty01"
+                          "nokuthulat04"
                         )}
                       </td>
                     </tr>
@@ -298,7 +290,7 @@ function Reports() {
                 </table>
               </div>
               {/* /Modals */}
-              <BookingAgentsModal
+              <Modal
                 title="Sherry"
                 isVisible={isAgentThreeModalVisible}
                 content={bookingAgentMapOverJobs(
@@ -309,7 +301,7 @@ function Reports() {
                 )}
                 onClose={() => setIsAgentThreeModalVisible(false)}
               />
-              <BookingAgentsModal
+              <Modal
                 title="Lavona"
                 isVisible={isAgentFourModalVisible}
                 content={bookingAgentMapOverJobs(
@@ -320,14 +312,14 @@ function Reports() {
                 )}
                 onClose={() => setIsAgentFourModalVisible(false)}
               />
-              <BookingAgentsModal
-                title="Kirsty"
+              <Modal
+                title="Nokuthula"
                 isVisible={isAgentFourModalVisible}
                 content={bookingAgentMapOverJobs(
                   getBookingAgentJobsData,
                   dateFrom,
                   dateTo,
-                  "kirsty01"
+                  "nokuthulat04"
                 )}
                 onClose={() => setIsAgentFourModalVisible(false)}
               />

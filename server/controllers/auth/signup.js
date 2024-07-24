@@ -1,52 +1,49 @@
 import bcrypt from "bcrypt";
 import { pool } from "../../db.js";
-import JwtGenerator from "../../utils/jwt-helpers.js";
+import "dotenv/config";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../utils/token_generate.js";
+import * as Yup from "yup";
+
+// Define Yup schema for request body validation
+const signupSchema = Yup.object().shape({
+  fullName: Yup.string()
+    .required("Fullname is required!")
+    .min(4, "Fullname must be minimum 4 characters!"),
+  username: Yup.string()
+    .required("Username is required!")
+    .min(4, "Username must be minimum 4 characters!"),
+  email: Yup.string()
+    .email("Email is invalid!")
+    .required("Email is required!")
+    .matches(/\@allelectronics.co.za$/),
+  password: Yup.string()
+    .required("Please Enter password")
+    .min(6, "Password must be minimum 6 characters!"),
+});
 
 const SignupUser = async (req, res) => {
-  const { fullName, username, email, password, createdAt } = req.body;
-  let capitalizedUsername = username.toLowerCase();
-  let capitalizedFullName = fullName.toLowerCase();
-  let capitalizedEmail = email.toLowerCase();
-  const maxAge = 1 * 24 * 60 * 60;
   try {
-    const user = await pool.query(
-      "SELECT email FROM company_people WHERE email = $1",
-      [email]
+    await signupSchema.validate(req.body);
+    const { fullName, username, email, password, createdAt } = req.body;
+    let capitalizedEmail = email.toLowerCase();
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const result = await pool.query(
+      "INSERT INTO company_people (full_name, user_name, email, user_password, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING full_name, user_name, email, user_id, user_role",
+      [fullName, username, capitalizedEmail, hashedPassword, createdAt]
     );
-
-    const emailRegex = /^[^@\s]+@allelectronics.co.za$/i;
-    const checkEmailRegex = emailRegex.test(capitalizedEmail) === true;
-
-    if (user.rows.length > 0) {
-      return res.status(401).json("User already exist!");
-    } else if (checkEmailRegex) {
-      const salt = await bcrypt.genSalt(10);
-      const bcryptPassword = await bcrypt.hash(password, salt);
-
-      let newUser = await pool.query(
-        "INSERT INTO company_people (full_name, user_name, email, user_password, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-        [
-          capitalizedFullName,
-          capitalizedUsername,
-          email,
-          bcryptPassword,
-          createdAt,
-        ]
-      );
-      const jwtToken = JwtGenerator(newUser.rows[0].user_id);
-      res.cookie("token", jwtToken, {
-        withCredentials: true,
-        secure: process.env.NODE_ENV === "development" ? false : true,
-        httpOnly: true,
-        maxAge: maxAge * 1000,
-      });
-      return res.json({ jwtToken });
-    } else {
-      return res.status(400).json("Signup failed; Invalid email or password");
-    }
-  } catch (err) {
-    // console.log(err);
-    res.status(500).json("Server error");
+    const user = result.rows[0];
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+    });
+    res.status(201).json({ accessToken });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 export default SignupUser;

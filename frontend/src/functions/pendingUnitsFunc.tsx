@@ -49,6 +49,10 @@ export const getMappedJobsByStatusCount = (
       : [];
   return arr;
 };
+
+const filter = ()=>{
+  
+}
 export const getMappedJobsByApprovedOrRejectedStatusCount = (
   arr: string[] | any,
   dateFrom: string,

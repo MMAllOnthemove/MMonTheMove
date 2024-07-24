@@ -18,15 +18,16 @@ import toast from "react-hot-toast";
 // Custom imports
 import TableBody from "@/components/Table/TableBody";
 import columns from "@/components/Table/homepageTableColumns";
-import { getRepair } from "@/functions/getRepairJobs";
 import { getSOInfoAllFunction } from "@/functions/ipass_api";
 import { fetchCurrentUser, fetchTableData } from "@/hooks/useFetch";
 import axios from "axios";
+import moment from "moment";
 import React from "react";
 import NotLoggedIn from "../NotLoggedIn";
 import PageTitle from "../PageTitle";
 import Tabs from "../Tabs";
 import TabPane from "../Tabs/TabPane";
+import Modal from "../PopupModal";
 
 // Dynamic imports
 const ManagementSearchForm = dynamic(
@@ -43,9 +44,6 @@ const HomepageModalTabTwoContent = dynamic(
   () => import("@/components/Table/homepageModalTabTwoContent")
 );
 const Pagination = dynamic(() => import("@/components/Table/Pagination"));
-const HHPAddTaskModal = dynamic(
-  () => import("../PopupModal/hhp-add-task-modal")
-);
 
 function HomeComponent() {
   const router = useRouter();
@@ -77,26 +75,21 @@ function HomeComponent() {
   const [engineerAnalysis, setEngineerAnalysis] = useState("");
   const [createdDate, setCreatedDate] = useState("");
   const [createdTime, setCreatedTime] = useState("");
-  const [engineerAssignDate, setEngineerAssignDate] = useState("");
-  const [engineerAssignTime, setEngineerAssignTime] = useState("");
   const [inHouseStatus, setInHouseStatus] = useState("");
   const [ticket, setTicket] = useState("");
   const [department, setDepartment] = useState("HHP");
   const [GSPNStatus, setGSPNStatus] = useState<string | null>("");
   // We want to get the Status Desc from the last object element of this array
-  let GSPNStatusGetLastElement = GSPNStatus?.slice(-1);
+
 
   // Setting the user to email user is logged in with
-  let user = userData;
+  let user = userData?.email;
 
   // Repairshpr states start here
   const [repairServiceOrder, setRepairServiceOrder] = useState<
     string | number | undefined
   >("");
   const [repairCreatedDate, setRepairCreatedDate] = useState<
-    string | number | undefined
-  >("");
-  const [repairCreatedTime, setRepairCreatedTime] = useState<
     string | number | undefined
   >("");
   const [repairModel, setRepairModel] = useState<string | undefined>("");
@@ -110,24 +103,22 @@ function HomeComponent() {
   const [repairInHouseStatus, setRepairInHouseStatus] = useState<
     string | undefined
   >("");
-  const [repairEngineerAssignDate, setRepairEngineerAssignDate] = useState<
-    string | number | undefined
-  >("");
-  const [repairEngineerAssignTime, setRepairEngineerAssignTime] = useState<
-    string | number | undefined
-  >("");
   const [repairTicket, setRepairTicket] = useState<string | number | undefined>(
+    ""
+  );
+  const [repairId, setRepairId] = useState<string | number | undefined>(
     ""
   );
   const [repairEngineerAnalysis, setRepairEngineerAnalysis] = useState<
     string | number | undefined
   >("");
   const [repairDepartment, setRepairDepartment] = useState("HHP");
-  const [repairAPILoading, setRepairAPILoading] = useState(true);
+
+  const [assetId, setAssetId] = useState<string | number | any>([])
 
   // For the repair API
   // Setting the user to email user is logged in with
-  let repairUser = userData;
+  let repairUser = userData?.email;
 
   useEffect(() => {
     getSOInfoAllFunction({
@@ -140,29 +131,71 @@ function HomeComponent() {
       setFault,
       setImei,
       setSerialNumber,
-      setEngineerAssignDate,
-      setEngineerAssignTime,
       setGSPNStatus,
     });
   }, [searchServiceOrder]);
 
-  // Fetches combined data
+
+  // Fetch ticket info
   useEffect(() => {
-    getRepair({
-      searchTicket,
-      setRepairFault,
-      setRepairCreatedDate,
-      setRepairCreatedTime,
-      setRepairEngineerAssignDate,
-      setRepairEngineerAssignTime,
-      setRepairImei,
-      setRepairServiceOrder,
-      setRepairTicket,
-      setRepairEngineerAnalysis,
-      setRepairDepartment,
-      setRepairAPILoading,
-    });
+    const fetchRSData = async () => {
+      const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/tickets?query=${searchTicket}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
+        },
+      });
+      if (data?.tickets[0]?.number == searchTicket) {
+        setRepairServiceOrder(data?.tickets[0]["properties"]["Service Order No."])
+        setRepairTicket(data?.tickets[0]?.number)
+        setRepairId(data?.tickets[0]?.id)
+        setRepairCreatedDate(moment(
+          new Date(`${data?.tickets[0]?.created_at}`),
+          moment.ISO_8601
+        ).format("YYYYMMDD"))
+        setRepairFault(data?.tickets[0]?.subject)
+      }
+    };
+    fetchRSData();
   }, [searchTicket]);
+
+  useEffect(() => {
+    const fetchRSByIdData = async () => {
+      const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/tickets/${repairId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
+        },
+      });
+
+      if (data?.ticket?.id == repairId) {
+        setAssetId(data?.ticket?.asset_ids[0])
+      }
+
+    };
+    fetchRSByIdData();
+  }, [searchTicket, repairId]);
+
+
+  useEffect(() => {
+    const fetchRSByAssetData = async () => {
+      const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/customer_assets/${assetId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
+        },
+      });
+
+      if (data?.asset?.id == assetId) {
+        setRepairImei(data?.asset?.properties["IMEI No."])
+        setRepairModel(data?.asset?.properties["Model No.:"])
+        setRepairSerialNumber(data?.asset?.asset_serial)
+
+      }
+
+    };
+    fetchRSByAssetData();
+  }, [searchTicket, assetId]);
 
   // const user = session?.user?.email;
 
@@ -183,34 +216,29 @@ function HomeComponent() {
       imei,
       serial_number,
       inHouseStatus,
-      engineerAssignDate,
-      engineerAssignTime,
       engineerAnalysis,
       ticket,
       department,
       user,
-      GSPNStatusGetLastElement,
+      GSPNStatus,
       dateAdded,
     };
-    // console.log("postThisInfo", postThisInfo);
-    axios.post(`${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}`, postThisInfo)
-      .then((response) => {
-        if (response) {
-          setIsHHPAddTaskModalVisible(false);
-          toast.success("Successfully created!");
-        }
-      })
-      .catch(function (error) {
-        toast.error(`${error.response.data}`);
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs`, postThisInfo)
+      setIsHHPAddTaskModalVisible(false);
+      toast.success(`${response.data}`);
+    } catch (error: any) {
+      toast.error(`${error?.response?.data}`);
+    }
 
-      });
+
 
 
 
     // // This part will deposit the same data into our history table
     // For some reason it's not reading this function initially, only when user updates job
     const response2 = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/units/history/post`,
+      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/history`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -227,7 +255,6 @@ function HomeComponent() {
     const postThisInfo = {
       repairServiceOrder,
       repairCreatedDate,
-      repairCreatedTime,
       repairModel,
       repairWarranty,
       repairEngineer,
@@ -235,37 +262,30 @@ function HomeComponent() {
       repairImei,
       repairSerialNumber,
       repairInHouseStatus,
-      repairEngineerAssignDate,
-      repairEngineerAssignTime,
       repairEngineerAnalysis,
       repairTicket,
       repairDepartment,
       repairUser,
-      GSPNStatusGetLastElement,
+      GSPNStatus,
       dateAdded,
     };
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/repair`,
-      {
-        method: "POST",
+    try {
+      const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/repair`, postThisInfo, {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(postThisInfo),
-      }
-    );
-    if (!response.ok) {
+      })
+      toast.success(`${data}`);
       setIsHHPAddTaskModalVisible(false);
-      toast.error("Please try again");
-    } else {
-      await response.json();
-      setIsHHPAddTaskModalVisible(false);
-      toast.success("Successfully created!");
+    } catch (error) {
+      // 
     }
+
+
 
     // This part will deposit the same data into our history table
     const response2 = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_API_URL_MANAGEMENT}/repair/units/history/post`,
+      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/repair/history`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -302,7 +322,6 @@ function HomeComponent() {
       <Head>
         <title>HHP Management</title>
         <meta name="robots" content="noindex"></meta>
-        <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
       <Navbar />
       <main className="space-between-navbar-and-content">
@@ -324,7 +343,7 @@ function HomeComponent() {
                   className="bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white font-semibold cursor-pointer dark:text-[#eee] rounded-md p-3 my-2"
                   onClick={() => setIsHHPAddTaskModalVisible(true)}
                 />
-                <HHPAddTaskModal
+                <Modal
                   isVisible={isHHPAddTaskModalVisible}
                   title="Add HHP task"
                   content={
@@ -355,7 +374,6 @@ function HomeComponent() {
                       </TabPane>
                       <TabPane title="Use ticket number">
                         <HomepageModalTabTwoContent
-                          repairAPILoading={repairAPILoading}
                           searchTicket={searchTicket}
                           setSearchTicket={(e) =>
                             setSearchTicket(e.target.value)

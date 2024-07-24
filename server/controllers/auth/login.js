@@ -1,45 +1,63 @@
 import bcrypt from "bcrypt";
 import { pool } from "../../db.js";
-import JwtGenerator from "../../utils/jwt-helpers.js";
+import "dotenv/config";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../utils/token_generate.js";
+import * as Yup from "yup";
 
+// Login route
 // authentication
 
-const LoginUser = async (req, res) => {
-  const { email, password } = req.body;
-  let capitalizedEmail = email.toLowerCase();
-  const maxAge = 1 * 24 * 60 * 60;
+// Define Yup schema for request body validation
+const loginSchema = Yup.object().shape({
+  email: Yup.string().email("Email is invalid!").required("Email is required!"),
+  password: Yup.string()
+    .required("Please Enter password")
+    .min(6, "Password must be minimum 6 characters!"),
+});
 
+const LoginUser = async (req, res) => {
   try {
-    const user = await pool.query(
-      "SELECT * FROM company_people WHERE email = $1",
-      [capitalizedEmail]
+    // Validate request body
+    await loginSchema.validate(req.body);
+
+    const { email, password } = req.body;
+    const result = await pool.query(
+      "SELECT email, user_password FROM company_people WHERE email = $1",
+      [email]
+    );
+    const selectUser = await pool.query(
+      "SELECT user_unique_id as user_id, email, full_name, user_name, user_role, department FROM company_people WHERE email = $1",
+      [email]
     );
 
-    if (user.rows.length === 0) {
-      return res.status(401).json("Invalid Credential");
+    if (result.rows.length === 0) {
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    const user = selectUser.rows[0];
     const validPassword = await bcrypt.compare(
       password,
-      user.rows[0].user_password
+      result.rows[0].user_password
     );
 
     if (!validPassword) {
-      return res.status(401).json("Invalid Credential");
+      return res.status(401).json({ message: "Invalid credentials" });
     }
-    const jwtToken = JwtGenerator(user.rows[0].user_id);
 
-    res.cookie("token", jwtToken, {
-      withCredentials: true,
-      secure: process.env.NODE_ENV === "development" ? false : true,
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      maxAge: maxAge * 1000,
     });
-    return res
-      .status(200)
-      .json({ message: "User identified", token: jwtToken });
-  } catch (err) {
-    res.status(500).json("Server error");
+    res.json({ accessToken });
+  } catch (error) {
+    console.error("Login failed:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+
 export default LoginUser;

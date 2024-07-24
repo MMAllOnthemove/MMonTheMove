@@ -86,7 +86,7 @@ body::-webkit-scrollbar-thumb {
   z-index: 1;
 }
 .space-between-navbar-and-content {
-  margin-top: calc(100vh - 89vh);
+  /* margin-top: calc(100vh - 89vh); */
   height: 100%;
 }
 .nav_links {
@@ -537,4 +537,16 @@ th {
 }
 .dropdown-content .item:hover {
   background: #fcfcfc;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }

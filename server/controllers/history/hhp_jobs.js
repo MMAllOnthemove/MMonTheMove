@@ -1,11 +1,11 @@
 import { pool } from "../../db.js";
+import cron from "node-cron";
 
 // Post repair jobs
 const PostRepairJobsHistory = async (req, res) => {
   const {
     repairServiceOrder,
     repairCreatedDate,
-    repairCreatedTime,
     repairModel,
     repairWarranty,
     repairEngineer,
@@ -13,23 +13,20 @@ const PostRepairJobsHistory = async (req, res) => {
     repairImei,
     repairSerialNumber,
     repairInHouseStatus,
-    repairEngineerAssignDate,
-    repairEngineerAssignTime,
     repairEngineerAnalysis,
     repairTicket,
     repairDepartment,
     repairUser,
-    GSPNStatusGetLastElement,
+    GSPNStatus,
     dateAdded,
   } = req.body;
   try {
     //  Here we do not check if job exists as we want history of every change
     await pool.query(
-      "INSERT INTO units_history (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_assign_date, engineer_assign_time, engineer_analysis, ticket, department, job_added_by, date_added) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) returning *",
+      "INSERT INTO units_history (service_order_no, created_date, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_analysis, ticket, department, job_added_by, gspn_status, date_added) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning *",
       [
         repairServiceOrder,
         repairCreatedDate,
-        repairCreatedTime,
         repairModel,
         repairWarranty,
         repairEngineer,
@@ -37,17 +34,15 @@ const PostRepairJobsHistory = async (req, res) => {
         repairImei,
         repairSerialNumber,
         repairInHouseStatus,
-        repairEngineerAssignDate,
-        repairEngineerAssignTime,
         repairEngineerAnalysis,
         repairTicket,
         repairDepartment,
         repairUser,
-        GSPNStatusGetLastElement,
+        GSPNStatus,
         dateAdded,
       ]
     );
-    res.status(200).json("Job added, thank you!");
+    res.status(201).json("Successfully created!");
   } catch (err) {}
 };
 
@@ -74,22 +69,16 @@ const PostJobsHistory = async (req, res) => {
     imei,
     serial_number,
     inHouseStatus,
-    engineerAssignDate,
-    engineerAssignTime,
-    ticket,
     engineerAnalysis,
+    ticket,
     department,
-    dateModified,
     user,
-    QCcomments,
-    isQCchecked,
-    partsArr,
-    GSPNStatusGetLastElement,
+    GSPNStatus,
     dateAdded,
   } = req.body;
   try {
     await pool.query(
-      "INSERT INTO units_history (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_assign_date, engineer_assign_time, ticket, engineer_analysis, department, date_modified, job_added_by, modified_by_who, qc_comment, is_qc_checked, parts_list, gspn_status, date_added) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23) returning *",
+      "INSERT INTO units_history (service_order_no, created_date, created_time, model, warranty, engineer, fault, imei, serial_number, in_house_status, engineer_analysis, ticket, department, job_added_by, gspn_status, date_added) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) returning *",
       [
         service_order,
         createdDate,
@@ -101,23 +90,16 @@ const PostJobsHistory = async (req, res) => {
         imei,
         serial_number,
         inHouseStatus,
-        engineerAssignDate,
-        engineerAssignTime,
-        ticket,
         engineerAnalysis,
+        ticket,
         department,
-        dateModified,
         user,
-        user,
-        QCcomments,
-        isQCchecked,
-        partsArr,
-        GSPNStatusGetLastElement,
+        GSPNStatus,
         dateAdded,
       ]
     );
 
-    res.status(201).json("Job added, thank you!");
+    res.status(201).json("Successfully created!");
   } catch (err) {}
 };
 

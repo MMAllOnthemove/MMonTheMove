@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   IgetSOInfoAll,
   IgetSOStatusDescLatest,
@@ -19,8 +20,6 @@ export async function getSOInfoAllFunction({
   setFault,
   setImei,
   setSerialNumber,
-  setEngineerAssignDate,
-  setEngineerAssignTime,
   setGSPNStatus,
 }: IgetSOInfoAll) {
   const options = {
@@ -33,33 +32,32 @@ export async function getSOInfoAllFunction({
       Pac: `${process.env.NEXT_PUBLIC_PAC}`,
     },
   };
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_IPAAS_API_GETSOINFOALL}`,
-    {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
-      },
-      body: JSON.stringify(options),
-    }
-  );
 
-  const data = await response.json();
-  setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
-  setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
-  setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
-  setModel(data?.Return?.EsModelInfo?.Model);
-  setWarranty(data?.Return?.EsModelInfo?.WtyType);
-  setFault(data?.Return?.EsModelInfo?.DefectDesc);
-  setImei(data?.Return?.EsModelInfo?.IMEI);
-  setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
-  setEngineerAssignDate(data?.Return?.EsScheInfo?.EngrAssignDate);
-  setEngineerAssignTime(data?.Return?.EsScheInfo?.EngrAssignTime);
-  setGSPNStatus(data?.EtFlowInfo?.results?.map((x: any) => x.StatusDesc));
+  try {
+    const { data } = await axios.post(
+      `${process.env.NEXT_PUBLIC_IPAAS_API_GETSOINFOALL}`,
+      options,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
+        },
+      }
+    );
+    setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
+    setCreatedDate(data?.Return?.EsHeaderInfo?.CreateDate);
+    setCreatedTime(data?.Return?.EsHeaderInfo?.CreateTime);
+    setModel(data?.Return?.EsModelInfo?.Model);
+    setWarranty(data?.Return?.EsModelInfo?.WtyType);
+    setFault(data?.Return?.EsModelInfo?.DefectDesc);
+    setImei(data?.Return?.EsModelInfo?.IMEI);
+    setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
+    setGSPNStatus(data?.EtLogInfo.results[data?.EtLogInfo.results.length - 1].StatusDesc);
+  } catch (error) {
+    // 
+  }
+
+
 }
 export async function getSOInfoAllFunctionDtv(props: IgetSOInfoAllDtv) {
   const options = {
@@ -208,7 +206,6 @@ export async function getPartsInfoFunction(props: IgetPartsInfo) {
     }
   );
   const data = await response.json();
-  // console.log(data);
   if (data) {
     props.setData(data);
   }
@@ -219,7 +216,7 @@ export async function postBookingAgentsJobs({
   setServiceOrder,
   setCreatedDate,
   setCreatedTime,
-  setWarranty,
+  setWarranty
 }: IpostBookingAgentsJobs) {
   const options = {
     IvSvcOrderNo: searchServiceOrder,
@@ -296,7 +293,6 @@ export async function getStockOverviewInfo({
       if (data) {
         setStockData(data);
       }
-      // console.log(data);
     });
 }
 export async function getSOInfoAllFunctionForParts({
@@ -379,14 +375,12 @@ export async function getPartsInfoForServiceOrder(
       .then((data) => {
         if (data?.EtPartsInfo !== null) {
           const parts = data?.EtPartsInfo?.results?.map((i: any) => i.PartsNo);
-          // console.log("parts", parts);
           return props.setPartsAssignedForJob(parts);
         } else if (data?.EtPartsInfo === null) {
           return props.setPartsAssignedForJob(data?.Return?.EvRetMsg);
         }
       });
   } catch (error) {
-    // console.log("Ipaas parts info error", error);
   }
 }
 
@@ -426,7 +420,6 @@ export async function getSOInfoAllTookan({
 
   const data = await response.json();
   const fullAddress = data?.Return?.EsBpInfo?.CustAddrStreet1 + " " + data?.Return?.EsBpInfo?.CustAddrStreet2 || "" + "" + data?.Return?.EsBpInfo?.CustCity || "" + "" + data?.Return?.EsBpInfo?.CustCountry || "";
-  // console.log(data)
   setFirstname(data?.Return?.EsBpInfo?.CustFirstName)
   setLastname(data?.Return?.EsBpInfo?.CustLastName)
   setEmail(data?.Return?.EsBpInfo?.CustEmail)
