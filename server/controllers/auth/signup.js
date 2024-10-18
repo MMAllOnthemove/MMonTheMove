@@ -18,7 +18,7 @@ const signupSchema = Yup.object().shape({
     email: Yup.string()
         .email("Email is invalid!")
         .required("Email is required!")
-        .matches(/\@allelectronics.co.za$/),
+        .matches(/\@allelectronics.co.za$/, "Domain not allowed"),
     password: Yup.string()
         .required("Please Enter password")
         .min(6, "Password must be minimum 6 characters!"),
@@ -26,9 +26,25 @@ const signupSchema = Yup.object().shape({
 
 const SignupUser = async (req, res) => {
     try {
-        await signupSchema.validate(req.body);
+        await signupSchema.validate(req.body, { abortEarly: false });
         const { fullName, username, email, password, createdAt } = req.body;
         let capitalizedEmail = email.toLowerCase();
+
+        // Check if user with the same email or username already exists
+        const userExistsQuery = `
+            SELECT * FROM company_people WHERE email = $1
+        `;
+        const userExistsResult = await pool.query(userExistsQuery, [
+            capitalizedEmail,
+        ]);
+
+        if (userExistsResult.rows.length > 0) {
+            return res.status(401).json({
+                message: "User already exists",
+            });
+        }
+
+        // Hash the password
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const result = await pool.query(
@@ -46,7 +62,15 @@ const SignupUser = async (req, res) => {
             token: accessToken,
         });
     } catch (error) {
-        res.status(500).json({ message: "Internal server error" });
+        console.error("Signup failed:", error);
+
+        // to get error for a specific field
+        const errors = {};
+        error.inner.forEach((err) => {
+            errors[err.path] = err.message; // `err.path` is the field name, `err.message` is the error message
+        });
+        console.log("errors", errors);
+        res.status(500).json({ errors });
     }
 };
 export default SignupUser;

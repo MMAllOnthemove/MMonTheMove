@@ -24,8 +24,15 @@ export const SignupvalidateSchema = Yup.object({
 export const LoginvalidateSchema = Yup.object({
     email: Yup.string()
         .email("Email is invalid!")
-        .required("Email is required!"),
+        .required("Email is required!")
+        .matches(/\@allelectronics.co.za$/, "Domain not allowed"),
     password: Yup.string()
         .min(4, "Password must be minimum 4 characters!")
         .required("Password Required!"),
+});
+export const ForgotPasswordvalidateSchema = Yup.object({
+    email: Yup.string()
+        .email("Email is invalid!")
+        .required("Email is required!")
+        .matches(/\@allelectronics.co.za$/, "Domain not allowed"),
 });
