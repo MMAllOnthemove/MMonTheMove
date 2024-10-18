@@ -22,160 +22,110 @@ import { datetimestamp } from "@/lib/date_formats"
 
 const SignupScreen = () => {
 
-    const { signup, loading, error } = useSignup()
+    const { signup, loading, errors, signupErrorFromBackend } = useSignup()
+    const { toast } = useToast();
+
+    const [fullName, setFullName] = useState("")
+    const [username, setUserName] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
 
     const [passwordShown, setPasswordShown] = useState(false);
-    const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
 
     // Password toggle handler
     const togglePassword = () => {
         setPasswordShown(!passwordShown);
     };
-    const toggleConfirmPassword = () => {
-        setConfirmPasswordShown(!confirmPasswordShown);
-    };
-    const initialValues: ISignUpFormValues = {
-        fullName: "",
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: ""
-    };
 
-    const router = useRouter()
+    const signupUser = async (e: React.SyntheticEvent) => {
+        e.preventDefault();
+        const createdAt = datetimestamp;
+        const payload = { fullName, username, email, password, createdAt };
+        await signup(payload);
 
+        if (signupErrorFromBackend) {
+            toast({
+                variant: "destructive",
+                title: `Could not sign you up`,
+                description: `${signupErrorFromBackend}`,
+            });
+        }
+    }
     return (
-        <Formik initialValues={initialValues}
-            validationSchema={SignupvalidateSchema}
-            onSubmit={async (values) => {
 
-                const newValues = {
-                    fullName: values.fullName,
-                    username: values.username,
-                    email: values.email,
-                    password: values.password,
+        <form>
+            <Card>
+                <CardHeader>
+                    <CardTitle className="text-center">Create account</CardTitle>
 
-                    createdAt: datetimestamp
-                }
-                await signup(newValues);
-            }}
-
-
-
-        >
-
-            <Form>
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="text-center">Create account</CardTitle>
-                        <CardDescription>
-                            {error}
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                        <div className="space-y-1">
-                            <Label htmlFor="fullName">Full name</Label>
-                            <Field
-                                name="fullName"
-                                className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
+                </CardHeader>
+                <CardContent className="space-y-2">
+                    <div className="space-y-1">
+                        <Label htmlFor="fullName">Full name</Label>
+                        <input
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                            name="fullName"
+                            className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
+                        />
+                        {errors.fullName && <p className="text-sm text-red-500 font-medium">{errors.fullName}</p>}
+                    </div>
+                    <div className="space-y-1">
+                        <Label htmlFor="username">Username</Label>
+                        <input
+                            value={username}
+                            onChange={(e) => setUserName(e.target.value)}
+                            name="username"
+                            className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
+                        />
+                        {errors.username && <p className="text-sm text-red-500 font-medium">{errors.username}</p>}
+                    </div>
+                    <div className="space-y-1">
+                        <Label htmlFor="email">Email</Label>
+                        <input
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            name="email"
+                            className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
+                        />
+                        {errors.email && <p className="text-sm text-red-500 font-medium">{errors.email}</p>}
+                    </div>
+                    <div className="space-y-1">
+                        <Label htmlFor="password">Password</Label>
+                        <div className="flex items-center gap-2 border border-gray-300 mb-2 pr-1 rounded-sm">
+                            <input
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                name="password"
+                                className="bg-white outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
+                                type={passwordShown ? "text" : "password"}
                             />
-                            <ErrorMessage name="fullName">
-                                {(msg: any) => (
-                                    <div className="text-sm text-red-500 font-medium">{msg}</div>
-                                )}
-                            </ErrorMessage>
-                        </div>
-                        <div className="space-y-1">
-                            <Label htmlFor="username">Username</Label>
-                            <Field
-                                name="username"
-                                className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
-                            />
-                            <ErrorMessage name="username">
-                                {(msg: any) => (
-                                    <div className="text-sm text-red-500 font-medium">{msg}</div>
-                                )}
-                            </ErrorMessage>
-                        </div>
-                        <div className="space-y-1">
-                            <Label htmlFor="email">Email</Label>
-                            <Field
-                                name="email"
-                                className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
-                            />
-                            <ErrorMessage name="email">
-                                {(msg: any) => (
-                                    <div className="text-sm text-red-500 font-medium">{msg}</div>
-                                )}
-                            </ErrorMessage>
-                        </div>
-                        <div className="space-y-1">
-                            <Label htmlFor="password">Password</Label>
-                            <div className="flex items-center gap-2 border border-gray-300 mb-2 pr-1 rounded-sm">
-                                <Field
-                                    name="password"
-                                    className="bg-white outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
-                                    type={passwordShown ? "text" : "password"}
-                                />
 
-                                <button
-                                    type="button"
-                                    onClick={togglePassword}
-                                    className="bg-transparent border-none outline-none"
-                                >
-                                    <span>
-                                        {!passwordShown ? (
-                                            <EyeIcon className="w-6 h-6  dark:text-[#eee]" />
-                                        ) : (
-                                            <EyeSlashIcon className="w-6 h-6  dark:text-[#eee]" />
-                                        )}
-                                    </span>
-                                </button>
-                            </div>
-                            <ErrorMessage name="password">
-                                {(msg: any) => (
-                                    <div className="text-sm text-red-500 font-medium">{msg}</div>
-                                )}
-                            </ErrorMessage>
+                            <button
+                                type="button"
+                                onClick={togglePassword}
+                                className="bg-transparent border-none outline-none"
+                            >
+                                <span>
+                                    {!passwordShown ? (
+                                        <EyeIcon className="w-6 h-6  dark:text-[#eee]" />
+                                    ) : (
+                                        <EyeSlashIcon className="w-6 h-6  dark:text-[#eee]" />
+                                    )}
+                                </span>
+                            </button>
                         </div>
-                        <div className="space-y-1">
-                            <Label htmlFor="confirmPassword">Confirm password</Label>
-                            <div className="flex items-center gap-2 border border-gray-300 mb-2 pr-1 rounded-sm">
-                                <Field
-                                    name="confirmPassword"
-                                    className="bg-white outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
-                                    type={confirmPasswordShown ? "text" : "password"}
-                                />
+                        {errors.password && <p className="text-sm text-red-500 font-medium">{errors.password}</p>}
+                    </div>
 
-                                <button
-                                    type="button"
-                                    onClick={toggleConfirmPassword}
-                                    className="bg-transparent border-none outline-none"
-                                >
-                                    <span>
-                                        {!confirmPasswordShown ? (
-                                            <EyeIcon className="w-6 h-6" />
-                                        ) : (
-                                            <EyeSlashIcon className="w-6 h-6" />
-                                        )}
-                                    </span>
-                                </button>
-                            </div>
-                            <ErrorMessage name="confirmPassword">
-                                {(msg: any) => (
-                                    <div className="text-sm text-red-500 font-medium">{msg}</div>
-                                )}
-                            </ErrorMessage>
-                        </div>
 
-                    </CardContent>
-                    <CardFooter>
-                        <Button type="submit">Continue</Button>
-                    </CardFooter>
-                </Card>
-            </Form>
+                </CardContent>
+                <CardFooter>
+                    <Button className="w-full outline-none" type="submit" disabled={loading} onClick={signupUser}>{loading ? 'Signing up...' : 'Continue'}</Button>
+                </CardFooter>
+            </Card>
+        </form>
 
-        </Formik>
     )
 }
 export default SignupScreen

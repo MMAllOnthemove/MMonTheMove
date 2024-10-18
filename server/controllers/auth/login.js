@@ -11,10 +11,11 @@ import * as Yup from "yup";
 // authentication
 
 // Define Yup schema for request body validation
-const loginSchema = Yup.object().shape({
+const loginSchema = Yup.object({
     email: Yup.string()
         .email("Email is invalid!")
-        .required("Email is required!"),
+        .required("Email is required!")
+        .matches(/\@allelectronics.co.za$/, "Domain not allowed"),
     password: Yup.string()
         .required("Please Enter password")
         .min(6, "Password must be minimum 6 characters!"),
@@ -23,7 +24,7 @@ const loginSchema = Yup.object().shape({
 const LoginUser = async (req, res) => {
     try {
         // Validate request body
-        await loginSchema.validate(req.body);
+        await loginSchema.validate(req.body, { abortEarly: false });
 
         const { email, password } = req.body;
         const result = await pool.query(
@@ -55,13 +56,20 @@ const LoginUser = async (req, res) => {
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
         });
-       res.status(201).json({
-           message: "Successfully logged in",
-           token: accessToken,
-       });
+        res.status(201).json({
+            message: "Successfully logged in",
+            token: accessToken,
+        });
     } catch (error) {
         console.error("Login failed:", error);
-        res.status(500).json({ message: "Internal server error" });
+
+        // to get error for a specific field
+        const errors = {};
+        error.inner.forEach((err) => {
+            errors[err.path] = err.message; // `err.path` is the field name, `err.message` is the error message
+        });
+        console.log(errors);
+        res.status(500).json({ errors });
     }
 };
 
