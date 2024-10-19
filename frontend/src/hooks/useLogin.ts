@@ -1,8 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useToast } from "./use-toast";
 
+import toast from "react-hot-toast";
 interface ErrorMessages {
     email?: string;
     password?: string;
@@ -12,11 +12,8 @@ const useLogin = () => {
     const [loading, setLoading] = useState(false); // Loading state
     const [errors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
 
-    // the alert for the success message is invoked on the main home screen
-    // so, this state is for the auth error to show on login screen
-    const [loginErrorFromBackend, setLoginErrorFromBackend] = useState("");
+
     const router = useRouter();
-    const { toast } = useToast();
     const login = async (values: any) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
@@ -30,16 +27,15 @@ const useLogin = () => {
             );
             console.log("login response", response);
             if (response.status === 201) {
-                toast({
-                    title: `${response?.data?.message}`,
-                    description: "You can now use the system",
-                });
+                toast.success(`${response?.data?.message}`);
                 router.push("/");
             }
         } catch (error: any) {
-            console.log("login error", error?.response);
-            setLoginErrorFromBackend(`${error?.data?.message}`);
-            if (error.response && error.response.data.errors) {
+            // console.log("login error", error?.response.data?.message);
+          
+            if (error?.response.data?.message) {
+                toast.error(`${error?.response.data?.message}`);
+            } else if (error.response && error.response.data.errors) {
                 setErrors(error.response.data.errors); // Set validation errors to state
             }
             // setError(error?.response?.data?.message);
@@ -48,7 +44,7 @@ const useLogin = () => {
         }
     };
 
-    return { login, loading, errors, loginErrorFromBackend };
+    return { login, loading, errors };
 };
 
 export default useLogin;

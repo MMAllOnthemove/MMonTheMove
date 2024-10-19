@@ -3,32 +3,27 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 interface ErrorMessages {
-    fullName?: string;
-    username?: string;
     email?: string;
-    password?: string;
-    confirmPassword?: string;
-    createdAt?: Date;
 }
 
-const useSignup = () => {
+const useForgotPassword = () => {
     const [loading, setLoading] = useState(false); // Loading state
     const [errors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
-    const router = useRouter();
 
-    const signup = async (values: any) => {
+    useState("");
+    const router = useRouter();
+    const forgotPassword = async (values: any) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
-
         try {
             const response = await axios.post(
-                `${process.env.NEXT_PUBLIC_SERVER_API_URL_SIGNUP}`,
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/forgot_password`,
                 values,
                 {
                     withCredentials: true,
                 }
             );
-            console.log("signup response", response);
+            console.log("forgotPassword response", response);
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
                 router.push("/");
@@ -39,12 +34,13 @@ const useSignup = () => {
             } else if (error.response && error.response.data.errors) {
                 setErrors(error.response.data.errors); // Set validation errors to state
             }
+            // setError(error?.response?.data?.message);
         } finally {
             setLoading(false); // Stop loading
         }
     };
 
-    return { signup, loading, errors };
+    return { forgotPassword, loading, errors };
 };
 
-export default useSignup;
+export default useForgotPassword;

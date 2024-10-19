@@ -3,33 +3,27 @@ import { Button } from "@/components/ui/button"
 import {
     Card,
     CardContent,
-    CardDescription,
     CardFooter,
     CardHeader,
     CardTitle
 } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { useToast } from "@/hooks/use-toast"
-import { SignupvalidateSchema } from "@/lib/auth_validation_schema"
-import { ISignUpFormValues } from "@/lib/interfaces"
-import { ErrorMessage, Field, Form, Formik } from "formik"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import toast from "react-hot-toast";
 import useSignup from "@/hooks/useSignup"
 import { datetimestamp } from "@/lib/date_formats"
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"
+import { useState } from "react"
 
 
 const SignupScreen = () => {
 
     const { signup, loading, errors, signupErrorFromBackend } = useSignup()
-    const { toast } = useToast();
+
 
     const [fullName, setFullName] = useState("")
     const [username, setUserName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-
     const [passwordShown, setPasswordShown] = useState(false);
 
     // Password toggle handler
@@ -42,14 +36,6 @@ const SignupScreen = () => {
         const createdAt = datetimestamp;
         const payload = { fullName, username, email, password, createdAt };
         await signup(payload);
-
-        if (signupErrorFromBackend) {
-            toast({
-                variant: "destructive",
-                title: `Could not sign you up`,
-                description: `${signupErrorFromBackend}`,
-            });
-        }
     }
     return (
 
