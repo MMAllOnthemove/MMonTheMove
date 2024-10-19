@@ -17,8 +17,8 @@ const signupSchema = Yup.object().shape({
         .min(4, "Username must be minimum 4 characters!"),
     email: Yup.string()
         .email("Email is invalid!")
-        .required("Email is required!")
-        .matches(/\@allelectronics.co.za$/, "Domain not allowed"),
+        .required("Email is required!"),
+    // .matches(/\@allelectronics.co.za$/, "Domain not allowed"),
     password: Yup.string()
         .required("Please Enter password")
         .min(6, "Password must be minimum 6 characters!"),
@@ -29,38 +29,51 @@ const SignupUser = async (req, res) => {
         await signupSchema.validate(req.body, { abortEarly: false });
         const { fullName, username, email, password, createdAt } = req.body;
         let capitalizedEmail = email.toLowerCase();
+        // Check if domain is allowed
+        const emailRegex = /\@allelectronics.co.za$/;
 
-        // Check if user with the same email or username already exists
-        const userExistsQuery = `
+        if (!emailRegex.test(capitalizedEmail)) {
+            res.status(401).json({ message: "Domain not allowed" });
+            return;
+        } else {
+            // Check if user with the same email or username already exists
+            const userExistsQuery = `
             SELECT * FROM company_people WHERE email = $1
         `;
-        const userExistsResult = await pool.query(userExistsQuery, [
-            capitalizedEmail,
-        ]);
+            const userExistsResult = await pool.query(userExistsQuery, [
+                capitalizedEmail,
+            ]);
 
-        if (userExistsResult.rows.length > 0) {
-            return res.status(401).json({
-                message: "User already exists",
+            if (userExistsResult.rows.length > 0) {
+                return res.status(401).json({
+                    message: "User already exists",
+                });
+            }
+
+            // Hash the password
+
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const result = await pool.query(
+                "INSERT INTO company_people (full_name, user_name, email, user_password, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING full_name, user_name, email, user_id, user_role",
+                [
+                    fullName,
+                    username,
+                    capitalizedEmail,
+                    hashedPassword,
+                    createdAt,
+                ]
+            );
+            const user = result.rows[0];
+            const accessToken = generateAccessToken(user);
+            const refreshToken = generateRefreshToken(user);
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+            });
+            res.status(201).json({
+                message: "Account created",
+                token: accessToken,
             });
         }
-
-        // Hash the password
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const result = await pool.query(
-            "INSERT INTO company_people (full_name, user_name, email, user_password, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING full_name, user_name, email, user_id, user_role",
-            [fullName, username, capitalizedEmail, hashedPassword, createdAt]
-        );
-        const user = result.rows[0];
-        const accessToken = generateAccessToken(user);
-        const refreshToken = generateRefreshToken(user);
-        res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-        });
-        res.status(201).json({
-            message: "Account created",
-            token: accessToken,
-        });
     } catch (error) {
         console.error("Signup failed:", error);
 

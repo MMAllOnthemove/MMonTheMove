@@ -3,23 +3,18 @@ import { Button } from "@/components/ui/button"
 import {
     Card,
     CardContent,
-    CardDescription,
     CardFooter,
     CardHeader,
     CardTitle
 } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { useToast } from "@/hooks/use-toast"
+import toast from "react-hot-toast";
 import useLogin from "@/hooks/useLogin"
-import { LoginvalidateSchema } from "@/lib/auth_validation_schema"
-import { ILoginFormValues } from "@/lib/interfaces"
-import { ErrorMessage, Field, Form, Formik } from "formik"
 import Link from "next/link"
 import { useState } from "react"
 
 export default function LoginScreen() {
-    const { login, loading, errors, loginErrorFromBackend } = useLogin();
-    const { toast } = useToast();
+    const { login, loading, errors } = useLogin();
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
@@ -29,13 +24,6 @@ export default function LoginScreen() {
         const payload = { email, password };
         await login(payload);
 
-        if (loginErrorFromBackend) {
-            toast({
-                variant: "destructive",
-                title: `Could not sign you in`,
-                description: `${loginErrorFromBackend}`,
-            });
-        }
     }
     return (
 
