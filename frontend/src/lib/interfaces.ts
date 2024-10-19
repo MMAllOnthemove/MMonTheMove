@@ -13,3 +13,6 @@ export interface ILoginFormValues {
 export interface IForgotPasswordFormValues {
     email: string;
 }
+export interface IContainer {
+      children: React.ReactNode;
+}

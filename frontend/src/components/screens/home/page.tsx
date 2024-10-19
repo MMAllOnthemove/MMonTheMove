@@ -1,6 +1,7 @@
 
 import LoadingScreen from "@/components/loading_screen/page";
 import NotLoggedInScreen from "@/components/not_logged_in/page";
+import Sidebar from "@/components/sidebar/page";
 import { Button } from "@/components/ui/button";
 import useUserLoggedIn from "@/hooks/useGetUser";
 import useLogoutUser from "@/hooks/useLogout";
@@ -52,10 +53,10 @@ export default function HomeScreen() {
                 loading ? (
                     <LoadingScreen />
                 ) : isLoggedIn ? (
-                    <div className="h-screen flex justify-center items-center flex-col gap-3">
-
-                        <p>You are logged in {user?.email} </p>
-                        <Button onClick={logout} disabled={logoutLoading} className='bg-gray-950 outline-none text-gray-50'>{logoutLoading ? 'Logging out...' : 'Logout'}</Button>
+                    <div className="h-screen">
+                        <Sidebar />
+                        {/* <p>You are logged in {user?.email} </p>
+                        <Button onClick={logout} disabled={logoutLoading} className='bg-gray-950 outline-none text-gray-50'>{logoutLoading ? 'Logging out...' : 'Logout'}</Button> */}
 
                     </div>
                 ) : (
