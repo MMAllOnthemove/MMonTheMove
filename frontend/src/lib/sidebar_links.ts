@@ -19,8 +19,13 @@ export const menuItems = [
             },
             {
                 id: 3,
-                item: "Add tasks",
-                pageRoute: "/departments/hhp/add",
+                item: "Add tasks (admin)",
+                pageRoute: "/departments/hhp/admin",
+            },
+            {
+                id: 3,
+                item: "Add tasks (QC)",
+                pageRoute: "/departments/hhp/qc",
             },
         ],
     },

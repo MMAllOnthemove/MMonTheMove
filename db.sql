@@ -32,3 +32,83 @@ CREATE TABLE login_history (
 );
 
 CREATE INDEX idx_login_timestamp ON login_history (login_timestamp);
+
+create table hhp_jobs (
+    id BIGSERIAL PRIMARY KEY UNIQUE,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    service_order_no text unique,
+    date_booked date,
+    created_at date,
+    updated_at date,
+    model text,
+    warranty text,
+    engineer text,
+    fault text,
+    imei text unique,
+    serial_number text unique,
+    repairshopr_status text,
+    gspn_status text,
+    ticket_number text unique,
+    department text,
+    job_added_by text,
+    updated_by text,
+    reassign_engineer text,
+    parts_list text [],
+    assessment_date date,
+    parts_pending_date date,
+    parts_issued_date date,
+    parts_pending boolean,
+    stores text,
+    parts_ordered_date date
+);
+alter table hhp_jobs
+add column qc_complete boolean,
+add column qc_complete_date date,
+add repair_completed date;
+
+create table hhp_jobs_history (
+    id BIGSERIAL PRIMARY KEY UNIQUE,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    service_order_no text,
+    date_booked date,
+    created_at date,
+    updated_at date,
+    model text,
+    warranty text,
+    engineer text,
+    fault text,
+    imei text,
+    serial_number text,
+    repairshopr_status text,
+    gspn_status text,
+    ticket_number text,
+    department text,
+    job_added_by text,
+    updated_by text,
+    reassign_engineer text,
+    parts_list text [],
+    stores text,
+    parts_ordered_date date
+);
+
+create table hhp_claims (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    created_at date,
+    created_by date,
+    service_order_no text,
+    claim_status text,
+    department text,
+    FOREIGN KEY (service_order_no) REFERENCES hhp_jobs(service_order_no)
+);
+
+create table hhp_qc (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    service_order_no text,
+    qc_complete boolean,
+    qc_date date,
+    created_by text,
+    created_at date,
+    FOREIGN KEY (service_order_no) REFERENCES hhp_jobs(service_order_no)
+)

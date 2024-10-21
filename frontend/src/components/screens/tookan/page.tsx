@@ -162,7 +162,7 @@ const TookanScreen = () => {
                 ) : isLoggedIn ? (
                     <>
                         <Sidebar />
-                        <main className='container p-1'>
+                        <main className='tookan-container p-1'>
                             <Card className='w-full border-none md:max-w-[700px] max-w-[550px] shadow-none md:border md:shadow'>
                                 <CardHeader>
                                     <CardTitle className="text-center">Create tookan task</CardTitle>
