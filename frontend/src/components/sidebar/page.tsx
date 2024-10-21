@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/sheet"
 import { menuItems } from '@/lib/sidebar_links'
 import Link from 'next/link'
-import { Bars2Icon, EllipsisVerticalIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Bars2Icon, Bars4Icon, EllipsisVerticalIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import Container from '../container/page'
 import logo from "../../assets/mmlogo.png"
 
@@ -40,11 +40,11 @@ const Sidebar = () => {
     }
 
     return (
-        <div className="flex justify-between items-center h-[4rem] border px-2">
+        <div className="flex justify-between items-center navbar border px-2">
 
             <Sheet>
                 <SheetTrigger asChild>
-                    <Button className='outline-none bg-white border shadow-none hover:bg-white active:bg-white focus:bg-white'><Bars2Icon className="h-6 w-6 text-slate-800" /></Button>
+                    <Button className='outline-none bg-white border shadow-none hover:bg-white active:bg-white focus:bg-white border-none'><Bars4Icon className="h-6 w-6 text-slate-800" /></Button>
                 </SheetTrigger>
                 <SheetContent className="flex flex-col h-full">
                     <SheetHeader>

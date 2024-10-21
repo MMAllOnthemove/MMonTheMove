@@ -32,6 +32,6 @@ export const menuItems = [
     },
     {
         label: "Tookan",
-        sublinks: [{ id: 6, item: "Add task", pageRoute: "" }],
+        sublinks: [{ id: 6, item: "Add task", pageRoute: "/tookan" }],
     },
 ];

@@ -19,7 +19,7 @@ import React, { useState } from 'react';
 
 function ForgotPasswordScreen() {
 
-    const { forgotPassword, loading, errors, forgotPassErrorFromBackend } = useForgotPassword()
+    const { forgotPassword, loading, errors } = useForgotPassword()
     const [email, setEmail] = useState("")
 
 

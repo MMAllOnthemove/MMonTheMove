@@ -8,11 +8,10 @@ export const datetimestamp = new Date(
     .replace("Z", "");
 
 // Get today's date
-export const today = new Date();
+export const today = new Date().toISOString().split("T")[0];
 
 // Calculate the minimum date (3 months back)
-const minDate_ = new Date(today);
-minDate_.setMonth(today.getMonth() - 3);
+
 // Format the dates to 'YYYY-MM-DD'
 export const formatDate = (date: any) => {
     const year = date.getFullYear();
