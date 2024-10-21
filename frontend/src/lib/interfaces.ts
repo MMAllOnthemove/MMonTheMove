@@ -41,3 +41,34 @@ export interface ITookanAssignToTeam {
     job_status: string;
     api_key: string;
 }
+export interface ISearchForm {
+    filtering: string;
+    setFiltering: (e: any) => string | any;
+}
+export interface IHHPgspn {
+    id: number;
+    unique_id: string;
+    service_order_no: string;
+    date_booked: string;
+    created_at: string;
+    updated_at: string;
+    model: string;
+    warranty: string;
+    engineer: string;
+    fault: string;
+    imei: string | number;
+    serial_number: string;
+    repairshopr_status: string;
+    gspn_status: string;
+    ticket_number: string;
+    department: string;
+    job_added_by: string;
+    updated_by: string;
+    reassign_engineer: string;
+    parts_list: string[];
+}
+export interface IPageTitle {
+    hasSpan: true | false;
+    title: string | number;
+    spanText?: string | number;
+}

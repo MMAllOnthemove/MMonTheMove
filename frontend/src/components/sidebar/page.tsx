@@ -63,7 +63,7 @@ const Sidebar = () => {
                                 <div
                                     className={`overflow-hidden cursor-pointer transition-all duration-300 flex flex-col ${openDropdown === index ? 'max-h-full' : 'max-h-0'}`}
                                 >
-                                    {item.sublinks.map((sublink, subIndex) => (
+                                    {item.sublinks.map((sublink) => (
                                         <Link href={sublink.pageRoute} key={sublink.id} className={`p-2 text-sm hover:text-sky-600 my-1 border rounded-sm`}>
                                             {sublink.item}
                                         </Link>

@@ -109,13 +109,21 @@ body::-webkit-scrollbar-thumb {
     left: 0;
     background-color: #fff; /* Adjust color as needed */
 }
-.container {
+.tookan-container {
     margin-top: 4rem; /* Push the content down by the navbar's height */
     margin-left: auto;
     margin-right: auto;
     display: flex;
     justify-content: center; /* Centers content horizontally */
     align-items: center; /* Centers content vertically */
+    min-height: calc(
+        100vh - 4rem
+    ); /* Ensures content takes the remaining height */
+}
+.container {
+    margin-top: 4rem; /* Push the content down by the navbar's height */
+    margin-left: auto;
+    margin-right: auto;
     min-height: calc(
         100vh - 4rem
     ); /* Ensures content takes the remaining height */
