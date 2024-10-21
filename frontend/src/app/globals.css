@@ -12,8 +12,24 @@
 body {
     font-family: "Inter", sans-serif;
     height: 100vh;
+    --scrollbarBG: #dee2da;
+    --thumbBG: #6c757d;
 }
-
+body::-webkit-scrollbar,
+::-webkit-scrollbar {
+    height: 12px;
+    width: 12px;
+}
+body::-webkit-scrollbar-track,
+::-webkit-scrollbar-track {
+    background: #dee2da;
+}
+::-webkit-scrollbar-thumb:vertical,
+body::-webkit-scrollbar-thumb {
+    background-color: #6c757d;
+    border-radius: 20px;
+    border: 3px solid #dee2da;
+}
 @layer utilities {
     .text-balance {
         text-wrap: balance;
