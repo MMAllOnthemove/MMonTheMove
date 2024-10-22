@@ -59,12 +59,11 @@ create table hhp_jobs (
     parts_issued_date date,
     parts_pending boolean,
     stores text,
-    parts_ordered_date date
+    parts_ordered_date date,
+    repairshopr_job_id text,
+    qc_complete boolean,
+    qc_date date
 );
-alter table hhp_jobs
-add column qc_complete boolean,
-add column qc_complete_date date,
-add repair_completed date;
 
 create table hhp_jobs_history (
     id BIGSERIAL PRIMARY KEY UNIQUE,
@@ -88,7 +87,10 @@ create table hhp_jobs_history (
     reassign_engineer text,
     parts_list text [],
     stores text,
-    parts_ordered_date date
+    parts_ordered_date date,
+    repairshopr_job_id text,
+    qc_complete boolean,
+    qc_date date
 );
 
 create table hhp_claims (
@@ -101,14 +103,3 @@ create table hhp_claims (
     department text,
     FOREIGN KEY (service_order_no) REFERENCES hhp_jobs(service_order_no)
 );
-
-create table hhp_qc (
-    id BIGSERIAL PRIMARY KEY,
-    unique_id uuid DEFAULT gen_random_uuid(),
-    service_order_no text,
-    qc_complete boolean,
-    qc_date date,
-    created_by text,
-    created_at date,
-    FOREIGN KEY (service_order_no) REFERENCES hhp_jobs(service_order_no)
-)

@@ -6,6 +6,7 @@ type TUser = {
     user_unique_id: string;
     email: string;
     user_name: string;
+    full_name: string;
     user_role: string;
     department: string;
 };
@@ -26,6 +27,7 @@ const useUserLoggedIn = () => {
                     }
                 );
                 if (response?.data) {
+                    // console.log(response.data?.user);
                     setUser(response.data?.user);
                     setIsLoggedIn(true); // User is logged in if data is returned
                 } else {
