@@ -22,6 +22,7 @@ const hhpGSPNJobsSchema = Yup.object().shape({
     job_added_by: Yup.string()
         .email("Email is invalid!")
         .required("Email is required!"),
+    repairshopr_job_id: Yup.string(),
 });
 
 // Post jobs to database
@@ -41,7 +42,6 @@ const AddGSPNTask = async (req, res) => {
         ticket_number,
         department,
         job_added_by,
-        assessment_date,
         parts_pending_date,
         parts_issued_date,
         parts_pending,
@@ -50,6 +50,7 @@ const AddGSPNTask = async (req, res) => {
         qc_complete,
         qc_complete_date,
         repair_completed,
+        repairshopr_job_id,
     } = req.body;
 
     try {
@@ -69,7 +70,6 @@ const AddGSPNTask = async (req, res) => {
             ticket_number,
             department,
             job_added_by,
-            assessment_date,
             parts_pending_date,
             parts_issued_date,
             parts_pending,
@@ -78,6 +78,7 @@ const AddGSPNTask = async (req, res) => {
             qc_complete,
             qc_complete_date,
             repair_completed,
+            repairshopr_job_id,
         ];
         const findIfExists = await pool.query(
             "SELECT service_order_no from hhp_jobs WHERE service_order_no = $1 OR ticket_number = $2 LIMIT 1",
@@ -91,7 +92,7 @@ const AddGSPNTask = async (req, res) => {
                 .send({ message: "This task already exists!" });
         } else {
             await pool.query(
-                "INSERT INTO hhp_jobs (service_order_no, date_booked, created_at, model, warranty, engineer, fault, imei, serial_number, repairshopr_status, gspn_status, ticket_number, department, job_added_by, assessment_date, parts_pending_date, parts_issued_date, parts_pending, stores, parts_ordered_date, qc_complete, qc_complete_date, repair_completed) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23) returning *",
+                "INSERT INTO hhp_jobs (service_order_no, date_booked, created_at, model, warranty, engineer, fault, imei, serial_number, repairshopr_status, gspn_status, ticket_number, department, job_added_by, parts_pending_date, parts_issued_date, parts_pending, stores, parts_ordered_date, qc_complete, qc_complete_date, repair_completed, repairshopr_job_id) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23) returning *",
                 payload
             );
             await createHHPGSPNTaskHistory(payload);

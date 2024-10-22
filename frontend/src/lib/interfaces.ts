@@ -72,3 +72,15 @@ export interface IPageTitle {
     title: string | number;
     spanText?: string | number;
 }
+export type TTicketComment = {
+    status?: string;
+    comment_attributes?: [
+        {
+            subject?: string;
+            tech?: string | undefined;
+            body?: string;
+            hidden?: boolean;
+            do_not_email?: boolean;
+        }
+    ];
+};

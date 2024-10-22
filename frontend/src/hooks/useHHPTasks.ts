@@ -28,10 +28,10 @@ type THHPTasks = {
     qc_complete: string | boolean | null;
     qc_complete_date: string | null;
     repair_completed: string | null;
-};
+}[];
 
 const useHHPTasks = () => {
-    const [hhpTasks, setHHPTasks] = useState<THHPTasks | null>();
+    const [hhpTasks, setHHPTasks] = useState<THHPTasks | any>(null);
     const [hhpTasksLoading, setHHPTasksLoading] = useState(true);
 
     useEffect(() => {
