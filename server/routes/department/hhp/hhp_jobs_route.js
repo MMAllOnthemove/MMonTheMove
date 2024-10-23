@@ -4,7 +4,7 @@ import {
     GetAllTasks,
     GetTaskById,
 } from "../../../controllers/department/hhp/technicians/get_tasks.js";
-import UpdateTask from "../../../controllers/department/hhp/technicians/update_task.js";
+import { UpdateTask } from "../../../controllers/department/hhp/technicians/update_task.js";
 const router = express.Router();
 
 import { limiter } from "../../../middleware/rateLimiter.js";

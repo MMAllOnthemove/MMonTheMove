@@ -50,22 +50,36 @@ import repairshopr_statuses from '@/lib/repairshopr_status';
 import useRepairshoprTicket from '@/hooks/useRepairshoprTicket';
 import useRepairshoprComment from '@/hooks/useRepairshoprComment';
 import { CheckedState } from '@radix-ui/react-checkbox';
+import useUpdateHHPTask from '@/hooks/updateHHPTask';
+import axios from 'axios';
+import useFetchHHPTaskById from '@/hooks/useFetchHHPtaskById';
 
 
-interface Obj {
-    [key: string]: any;
-}
-function findChanges(objA: Obj, objB: Obj): Record<string, any> {
-    const changes: Record<string, any> = {};
+// interface Obj {
+//     [key: string]: any;
+// }
+// function findChanges(objA: Obj, objB: Obj): Record<string, any> {
+//     const changes: Record<string, any> = {};
 
-    for (const key in objB) {
-        if (objB.hasOwnProperty(key) && objA[key] !== objB[key]) {
-            changes[key] = objB[key];
+//     for (const key in objB) {
+//         if (objB.hasOwnProperty(key) && objA[key] !== objB[key]) {
+//             changes[key] = objB[key];
+//         }
+//     }
+
+//     return changes;
+// }
+
+// Find changes between original and updated data
+const findChanges = (original, updated) => {
+    const changes = {};
+    for (const key in updated) {
+        if (original[key] !== updated[key]) {
+            changes[key] = updated[key];
         }
     }
-
     return changes;
-}
+};
 
 
 const TechniciansScreen = () => {
@@ -73,8 +87,9 @@ const TechniciansScreen = () => {
     const { hhpTasks, hhpTasksLoading } = useHHPTasks()
     const { updateRepairTicket } = useRepairshoprTicket()
     const { updateRepairTicketComment } = useRepairshoprComment()
+    const { updateHHPTask } = useUpdateHHPTask()
     const [modifyTaskModal, setModifyTaskModal] = useState<boolean | null | any>();
-    const [serviceOrder, setServiceOrder] = useState("")
+    const [service_order_no, setServiceOrder] = useState("")
     const [reparshoprComment, setRepairshoprComment] = useState("")
     const [repairshopr_status, setRepairshoprStatus] = useState("")
     const [assessment_date, setAssessmentDate] = useState("")
@@ -85,6 +100,7 @@ const TechniciansScreen = () => {
     const [qc_date, setQCCompleteDate] = useState("")
     const [qc_complete, setQCComplete] = useState<CheckedState | undefined>()
 
+    // const { hhpTask } = useFetchHHPTaskById(modifyTaskModal?.id)
 
     const handleRowClick = (row: any) => {
         setModifyTaskModal(row?.original);
@@ -142,15 +158,21 @@ can update status, send to our db and repairshopr
             "do_not_email": true
         }
 
+        const id = modifyTaskModal?.id;
         const updatePayload = {
             // This goes to our in house db
-            assessment_date, serviceOrder, repairshopr_status,
+            id, service_order_no, repairshopr_status, assessment_date, parts_pending_date, parts_issued_date, parts_issued, parts_pending, qc_date, qc_complete
         }
+
+        const changes = findChanges(modifyTaskModal, updatePayload)
+        console.log("changes", changes)
         try {
-            const statusPayloadResponse = await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, statusPayload)
-            const commentResponse = await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
-            console.log("statusPayloadResponse", statusPayloadResponse)
-            console.log("commentResponse", commentResponse)
+            // const statusPayloadResponse = await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, statusPayload)
+            // const commentResponse = await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
+            if (Object.keys(changes).length > 0) {
+                const updateHHPJobsresponse = await updateHHPTask(id, changes)
+                console.log("updateHHPJobsresponse", updateHHPJobsresponse)
+            }
         } catch (error) {
             console.log("error rs shopr", error)
         }
@@ -270,11 +292,11 @@ can update status, send to our db and repairshopr
                                                     </DialogHeader>
                                                     <Accordion type="single" collapsible>
                                                         <AccordionItem value="item-1">
-                                                            <AccordionTrigger>Is it accessible?</AccordionTrigger>
+                                                            <AccordionTrigger>Service order, note and status</AccordionTrigger>
                                                             <AccordionContent>
                                                                 <div className="mb-3">
                                                                     <Label htmlFor="serviceOrder">Service order</Label>
-                                                                    <Input type="text" name="serviceOrder" value={serviceOrder} onChange={(e) => setServiceOrder(e.target.value)} />
+                                                                    <Input type="text" name="serviceOrder" value={service_order_no} onChange={(e) => setServiceOrder(e.target.value)} />
 
                                                                 </div>
                                                                 <div className="mb-3">
@@ -296,12 +318,13 @@ can update status, send to our db and repairshopr
                                                             </AccordionContent>
                                                         </AccordionItem>
                                                         <AccordionItem value="item-2">
-                                                            <AccordionTrigger>Is it accessible?</AccordionTrigger>
+                                                            <AccordionTrigger>Assessment, QC and dates</AccordionTrigger>
                                                             <AccordionContent>
-                                                                <div className="mb-3 ">
+                                                                <div className="mb-3">
                                                                     <Label htmlFor="assessment_date">Assessment date</Label>
                                                                     <Input type="date" value={assessment_date} name="assessment_date" onChange={(e) => setAssessmentDate(e.target.value)} />
                                                                 </div>
+                                                                <hr className="py-2" />
                                                                 <div className="flex items-center space-x-2 mb-3">
                                                                     <Checkbox id="parts_pending" checked={parts_pending}
                                                                         onCheckedChange={(e) => setPartsPending(e)} />
@@ -312,10 +335,12 @@ can update status, send to our db and repairshopr
                                                                         Parts pending?
                                                                     </label>
                                                                 </div>
+                                                                <hr className="py-2" />
                                                                 <div className="mb-3">
                                                                     <Label htmlFor="parts_pending_date">Parts pending date</Label>
                                                                     <Input type="date" value={parts_pending_date} name="parts_pending_date" onChange={(e) => setPartsPendingDate(e.target.value)} />
                                                                 </div>
+                                                                <hr className="py-2" />
                                                                 <div className="flex items-center space-x-2 mb-3">
                                                                     <Checkbox id="parts_issued" checked={parts_issued}
                                                                         onCheckedChange={(e) => setPartsIssued(e)} />
@@ -326,10 +351,12 @@ can update status, send to our db and repairshopr
                                                                         Parts issued?
                                                                     </label>
                                                                 </div>
+                                                                <hr className="py-2" />
                                                                 <div className="mb-3">
                                                                     <Label htmlFor="parts_issued_date">Parts issued date</Label>
                                                                     <Input type="date" value={parts_issued_date} name="parts_issued_date" onChange={(e) => setPartsIssuedDate(e.target.value)} />
                                                                 </div>
+                                                                <hr className="py-2" />
                                                                 <div className="flex items-center space-x-2 mb-3">
                                                                     <Checkbox id="qc" checked={qc_complete}
                                                                         onCheckedChange={(e) => setQCComplete(e)} />
@@ -340,6 +367,7 @@ can update status, send to our db and repairshopr
                                                                         Mark as QC done
                                                                     </label>
                                                                 </div>
+                                                                <hr className="py-2" />
                                                                 <div className="mb-3">
                                                                     <Label htmlFor="qc_date">QC complete date</Label>
                                                                     <Input type="date" value={qc_date} name="qc_date" onChange={(e) => setQCCompleteDate(e.target.value)} />

@@ -1,40 +1,40 @@
-import "dotenv/config";
-import { pool } from "./../../../../db.js";
+import { pool } from "../../../../db.js";
 
-// Update job by id
+export const UpdateTask = async (req, res) => {
+    const { id } = req.params; // Assuming the ID is passed in the URL
+    const changes = req.body; // Get the changed fields from the frontend
 
-const UpdateTask = async (req, res) => {
+    // Check if there are changes
+    if (Object.keys(changes).length === 0) {
+        return res.status(400).json({ error: "No changes provided" });
+    }
+
+    const keys = Object.keys(changes);
+    const values = Object.values(changes);
+
+    // Construct dynamic SQL query for patching only changed values using prepared statements
+    const setClause = keys
+        .map((key, index) => `${key} = $${index + 1}`)
+        .join(", ");
+
+    // The query with placeholders ($1, $2, ..., $n) for prepared statements
+    const query = `UPDATE hhp_jobs SET ${setClause} WHERE id = $${
+        keys.length + 1
+    } RETURNING *`;
+
+    // Add the `id` to the `values` array to use for the WHERE clause
+    values.push(id);
+
     try {
-        const {
-            assessment_date,
-            parts_pending_date,
-            parts_issued_date,
-            parts_pending,
-            repairshopr_status,
-            serviceOrder,
-            qc_complete,
-            qc_date,
-            taskId,
-        } = req.body;
-        const editQuery = await pool.query(
-            "UPDATE hhp_jobs SET assessment_date = $1, parts_pending_date = $2, parts_issued_date = $3, parts_pending = $4, repairshopr_status = $5, service_order_no = $6, qc_complete = $7, qc_date = $8  WHERE unique_id = $9 returning *",
-            [
-                assessment_date,
-                parts_pending_date,
-                parts_issued_date,
-                parts_pending,
-                repairshopr_status,
-                serviceOrder,
-                qc_complete,
-                qc_date,
-                taskId,
-            ]
-        );
-        res.status(201).json({ message: "Succesfully updated!" });
-    } catch (error) {
-        console.log("update task error backend", error);
+        // Execute the prepared statement query
+        const result = await pool.query({
+            text: query,
+            values: values,
+        });
+
+        res.status(200).json({ updatedRecord: result.rows[0] });
+    } catch (err) {
+        console.error("Error updating record:", err);
+        res.status(500).json({ error: "Database error" });
     }
 };
-
-export default UpdateTask;
-// export { UpdateJob, UpdateJobclaimsGSPNStatus };
