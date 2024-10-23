@@ -62,7 +62,8 @@ create table hhp_jobs (
     parts_ordered_date date,
     repairshopr_job_id text,
     qc_complete boolean,
-    qc_date date
+    qc_date date,
+    parts_issued boolean,
 );
 
 create table hhp_jobs_history (
