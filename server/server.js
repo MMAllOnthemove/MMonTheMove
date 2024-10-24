@@ -11,6 +11,7 @@ const app = express();
 // Routes
 import { router as auth } from "./routes/auth/auth_route.js";
 import { router as hhpjobsrouter } from "./routes/department/hhp/hhp_jobs_route.js";
+import { router as engineers } from "./routes/engineers/index.js";
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(
@@ -32,6 +33,7 @@ app.use("/auth", auth);
 
 // HHP jobs
 app.use("/api/v1/hhp/jobs", hhpjobsrouter);
+app.use("/engineers", engineers);
 
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {

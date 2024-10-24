@@ -2,24 +2,34 @@ import { pool } from "../../db.js";
 import * as Yup from "yup";
 
 const addEngineersSchema = Yup.object({
-  firstname: Yup.string().required("Firstname is required!"),
-  lastname: Yup.string().required("Lastname is required!"),
-  activeStatus: Yup.boolean().required("Active status is required!"),
+    engineer_firstname: Yup.string().required("Firstname is required!"),
+    engineer_lastname: Yup.string().required("Lastname is required!"),
+    department: Yup.string().required("Lastname is required!"),
 });
 
 const addEngineers = async (req, res) => {
-  const { firstname, lastname, activeStatus } = req.body;
-  try {
-    await addEngineersSchema.validate(req.body);
-    const { rows } = await pool.query(
-      "INSERT INTO engineers (engineer_firstname, engineer_lastname, active) VALUES ($1, $2, $3)",
-      [firstname, lastname, activeStatus]
-    );
+    const { engineer_firstname, engineer_lastname, department } = req.body;
+    try {
+        await addEngineersSchema.validate(req.body, { abortEarly: false });
+        const { rows } = await pool.query(
+            "INSERT INTO engineers (engineer_firstname, engineer_lastname, department) VALUES ($1, $2, $3)",
+            [engineer_firstname, engineer_lastname, department]
+        );
 
-    res.status(201).json("Successfully created!");
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+        res.status(201).json({
+            message: "Successfully created",
+        });
+    } catch (error) {
+        console.error("add engineer failed:", error);
+
+        // to get error for a specific field
+        const errors = {};
+        error.inner.forEach((err) => {
+            errors[err.path] = err.message; // `err.path` is the field name, `err.message` is the error message
+        });
+        console.log("errors", errors);
+        res.status(500).json({ errors });
+    }
 };
 
 export default addEngineers;

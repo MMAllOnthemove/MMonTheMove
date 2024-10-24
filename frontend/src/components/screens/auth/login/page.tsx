@@ -1,17 +1,16 @@
 "use client"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
     CardFooter,
     CardHeader,
     CardTitle
-} from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import toast from "react-hot-toast";
-import useLogin from "@/hooks/useLogin"
-import Link from "next/link"
-import { useState } from "react"
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import useLogin from "@/hooks/useLogin";
+import Link from "next/link";
+import { useState } from "react";
 
 export default function LoginScreen() {
     const { login, loading, errors } = useLogin();

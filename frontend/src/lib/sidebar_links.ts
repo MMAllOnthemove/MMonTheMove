@@ -17,16 +17,6 @@ export const menuItems = [
                 item: "Booking agents",
                 pageRoute: "/departments/hhp/booking_agents",
             },
-            {
-                id: 3,
-                item: "Add tasks (admin)",
-                pageRoute: "/departments/hhp/admin",
-            },
-            {
-                id: 3,
-                item: "Add tasks (QC)",
-                pageRoute: "/departments/hhp/qc",
-            },
         ],
     },
     {
@@ -37,6 +27,13 @@ export const menuItems = [
     },
     {
         label: "Tookan",
-        sublinks: [{ id: 6, item: "Add task", pageRoute: "/tookan" }],
+        sublinks: [{ id: 5, item: "Add task", pageRoute: "/tookan" }],
+    },
+    {
+        label: "Admin",
+        sublinks: [
+            { id: 7, item: "Add engineer", pageRoute: "/engineers" },
+            { id: 8, item: "Add booking agent", pageRoute: "/agents" },
+        ],
     },
 ];

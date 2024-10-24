@@ -6,7 +6,10 @@ const useUpdateHHPTask = () => {
             const response = await axios.patch(
                 `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/` +
                     taskId,
-                values
+                values,
+                {
+                    withCredentials: true,
+                }
             );
 
             return response.data;

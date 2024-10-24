@@ -20,7 +20,7 @@ router.post("/forgot_password", limiter, ForgotPassword);
 router.post("/token", RefreshToken);
 router.get("/protected", authenticateToken, ProtectedRoute);
 router.get("/user/me", authenticateToken, CurrentUser);
-router.get("/admin/resource", authenticateAdmin, AdminRoute);
+router.get("/user/admin", authenticateAdmin, AdminRoute);
 
 router.get("/logout", LogoutUser);
 
