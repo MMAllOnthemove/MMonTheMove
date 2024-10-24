@@ -1,89 +1,88 @@
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
-interface Itable {
+interface IPaginationProps {
     table: any;
 }
-const Pagination = (props: Itable) => {
+
+const Pagination = ({ table }: IPaginationProps) => {
     return (
-        <div className="pagination flex gap-1 p-2">
-            <Button
-                role="Button"
-                className="border rounded p-1 font-medium page-index-Button hidden md:visible  "
-                onClick={() => props.table.setPageIndex(0)}
-                disabled={!props.table.getCanPreviousPage()}
-            >
-                {"<<"}
-            </Button>
-            <Button
-                role="Button"
-                className="border rounded p-1  font-medium "
-                onClick={() => props.table.previousPage()}
-                disabled={!props.table.getCanPreviousPage()}
-            >
-                {"<"}
-            </Button>
-            <Button
-                role="Button"
-                className="border rounded p-1  font-medium "
-                onClick={() => props.table.nextPage()}
-                disabled={!props.table.getCanNextPage()}
-            >
-                {">"}
-            </Button>
-            <Button
-                role="Button"
-                className="border rounded p-1  font-medium page-index-Button hidden md:visible "
-                onClick={() => props.table.setPageIndex(props.table.getPageCount() - 1)}
-                disabled={!props.table.getCanNextPage()}
-            >
-                {">>"}
-            </Button>
-            <span className="flex items-center gap-1">
-                <div className=" font-semibold text-[#0d0d0d] dark:text-[#8899A6]">
+        <div className="pagination flex flex-wrap gap-2 p-2 justify-between items-center rounded-lg shadow-sm">
+            <div className="flex gap-2 md:flex-1">
+                <Button
+                    role="button"
+                    className="border rounded p-1 font-medium disabled:opacity-50 md:hidden"
+                    onClick={() => table.setPageIndex(0)}
+                    disabled={!table.getCanPreviousPage()}
+                >
+                    &laquo;
+                </Button>
+                <Button
+                    role="button"
+                    className="border rounded p-1 font-medium disabled:opacity-50"
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                >
+                    &lsaquo;
+                </Button>
+                <Button
+                    role="button"
+                    className="border rounded p-1 font-medium disabled:opacity-50"
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                >
+                    &rsaquo;
+                </Button>
+                <Button
+                    role="button"
+                    className="border rounded p-1 font-medium disabled:opacity-50 md:block hidden"
+                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                    disabled={!table.getCanNextPage()}
+                >
+                    &raquo;
+                </Button>
+            </div>
+
+            <div className="flex items-center gap-2 md:flex-1">
+                <span className="font-semibold text-gray-600 dark:text-gray-400">
                     Page
-                </div>
+                </span>
                 <strong>
-                    {props.table.getState().pagination.pageIndex + 1} of{" "}
-                    {props.table.getPageCount()}
+                    {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
                 </strong>
-            </span>
-            <span className="flex items-center gap-1">
-                | Go to page:
-                <label htmlFor="search-page-number" className="sr-only">
-                    {" "}
-                    Go to page:
-                </label>
+            </div>
+
+            <div className="flex items-center gap-2 md:flex-1">
+                <span className="sr-only">Go to page:</span>
                 <Input
                     id="search-page-number"
-                    name="search-page-number"
                     type="number"
-                    defaultValue={props.table.getState().pagination.pageIndex + 1}
+                    defaultValue={table.getState().pagination.pageIndex + 1}
                     onChange={(e) => {
                         const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                        props.table.setPageIndex(page);
+                        table.setPageIndex(page);
                     }}
-                    className="border p-1 rounded w-16 bg-gray-50 border-gray-300 text-gray-900"
+                    className="w-16 border rounded p-1 bg-gray-50 border-gray-300 text-gray-900"
                 />
-            </span>
-            <label htmlFor="showPageSize" className="sr-only">
-                Show Page Size
-            </label>
-            <select
-                id="showPageSize"
-                name="showPageSize"
-                value={props.table.getState().pagination.pageSize}
-                className="border  outline-none ring-0  font-medium cursor-pointer bg-gray-50 border-gray-300 text-gray-900 p-1 rounded"
-                onChange={(e) => {
-                    props.table.setPageSize(Number(e.target.value));
-                }}
-            >
-                {[10, 20, 30, 40, 50].map((pageSize) => (
-                    <option key={pageSize} value={pageSize}>
-                        Show {pageSize}
-                    </option>
-                ))}
-            </select>
+            </div>
+
+            <div className="flex items-center gap-2 md:flex-1">
+                <label htmlFor="showPageSize" className="sr-only">
+                    Show Page Size
+                </label>
+                <select
+                    id="showPageSize"
+                    value={table.getState().pagination.pageSize}
+                    onChange={(e) => table.setPageSize(Number(e.target.value))}
+                    className="border rounded p-1 bg-gray-50 border-gray-300 text-gray-900 cursor-pointer"
+                >
+                    {[10, 20, 30, 40, 50].map((pageSize) => (
+                        <option key={pageSize} value={pageSize}>
+                            Show {pageSize}
+                        </option>
+                    ))}
+                </select>
+            </div>
         </div>
     );
 };

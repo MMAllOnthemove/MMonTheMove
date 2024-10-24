@@ -2,7 +2,6 @@
 import LoadingScreen from "@/components/loading_screen/page";
 import NotLoggedInScreen from "@/components/not_logged_in/page";
 import Sidebar from "@/components/sidebar/page";
-import { Button } from "@/components/ui/button";
 import useUserLoggedIn from "@/hooks/useGetUser";
 import useLogoutUser from "@/hooks/useLogout";
 // import nodemailer from 'nodemailer';

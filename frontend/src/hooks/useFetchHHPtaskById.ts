@@ -37,7 +37,10 @@ const useFetchHHPTaskById = (taskId: string | number) => {
             try {
                 const { data } = await axios.get(
                     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/` +
-                        taskId
+                        taskId,
+                    {
+                        withCredentials: true,
+                    }
                 );
                 if (data) {
                     // console.log(data);

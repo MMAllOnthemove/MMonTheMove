@@ -28,10 +28,10 @@ type THHPTasks = {
     qc_complete: string | boolean | null;
     qc_complete_date: string | null;
     repair_completed: string | null;
-}[];
+};
 
 const useHHPTasks = () => {
-    const [hhpTasks, setHHPTasks] = useState<THHPTasks | any>(null);
+    const [hhpTasks, setHHPTasks] = useState<THHPTasks | any>([]);
     const [hhpTasksLoading, setHHPTasksLoading] = useState(true);
 
     useEffect(() => {
@@ -39,11 +39,14 @@ const useHHPTasks = () => {
             try {
                 setHHPTasksLoading(true);
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs`
+                    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs`,
+                    {
+                        withCredentials: true,
+                    }
                 );
                 if (response?.data) {
                     // console.log(response);
-                    setHHPTasks(response.data);
+                    setHHPTasks([...response.data]);
                 }
             } catch (error) {
                 console.log("Get hhpTasks error", error);
@@ -53,7 +56,7 @@ const useHHPTasks = () => {
         };
 
         fetchData();
-    }, []);
+    }, [hhpTasks]);
 
     return { hhpTasks, hhpTasksLoading };
 };
