@@ -8,7 +8,7 @@ const columns: any = [
         accessorKey: "ticket_number",
     },
     {
-        header: "Created",
+        header: "Booked",
         accessorKey: "date_booked",
         // cell: info => moment(info).format("YYYY-MM-DD")
     },
@@ -27,7 +27,7 @@ const columns: any = [
     },
     {
         header: "Status",
-        accessorKey: "repairshopr_status",
+        accessorKey: "unit_status",
     },
     {
         header: "Assessment date",
@@ -51,7 +51,7 @@ const columns: any = [
     },
     {
         header: "Completed date",
-        accessorKey: "repair_completed",
+        accessorKey: "completed_date",
     },
 ];
 export default columns;

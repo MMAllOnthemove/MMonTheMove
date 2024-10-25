@@ -1,5 +1,5 @@
 import express from "express";
-import AddGSPNTask from "../../../controllers/department/hhp/admin/add_gspn_task.js";
+import AddHHPTask from "../../../controllers/department/hhp/admin/add_hhp_task.js";
 import {
     GetAllTasks,
     GetTaskById,
@@ -11,7 +11,7 @@ import { limiter } from "../../../middleware/rateLimiter.js";
 import { authenticateAdmin } from "../../../middleware/verify_admin.js";
 import { authenticateToken } from "../../../middleware/verify.js";
 
-router.post("/", limiter, authenticateAdmin, AddGSPNTask);
+router.post("/", limiter, authenticateAdmin, AddHHPTask);
 router.get("/", authenticateToken, GetAllTasks);
 router.get("/:id", authenticateToken, GetTaskById);
 router.patch("/:id", authenticateToken, UpdateTask);

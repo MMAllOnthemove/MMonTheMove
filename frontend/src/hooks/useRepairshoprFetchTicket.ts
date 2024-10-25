@@ -16,7 +16,10 @@ const useRepairshoprFetchTicket = (searchTicket: string | number) => {
                     }
                 );
 
-                if (data?.tickets[0]?.number == searchTicket) setData(data);
+                if (data?.tickets[0]?.number == searchTicket) {
+                    console.log(data);
+                    setData(data);
+                }
             } catch (error) {
                 console.log("tickets search query", error);
             }
