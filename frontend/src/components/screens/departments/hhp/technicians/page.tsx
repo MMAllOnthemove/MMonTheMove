@@ -277,7 +277,7 @@ can update status, send to our db and repairshopr
                                                 <TabsTrigger value="repairshopr">Repairshopr</TabsTrigger>
                                             </TabsList>
                                             <TabsContent value="gspn">Make changes to your account here.</TabsContent>
-                                            <TabsContent value="repairshopr"><AddRepairshoprHHPTask /></TabsContent>
+                                            <TabsContent value="repairshopr"><AddRepairshoprHHPTask onChange={() => setOpenAddTaskModal(false)} /></TabsContent>
                                         </Tabs>
 
                                         {/* <Button className="w-full outline-none" type="button"> Update</Button> */}

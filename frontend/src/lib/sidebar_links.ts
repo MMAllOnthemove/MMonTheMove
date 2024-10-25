@@ -34,6 +34,7 @@ export const menuItems = [
         sublinks: [
             { id: 7, item: "Add engineer", pageRoute: "/engineers" },
             { id: 8, item: "Add booking agent", pageRoute: "/agents" },
+            { id: 8, item: "Add store", pageRoute: "/stores" },
         ],
     },
 ];

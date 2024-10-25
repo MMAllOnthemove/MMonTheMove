@@ -14,8 +14,7 @@ const hhpGSPNJobsSchema = Yup.object().shape({
     fault: Yup.string(),
     imei: Yup.string(),
     serial_number: Yup.string().required("Serial number is required!"),
-    repairshopr_status: Yup.string().required("Select status!"),
-    gspn_status: Yup.string(),
+    unit_status: Yup.string().required("Select status!"),
     ticket_number: Yup.string().required("What is the ticket number?!"),
     department: Yup.string(),
     stores: Yup.string(),
@@ -37,8 +36,7 @@ const AddGSPNTask = async (req, res) => {
         fault,
         imei,
         serial_number,
-        repairshopr_status,
-        gspn_status,
+        status,
         ticket_number,
         department,
         job_added_by,
@@ -65,8 +63,7 @@ const AddGSPNTask = async (req, res) => {
             fault,
             imei,
             serial_number,
-            repairshopr_status,
-            gspn_status,
+            status,
             ticket_number,
             department,
             job_added_by,
@@ -92,7 +89,7 @@ const AddGSPNTask = async (req, res) => {
                 .send({ message: "This task already exists!" });
         } else {
             await pool.query(
-                "INSERT INTO hhp_jobs (service_order_no, date_booked, created_at, model, warranty, engineer, fault, imei, serial_number, repairshopr_status, gspn_status, ticket_number, department, job_added_by, parts_pending_date, parts_issued_date, parts_pending, stores, parts_ordered_date, qc_complete, qc_complete_date, repair_completed, repairshopr_job_id) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23) returning *",
+                "INSERT INTO hhp_jobs (service_order_no, date_booked, created_at, model, warranty, engineer, fault, imei, serial_number, unit_status, ticket_number, department, job_added_by, parts_pending_date, parts_issued_date, parts_pending, stores, parts_ordered_date, qc_complete, qc_complete_date, repair_completed, repairshopr_job_id) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22) returning *",
                 payload
             );
             await createHHPGSPNTaskHistory(payload);
@@ -100,6 +97,7 @@ const AddGSPNTask = async (req, res) => {
             res.status(201).json({ message: "Successfully created!" });
         }
     } catch (err) {
+        console.error(err.message);
         res.status(500).json(err.message);
     }
 };

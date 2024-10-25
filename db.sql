@@ -20,7 +20,7 @@ CREATE TABLE company_people (
     reset_token_expires_at TIMESTAMP
 );
 
-CREATE TABLE login_history  (
+CREATE TABLE login_history (
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
     user_id BIGSERIAL NOT NULL,
@@ -72,14 +72,15 @@ create table hhp_jobs (
     reassign_engineer text,
     parts_list text [],
     assessment_date text,
+    parts_pending boolean,
     parts_pending_date text,
     parts_issued_date text,
-    parts_pending boolean,
     stores text,
     parts_ordered_date text,
     repairshopr_job_id text,
     qc_complete boolean,
     qc_date text,
+    completed_date date,
     parts_issued boolean,
     repeat_repair boolean
 );
@@ -99,29 +100,34 @@ create table hhp_jobs (
 create table hhp_jobs_history (
     id BIGSERIAL PRIMARY KEY UNIQUE,
     unique_id uuid DEFAULT gen_random_uuid(),
-    service_order_no text,
+    service_order_no text unique,
     date_booked date,
-    created_at date,
-    updated_at date,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW(),
     model text,
     warranty text,
     engineer text,
     fault text,
     imei text,
     serial_number text,
-    repairshopr_status text,
-    gspn_status text,
-    ticket_number text,
+    unit_status text,
+    ticket_number text unique,
     department text,
     job_added_by text,
     updated_by text,
     reassign_engineer text,
     parts_list text [],
+    assessment_date text,
+    parts_pending_date text,
+    parts_issued_date text,
+    parts_pending boolean,
     stores text,
-    parts_ordered_date date,
+    parts_ordered_date text,
     repairshopr_job_id text,
     qc_complete boolean,
-    qc_date date
+    qc_date text,
+    parts_issued boolean,
+    repeat_repair boolean
 );
 
 create table hhp_claims (

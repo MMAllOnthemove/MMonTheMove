@@ -4,7 +4,7 @@ import * as Yup from "yup";
 const addEngineersSchema = Yup.object({
     engineer_firstname: Yup.string().required("Firstname is required!"),
     engineer_lastname: Yup.string().required("Lastname is required!"),
-    department: Yup.string().required("Lastname is required!"),
+    department: Yup.string(),
 });
 
 const addEngineers = async (req, res) => {
