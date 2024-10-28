@@ -1,5 +1,7 @@
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import useAddHHPTask from '@/hooks/useAddHHPTask'
+import useGetStores from '@/hooks/useGetStores'
+import useUserLoggedIn from '@/hooks/useGetUser'
+import { closeModalInParent } from '@/lib/types'
 import React, { useEffect, useState } from 'react'
 import {
     Select,
@@ -8,119 +10,70 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import warranties from '@/lib/warranties';
-import useFetchEngineer from '@/hooks/useFetchEngineers';
-import repairshopr_statuses from '@/lib/repairshopr_status';
-import useGetStores from '@/hooks/useGetStores';
-import { Button } from '@/components/ui/button';
-import axios from 'axios';
-import useUserLoggedIn from '@/hooks/useGetUser';
-import useAddHHPTask from '@/hooks/useAddHHPTask';
-import { closeModalInParent } from '@/lib/types';
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import warranties from '@/lib/warranties'
+import useFetchEngineer from '@/hooks/useFetchEngineers'
+import repairshopr_statuses from '@/lib/repairshopr_status'
+import { Button } from '@/components/ui/button'
+import useRepairshoprFetchTicket from '@/hooks/useRepairshoprFetchTicket'
+import useIpaasGetSOInfoAll from '@/hooks/useIpaasGetSoInfoAll'
 
 
-const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) => {
+
+
+const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
-    const [searchTicket, setSearchTicket] = useState("")
+    const { engineersList } = useFetchEngineer()
+    const { storesList } = useGetStores()
+    const { addTask, addHHPTaskLoading, addHHPTaskErrors } = useAddHHPTask();
+    const { getSOInfoAllTookan } = useIpaasGetSOInfoAll();
+    const [searchServiceOrder, setSearchSericeOrder] = useState("")
     const [warranty, setWarranty] = useState("")
     const [engineer, setEngineer] = useState("")
     const [status, setStatus] = useState("")
     const [stores, setStore] = useState("")
-    const [repeat_repair, setRepeatRepair] = useState("")
-    const { engineersList } = useFetchEngineer()
-    const { storesList } = useGetStores()
-    const { addTask, addHHPTaskLoading, addHHPTaskErrors } = useAddHHPTask();
-
+    const [repeat_repair, setRepeatRepair] = useState('')
     const [imei, setIMEI] = useState("")
     const [repairshopr_job_id, setRepairshoprJobId] = useState('')
     const [service_order_no, setServiceOrderNo] = useState("")
     const [fault, setFault] = useState("")
     const [ticket_number, setTicketNumber] = useState("")
-    const [assetId, setAssetId] = useState("")
     const [date_booked, setDateBooked] = useState("")
     const [model, setModel] = useState("")
     const [serial_number, setSerialNumber] = useState("")
 
     const [department] = useState("HHP")
 
-
-    // Fetch ticket info
-    useEffect(() => {
-        const fetchRSData = async () => {
-            const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/tickets?query=${searchTicket}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
-                },
-            });
-            if (data?.tickets[0]?.number == searchTicket) {
-                setServiceOrderNo(data?.tickets[0]["properties"]["Service Order No."])
-                setTicketNumber(data?.tickets[0]?.number)
-                setRepairshoprJobId(data?.tickets[0]?.id)
-                setDateBooked(data?.tickets[0]?.created_at
-                )
-                setFault(data?.tickets[0]?.subject)
-            }
-        };
-        fetchRSData();
-    }, [searchTicket]);
-
-    useEffect(() => {
-        const fetchRSByIdData = async () => {
-            const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/tickets/${repairshopr_job_id}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
-                },
-            });
-
-            if (data?.ticket?.id == repairshopr_job_id) {
-                setAssetId(data?.ticket?.asset_ids[0])
-            }
-
-        };
-        fetchRSByIdData();
-    }, [searchTicket, repairshopr_job_id]);
+    const { fetchRSTicketData } = useRepairshoprFetchTicket(ticket_number)
 
 
     useEffect(() => {
-        const fetchRSByAssetData = async () => {
-            const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/customer_assets/${assetId}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
-                },
-            });
+        if (fetchRSTicketData) {
+            setTicketNumber(fetchRSTicketData?.tickets[0]?.number)
+            setRepairshoprJobId(fetchRSTicketData?.tickets[0]?.id)
+        }
+    }, [fetchRSTicketData])
 
-            if (data?.asset?.id == assetId) {
-                // console.log(data)
-                setIMEI(data?.asset?.properties["IMEI No."])
-                setModel(data?.asset?.properties["Model No.:"])
-                setSerialNumber(data?.asset?.asset_serial)
+    useEffect(() => {
+        const handleGetSOInfo = async (serviceOrder: string) => {
+            try {
+                const data = await getSOInfoAllTookan(serviceOrder);
 
+                setIMEI(data?.Return?.EsModelInfo?.IMEI);
+                setServiceOrderNo(data?.Return?.EsHeaderInfo?.SvcOrderNo);
+                setDateBooked(data?.Return?.EsHeaderInfo?.CreateDate);
+                setModel(data?.Return?.EsModelInfo?.Model);
+                setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
+                setFault(data?.Return?.EsModelInfo?.DefectDesc);
+            } catch (error) {
+                console.error(error);
             }
-
         };
-        fetchRSByAssetData();
-    }, [searchTicket, assetId]);
-    // console.log(engineersList)
-    /*  
-    service_order_no,
-    date_booked 
-    model
-    warranty
-    engineer - configure this
-    fault
-    imei
-    serial_number
-    unit_status
-    ticket_number - will be auto added (opposite for service order on the gspn)
-    department - will be always be HHP
-    job_added_by
-    stores
-    repeat_repair
-    
-    */
+        handleGetSOInfo(searchServiceOrder)
+    }, [searchServiceOrder, getSOInfoAllTookan])
+
+
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault()
         const job_added_by = user?.email
@@ -146,6 +99,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
         }
         console.log(payload)
         await addTask(payload)
+        // Ensure onChange is defined before calling it
         if (addHHPTaskErrors) {
             onChange(false)
         }
@@ -155,9 +109,14 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
         <div>
             <form>
                 <div className="mb-3">
-                    <Label htmlFor="ticket_number">Ticket number</Label>
-                    <Input type="text" name="ticket_number" value={searchTicket} onChange={(e) => setSearchTicket(e.target.value)} />
+                    <Label htmlFor="searchServiceOrder">Service order number</Label>
+                    <Input type="text" name="searchServiceOrder" value={searchServiceOrder} onChange={(e) => setSearchSericeOrder(e.target.value)} />
 
+                </div>
+                <div className="mb-3">
+                    <Label htmlFor="ticket_number">Ticket number</Label>
+                    <Input type="text" name="ticket_number" value={ticket_number} onChange={(e) => setTicketNumber(e.target.value)} />
+                    {addHHPTaskErrors.ticket_number && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.ticket_number}</p>}
                 </div>
                 <div className="mb-3">
                     <Label htmlFor="imei">IMEI</Label>
@@ -243,4 +202,4 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
     )
 }
 
-export default AddRepairshoprHHPTask
+export default AddgspnHHPTask

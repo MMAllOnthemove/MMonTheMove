@@ -31,8 +31,9 @@ export const UpdateTask = async (req, res) => {
             text: query,
             values: values,
         });
-
-        res.status(200).json({ updatedRecord: result.rows[0] });
+        res.status(201).json({
+            message: "HHP task updated",
+        });
     } catch (err) {
         console.error("Error updating record:", err);
         res.status(500).json({ error: "Database error" });

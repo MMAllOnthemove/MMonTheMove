@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 type TEngineers = {
     id: string;
     unique_id: string;
-    engineer: string;
+    engineer_firstname: string;
+    engineer_lastname: string;
     department: string;
 };
 
@@ -27,7 +28,7 @@ const useFetchEngineer = () => {
                     setEngineers(response?.data);
                 }
             } catch (error) {
-                console.log("Get engineers list error", error);
+                // console.log("Get engineers list error", error);
             } finally {
                 setEngineersLoading(false);
             }

@@ -36,7 +36,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Label } from "@/components/ui/label";
 import {
@@ -51,8 +51,12 @@ import { Textarea } from "@/components/ui/textarea";
 import useRepairshoprComment from '@/hooks/useRepairshoprComment';
 import useRepairshoprTicket from '@/hooks/useRepairshoprTicket';
 import findChanges from '@/lib/find_changes';
+
+import useUpdateHHPTask from '@/hooks/updateHHPTask';
 import repairshopr_statuses from '@/lib/repairshopr_status';
 import { CheckedState } from '@radix-ui/react-checkbox';
+import toast from 'react-hot-toast';
+import AddgspnHHPTask from './add/gspn/page';
 import AddRepairshoprHHPTask from './add/repairshopr/page';
 
 
@@ -63,11 +67,11 @@ const TechniciansScreen = () => {
     const { hhpTasks, hhpTasksLoading } = useHHPTasks()
     const { updateRepairTicket } = useRepairshoprTicket()
     const { updateRepairTicketComment } = useRepairshoprComment()
-    // const { updateHHPTask } = useUpdateHHPTask()
+    const { updateHHPTask } = useUpdateHHPTask()
     const [modifyTaskModal, setModifyTaskModal] = useState<boolean | null | any>();
     const [service_order_no, setServiceOrder] = useState("")
     const [reparshoprComment, setRepairshoprComment] = useState("")
-    const [repairshopr_status, setRepairshoprStatus] = useState("")
+    const [unit_status, setRepairshoprStatus] = useState("")
     const [assessment_date, setAssessmentDate] = useState("")
     const [parts_pending_date, setPartsPendingDate] = useState("")
     const [parts_issued_date, setPartsIssuedDate] = useState("")
@@ -75,11 +79,7 @@ const TechniciansScreen = () => {
     const [parts_pending, setPartsPending] = useState<CheckedState | undefined>()
     const [qc_date, setQCCompleteDate] = useState("")
     const [qc_complete, setQCComplete] = useState<CheckedState | undefined>()
-
-
     const [openAddTaskModal, setOpenAddTaskModal] = useState(false)
-
-    // const { hhpTask } = useFetchHHPTaskById(modifyTaskModal?.id)
 
     const handleRowClick = (row: any) => {
         setModifyTaskModal(row?.original);
@@ -121,13 +121,26 @@ can update status, send to our db and repairshopr
 
     */
 
+    useEffect(() => {
+        // store values from db but still allow user to update those same fields
+        // this helps when comparing
+        setAssessmentDate(modifyTaskModal?.assessment_date)
+        setPartsIssued(modifyTaskModal?.parts_issued)
+        setPartsIssuedDate(modifyTaskModal?.parts_issued_date)
+        setPartsPending(modifyTaskModal?.parts_pending)
+        setPartsPendingDate(modifyTaskModal?.parts_pending_date)
+        setQCComplete(modifyTaskModal?.qc_complete)
+        setQCCompleteDate(modifyTaskModal?.qc_date)
+        setServiceOrder(modifyTaskModal?.service_order_no)
+    }, [modifyTaskModal?.assessment_date, modifyTaskModal?.parts_issued, modifyTaskModal?.parts_issued_date, modifyTaskModal?.parts_pending, modifyTaskModal?.parts_pending_date, modifyTaskModal?.qc_complete, modifyTaskModal?.qc_date, modifyTaskModal?.service_order_no])
+
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         console.log(modifyTaskModal)
 
         const statusPayload = {
-            "status": repairshopr_status
+            "status": unit_status
         }
         const commentPayload = {
             "subject": "Update",
@@ -138,20 +151,26 @@ can update status, send to our db and repairshopr
         }
 
         const id = modifyTaskModal?.id;
+        if (modifyTaskModal.service_order_no !== service_order_no) {
+            setServiceOrder(service_order_no)
+        }
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no, repairshopr_status, assessment_date, parts_pending_date, parts_issued_date, parts_issued, parts_pending, qc_date, qc_complete
+            id, service_order_no, unit_status, assessment_date, parts_pending_date, parts_issued_date, parts_issued, parts_pending, qc_date, qc_complete
+
         }
 
         const changes = findChanges(modifyTaskModal, updatePayload)
-        console.log("changes", changes)
+        // console.log("changes", changes)
         try {
-            // const statusPayloadResponse = await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, statusPayload)
-            // const commentResponse = await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
-            // if (Object.keys(changes).length > 0) {
-            //     const updateHHPJobsresponse = await updateHHPTask(id, changes)
-            //     console.log("updateHHPJobsresponse", updateHHPJobsresponse)
-            // }
+            const statusPayloadResponse = await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, statusPayload)
+            const commentResponse = await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
+            if (Object.keys(changes).length > 0) {
+                const updateHHPJobsresponse = await updateHHPTask(id, changes)
+                toast.success(`${statusPayloadResponse?.data?.message}`);
+                // toast.success
+                closeModal()
+            }
         } catch (error) {
             console.log("error rs shopr", error)
         }
@@ -276,7 +295,7 @@ can update status, send to our db and repairshopr
                                                 <TabsTrigger value="gspn">GSPN</TabsTrigger>
                                                 <TabsTrigger value="repairshopr">Repairshopr</TabsTrigger>
                                             </TabsList>
-                                            <TabsContent value="gspn">Make changes to your account here.</TabsContent>
+                                            <TabsContent value="gspn"><AddgspnHHPTask onChange={() => setOpenAddTaskModal(false)} /></TabsContent>
                                             <TabsContent value="repairshopr"><AddRepairshoprHHPTask onChange={() => setOpenAddTaskModal(false)} /></TabsContent>
                                         </Tabs>
 
@@ -303,14 +322,13 @@ can update status, send to our db and repairshopr
                                                     <div className="mb-3">
                                                         <Label htmlFor="serviceOrder">Service order</Label>
                                                         <Input type="text" name="serviceOrder" value={service_order_no} onChange={(e) => setServiceOrder(e.target.value)} />
-
                                                     </div>
                                                     <div className="mb-3">
                                                         <Label htmlFor="reparshoprComment">Repairshopr note</Label>
                                                         <Textarea value={reparshoprComment} name="reparshoprComment" onChange={(e) => setRepairshoprComment(e.target.value)} />
                                                     </div>
                                                     <div className="mb-3">
-                                                        <Select name="status" value={repairshopr_status} onValueChange={(e) => setRepairshoprStatus(e)}>
+                                                        <Select name="status" value={unit_status} onValueChange={(e) => setRepairshoprStatus(e)}>
                                                             <SelectTrigger className="w-full">
                                                                 <SelectValue placeholder="Status" />
                                                             </SelectTrigger>

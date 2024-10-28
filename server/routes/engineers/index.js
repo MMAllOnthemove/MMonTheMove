@@ -6,9 +6,8 @@ import { authenticateToken } from "../../middleware/verify.js";
 import deleteEngineers from "../../controllers/engineers/delete_engineers.js";
 import { limiter } from "../../middleware/rateLimiter.js";
 
-
 const router = express.Router();
-router.get("/", authenticateAdmin, getEngineers);
+router.get("/", authenticateToken, getEngineers);
 router.post("/", limiter, authenticateAdmin, addEngineers);
 router.delete("/:id", authenticateAdmin, deleteEngineers);
 

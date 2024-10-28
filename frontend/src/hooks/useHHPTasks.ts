@@ -49,7 +49,7 @@ const useHHPTasks = () => {
                     setHHPTasks([...response.data]);
                 }
             } catch (error) {
-                console.log("Get hhpTasks error", error);
+                // console.log("Get hhpTasks error", error);
             } finally {
                 setHHPTasksLoading(false);
             }
