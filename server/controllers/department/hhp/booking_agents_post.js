@@ -1,4 +1,4 @@
-import { pool } from "./../../../db.js";
+import { pool } from "../../../db.js";
 import * as Yup from "yup";
 
 const bookingAgentsSchema = Yup.object().shape({

@@ -4,33 +4,30 @@ import { useRouter } from "next/navigation";
 
 import toast from "react-hot-toast";
 interface ErrorMessages {
-    warranty?: string;
-    engineer?: string;
-    status?: string;
-    stores?: string;
-    repeat_repair?: string;
+    agent_firstname?: string;
+    agent_lastname?: string;
+    department?: string;
 }
 
-const useAddHHPTask = () => {
-    const [addHHPTaskLoading, setLoading] = useState(false); // Loading state
-    const [addHHPTaskErrors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
+const useAddAgent = () => {
+    const [addAgentLoading, setLoading] = useState(false); // Loading state
+    const [errors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
 
     const router = useRouter();
-    const addTask = async (values: any) => {
+    const addAgent = async (values: any) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
         try {
             const response = await axios.post(
-                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs`,
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/booking_agents`,
                 values,
                 {
                     withCredentials: true,
                 }
             );
-            console.log("useAddRepairHHPTask response", response);
+            console.log("booking_agents response", response);
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
-                router.push("/");
             }
         } catch (error: any) {
             // console.log("login error", error?.response.data?.message);
@@ -46,7 +43,7 @@ const useAddHHPTask = () => {
         }
     };
 
-    return { addTask, addHHPTaskLoading, addHHPTaskErrors };
+    return { addAgent, addAgentLoading, errors };
 };
 
-export default useAddHHPTask;
+export default useAddAgent;

@@ -1,4 +1,4 @@
-import { pool } from "./../../../db.js";
+import { pool } from "../../../db.js";
 
 // Get repair jobs
 const GetBookingAgentsJobs = async (req, res) => {

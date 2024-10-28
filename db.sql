@@ -82,7 +82,7 @@ create table hhp_jobs (
     qc_date text,
     completed_date date,
     parts_issued boolean,
-    repeat_repair boolean
+    repeat_repair text
 );
 
 -- Add a trigger for updated_at
@@ -140,3 +140,13 @@ create table hhp_claims (
     department text,
     FOREIGN KEY (service_order_no) REFERENCES hhp_jobs(service_order_no)
 );
+
+create table booking_agents (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    agent_firstname text,
+    agent_lastname text,
+    department text,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+)

@@ -10,4 +10,7 @@ export type TuseIpaasGetSOList = {
 }[];
 export type TInternalGSPNData = {
     service_order_no: string;
-}
+};
+export type closeModalInParent = {
+    onChange?: (id: boolean) => void;
+};
