@@ -149,4 +149,15 @@ create table booking_agents (
     department text,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
-)
+);
+
+create table booking_agents_tasks (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    service_order_no text,
+    ticket_number text,
+    created_by text,
+    booking_agent text,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
