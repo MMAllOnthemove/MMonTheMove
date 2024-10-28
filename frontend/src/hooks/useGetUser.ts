@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 type TUser = {
+    user_id: number;
     user_unique_id: string;
     email: string;
     user_name: string;

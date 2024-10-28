@@ -12,11 +12,12 @@ export const menuItems = [
                 item: "Dashboard",
                 pageRoute: "/departments/hhp/analytics",
             },
-            {
-                id: 3,
-                item: "Booking agents",
-                pageRoute: "/departments/hhp/booking_agents",
-            },
+        ],
+    },
+    {
+        label: "Booking agents report",
+        sublinks: [
+            { id: 3, item: "Analytics", pageRoute: "/booking_agents_report" },
         ],
     },
     {
