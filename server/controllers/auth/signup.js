@@ -75,14 +75,12 @@ const SignupUser = async (req, res) => {
             });
         }
     } catch (error) {
-        console.error("Signup failed:", error);
 
         // to get error for a specific field
         const errors = {};
         error.inner.forEach((err) => {
             errors[err.path] = err.message; // `err.path` is the field name, `err.message` is the error message
         });
-        console.log("errors", errors);
         res.status(500).json({ errors });
     }
 };

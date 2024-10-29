@@ -28,14 +28,12 @@ const useUserLoggedIn = () => {
                     }
                 );
                 if (response?.data) {
-                    // console.log(response.data?.user);
                     setUser(response.data?.user);
                     setIsLoggedIn(true); // User is logged in if data is returned
                 } else {
                     setIsLoggedIn(false); // No user data means not logged in
                 }
             } catch (error) {
-                console.log("Get user info error", error);
                 setIsLoggedIn(false);
             } finally {
                 setLoading(false);

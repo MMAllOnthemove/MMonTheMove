@@ -1,6 +1,6 @@
-import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import toast from "react-hot-toast";
 interface ErrorMessages {
@@ -12,9 +12,8 @@ const useLogin = () => {
     const [loading, setLoading] = useState(false); // Loading state
     const [errors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
 
-
     const router = useRouter();
-    const login = async (values: any) => {
+    const login = async (values: unknown) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
         try {
@@ -25,20 +24,16 @@ const useLogin = () => {
                     withCredentials: true,
                 }
             );
-            console.log("login response", response);
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
                 router.push("/");
             }
-        } catch (error: any) {
-            // console.log("login error", error?.response.data?.message);
-          
+        } catch (error: unknown) {
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {
                 setErrors(error.response.data.errors); // Set validation errors to state
             }
-            // setError(error?.response?.data?.message);
         } finally {
             setLoading(false); // Stop loading
         }

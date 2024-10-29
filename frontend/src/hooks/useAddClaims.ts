@@ -1,6 +1,5 @@
+import axios, { AxiosError } from "axios";
 import { useState } from "react";
-import axios from "axios";
-import { useRouter } from "next/navigation";
 
 import toast from "react-hot-toast";
 interface ErrorMessages {
@@ -11,12 +10,12 @@ interface ErrorMessages {
     created_by?: string;
 }
 
+
 const useAddClaims = () => {
     const [addClaimLoading, setLoading] = useState(false); // Loading state
     const [errors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
 
-    const router = useRouter();
-    const addAddClaim = async (values: any) => {
+    const addAddClaim = async (values: unknown) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
         try {
@@ -27,12 +26,10 @@ const useAddClaims = () => {
                     withCredentials: true,
                 }
             );
-            console.log("claims add response", response);
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
             }
-        } catch (error: any) {
-            // console.log("login error", error?.response.data?.message);
+        } catch (error: unknown | AxiosError) {
 
             if (error?.response?.data?.message) {
                 toast.error(`${error?.response.data?.message}`);

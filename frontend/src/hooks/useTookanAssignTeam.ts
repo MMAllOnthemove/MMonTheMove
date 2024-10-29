@@ -19,7 +19,7 @@ const useTookanAssignTeam = () => {
 
             return response.data;
         } catch (error) {
-            throw error;
+            // throw error;
         }
     };
 

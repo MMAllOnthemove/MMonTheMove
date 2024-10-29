@@ -43,7 +43,7 @@ export interface ITookanAssignToTeam {
 }
 export interface ISearchForm {
     filtering: string;
-    setFiltering: (e: any) => string | any;
+    setFiltering: (e: unknown) => string | unknown;
 }
 export interface IHHPgspn {
     id: number;

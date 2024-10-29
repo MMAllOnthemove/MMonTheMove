@@ -9,7 +9,7 @@ const GetAllTasks = async (req, res) => {
         );
         res.json(rows);
     } catch (err) {
-        console.log(err);
+        //
     }
 };
 
@@ -23,7 +23,7 @@ const GetTaskById = async (req, res) => {
         );
         res.json(rows);
     } catch (err) {
-        console.log(err);
+        //
     }
 };
 export { GetAllTasks, GetTaskById };

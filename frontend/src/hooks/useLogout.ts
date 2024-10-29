@@ -1,5 +1,5 @@
-import { useState } from "react";
 import axios from "axios";
+import { useState } from "react";
 
 const useLogoutUser = () => {
     const [logoutLoading, setLogoutLoading] = useState(false);
@@ -18,10 +18,9 @@ const useLogoutUser = () => {
 
             if (res.status === 204) {
                 window.location.reload();
-                console.log("logged out");
             }
         } catch (err) {
-            console.log("could not logout", JSON.stringify(err));
+            //
         } finally {
             setLogoutLoading(false);
         }

@@ -1,42 +1,35 @@
 "use client"
-import useUserLoggedIn from '@/hooks/useGetUser'
-import useLogoutUser from '@/hooks/useLogout'
-import React, { useState } from 'react'
 import { Button } from "@/components/ui/button"
-import Image from 'next/image'
-import { Label } from "@/components/ui/label"
 import {
     Sheet,
     SheetClose,
     SheetContent,
-    SheetDescription,
     SheetFooter,
     SheetHeader,
     SheetTitle,
-    SheetTrigger,
+    SheetTrigger
 } from "@/components/ui/sheet"
+import useUserLoggedIn from '@/hooks/useGetUser'
+import useLogoutUser from '@/hooks/useLogout'
 import { menuItems } from '@/lib/sidebar_links'
+import { Bars4Icon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 import Link from 'next/link'
-import { Bars2Icon, Bars4Icon, EllipsisVerticalIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import Container from '../container/page'
+import { useState } from 'react'
 import logo from "../../assets/mmlogo.png"
 
 const Sidebar = () => {
-    const { user, isLoggedIn, loading } = useUserLoggedIn()
-    const { logoutUser, logoutLoading, error } = useLogoutUser()
+    const { user } = useUserLoggedIn()
+    const { logoutUser, logoutLoading } = useLogoutUser()
 
     const [openDropdown, setOpenDropdown] = useState(null);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [adminArea, setAdminArea] = useState(false);
-    const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
-    const toggleDropdown = (index: null | any) => {
+    const toggleDropdown = (index: null | unknown) => {
         setOpenDropdown(openDropdown === index ? null : index);
     };
 
     const logout = () => {
         logoutUser()
-        // router.refresh();
     }
 
     return (

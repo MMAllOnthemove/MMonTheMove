@@ -35,8 +35,8 @@ import React, { useState } from 'react';
 
 
 const StoresScreen = () => {
-    const { user, isLoggedIn, loading } = useUserLoggedIn()
-    const { storesList, storesListLoading } = useGetStores()
+    const { isLoggedIn, loading } = useUserLoggedIn()
+    const { storesList } = useGetStores()
     const { addStore, addStoreLoading, errors } = useAddStore()
     const { deleteStore, deleteStoreLoading } = useDeleteStore()
     const [store_name, setStoreName] = useState("")
@@ -47,10 +47,11 @@ const StoresScreen = () => {
     const [filtering, setFiltering] = useState("");
 
     const [openAddModal, setOpenAddModal] = useState(false)
-    const [modifyStoreModal, setModifyStoreModal] = useState<boolean | null | any>();
-    // const { hhpTask } = useFetchHHPTaskById(modifyTaskModal?.id)
 
-    const handleRowClick = (row: any) => {
+    const [modifyStoreModal, setModifyStoreModal] = useState<boolean | null | unknown>();
+
+
+    const handleRowClick = (row: unknown) => {
         setModifyStoreModal(row?.original);
     };
 
@@ -78,18 +79,13 @@ const StoresScreen = () => {
     const addRow = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const payload = { store_name };
-        // console.log(payload)
-        const response = await addStore(payload);
-        console.log("response add store..", response)
+        await addStore(payload);
         setOpenAddModal(false)
     }
     const delEng = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const id = modifyStoreModal?.unique_id;
-        const payload = { id }
-        console.log(payload)
-        const response = await deleteStore(id);
-        console.log("response del store..", response)
+        await deleteStore(id);
         closeModifyStoreModal()
     }
 
@@ -159,7 +155,7 @@ const StoresScreen = () => {
                                     </thead>
 
                                     <TableBody>
-                                        {table.getRowModel().rows.map((row: any) => (
+                                        {table.getRowModel().rows.map((row: unknown) => (
                                             <tr
                                                 key={row.id}
 
@@ -176,7 +172,7 @@ const StoresScreen = () => {
                                                     </button>
                                                 </td>
 
-                                                {row.getVisibleCells().map((cell: any) => (
+                                                {row.getVisibleCells().map((cell: unknown) => (
                                                     <td
                                                         key={cell.id}
                                                         className="px-4 py-3 font-medium text-sm"

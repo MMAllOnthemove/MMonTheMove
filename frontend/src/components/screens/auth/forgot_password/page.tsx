@@ -9,7 +9,6 @@ import {
     CardTitle
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import toast from 'react-hot-toast';
 import useForgotPassword from "@/hooks/useForgotPassword";
 import Link from 'next/link';
 import React, { useState } from 'react';
@@ -33,8 +32,6 @@ function ForgotPasswordScreen() {
 
     return (
         <div className='h-screen flex justify-center items-center'>
-
-
             <form>
                 <Card className='w-[400px]'>
                     <CardHeader>
@@ -52,9 +49,7 @@ function ForgotPasswordScreen() {
                                 className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
                             />
 
-
                             {errors.email && <p className="text-sm text-red-500 font-medium">{errors.email}</p>}
-
 
                         </div>
                     </CardContent>

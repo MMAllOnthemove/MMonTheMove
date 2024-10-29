@@ -10,7 +10,7 @@ type TEngineers = {
 };
 
 const useFetchClaims = () => {
-    const [claimsList, setData] = useState<TEngineers[] | any>([]);
+    const [claimsList, setData] = useState<TEngineers[] | unknown>([]);
     const [claimsLoading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -24,11 +24,10 @@ const useFetchClaims = () => {
                     }
                 );
                 if (response?.data) {
-                    // console.log(response);
                     setData(response?.data);
                 }
             } catch (error) {
-                // console.log("Get engineers list error", error);
+                // 
             } finally {
                 setLoading(false);
             }

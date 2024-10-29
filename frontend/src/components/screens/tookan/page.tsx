@@ -2,33 +2,23 @@
 import LoadingScreen from '@/components/loading_screen/page'
 import NotLoggedInScreen from '@/components/not_logged_in/page'
 import Sidebar from '@/components/sidebar/page'
-import useUserLoggedIn from '@/hooks/useGetUser'
-import React, { useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
 import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle
-} from "@/components/ui/card";
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import Link from 'next/link'
-import { capitalizeFirstLetter } from '@/lib/capitalizeFirstLetter'
-import { Textarea } from '@/components/ui/textarea'
-import useIpaasGetSOInfoAll from '@/hooks/useIpaasGetSoInfoAll'
-import useTookanApi from '@/hooks/useTookanTask'
-import { minDate_, today } from '@/lib/date_formats'
+} from "@/components/ui/card"
 import {
     Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+    DialogTitle
 } from "@/components/ui/dialog"
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
     Select,
     SelectContent,
@@ -36,13 +26,21 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import toast from "react-hot-toast";
-import { tookan_departments, tookan_status } from '@/lib/tookan'
+import { Textarea } from '@/components/ui/textarea'
+import useUserLoggedIn from '@/hooks/useGetUser'
+import useIpaasGetSOInfoAll from '@/hooks/useIpaasGetSoInfoAll'
 import useTookanAssignTeam from '@/hooks/useTookanAssignTeam'
+import useTookanApi from '@/hooks/useTookanTask'
+import { capitalizeFirstLetter } from '@/lib/capitalizeFirstLetter'
+import { today } from '@/lib/date_formats'
+import { tookan_departments, tookan_status } from '@/lib/tookan'
+import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
+import toast from "react-hot-toast"
 
 
 const TookanScreen = () => {
-    const { user, isLoggedIn, loading } = useUserLoggedIn()
+    const { isLoggedIn, loading } = useUserLoggedIn()
     const { getSOInfoAllTookan } = useIpaasGetSOInfoAll();
     const { createTask } = useTookanApi();
     const { assignToTeam } = useTookanAssignTeam();
@@ -51,11 +49,6 @@ const TookanScreen = () => {
     const [email, setEmail] = useState("")
     const [phone, setPhone] = useState("")
     const [address, setAddress] = useState("")
-    const [address2, setAddress2] = useState("")
-    const [city, setCity] = useState("")
-    const [state, setState] = useState("")
-    const [zip, setZip] = useState("")
-    const [country, setCountry] = useState("")
     const [serviceOrder, setServiceOrder] = useState("")
     const [startDate, setStartDate] = useState("")
     const [endDate, setEndDate] = useState("")
@@ -78,7 +71,6 @@ const TookanScreen = () => {
             try {
                 const data = await getSOInfoAllTookan(serviceOrder);
                 const fullAddress = `${data.Return.EsBpInfo.CustAddrStreet1} ${data.Return.EsBpInfo.CustAddrStreet2} ${data.Return.EsBpInfo.CustCity} ${data.Return.EsBpInfo.CustCountry}`;
-                // console.log("tookan create", data)
                 setFirstname(data.Return.EsBpInfo.CustFirstName);
                 setLastname(data.Return.EsBpInfo.CustLastName);
                 setEmail(data.Return.EsBpInfo.CustEmail);
@@ -118,7 +110,6 @@ const TookanScreen = () => {
 
         try {
             const response = await createTask(values);
-            console.log("response", response)
             if (response.status === 200) {
                 toast.success(response.message);
                 setPopJobId(response.data.job_id);
@@ -141,7 +132,6 @@ const TookanScreen = () => {
 
         try {
             const response = await assignToTeam(values);
-            console.log("response", response)
             if (response.status === 200) {
                 toast.success(response.message);
                 setIsModalOpen(false);

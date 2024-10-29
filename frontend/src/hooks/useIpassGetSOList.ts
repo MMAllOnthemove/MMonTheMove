@@ -39,11 +39,6 @@ const useIpaasGetSOList = () => {
                         Authorization: `Bearer ${bearerToken}`,
                     },
                 });
-                console.log(response);
-                // const results = [...response?.data?.EtSvcInfo?.results]?.filter(
-                //     (x) => x.SvcProduct === "HHP"
-                // );
-                // setGSPNSOList(results);
                 if (response?.data?.EtSvcInfo) {
                     const results = [
                         ...response?.data?.EtSvcInfo?.results,
@@ -51,7 +46,7 @@ const useIpaasGetSOList = () => {
                     setGSPNSOList(results);
                 }
             } catch (error) {
-                console.log("Get hhpTasks gspn list error", error);
+               //
             } finally {
                 setGSPNSOListLoading(true);
             }

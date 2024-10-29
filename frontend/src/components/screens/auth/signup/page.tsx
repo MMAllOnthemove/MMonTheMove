@@ -1,23 +1,22 @@
 "use client"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
     CardFooter,
     CardHeader,
     CardTitle
-} from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import toast from "react-hot-toast";
-import useSignup from "@/hooks/useSignup"
-import { datetimestamp } from "@/lib/date_formats"
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"
-import { useState } from "react"
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import useSignup from "@/hooks/useSignup";
+import { datetimestamp } from "@/lib/date_formats";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
 
 
 const SignupScreen = () => {
 
-    const { signup, loading, errors, signupErrorFromBackend } = useSignup()
+    const { signup, loading, errors } = useSignup()
 
 
     const [fullName, setFullName] = useState("")

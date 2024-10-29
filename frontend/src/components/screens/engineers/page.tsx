@@ -34,8 +34,8 @@ import useDeleteEngineer from '@/hooks/useDeleteEngineer';
 
 
 const EngineersScreen = () => {
-    const { user, isLoggedIn, loading } = useUserLoggedIn()
-    const { engineersList, engineersListLoading } = useFetchEngineer()
+    const { isLoggedIn, loading } = useUserLoggedIn()
+    const { engineersList } = useFetchEngineer()
     const { addEngineer, addEngineerLoading, errors } = useAddEngineer()
     const { deleteEngineer, deleteEngineerLoading } = useDeleteEngineer()
     const [engineer_firstname, setEngineerFirstname] = useState("")
@@ -48,10 +48,10 @@ const EngineersScreen = () => {
     const [filtering, setFiltering] = useState("");
 
     const [openAddModal, setOpenAddModal] = useState(false)
-    const [modifyEngineerModal, setModifyEngineerModal] = useState<boolean | null | any>();
-    // const { hhpTask } = useFetchHHPTaskById(modifyTaskModal?.id)
+   
+    const [modifyEngineerModal, setModifyEngineerModal] = useState<boolean | null | unknown>();
 
-    const handleRowClick = (row: any) => {
+    const handleRowClick = (row: unknown) => {
         setModifyEngineerModal(row?.original);
     };
 
@@ -79,18 +79,13 @@ const EngineersScreen = () => {
     const addEng = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const payload = { engineer_firstname, engineer_lastname, department };
-        // console.log(payload)
-        const response = await addEngineer(payload);
-        console.log("response add engi..", response)
+        await addEngineer(payload);
         setOpenAddModal(false)
     }
     const delEng = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const id = modifyEngineerModal?.unique_id;
-        const payload = { id }
-        console.log(payload)
-        const response = await deleteEngineer(id);
-        console.log("response del engi..", response)
+         await deleteEngineer(id);
         closeModifyEngineerModal()
     }
 
@@ -159,8 +154,8 @@ const EngineersScreen = () => {
                                         ))}
                                     </thead>
 
-                                    <TableBody>
-                                        {table.getRowModel().rows.map((row: any) => (
+                                    <TableBody> 
+                                        {table.getRowModel().rows.map((row: unknown) => (
                                             <tr
                                                 key={row.id}
 
@@ -176,8 +171,8 @@ const EngineersScreen = () => {
                                                         Delete
                                                     </button>
                                                 </td>
-
-                                                {row.getVisibleCells().map((cell: any) => (
+                                               
+                                                {row.getVisibleCells().map((cell: unknown) => (
                                                     <td
                                                         key={cell.id}
                                                         className="px-4 py-3 font-medium text-sm"

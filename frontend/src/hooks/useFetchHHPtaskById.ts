@@ -43,11 +43,10 @@ const useFetchHHPTaskById = (taskId: string | number) => {
                     }
                 );
                 if (data) {
-                    // console.log(data);
                     setHHPTask(data);
                 }
             } catch (error) {
-                console.log("fetching single task error", error);
+                //
             }
         };
         fetchData();

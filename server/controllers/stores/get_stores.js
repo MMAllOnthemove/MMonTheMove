@@ -8,7 +8,6 @@ const getStores = async (req, res) => {
 
         res.json(rows);
     } catch (error) {
-        console.log("get stores error", error);
         res.status(500).json({ error: error.message });
     }
 };

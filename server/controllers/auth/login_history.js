@@ -9,9 +9,8 @@ const LoginHistory = async (userId, loginMethod, loginStatus) => {
             "INSERT INTO login_history (user_id, login_timestamp, login_method, login_status) VALUES ($1, $2, $3, $4)",
             [userId, datetime, loginMethod, loginStatus]
         );
-        console.log("added to history table");
     } catch (error) {
-        console.log("Could not add user to history table", error);
+        //
     }
 };
 

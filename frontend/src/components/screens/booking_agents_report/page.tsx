@@ -16,9 +16,6 @@ import useAddAgentTask from '@/hooks/useAddBookingAgentTask';
 import useFetchAgent from '@/hooks/useFetchBookingAgents';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import useRepairshoprFetchTicket from '@/hooks/useRepairshoprFetchTicket';
-import {
-    SortingState
-} from "@tanstack/react-table";
 import React, { useEffect, useState } from 'react';
 
 import {
@@ -35,25 +32,21 @@ import moment from 'moment';
 const BookingAgentsReportScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { addAgentTask, addAgentTaskLoading, errors } = useAddAgentTask()
-    const { bookingAgentList, bookingAgentListLoading } = useFetchAgent()
-    const { bookingAgentTasksList, bookingAgentTasksListLoading } = useFetchAgentTasks()
+    const { bookingAgentList } = useFetchAgent()
+    const { bookingAgentTasksList } = useFetchAgentTasks()
     const [searchTicket, setSearchTicket] = useState("")
     const [ticket_number, setTicketNumber] = useState("")
     const [booking_agent, setBookingAgent] = useState("")
-    const [dateFrom, setDateFrom] = useState<string | number | Date | any>("");
-    const [dateTo, setDateTo] = useState<string | number | Date | any>("");
+
+    const [dateFrom, setDateFrom] = useState<string | number | Date | unknown>("");
+    const [dateTo, setDateTo] = useState<string | number | Date | unknown>("");
     const { fetchRSTicketData } = useRepairshoprFetchTicket(searchTicket)
 
-    // Table sorting
-    const [sorting, setSorting] = useState<SortingState>([]);
 
-    // Table filtering
-    const [filtering, setFiltering] = useState("");
-
-    const [openModal, setOpenModal] = useState<boolean | null | any>();
+    const [openModal, setOpenModal] = useState<boolean | null | unknown>();
     const [groupedTasks, setGroupedTasks] = useState([]);
 
-    const handleRowClick = (row: any) => {
+    const handleRowClick = (row: unknown) => {
         setOpenModal(row);
     };
 
@@ -69,13 +62,11 @@ const BookingAgentsReportScreen = () => {
         e.preventDefault();
         const created_by = user?.email;
         const payload = { ticket_number, created_by, booking_agent };
-        const response = await addAgentTask(payload);
-        console.log("response addAgentTask", response)
+        await addAgentTask(payload);
 
     }
     useEffect(() => {
         if (fetchRSTicketData) {
-            // console.log(fetchRSTicketData)
             setTicketNumber(fetchRSTicketData?.tickets[0]?.number)
         }
     }, [searchTicket, fetchRSTicketData])
@@ -83,7 +74,7 @@ const BookingAgentsReportScreen = () => {
 
     // Group tasks by name and calculate jobs count based on date range
     useEffect(() => {
-        const filteredTasks = bookingAgentTasksList.filter((task) => {
+        const filteredTasks = bookingAgentTasksList?.filter((task) => {
             const taskDate = moment(task.created_date).format("YYYY-MM-DD");
             return taskDate >= dateFrom && taskDate <= dateTo;
         });
@@ -99,8 +90,6 @@ const BookingAgentsReportScreen = () => {
             return acc;
         }, {});
 
-
-        // console.log(grouped)
         setGroupedTasks(Object.values(grouped));
     }, [bookingAgentTasksList, dateFrom, dateTo]);
 
@@ -245,7 +234,7 @@ const BookingAgentsReportScreen = () => {
                                     </thead>
                                     <tbody className="z-0">
 
-                                        {groupedTasks.map((item: any) => (
+                                        {groupedTasks.map((item: unknown) => (
                                             <tr onClick={() => handleRowClick(item)} key={item.createdBy} className="border-b cursor-pointer hover:bg-gray-100">
                                                 <td className="px-4 py-3 font-medium text-sm">{item.createdBy}</td>
                                                 <td className="px-4 py-3 font-medium text-sm">{item.tasksCount}</td>

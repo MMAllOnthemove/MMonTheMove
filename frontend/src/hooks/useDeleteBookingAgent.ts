@@ -15,15 +15,10 @@ const useDeleteBookingAgent = () => {
                     withCredentials: true,
                 }
             );
-            console.log("deleteAgent response", response);
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
-                // window.location.reload();
-                // setLoading(true);
             }
-        } catch (error: any) {
-            console.log("delete error", error);
-            // console.log("login error", error?.response.data?.message);
+        } catch (error: unknown) {
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             }

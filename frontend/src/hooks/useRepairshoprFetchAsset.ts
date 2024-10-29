@@ -18,7 +18,7 @@ const useRepairshoprFetchAsset = (assetId: string | number) => {
 
                 if (data?.ticket?.id == assetId) setData(data);
             } catch (error) {
-                console.log("tickets search assets", error);
+                // 
             }
         };
         fetchData();

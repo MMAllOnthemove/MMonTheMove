@@ -1,4 +1,4 @@
-const columns: any = [
+const columns: unknown = [
     {
         header: "Service Order No",
         accessorKey: "service_order_no",

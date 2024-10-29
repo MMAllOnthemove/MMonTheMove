@@ -1,6 +1,5 @@
-import { useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import toast from "react-hot-toast";
 interface ErrorMessages {
@@ -13,8 +12,7 @@ const useAddAgentTask = () => {
     const [addAgentTaskLoading, setLoading] = useState(false); // Loading state
     const [errors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
 
-    const router = useRouter();
-    const addAgentTask = async (values: any) => {
+    const addAgentTask = async (values: unknown) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
         try {
@@ -25,12 +23,10 @@ const useAddAgentTask = () => {
                     withCredentials: true,
                 }
             );
-            console.log("booking_agents tasks response", response);
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
             }
-        } catch (error: any) {
-            // console.log("login error", error?.response.data?.message);
+        } catch (error: unknown) {
 
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);

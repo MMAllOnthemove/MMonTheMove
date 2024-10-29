@@ -64,11 +64,12 @@ import AddRepairshoprHHPTask from './add/repairshopr/page';
 
 const TechniciansScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
-    const { hhpTasks, hhpTasksLoading } = useHHPTasks()
+    const { hhpTasks } = useHHPTasks()
     const { updateRepairTicket } = useRepairshoprTicket()
     const { updateRepairTicketComment } = useRepairshoprComment()
     const { updateHHPTask } = useUpdateHHPTask()
-    const [modifyTaskModal, setModifyTaskModal] = useState<boolean | null | any>();
+
+    const [modifyTaskModal, setModifyTaskModal] = useState<boolean | null | unknown>();
     const [service_order_no, setServiceOrder] = useState("")
     const [reparshoprComment, setRepairshoprComment] = useState("")
     const [unit_status, setRepairshoprStatus] = useState("")
@@ -80,8 +81,7 @@ const TechniciansScreen = () => {
     const [qc_date, setQCCompleteDate] = useState("")
     const [qc_complete, setQCComplete] = useState<CheckedState | undefined>()
     const [openAddTaskModal, setOpenAddTaskModal] = useState(false)
-
-    const handleRowClick = (row: any) => {
+    const handleRowClick = (row: unknown) => {
         setModifyTaskModal(row?.original);
     };
 
@@ -137,7 +137,6 @@ can update status, send to our db and repairshopr
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        console.log(modifyTaskModal)
 
         const statusPayload = {
             "status": unit_status
@@ -161,18 +160,16 @@ can update status, send to our db and repairshopr
         }
 
         const changes = findChanges(modifyTaskModal, updatePayload)
-        // console.log("changes", changes)
         try {
             const statusPayloadResponse = await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, statusPayload)
             const commentResponse = await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
             if (Object.keys(changes).length > 0) {
                 const updateHHPJobsresponse = await updateHHPTask(id, changes)
                 toast.success(`${statusPayloadResponse?.data?.message}`);
-                // toast.success
                 closeModal()
             }
         } catch (error) {
-            console.log("error rs shopr", error)
+            //  
         }
     }
 
@@ -242,7 +239,7 @@ can update status, send to our db and repairshopr
                                     </thead>
 
                                     <TableBody>
-                                        {table.getRowModel().rows.map((row: any) => (
+                                        {table.getRowModel().rows.map((row: unknown) => (
                                             <tr
                                                 key={row.id}
                                                 onClick={() => handleRowClick(row)}
@@ -258,7 +255,7 @@ can update status, send to our db and repairshopr
                                                     </button>
                                                 </td>
 
-                                                {row.getVisibleCells().map((cell: any) => (
+                                                {row.getVisibleCells().map((cell: unknown) => (
                                                     <td
                                                         key={cell.id}
                                                         className="px-4 py-3 font-medium text-sm"

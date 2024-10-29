@@ -3,7 +3,7 @@ import axios from "axios";
 const useRepairshoprTicket = () => {
     const updateRepairTicket = async (
         ticketId: string | number,
-        values: any
+        values: unknown
     ) => {
         try {
             const response = await axios.put(
@@ -19,7 +19,7 @@ const useRepairshoprTicket = () => {
 
             return response.data;
         } catch (error) {
-            console.log(error);
+            //
         }
     };
 

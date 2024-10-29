@@ -17,7 +17,7 @@ export const SignupvalidateSchema = Yup.object({
         .required("Please Enter password")
         .min(6, "Password must be minimum 6 characters!"),
     confirmPassword: Yup.string()
-        .oneOf([Yup.ref("password"), null as any], "Password must match!")
+        .oneOf([Yup.ref("password"), null as unknown], "Password must match!")
         .required("Please confirm password!"),
 });
 

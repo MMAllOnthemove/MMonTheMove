@@ -1,6 +1,4 @@
 import { IPageTitle } from "@/lib/interfaces";
-import React from "react";
-
 
 const PageTitle = ({ hasSpan, title, spanText }: IPageTitle) => {
     return (

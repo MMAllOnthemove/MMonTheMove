@@ -31,7 +31,7 @@ type THHPTasks = {
 };
 
 const useHHPTasks = () => {
-    const [hhpTasks, setHHPTasks] = useState<THHPTasks | any>([]);
+    const [hhpTasks, setHHPTasks] = useState<THHPTasks | unknown>([]);
     const [hhpTasksLoading, setHHPTasksLoading] = useState(true);
 
     useEffect(() => {
@@ -45,11 +45,10 @@ const useHHPTasks = () => {
                     }
                 );
                 if (response?.data) {
-                    // console.log(response);
                     setHHPTasks([...response.data]);
                 }
             } catch (error) {
-                // console.log("Get hhpTasks error", error);
+                // 
             } finally {
                 setHHPTasksLoading(false);
             }

@@ -12,7 +12,7 @@ const useForgotPassword = () => {
 
     useState("");
     const router = useRouter();
-    const forgotPassword = async (values: any) => {
+    const forgotPassword = async (values: unknown) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
         try {
@@ -23,12 +23,11 @@ const useForgotPassword = () => {
                     withCredentials: true,
                 }
             );
-            console.log("forgotPassword response", response);
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
                 router.push("/");
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {
