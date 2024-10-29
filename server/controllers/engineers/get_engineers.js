@@ -8,7 +8,6 @@ const getEngineers = async (req, res) => {
 
         res.json(rows);
     } catch (error) {
-        console.log("getEngineers error", error);
         res.status(500).json({ error: error.message });
     }
 };

@@ -20,7 +20,7 @@ const useRepairshoprFetchTicket = (searchTicket: string | number) => {
                     setData(data);
                 }
             } catch (error) {
-                console.log("tickets search query", error);
+//
             }
         };
         fetchRSTicketData();

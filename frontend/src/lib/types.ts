@@ -14,3 +14,10 @@ export type TInternalGSPNData = {
 export type closeModalInParent = {
     onChange?: (id: boolean) => void;
 };
+export type TBookingAgentData = {
+    id: string;
+    unique_id: string;
+    agent_firstname: string;
+    agent_lastname: string;
+    department: string;
+};

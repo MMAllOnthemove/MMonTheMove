@@ -1,6 +1,6 @@
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import React, { useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
     Select,
     SelectContent,
@@ -8,19 +8,18 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import warranties from '@/lib/warranties';
-import useFetchEngineer from '@/hooks/useFetchEngineers';
-import repairshopr_statuses from '@/lib/repairshopr_status';
-import useGetStores from '@/hooks/useGetStores';
-import { Button } from '@/components/ui/button';
-import axios from 'axios';
-import useUserLoggedIn from '@/hooks/useGetUser';
 import useAddHHPTask from '@/hooks/useAddHHPTask';
-import { closeModalInParent } from '@/lib/types';
+import useFetchEngineer from '@/hooks/useFetchEngineers';
+import useGetStores from '@/hooks/useGetStores';
+import useUserLoggedIn from '@/hooks/useGetUser';
+import repairshopr_statuses from '@/lib/repairshopr_status';
+import warranties from '@/lib/warranties';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 
 const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) => {
-    const { user, isLoggedIn, loading } = useUserLoggedIn()
+    const { user } = useUserLoggedIn()
     const [searchTicket, setSearchTicket] = useState("")
     const [warranty, setWarranty] = useState("")
     const [engineer, setEngineer] = useState("")
@@ -93,7 +92,6 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
             });
 
             if (data?.asset?.id == assetId) {
-                // console.log(data)
                 setIMEI(data?.asset?.properties["IMEI No."])
                 setModel(data?.asset?.properties["Model No.:"])
                 setSerialNumber(data?.asset?.asset_serial)
@@ -103,7 +101,6 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
         };
         fetchRSByAssetData();
     }, [searchTicket, assetId]);
-    // console.log(engineersList)
     /*  
     service_order_no,
     date_booked 
@@ -144,7 +141,6 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
             repairshopr_job_id,
             repeat_repair,
         }
-        console.log(payload)
         await addTask(payload)
         if (addHHPTaskErrors) {
             onChange(false)

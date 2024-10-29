@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useState } from "react";
-
 import toast from "react-hot-toast";
 
 const useDeleteStore = () => {
@@ -15,15 +14,10 @@ const useDeleteStore = () => {
                     withCredentials: true,
                 }
             );
-            console.log("deleteStore response", response);
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
-                // window.location.reload();
-                // setLoading(true);
             }
-        } catch (error: any) {
-            console.log("deleteStore error", error);
-            // console.log("login error", error?.response.data?.message);
+        } catch (error: unknown) {
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             }

@@ -1,7 +1,7 @@
 import moment from "moment";
 
 export const bookingAgentFunc = (
-    arr: any[],
+    arr: unknown[],
     dateFrom: string,
     dateTo: string
 ): number => {

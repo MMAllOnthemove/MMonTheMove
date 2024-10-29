@@ -10,7 +10,7 @@ type TAgents = {
 };
 
 const useFetchAgent = () => {
-    const [bookingAgentList, setData] = useState<TAgents[] | any>([]);
+    const [bookingAgentList, setData] = useState<TAgents[] | unknown>([]);
     const [bookingAgentListLoading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -24,11 +24,10 @@ const useFetchAgent = () => {
                     }
                 );
                 if (response?.data) {
-                    // console.log(response);
                     setData(response?.data);
                 }
             } catch (error) {
-                // console.log("Get engineers list error", error);
+                // 
             } finally {
                 setLoading(false);
             }

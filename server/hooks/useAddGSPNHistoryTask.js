@@ -8,7 +8,7 @@ const createHHPGSPNTaskHistory = async (payload) => {
             payload
         );
     } catch (error) {
-        throw error;
+        // throw error;
     }
 };
 

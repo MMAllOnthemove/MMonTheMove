@@ -16,7 +16,7 @@ const useSignup = () => {
     const [errors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
     const router = useRouter();
 
-    const signup = async (values: any) => {
+    const signup = async (values: unknown) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
 
@@ -28,12 +28,11 @@ const useSignup = () => {
                     withCredentials: true,
                 }
             );
-            console.log("signup response", response);
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
                 router.push("/");
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {

@@ -1,7 +1,7 @@
 import moment from "moment";
 
 export const bookingAgentMapOverJobs = (
-    arr: string[] | any[],
+    arr: string[] | unknown[],
     dateFrom: string,
     dateTo: string,
     agentName: string

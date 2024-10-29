@@ -8,7 +8,6 @@ const getClaims = async (req, res) => {
 
         res.json(rows);
     } catch (error) {
-        console.log("get getClaims error", error);
         res.status(500).json({ error: error.message });
     }
 };

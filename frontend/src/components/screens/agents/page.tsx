@@ -31,10 +31,11 @@ import { Input } from '@/components/ui/input';
 import TableBody from '@/components/table_body/page'
 import Pagination from '@/components/table_pagination/page';
 import PageTitle from '@/components/PageTitle/page'
+import { TBookingAgentData } from '@/lib/types'
 
 const AgentsScreen = () => {
-    const { user, isLoggedIn, loading } = useUserLoggedIn()
-    const { bookingAgentList, bookingAgentListLoading } = useFetchAgent()
+    const { isLoggedIn, loading } = useUserLoggedIn()
+    const { bookingAgentList } = useFetchAgent()
     const { addAgent, addAgentLoading, errors } = useAddAgent()
     const { deleteAgent, deleteAgentLoading } = useDeleteBookingAgent()
     const [agent_firstname, setAgentFirstname] = useState("")
@@ -47,10 +48,10 @@ const AgentsScreen = () => {
     const [filtering, setFiltering] = useState("");
 
     const [openAddModal, setOpenAddModal] = useState(false)
-    const [modifyAgentModal, setModifyAgentModal] = useState<boolean | null | any>();
+    const [modifyAgentModal, setModifyAgentModal] = useState<boolean | null | undefined>();
     // const { hhpTask } = useFetchHHPTaskById(modifyTaskModal?.id)
 
-    const handleRowClick = (row: any) => {
+    const handleRowClick = (row: TBookingAgentData) => {
         setModifyAgentModal(row?.original);
     };
 
@@ -77,18 +78,14 @@ const AgentsScreen = () => {
     const addBookingAg = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const payload = { agent_firstname, agent_lastname, department };
-        // console.log(payload)
-        const response = await addAgent(payload);
-        console.log("response add ang..", response)
+        await addAgent(payload);
         setOpenAddModal(false)
     }
     const deleteBookingAg = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const id = modifyAgentModal?.unique_id;
-        const payload = { id }
-        console.log(payload)
-        const response = await deleteAgent(id);
-        console.log("response del ang..", response)
+
+        await deleteAgent(id);
         closeModifyEngineerModal()
     }
 
@@ -159,7 +156,8 @@ const AgentsScreen = () => {
                                     </thead>
 
                                     <TableBody>
-                                        {table.getRowModel().rows.map((row: any) => (
+
+                                        {table.getRowModel().rows.map((row: unknown) => (
                                             <tr
                                                 key={row.id}
 
@@ -176,7 +174,7 @@ const AgentsScreen = () => {
                                                     </button>
                                                 </td>
 
-                                                {row.getVisibleCells().map((cell: any) => (
+                                                {row.getVisibleCells().map((cell: unknown) => (
                                                     <td
                                                         key={cell.id}
                                                         className="px-4 py-3 font-medium text-sm"

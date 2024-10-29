@@ -35,10 +35,14 @@ const ClaimsScreen = () => {
         const handleGetSOInfo = async (serviceOrder: string) => {
             try {
                 const data = await getSOInfoAllTookan(serviceOrder);
-                //   console.log(data)
                 const statusDescs = data?.EtLogInfo?.results?.map(result => result?.StatusDesc);
 
-                setClaimStatus(statusDescs[statusDescs?.length - 1]);
+                if (statusDescs && statusDescs.length > 0) { // Check if statusDescs is defined and not empty
+                    setClaimStatus(statusDescs[statusDescs.length - 1]);
+                } else {
+                    // 
+
+                }
                 setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
             } catch (error) {
                 console.error(error);
@@ -54,9 +58,7 @@ const ClaimsScreen = () => {
         e.preventDefault();
         const created_by = user?.email;
         const payload = { claim_status, ticket_number, service_order_no, department, created_by };
-        // console.log(payload)
-        const response = await addAddClaim(payload);
-        console.log("response addAgentTask", response)
+        await addAddClaim(payload);
 
     }
     return (

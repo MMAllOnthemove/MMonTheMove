@@ -90,14 +90,10 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
             ticket_number,
             department,
             job_added_by,
-            // for these two we will handle in the backend as false for pending
-            // parts_pending,
-            // parts_pending_date,
             stores,
             repairshopr_job_id,
             repeat_repair,
         }
-        console.log(payload)
         await addTask(payload)
         // Ensure onChange is defined before calling it
         if (addHHPTaskErrors) {

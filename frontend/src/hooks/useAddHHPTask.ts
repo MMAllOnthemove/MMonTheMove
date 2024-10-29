@@ -1,6 +1,5 @@
-import { useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import toast from "react-hot-toast";
 interface ErrorMessages {
@@ -24,8 +23,7 @@ const useAddHHPTask = () => {
     const [addHHPTaskLoading, setLoading] = useState(false); // Loading state
     const [addHHPTaskErrors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
 
-    const router = useRouter();
-    const addTask = async (values: any) => {
+    const addTask = async (values: unknown) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
         try {
@@ -36,22 +34,17 @@ const useAddHHPTask = () => {
                     withCredentials: true,
                 }
             );
-            console.log("useAddRepairHHPTask response", response);
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
-                // router.push("/");
             }
-        } catch (error: any) {
-            console.log("useAddHHPTask error", error);
+        } catch (error: unknown) {
 
             if (error?.response?.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {
                 toast.error("Fill in all fields");
-                console.log(error.response);
                 setErrors(error.response.data.errors); // Set validation errors to state
             }
-            // setError(error?.response?.data?.message);
         } finally {
             setLoading(false); // Stop loading
         }

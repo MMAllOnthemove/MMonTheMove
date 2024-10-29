@@ -1,6 +1,5 @@
-import { useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import toast from "react-hot-toast";
 interface ErrorMessages {
@@ -13,8 +12,7 @@ const useAddEngineer = () => {
     const [addEngineerLoading, setLoading] = useState(false); // Loading state
     const [errors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
 
-    const router = useRouter();
-    const addEngineer = async (values: any) => {
+    const addEngineer = async (values: unknown) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
         try {
@@ -25,12 +23,10 @@ const useAddEngineer = () => {
                     withCredentials: true,
                 }
             );
-            console.log("addEngineer response", response);
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
             }
-        } catch (error: any) {
-            // console.log("login error", error?.response.data?.message);
+        } catch (error: unknown) {
 
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);

@@ -9,7 +9,7 @@ type TStores = {
 };
 
 const useGetStores = () => {
-    const [storesList, setData] = useState<TStores | any>([]);
+    const [storesList, setData] = useState<TStores | unknown>([]);
     const [storesListLoading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -23,11 +23,10 @@ const useGetStores = () => {
                     }
                 );
                 if (response?.data) {
-                    // console.log(response);
                     setData([...response.data]);
                 }
             } catch (error) {
-                // console.log("Get storesList error", error);
+                // 
             } finally {
                 setLoading(false);
             }

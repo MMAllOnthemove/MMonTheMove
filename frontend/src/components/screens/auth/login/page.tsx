@@ -17,7 +17,7 @@ export default function LoginScreen() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
-    // console.log(loginErrorFromBackend)
+
     const loginUser = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const payload = { email, password };

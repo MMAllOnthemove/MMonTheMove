@@ -1,4 +1,4 @@
-const columns: any = [
+const columns: unknown = [
     {
         header: "First name",
         accessorKey: "engineer_firstname",

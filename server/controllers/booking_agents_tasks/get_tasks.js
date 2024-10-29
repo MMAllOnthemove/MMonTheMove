@@ -8,7 +8,6 @@ const getBookingAgentsTasks = async (req, res) => {
 
         res.json(rows);
     } catch (error) {
-        console.log("get booking_agents tasks error", error);
         res.status(500).json({ error: error.message });
     }
 };

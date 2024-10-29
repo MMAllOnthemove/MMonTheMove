@@ -2,7 +2,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
 interface IPaginationProps {
-    table: any;
+    table: unknown;
 }
 
 const Pagination = ({ table }: IPaginationProps) => {
