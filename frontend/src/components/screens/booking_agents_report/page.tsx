@@ -30,7 +30,6 @@ import {
 } from "@/components/ui/select";
 import useFetchAgentTasks from '@/hooks/useFetchBookingAgentsTasks';
 import { bookingAgentMapOverJobs } from '@/lib/booking_agents_map_over_tasks';
-import { bookingAgentFunc } from '@/lib/calculate_booking_agents_tasks';
 import moment from 'moment';
 
 const BookingAgentsReportScreen = () => {
@@ -132,6 +131,7 @@ const BookingAgentsReportScreen = () => {
                                                 name="dateFrom"
                                                 value={dateFrom}
                                                 onChange={(e) => setDateFrom(e.target.value)}
+                                                className="cursor-pointer"
                                                 id="dateFrom"
                                             />
                                         </span>
@@ -148,6 +148,7 @@ const BookingAgentsReportScreen = () => {
                                                 name="dateTo"
                                                 value={dateTo}
                                                 onChange={(e) => setDateTo(e.target.value)}
+                                                className="cursor-pointer"
                                                 id="dateTo"
                                             />
                                         </span>
@@ -165,8 +166,9 @@ const BookingAgentsReportScreen = () => {
                                             id="searchTicket"
                                             name="searchTicket"
                                             onChange={(e) => setSearchTicket(e.target.value)}
-
                                         />
+                                        {errors.ticket_number && <p className="text-sm text-red-500 font-medium">{errors.ticket_number}</p>}
+
                                     </span>
                                 </div>
                             </section>
@@ -212,6 +214,7 @@ const BookingAgentsReportScreen = () => {
                                                                     ))}
                                                                 </SelectContent>
                                                             </Select>
+                                                            {errors.booking_agent && <p className="text-sm text-red-500 font-medium">{errors.booking_agent}</p>}
 
                                                         </span>
                                                     </td>

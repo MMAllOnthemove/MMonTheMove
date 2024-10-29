@@ -51,7 +51,7 @@ create table stores (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
-create table hhp_jobs (
+create table technician_tasks (
     id BIGSERIAL PRIMARY KEY UNIQUE,
     unique_id uuid DEFAULT gen_random_uuid(),
     service_order_no text unique,
@@ -97,7 +97,7 @@ create table hhp_jobs (
 -- BEFORE UPDATE ON tasks
 -- FOR EACH ROW
 -- EXECUTE PROCEDURE update_updated_at();
-create table hhp_jobs_history (
+create table technician_tasks_history (
     id BIGSERIAL PRIMARY KEY UNIQUE,
     unique_id uuid DEFAULT gen_random_uuid(),
     service_order_no text unique,
@@ -130,15 +130,15 @@ create table hhp_jobs_history (
     repeat_repair boolean
 );
 
-create table hhp_claims (
+create table claims (
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
-    created_at date,
-    created_by date,
+    created_at TIMESTAMP DEFAULT NOW(),
+    created_by text,
     service_order_no text,
+    ticket_number text unique,
     claim_status text,
-    department text,
-    FOREIGN KEY (service_order_no) REFERENCES hhp_jobs(service_order_no)
+    department text
 );
 
 create table booking_agents (

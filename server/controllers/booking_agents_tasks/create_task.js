@@ -4,21 +4,29 @@ import * as Yup from "yup";
 const addAgentsSchema = Yup.object({
     ticket_number: Yup.string().required("Ticket number is required!"),
     created_by: Yup.string(),
-    booking_agent: Yup.string(),
+    booking_agent: Yup.string().required("Select booking agent!"),
 });
 
 const addBookingAgentTask = async (req, res) => {
     const { ticket_number, created_by, booking_agent } = req.body;
     try {
         await addAgentsSchema.validate(req.body, { abortEarly: false });
-        const { rows } = await pool.query(
-            "INSERT INTO booking_agents_tasks (ticket_number, created_by, booking_agent) VALUES ($1, $2, $3)",
-            [ticket_number, created_by, booking_agent]
+        const findIfExists = await pool.query(
+            "SELECT ticket_number from booking_agents_tasks where ticket_number = $1",
+            [ticket_number]
         );
+        if (findIfExists.rows.length > 0) {
+            res.status(401).json({ message: "Task already exists" });
+        } else {
+            const { rows } = await pool.query(
+                "INSERT INTO booking_agents_tasks (ticket_number, created_by, booking_agent) VALUES ($1, $2, $3)",
+                [ticket_number, created_by, booking_agent]
+            );
 
-        res.status(201).json({
-            message: "Successfully created",
-        });
+            res.status(201).json({
+                message: "Successfully created",
+            });
+        }
     } catch (error) {
         console.error("add booking_agents_tasks failed:", error);
 

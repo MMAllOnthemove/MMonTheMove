@@ -42,7 +42,7 @@ const AddHHPTask = async (req, res) => {
     try {
         await AddHHPTaskSchema.validate(req.body, { abortEarly: false });
         const findIfExists = await pool.query(
-            "SELECT id from hhp_jobs WHERE ticket_number = $1",
+            "SELECT id from technician_tasks WHERE ticket_number = $1",
             [ticket_number]
         );
         if (findIfExists.rows.length > 0) {
@@ -51,7 +51,7 @@ const AddHHPTask = async (req, res) => {
             });
         } else {
             const { rows } = await pool.query(
-                "INSERT INTO hhp_jobs (service_order_no, date_booked, model, warranty, engineer, fault, imei, serial_number, unit_status, ticket_number, department, job_added_by, stores, repairshopr_job_id, repeat_repair, parts_pending) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) returning *",
+                "INSERT INTO technician_tasks (service_order_no, date_booked, model, warranty, engineer, fault, imei, serial_number, unit_status, ticket_number, department, job_added_by, stores, repairshopr_job_id, repeat_repair, parts_pending) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) returning *",
                 [
                     service_order_no,
                     date_booked,

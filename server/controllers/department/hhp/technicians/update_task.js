@@ -18,7 +18,7 @@ export const UpdateTask = async (req, res) => {
         .join(", ");
 
     // The query with placeholders ($1, $2, ..., $n) for prepared statements
-    const query = `UPDATE hhp_jobs SET ${setClause} WHERE id = $${
+    const query = `UPDATE technician_tasks SET ${setClause} WHERE id = $${
         keys.length + 1
     } RETURNING *`;
 
