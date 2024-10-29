@@ -23,7 +23,7 @@ export const menuItems = [
     {
         label: "Claims",
         sublinks: [
-            { id: 4, item: "Add task", pageRoute: "/departments/hhp/add" },
+            { id: 4, item: "Add claim", pageRoute: "/departments/claims" },
         ],
     },
     {

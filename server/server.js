@@ -14,6 +14,7 @@ import { router as hhpjobsrouter } from "./routes/department/hhp/hhp_jobs_route.
 import { router as engineers } from "./routes/engineers/index.js";
 import { router as stores } from "./routes/stores/index.js";
 import { router as booking_agents } from "./routes/booking_agents/index.js";
+import { router as claims } from "./routes/department/claims/index.js";
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(
@@ -38,6 +39,7 @@ app.use("/api/v1/hhp/jobs", hhpjobsrouter);
 app.use("/engineers", engineers);
 app.use("/stores", stores);
 app.use("/booking_agents", booking_agents);
+app.use("/claims", claims);
 
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {
