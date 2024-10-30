@@ -7,11 +7,6 @@ export const menuItems = [
                 item: "Technicians",
                 pageRoute: "/departments/hhp/technicians",
             },
-            {
-                id: 2,
-                item: "Dashboard",
-                pageRoute: "/departments/hhp/analytics",
-            },
         ],
     },
     {
@@ -29,6 +24,10 @@ export const menuItems = [
     {
         label: "Tookan",
         sublinks: [{ id: 5, item: "Add task", pageRoute: "/tookan" }],
+    },
+    {
+        label: "Dashboard",
+        sublinks: [{ id: 6, item: "Analytics", pageRoute: "/dashboard" }],
     },
     {
         label: "Admin",

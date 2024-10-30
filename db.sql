@@ -161,3 +161,66 @@ create table booking_agents_tasks (
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
+
+create TYPE reason_for_use_enum as enum (
+    'Fuel',
+    'Callout (TV)',
+    'Callout (Microwave)',
+    'Callout (Fridge)',
+    'Taking vehicle for service',
+    'Microwave pickup',
+    'Microwave delivery',
+    'TV delivery',
+    'TV pickup',
+    'Fridge delivery',
+    'Fridge pickup',
+    'Driving to help another driver who is stuck',
+    'Mobile devices delivery',
+    'Mobile devices collection',
+    'Other'
+);
+
+create type fail_pass_enum as enum ('Pass', 'Fail');
+
+create table vehicle_checklist(
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    reason_for_use reason_for_use_enum,
+    service_order_no text,
+    ticket_number text,
+    driver text,
+    foot_brakes FAIL_PASS_ENUM,
+    emergency_brake FAIL_PASS_ENUM,
+    steering_wheel FAIL_PASS_ENUM,
+    windshield FAIL_PASS_ENUM,
+    rear_window FAIL_PASS_ENUM,
+    windshield_wipers FAIL_PASS_ENUM,
+    headlights FAIL_PASS_ENUM,
+    tail_lights FAIL_PASS_ENUM,
+    turn_indicator_lights FAIL_PASS_ENUM,
+    stop_lights FAIL_PASS_ENUM,
+    front_seat_adjustment FAIL_PASS_ENUM,
+    doors FAIL_PASS_ENUM,
+    horn FAIL_PASS_ENUM,
+    speedometer FAIL_PASS_ENUM,
+    bumpers FAIL_PASS_ENUM,
+    muffler_exhaust_system FAIL_PASS_ENUM,
+    tires FAIL_PASS_ENUM,
+    interior_exterior_view_mirros FAIL_PASS_ENUM,
+    safety_belts FAIL_PASS_ENUM,
+    engine_start_stop FAIL_PASS_ENUM,
+    final_comment text,
+    next_service_date date,
+    cost_of_service bigserial,
+    created_by text,
+    updated_by text,
+    mileage bigserial,
+    license_plate varchar(10),
+    vehicle_make text,
+    vehicle_model text,
+    vehicle_year varchar(4),
+    vehicle_color text,
+    vehicle_type text,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+);
