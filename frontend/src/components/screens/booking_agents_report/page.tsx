@@ -43,7 +43,7 @@ const BookingAgentsReportScreen = () => {
     const { fetchRSTicketData } = useRepairshoprFetchTicket(searchTicket)
 
 
-    const [openModal, setOpenModal] = useState<boolean | null | unknown>();
+    const [openModal, setOpenModal] = useState<boolean | null | undefined | React.ReactNode>();
     const [groupedTasks, setGroupedTasks] = useState([]);
 
     const handleRowClick = (row: unknown) => {
