@@ -21,3 +21,7 @@ export type TBookingAgentData = {
     agent_lastname: string;
     department: string;
 };
+export type TColumns = {
+    header: string;
+    accessorKey: string;
+}[];

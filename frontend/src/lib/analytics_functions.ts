@@ -24,18 +24,44 @@ export function getRepairsByStore(
 
 // 2. Fault Frequency Analysis
 // Identify the most common faults across all repairs.
-export function getFrequentFaults(data: any[]) {
+// used
+export function getFrequentFaults(
+    data: any,
+    startDate: string,
+    endDate: string
+) {
     return data.reduce((acc: any, repair: any) => {
-        acc[repair.fault] = (acc[repair.fault] || 0) + 1;
+        // If both dates are provided, filter by date range
+        if (startDate && endDate) {
+            if (isDateInRange(repair.date_booked, startDate, endDate)) {
+                acc[repair.fault] = (acc[repair.fault] || 0) + 1;
+            }
+        }
+        // If only one or neither date is provided, include all repairs
+        else {
+            acc[repair.fault] = (acc[repair.fault] || 0) + 1;
+        }
         return acc;
     }, {});
 }
 
 // 3. Repairs by Engineer
 // Count how many repairs each engineer has worked on.
-export function getRepairByEngineer(data: any[]) {
+export function getRepairByEngineer(
+    data: any,
+    startDate: string,
+    endDate: string
+) {
     return data.reduce((acc: any, repair: any) => {
-        acc[repair.engineer] = (acc[repair.engineer] || 0) + 1;
+        if (startDate && endDate) {
+            if (isDateInRange(repair.date_booked, startDate, endDate)) {
+                acc[repair.engineer] = (acc[repair.engineer] || 0) + 1;
+            }
+        }
+        // If only one or neither date is provided, include all repairs
+        else {
+            acc[repair.engineer] = (acc[repair.engineer] || 0) + 1;
+        }
         return acc;
     }, {});
 }
@@ -78,32 +104,70 @@ export function calculateAverageRepairTime(data: RepairEntry) {
 
 // 6. Repair Trends Over Time
 // You can analyze the number of repairs booked over time, e.g., monthly.
-export function getUnitsBookedOverTime(data: any[]) {
+// used
+export function getUnitsBookedOverTime(
+    data: any,
+    startDate: string,
+    endDate: string
+) {
     return data.reduce((acc, repair) => {
         const month = new Date(repair.date_booked).toISOString().slice(0, 7); // YYYY-MM
-        acc[month] = (acc[month] || 0) + 1;
+
+        if (startDate && endDate) {
+            if (isDateInRange(repair.date_booked, startDate, endDate)) {
+                acc[month] = (acc[month] || 0) + 1;
+            }
+        }
+        // If only one or neither date is provided, include all repairs
+        else {
+            acc[month] = (acc[month] || 0) + 1;
+        }
         return acc;
     }, {});
 }
 
 // 7. Repeat Repairs Analysis
 // Count how many repairs were repeats versus first-time repairs.
-
-export function getUnitsRepeatRepairAnalytics(data: any[]) {
+// used
+export function getUnitsRepeatRepairAnalytics(
+    data: any,
+    startDate: string,
+    endDate: string
+) {
     return data.reduce((acc, repair) => {
-        acc[repair.repeat_repair] = (acc[repair.repeat_repair] || 0) + 1;
+        if (startDate && endDate) {
+            if (isDateInRange(repair.date_booked, startDate, endDate)) {
+                acc[repair.repeat_repair] =
+                    (acc[repair.repeat_repair] || 0) + 1;
+            }
+        }
         return acc;
     }, {});
 }
 
 // 8. Warranty Status Breakdown
 // Count how many repairs are under warranty vs. out of warranty.
-export function getWarrantyStatusBreakdown(data: any[]) {
+// used
+export function getWarrantyStatusBreakdown(
+    data: any,
+    startDate: string,
+    endDate: string
+) {
     return data.reduce((acc, repair) => {
-        acc[repair.warranty] = (acc[repair.warranty] || 0) + 1;
+        // If both dates are provided, filter by date range
+        if (startDate && endDate) {
+            if (isDateInRange(repair.date_booked, startDate, endDate)) {
+                acc[repair.warranty] = (acc[repair.warranty] || 0) + 1;
+            }
+        }
+        // If only one or neither date is provided, include all repairs
+        else {
+            acc[repair.warranty] = (acc[repair.warranty] || 0) + 1;
+        }
         return acc;
     }, {});
 }
+
 // 9. Engineer Performance
 // You can analyze which engineer has the most completed repairs.
 export function getCompleteRepairsByEngineer(data: any[]) {
@@ -138,39 +202,7 @@ export function getFaultTypesByEngineer(data: any[]) {
     }, {});
 }
 
-// 13. Parts Pending Analysis
-// Count how many repairs have pending parts versus those that don't.
 
-export function getUnitsWithPendingParts(data: any[]) {
-    return data.reduce((acc, repair) => {
-        acc[repair.parts_pending ? "Pending" : "Not Pending"] =
-            (acc[repair.parts_pending ? "Pending" : "Not Pending"] || 0) + 1;
-        return acc;
-    }, {});
-}
-
-// 14. Engineer's Repair Load
-// Determine how many repairs each engineer has currently assigned.
-export function getEngineerWithAssignedTasks(data: any[]) {
-    return data.reduce((acc, repair) => {
-        const yearMonth = new Date(repair.date_booked)
-            .toISOString()
-            .slice(0, 7); // YYYY-MM
-        acc[yearMonth] = (acc[yearMonth] || 0) + 1;
-        return acc;
-    }, {});
-}
-
-// 15. Monthly Repair Trends
-// Visualize the monthly trend of repairs over the years.
-
-export function getUnitsBookedTrends(data: any[]) {
-    return data.reduce((acc, repair) => {
-        acc[repair.parts_pending ? "Pending" : "Not Pending"] =
-            (acc[repair.parts_pending ? "Pending" : "Not Pending"] || 0) + 1;
-        return acc;
-    }, {});
-}
 
 // 16. Stores with Highest Repair Rates
 // Identify which stores have the highest volume of repairs.
@@ -187,40 +219,6 @@ export function getStoreWithMostRepairRates(data: any[]) {
     return sortedStores;
 }
 
-// 17. Time to Repair Analysis by Fault
-// Evaluate the average time taken to repair based on the fault type.
-
-interface TcalculateAverageTimeToRepairByFault {
-    fault: string;
-    date_booked: string;
-    completed_date?: string;
-}
-export function calculateAverageTimeToRepairByFault(
-    repairs: TcalculateAverageTimeToRepairByFault[]
-): {
-    [fault: string]: string;
-} {
-    const timeToRepairByFault = repairs.reduce((acc, repair) => {
-        if (repair.completed_date) {
-            const bookedDate = new Date(repair.date_booked).getTime();
-            const completedDate = new Date(repair.completed_date).getTime();
-            const repairTime =
-                (completedDate - bookedDate) / (1000 * 60 * 60 * 24); // in days
-
-            acc[repair.fault] = acc[repair.fault] || { total: 0, count: 0 };
-            acc[repair.fault].total += repairTime;
-            acc[repair.fault].count++;
-        }
-        return acc;
-    }, {} as { [fault: string]: { total: number; count: number } });
-
-    return Object.fromEntries(
-        Object.entries(timeToRepairByFault).map(([fault, { total, count }]) => [
-            fault,
-            (total / count).toFixed(2),
-        ])
-    );
-}
 
 // 19. Ticket Number Trends
 // Analyze trends in ticket numbers to see if there are patterns over time.
@@ -309,8 +307,41 @@ export function calculateAverageRepairTimeByStore(tasks, status = "complete") {
 
 // 29. Parts Issue Rate
 // Calculate the percentage of repairs that have issued parts.
-export function partsIssuedRate(data: []) {
+export function partsIssuedRate(data: any) {
     const partsIssuedRate =
         (data.filter((r) => r.parts_issued).length / data.length) * 100;
     return partsIssuedRate || 0;
 }
+
+// 30. Parts issued
+// Calculate units with parts issued
+
+export function getUnitsWithIssuedParts(
+    data: any,
+    startDate: string,
+    endDate: string
+) {
+    return data.reduce((acc, repair) => {
+        // If both dates are provided, filter by date range
+        if (startDate && endDate) {
+            if (isDateInRange(repair.date_booked, startDate, endDate)) {
+                acc.parts_issued = (acc.parts_issued || 0) + 1;
+            }
+        }
+        // If only one or neither date is provided, include all repairs
+        else {
+            acc.parts_issued = (acc.parts_issued || 0) + 1;
+        }
+        return acc;
+    }, {});
+}
+
+
+export const engineerWorkload = (data: any[]) => {
+    const engineerWorkload = data.map((item) => item.engineer);
+    const workloadCount = engineerWorkload.reduce((acc, curr) => {
+        acc[curr] = (acc[curr] || 0) + 1;
+        return acc;
+    }, {});
+    return workloadCount;
+};

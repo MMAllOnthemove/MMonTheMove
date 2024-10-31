@@ -15,6 +15,7 @@ import { router as claims } from "./routes/department/claims/index.js";
 import { router as hhpjobsrouter } from "./routes/department/hhp/hhp_jobs_route.js";
 import { router as engineers } from "./routes/engineers/index.js";
 import { router as stores } from "./routes/stores/index.js";
+import { router as checklists } from "./routes/driver_app/checklists/index.js";
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(
@@ -40,6 +41,7 @@ app.use("/engineers", engineers);
 app.use("/stores", stores);
 app.use("/booking_agents", booking_agents);
 app.use("/claims", claims);
+app.use("/checklists", checklists);
 
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {
