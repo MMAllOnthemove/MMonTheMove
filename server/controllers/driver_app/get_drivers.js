@@ -1,9 +1,9 @@
 import { pool } from "../../db.js";
 
-const getChecklists = async (req, res) => {
+const getDrivers = async (req, res) => {
     try {
         const { rows } = await pool.query(
-            "SELECT *, TO_CHAR(created_at, 'YYYY-MM-DD') AS formatted_created_at from vehicle_checklist order by created_at desc"
+            "SELECT id, unique_id, driver_firstname, driver_lastname, created_at from drivers order by created_at desc"
         );
 
         res.json(rows);
@@ -12,4 +12,4 @@ const getChecklists = async (req, res) => {
     }
 };
 
-export default getChecklists;
+export default getDrivers;

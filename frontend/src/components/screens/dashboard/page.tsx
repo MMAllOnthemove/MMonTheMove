@@ -324,7 +324,7 @@ const DashboardScreen = () => {
                             <div className="h-2" />
                             <Pagination table={frequentFaultsTable} />
                             {/* engineerWorkloadTable table */}
-                            <h4 className="font-semibold leading-none tracking-tight text-md text-gray-950 my-3">Most frequent faults</h4>
+                            <h4 className="font-semibold leading-none tracking-tight text-md text-gray-950 my-3">Units worked on</h4>
                             <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg mt-4">
                                 <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
 

@@ -3,15 +3,11 @@ import { TColumns } from "./types";
 const columns: TColumns = [
     {
         header: "First name",
-        accessorKey: "engineer_firstname",
+        accessorKey: "driver_firstname",
     },
     {
         header: "Last name",
-        accessorKey: "engineer_lastname",
-    },
-    {
-        header: "Department",
-        accessorKey: "department",
+        accessorKey: "driver_lastname",
     },
 ];
 export default columns;

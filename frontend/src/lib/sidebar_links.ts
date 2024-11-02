@@ -35,6 +35,8 @@ export const menuItems = [
             { id: 7, item: "Add engineer", pageRoute: "/engineers" },
             { id: 8, item: "Add booking agent", pageRoute: "/agents" },
             { id: 9, item: "Add store", pageRoute: "/stores" },
+            { id: 10, item: "Add driver", pageRoute: "/drivers" },
+            { id: 11, item: "Driver app", pageRoute: "/drivers/checklists" },
         ],
     },
 ];

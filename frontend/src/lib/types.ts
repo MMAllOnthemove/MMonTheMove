@@ -12,7 +12,7 @@ export type TInternalGSPNData = {
     service_order_no: string;
 };
 export type closeModalInParent = {
-    onChange?: (id: boolean) => void;
+    onSuccess?: () => void;
 };
 export type TBookingAgentData = {
     id: string;
@@ -24,4 +24,51 @@ export type TBookingAgentData = {
 export type TColumns = {
     header: string;
     accessorKey: string;
+}[];
+export type VehicleInspection = {
+    id: number;
+    unique_id: string;
+    reason_for_use: string;
+    service_order_no: string;
+    ticket_number: string;
+    driver: string;
+    foot_brakes: string;
+    emergency_brake: string;
+    steering_wheel: string;
+    windshield: string;
+    rear_window: string;
+    windshield_wipers: string;
+    headlights: string;
+    tail_lights: string;
+    turn_indicator_lights: string;
+    stop_lights: string;
+    front_seat_adjustment: string;
+    doors: string;
+    horn: string;
+    speedometer: string;
+    bumpers: string;
+    muffler_exhaust_system: string;
+    tires: string;
+    interior_exterior_view_mirros: string;
+    safety_belts: string;
+    engine_start_stop: string;
+    final_comment: string;
+    next_service_date: Date;
+    cost_of_service: number;
+    created_by: string;
+    updated_by: string;
+    mileage: number;
+    license_plate: string;
+    vehicle_make: string;
+    vehicle_model: string;
+    vehicle_year: string;
+    vehicle_color: string;
+    vehicle_type: string;
+    triangle: string;
+    car_jack: string;
+    spare_wheel: string;
+    hass: string;
+    tools: string;
+    created_at: Date;
+    updated_at: Date;
 }[];
