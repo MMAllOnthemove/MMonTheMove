@@ -99,6 +99,11 @@ body::-webkit-scrollbar-thumb {
     body {
         @apply bg-background text-foreground;
     }
+    /* for lists, this makes them work */
+    ul,
+    ol {
+        list-style: revert;
+    }
 }
 
 .navbar {
@@ -139,3 +144,15 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
 }
+
+/* radio button */
+input[type="radio"] {
+    @apply appearance-none rounded-full h-4 w-4 bg-white border-2 border-gray-300 cursor-pointer;
+}
+input[type="radio"]:checked {
+    @apply bg-sky-500 border-gray-300;
+}
+
+/* input[type="radio"]:checked:hover {
+    @apply bg-accent hover:opacity-80 border-accent hover:border-accent;
+} */
