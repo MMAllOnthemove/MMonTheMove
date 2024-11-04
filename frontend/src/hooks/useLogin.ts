@@ -1,3 +1,4 @@
+import { SignupValues } from "@/lib/types";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -13,7 +14,7 @@ const useLogin = () => {
     const [errors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
 
     const router = useRouter();
-    const login = async (values: unknown) => {
+    const login = async (values: SignupValues) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
         try {
@@ -28,7 +29,7 @@ const useLogin = () => {
                 toast.success(`${response?.data?.message}`);
                 router.push("/");
             }
-        } catch (error: unknown) {
+        } catch (error: any) {
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {

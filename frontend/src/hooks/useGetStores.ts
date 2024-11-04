@@ -9,7 +9,7 @@ type TStores = {
 };
 
 const useGetStores = () => {
-    const [storesList, setData] = useState<TStores | unknown>([]);
+    const [storesList, setData] = useState<TStores[]>([]);
     const [storesListLoading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -26,7 +26,7 @@ const useGetStores = () => {
                     setData([...response.data]);
                 }
             } catch (error) {
-                // 
+                throw error;
             } finally {
                 setLoading(false);
             }

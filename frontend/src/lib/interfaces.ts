@@ -1,3 +1,5 @@
+import { ChangeEventHandler } from "react";
+
 export interface ISignUpFormValues {
     fullName: string;
     username: string;
@@ -43,7 +45,7 @@ export interface ITookanAssignToTeam {
 }
 export interface ISearchForm {
     filtering: string;
-    setFiltering: (e: unknown) => string | unknown;
+    setFiltering: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 export interface IHHPgspn {
     id: number;

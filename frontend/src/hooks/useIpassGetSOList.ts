@@ -46,7 +46,7 @@ const useIpaasGetSOList = () => {
                     setGSPNSOList(results);
                 }
             } catch (error) {
-               //
+                throw error;
             } finally {
                 setGSPNSOListLoading(true);
             }

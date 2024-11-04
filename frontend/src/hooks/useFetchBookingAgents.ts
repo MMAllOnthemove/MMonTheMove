@@ -7,10 +7,10 @@ type TAgents = {
     agent_firstname: string;
     agent_lastname: string;
     department: string;
-};
+}[];
 
 const useFetchAgent = () => {
-    const [bookingAgentList, setData] = useState<TAgents[] | unknown>([]);
+    const [bookingAgentList, setData] = useState<TAgents>([]);
     const [bookingAgentListLoading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -27,7 +27,7 @@ const useFetchAgent = () => {
                     setData(response?.data);
                 }
             } catch (error) {
-                // 
+                throw error;
             } finally {
                 setLoading(false);
             }

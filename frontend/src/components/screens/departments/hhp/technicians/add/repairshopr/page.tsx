@@ -101,23 +101,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
         };
         fetchRSByAssetData();
     }, [searchTicket, assetId]);
-    /*  
-    service_order_no,
-    date_booked 
-    model
-    warranty
-    engineer - configure this
-    fault
-    imei
-    serial_number
-    unit_status
-    ticket_number - will be auto added (opposite for service order on the gspn)
-    department - will be always be HHP
-    job_added_by
-    stores
-    repeat_repair
-    
-    */
+   
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault()
         const job_added_by = user?.email
@@ -134,9 +118,6 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
             ticket_number,
             department,
             job_added_by,
-            // for these two we will handle in the backend as false for pending
-            // parts_pending,
-            // parts_pending_date,
             stores,
             repairshopr_job_id,
             repeat_repair,

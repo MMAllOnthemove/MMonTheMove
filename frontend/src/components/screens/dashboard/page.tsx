@@ -21,7 +21,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import useUserLoggedIn from '@/hooks/useGetUser'
 import useHHPTasks from '@/hooks/useHHPTasks'
-import { calculateAverageRepairTime, getAveragePartsPendingTime, getCompletionRate, getFrequentFaults, getRepairByEngineer, getRepairsByStore, getUnitsBookedOverTime, getUnitsRepeatRepairAnalytics, getUnitsWithIssuedParts, getUnitsWithPendingParts, getWarrantyStatusBreakdown, partsIssuedRate } from '@/lib/analytics_functions'
+import { calculateAverageRepairTime, getAveragePartsPendingTime, getCompletionRate, getFrequentFaults, getRepairByEngineer, getUnitsBookedOverTime, getWarrantyStatusBreakdown, partsIssuedRate } from '@/lib/analytics_functions'
 import { unitsBookedInMonthlyChartConfig, warrantyBreakdownChartConfig } from '@/lib/chart_configs'
 import engineerWorkColumns from '@/lib/engineer_workload_table_columns'
 import columns from '@/lib/frequent_faults__table_columns'
@@ -47,12 +47,12 @@ const DashboardScreen = () => {
 
 
 
-    const storeRepairsCount = useMemo(() => Object.entries(
-        getRepairsByStore(hhpTasks, dateFrom, dateTo)
-    ).map(([store, count]) => ({
-        store,
-        count,
-    })), [hhpTasks, dateFrom, dateTo])
+    // const storeRepairsCount = useMemo(() => Object.entries(
+    //     getRepairsByStore(hhpTasks, dateFrom, dateTo)
+    // ).map(([store, count]) => ({
+    //     store,
+    //     count,
+    // })), [hhpTasks, dateFrom, dateTo])
 
     const averageRepairTime = useMemo(() => calculateAverageRepairTime(hhpTasks), [hhpTasks])
 
@@ -297,7 +297,7 @@ const DashboardScreen = () => {
                                     </thead>
 
                                     <TableBody>
-                                        {frequentFaultsTable.getRowModel().rows.map((row: unknown) => (
+                                        {frequentFaultsTable.getRowModel().rows.map((row: any) => (
                                             <tr
                                                 key={row.id}
 
@@ -305,7 +305,7 @@ const DashboardScreen = () => {
                                             >
 
 
-                                                {row.getVisibleCells().map((cell: unknown) => (
+                                                {row.getVisibleCells().map((cell: any) => (
                                                     <td
                                                         key={cell.id}
                                                         className="px-4 py-3 font-medium text-sm"
@@ -367,7 +367,7 @@ const DashboardScreen = () => {
                                     </thead>
 
                                     <TableBody>
-                                        {engineerWorkloadTable.getRowModel().rows.map((row: unknown) => (
+                                        {engineerWorkloadTable.getRowModel().rows.map((row: any) => (
                                             <tr
                                                 key={row.id}
 
@@ -375,7 +375,7 @@ const DashboardScreen = () => {
                                             >
 
 
-                                                {row.getVisibleCells().map((cell: unknown) => (
+                                                {row.getVisibleCells().map((cell: any) => (
                                                     <td
                                                         key={cell.id}
                                                         className="px-4 py-3 font-medium text-sm"

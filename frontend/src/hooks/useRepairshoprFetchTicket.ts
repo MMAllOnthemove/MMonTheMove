@@ -1,8 +1,9 @@
+import { TicketData } from "@/lib/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const useRepairshoprFetchTicket = (searchTicket: string | number) => {
-    const [fetchRSTicketData, setData] = useState();
+const useRepairshoprFetchTicket = (searchTicket: string | undefined) => {
+    const [fetchRSTicketData, setData] = useState<TicketData>();
     useEffect(() => {
         const fetchRSTicketData = async () => {
             try {
@@ -20,7 +21,7 @@ const useRepairshoprFetchTicket = (searchTicket: string | number) => {
                     setData(data);
                 }
             } catch (error) {
-//
+                throw error;
             }
         };
         fetchRSTicketData();

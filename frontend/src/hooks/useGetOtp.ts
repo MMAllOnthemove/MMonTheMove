@@ -1,33 +1,43 @@
+"use client";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-type TEngineers = {
+type TOtp = {
     id: string;
     unique_id: string;
-    engineer_firstname: string;
-    engineer_lastname: string;
-    department: string;
+    created_by: string | null;
+    otp_code: string | null;
 };
 
-const useFetchClaims = () => {
-    const [claimsList, setData] = useState<TEngineers[]>([]);
-    const [claimsLoading, setLoading] = useState(true);
+type tOtpError = {
+    response: {
+        data: {
+            error: string;
+        };
+    };
+};
+const useGetOtp = () => {
+    const [otp, setData] = useState<TOtp | null | any>();
+    const [otpLoading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/claims`,
+                    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/otp`,
                     {
                         withCredentials: true,
                     }
                 );
                 if (response?.data) {
-                    setData(response?.data);
+                    setData(response.data?.otp);
+                } else {
+                    setData(null);
                 }
-            } catch (error: any) {
+            } catch (error: tOtpError | any) {
+                // throw error;
                 toast.error(error?.response?.data?.error);
             } finally {
                 setLoading(false);
@@ -35,9 +45,9 @@ const useFetchClaims = () => {
         };
 
         fetchData();
-    }, [claimsList]);
+    }, [otp]);
 
-    return { claimsList, claimsLoading };
+    return { otp, otpLoading };
 };
 
-export default useFetchClaims;
+export default useGetOtp;

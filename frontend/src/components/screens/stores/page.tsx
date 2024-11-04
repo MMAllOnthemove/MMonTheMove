@@ -21,6 +21,7 @@ import useDeleteStore from '@/hooks/useDeleteStore';
 import useGetStores from '@/hooks/useGetStores';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import columns from '@/lib/stores_columns';
+import { TStoresList, TStoresListTable } from '@/lib/types';
 
 import {
     SortingState,
@@ -48,10 +49,10 @@ const StoresScreen = () => {
 
     const [openAddModal, setOpenAddModal] = useState(false)
 
-    const [modifyStoreModal, setModifyStoreModal] = useState<boolean | null | unknown>();
+    const [modifyStoreModal, setModifyStoreModal] = useState<TStoresList | null | any>();
 
 
-    const handleRowClick = (row: unknown) => {
+    const handleRowClick = (row: TStoresListTable) => {
         setModifyStoreModal(row?.original);
     };
 
@@ -155,7 +156,7 @@ const StoresScreen = () => {
                                     </thead>
 
                                     <TableBody>
-                                        {table.getRowModel().rows.map((row: unknown) => (
+                                        {table.getRowModel().rows.map((row: any) => (
                                             <tr
                                                 key={row.id}
 
@@ -172,7 +173,7 @@ const StoresScreen = () => {
                                                     </button>
                                                 </td>
 
-                                                {row.getVisibleCells().map((cell: unknown) => (
+                                                {row.getVisibleCells().map((cell: any) => (
                                                     <td
                                                         key={cell.id}
                                                         className="px-4 py-3 font-medium text-sm"

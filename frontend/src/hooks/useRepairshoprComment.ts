@@ -1,9 +1,10 @@
+import { RepairshorTicketComment } from "@/lib/types";
 import axios from "axios";
 
 const useRepairshoprComment = () => {
     const updateRepairTicketComment = async (
-        ticketId: string | number,
-        values: unknown
+        ticketId: string | number | undefined,
+        values: RepairshorTicketComment
     ) => {
         try {
             const response = await axios.post(
@@ -19,7 +20,7 @@ const useRepairshoprComment = () => {
 
             return response.data;
         } catch (error) {
-            // // throw error;
+            throw error;
         }
     };
 

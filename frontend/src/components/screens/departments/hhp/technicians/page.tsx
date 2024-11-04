@@ -58,6 +58,7 @@ import { CheckedState } from '@radix-ui/react-checkbox';
 import toast from 'react-hot-toast';
 import AddgspnHHPTask from './add/gspn/page';
 import AddRepairshoprHHPTask from './add/repairshopr/page';
+import { ModifyTaskModalTechnicians, RepairshorTicketComment, TechniciansTableData } from '@/lib/types';
 
 
 
@@ -69,19 +70,20 @@ const TechniciansScreen = () => {
     const { updateRepairTicketComment } = useRepairshoprComment()
     const { updateHHPTask } = useUpdateHHPTask()
 
-    const [modifyTaskModal, setModifyTaskModal] = useState<boolean | null | unknown>();
-    const [service_order_no, setServiceOrder] = useState("")
+    const [modifyTaskModal, setModifyTaskModal] = useState<ModifyTaskModalTechnicians | any>();
+    const [service_order_no, setServiceOrder] = useState<string | number | undefined>("")
     const [reparshoprComment, setRepairshoprComment] = useState("")
-    const [unit_status, setRepairshoprStatus] = useState("")
-    const [assessment_date, setAssessmentDate] = useState("")
-    const [parts_pending_date, setPartsPendingDate] = useState("")
-    const [parts_issued_date, setPartsIssuedDate] = useState("")
+    const [unit_status, setRepairshoprStatus] = useState<string>("")
+    const [assessment_date, setAssessmentDate] = useState<string | undefined>("")
+    const [parts_pending_date, setPartsPendingDate] = useState<string | undefined>("")
+    const [parts_issued_date, setPartsIssuedDate] = useState<string | undefined>("")
     const [parts_issued, setPartsIssued] = useState<CheckedState | undefined>()
     const [parts_pending, setPartsPending] = useState<CheckedState | undefined>()
-    const [qc_date, setQCCompleteDate] = useState("")
+    const [qc_date, setQCCompleteDate] = useState<string | undefined>("")
     const [qc_complete, setQCComplete] = useState<CheckedState | undefined>()
     const [openAddTaskModal, setOpenAddTaskModal] = useState(false)
-    const handleRowClick = (row: unknown) => {
+
+    const handleRowClick = (row: TechniciansTableData) => {
         setModifyTaskModal(row?.original);
     };
 
@@ -111,15 +113,6 @@ const TechniciansScreen = () => {
     });
 
 
-    /* 
-
-
-updated qc status, send to our db with time qc is completed
-for the comment, send to repaishopr
-can edit the service order to add it, thereby if it was not there
-can update status, send to our db and repairshopr
-
-    */
 
     useEffect(() => {
         // store values from db but still allow user to update those same fields
@@ -141,7 +134,7 @@ can update status, send to our db and repairshopr
         const statusPayload = {
             "status": unit_status
         }
-        const commentPayload = {
+        const commentPayload: RepairshorTicketComment = {
             "subject": "Update",
             "tech": user?.full_name,
             "body": reparshoprComment,
@@ -150,7 +143,7 @@ can update status, send to our db and repairshopr
         }
 
         const id = modifyTaskModal?.id;
-        if (modifyTaskModal.service_order_no !== service_order_no) {
+        if (modifyTaskModal?.service_order_no !== service_order_no) {
             setServiceOrder(service_order_no)
         }
         const updatePayload = {
@@ -162,14 +155,15 @@ can update status, send to our db and repairshopr
         const changes = findChanges(modifyTaskModal, updatePayload)
         try {
             const statusPayloadResponse = await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, statusPayload)
-            const commentResponse = await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
+            console.log("statusPayloadResponse", statusPayloadResponse)
+            await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
             if (Object.keys(changes).length > 0) {
-                const updateHHPJobsresponse = await updateHHPTask(id, changes)
+                await updateHHPTask(id, changes)
                 toast.success(`${statusPayloadResponse?.data?.message}`);
                 closeModal()
             }
         } catch (error) {
-            //  
+            throw error
         }
     }
 
@@ -239,7 +233,7 @@ can update status, send to our db and repairshopr
                                     </thead>
 
                                     <TableBody>
-                                        {table.getRowModel().rows.map((row: unknown) => (
+                                        {table.getRowModel().rows.map((row: any) => (
                                             <tr
                                                 key={row.id}
                                                 onClick={() => handleRowClick(row)}
@@ -255,7 +249,7 @@ can update status, send to our db and repairshopr
                                                     </button>
                                                 </td>
 
-                                                {row.getVisibleCells().map((cell: unknown) => (
+                                                {row.getVisibleCells().map((cell: any) => (
                                                     <td
                                                         key={cell.id}
                                                         className="px-4 py-3 font-medium text-sm"

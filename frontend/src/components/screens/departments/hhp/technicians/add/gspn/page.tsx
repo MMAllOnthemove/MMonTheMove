@@ -1,29 +1,28 @@
-import useAddHHPTask from '@/hooks/useAddHHPTask'
-import useGetStores from '@/hooks/useGetStores'
-import useUserLoggedIn from '@/hooks/useGetUser'
-import { closeModalInParent } from '@/lib/types'
-import React, { useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import warranties from '@/lib/warranties'
+} from "@/components/ui/select"
+import useAddHHPTask from '@/hooks/useAddHHPTask'
 import useFetchEngineer from '@/hooks/useFetchEngineers'
-import repairshopr_statuses from '@/lib/repairshopr_status'
-import { Button } from '@/components/ui/button'
-import useRepairshoprFetchTicket from '@/hooks/useRepairshoprFetchTicket'
+import useGetStores from '@/hooks/useGetStores'
+import useUserLoggedIn from '@/hooks/useGetUser'
 import useIpaasGetSOInfoAll from '@/hooks/useIpaasGetSoInfoAll'
+import useRepairshoprFetchTicket from '@/hooks/useRepairshoprFetchTicket'
+import repairshopr_statuses from '@/lib/repairshopr_status'
+import warranties from '@/lib/warranties'
+import React, { useEffect, useState } from 'react'
 
 
 
 
 const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) => {
-    const { user, isLoggedIn, loading } = useUserLoggedIn()
+    const { user } = useUserLoggedIn()
     const { engineersList } = useFetchEngineer()
     const { storesList } = useGetStores()
     const { addTask, addHHPTaskLoading, addHHPTaskErrors } = useAddHHPTask();
@@ -35,10 +34,10 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
     const [stores, setStore] = useState("")
     const [repeat_repair, setRepeatRepair] = useState('')
     const [imei, setIMEI] = useState("")
-    const [repairshopr_job_id, setRepairshoprJobId] = useState('')
+    const [repairshopr_job_id, setRepairshoprJobId] = useState<number | undefined>()
     const [service_order_no, setServiceOrderNo] = useState("")
     const [fault, setFault] = useState("")
-    const [ticket_number, setTicketNumber] = useState("")
+    const [ticket_number, setTicketNumber] = useState<string | undefined>('')
     const [date_booked, setDateBooked] = useState("")
     const [model, setModel] = useState("")
     const [serial_number, setSerialNumber] = useState("")

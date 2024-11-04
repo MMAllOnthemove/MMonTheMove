@@ -34,7 +34,7 @@ const useUserLoggedIn = () => {
                     setIsLoggedIn(false); // No user data means not logged in
                 }
             } catch (error) {
-                setIsLoggedIn(false);
+                if (error) setIsLoggedIn(false);
             } finally {
                 setLoading(false);
             }

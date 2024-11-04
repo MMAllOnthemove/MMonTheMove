@@ -135,14 +135,14 @@ const DriversScreen = () => {
                                     </thead>
 
                                     <TableBody>
-                                        {table.getRowModel().rows.map((row: unknown) => (
+                                        {table.getRowModel().rows.map((row: any) => (
                                             <tr
                                                 key={row.id}
 
                                                 className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]"
                                             >
 
-                                                {row.getVisibleCells().map((cell: unknown) => (
+                                                {row.getVisibleCells().map((cell: any) => (
                                                     <td
                                                         key={cell.id}
                                                         className="px-4 py-3 font-medium text-sm"

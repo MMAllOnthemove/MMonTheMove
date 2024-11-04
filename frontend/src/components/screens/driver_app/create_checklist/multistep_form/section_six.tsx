@@ -7,7 +7,7 @@ interface ISectionSix {
 
     engine_start_stop: string;
     setStartStop: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    mileage: number;
+    mileage: string;
     setMileage: (event: React.ChangeEvent<HTMLInputElement>) => void;
 
 
@@ -45,8 +45,9 @@ const SectionSix: React.FC<ISectionSix> = ({ engine_start_stop, setStartStop, mi
                     <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Mileage:</label>
                     <div>
                         <Input
-                            type="number"
                             name="mileage"
+                            type="text"
+                            inputMode='decimal'
                             value={mileage}
                             onChange={setMileage}
                         />

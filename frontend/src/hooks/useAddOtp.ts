@@ -1,22 +1,24 @@
-import { StoreValues } from "@/lib/types";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import toast from "react-hot-toast";
 interface ErrorMessages {
-    store_name?: string;
+    created_by?: string;
+    otp_code?: string;
 }
 
-const useAddStore = () => {
-    const [addStoreLoading, setLoading] = useState(false); // Loading state
-    const [errors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
+const useAddOtp = () => {
+    const [otpAddLoading, setLoading] = useState(false); // Loading state
+    const [otpAddErrors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
 
-    const addStore = async (values: StoreValues) => {
+    const router = useRouter();
+    const addOTP = async (values: any) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
         try {
             const response = await axios.post(
-                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/stores`,
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/otp`,
                 values,
                 {
                     withCredentials: true,
@@ -24,7 +26,9 @@ const useAddStore = () => {
             );
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
+                router.push("/");
             }
+            return response;
         } catch (error: any) {
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
@@ -36,7 +40,7 @@ const useAddStore = () => {
         }
     };
 
-    return { addStore, addStoreLoading, errors };
+    return { addOTP, otpAddLoading, otpAddErrors };
 };
 
-export default useAddStore;
+export default useAddOtp;

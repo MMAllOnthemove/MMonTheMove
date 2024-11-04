@@ -85,18 +85,20 @@ create table technician_tasks (
     repeat_repair text
 );
 
--- Add a trigger for updated_at
--- CREATE OR REPLACE FUNCTION update_updated_at()
--- RETURNS TRIGGER AS $$
--- BEGIN
---     NEW.updated_at = NOW();
---     RETURN NEW;
--- END;
--- $$ LANGUAGE plpgsql;
--- CREATE TRIGGER update_tasks_updated_at
--- BEFORE UPDATE ON tasks
--- FOR EACH ROW
--- EXECUTE PROCEDURE update_updated_at();
+Add
+    a trigger for updated_at CREATE
+    OR REPLACE FUNCTION update_updated_at() RETURNS TRIGGER AS $ $ BEGIN NEW.updated_at = NOW();
+
+RETURN NEW;
+
+END;
+
+$ $ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_tasks_updated_at BEFORE
+UPDATE
+    ON tasks FOR EACH ROW EXECUTE PROCEDURE update_updated_at();
+
 create table technician_tasks_history (
     id BIGSERIAL PRIMARY KEY UNIQUE,
     unique_id uuid DEFAULT gen_random_uuid(),
@@ -186,74 +188,42 @@ create table vehicle_checklist(
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
     reason_for_use reason_for_use_enum,
-    --
     service_order_no text,
     ticket_number text,
     driver text,
     foot_brakes FAIL_PASS_ENUM,
-    --
     emergency_brake FAIL_PASS_ENUM,
-    --
     steering_wheel FAIL_PASS_ENUM,
-    --
     windshield FAIL_PASS_ENUM,
-    --o
     rear_window FAIL_PASS_ENUM,
-    --o
     windshield_wipers FAIL_PASS_ENUM,
-    --o
     headlights FAIL_PASS_ENUM,
-    --o
     tail_lights FAIL_PASS_ENUM,
-    --o
     turn_indicator_lights FAIL_PASS_ENUM,
-    --o
     stop_lights FAIL_PASS_ENUM,
-    --
     front_seat_adjustment FAIL_PASS_ENUM,
-    --
     doors FAIL_PASS_ENUM,
-    --o
     horn FAIL_PASS_ENUM,
-    --
     speedometer FAIL_PASS_ENUM,
-    ---
     bumpers FAIL_PASS_ENUM,
-    ---o
     muffler_exhaust_system FAIL_PASS_ENUM,
-    --o
     tires FAIL_PASS_ENUM,
-    --o
     interior_exterior_view_mirros FAIL_PASS_ENUM,
-    --
     safety_belts FAIL_PASS_ENUM,
-    --
     engine_start_stop FAIL_PASS_ENUM,
-    --
     final_comment text,
     next_service_date date,
-    ---
-    --
     cost_of_service bigserial,
-    ---
-    --
     created_by text,
     updated_by text,
     mileage bigserial,
-    ---
     license_plate text,
     car text,
-    --
     triangle FAIL_PASS_ENUM,
-    --
     car_jack FAIL_PASS_ENUM,
-    --
     spare_wheel FAIL_PASS_ENUM,
-    --
     hass FAIL_PASS_ENUM,
-    ---
     tools FAIL_PASS_ENUM,
-    ---
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
@@ -265,4 +235,12 @@ create table drivers (
     driver_lastname text,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
-)
+);
+
+create table otp (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    created_by varchar(255),
+    otp_code text,
+    created_at date
+);

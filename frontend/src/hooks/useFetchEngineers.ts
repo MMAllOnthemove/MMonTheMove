@@ -10,7 +10,7 @@ type TEngineers = {
 };
 
 const useFetchEngineer = () => {
-    const [engineersList, setEngineers] = useState<TEngineers[] | unknown>([]);
+    const [engineersList, setEngineers] = useState<TEngineers[]>([]);
     const [engineersListLoading, setEngineersLoading] = useState(true);
 
     useEffect(() => {
@@ -27,7 +27,7 @@ const useFetchEngineer = () => {
                     setEngineers(response?.data);
                 }
             } catch (error) {
-                // 
+                throw error;
             } finally {
                 setEngineersLoading(false);
             }

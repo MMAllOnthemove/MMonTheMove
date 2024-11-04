@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { SignupValues } from "@/lib/types";
 interface ErrorMessages {
     fullName?: string;
     username?: string;
@@ -16,7 +17,7 @@ const useSignup = () => {
     const [errors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
     const router = useRouter();
 
-    const signup = async (values: unknown) => {
+    const signup = async (values: SignupValues) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
 
@@ -32,7 +33,7 @@ const useSignup = () => {
                 toast.success(`${response?.data?.message}`);
                 router.push("/");
             }
-        } catch (error: unknown) {
+        } catch (error: any) {
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {
