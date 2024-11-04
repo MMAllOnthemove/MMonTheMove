@@ -1,3 +1,4 @@
+import { HHPTaskAdd } from "@/lib/types";
 import axios from "axios";
 import { useState } from "react";
 
@@ -23,7 +24,7 @@ const useAddHHPTask = () => {
     const [addHHPTaskLoading, setLoading] = useState(false); // Loading state
     const [addHHPTaskErrors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
 
-    const addTask = async (values: unknown) => {
+    const addTask = async (values: any) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
         try {
@@ -37,8 +38,7 @@ const useAddHHPTask = () => {
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
             }
-        } catch (error: unknown) {
-
+        } catch (error: any) {
             if (error?.response?.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {

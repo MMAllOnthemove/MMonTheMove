@@ -17,6 +17,7 @@ import { router as engineers } from "./routes/engineers/index.js";
 import { router as stores } from "./routes/stores/index.js";
 import { router as checklists } from "./routes/driver_app/checklists/index.js";
 import { router as drivers } from "./routes/driver_app/drivers/index.js";
+import { router as otp } from "./routes/otp/index.js";
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(
@@ -44,6 +45,7 @@ app.use("/booking_agents", booking_agents);
 app.use("/claims", claims);
 app.use("/checklists", checklists);
 app.use("/drivers", drivers);
+app.use("/otp", otp);
 
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {

@@ -13,9 +13,10 @@ export const today = new Date().toISOString().split("T")[0];
 // Calculate the minimum date (3 months back)
 
 // Format the dates to 'YYYY-MM-DD'
-export const formatDate = (date: unknown) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
+export const formatDate = (date: string | Date | number) => {
+    const dateObject = new Date(date);
+    const year = dateObject.getFullYear();
+    const month = String(dateObject.getMonth() + 1).padStart(2, "0");
+    const day = String(dateObject.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
 };

@@ -1,3 +1,4 @@
+import { DriverAdd } from "@/lib/types";
 import axios from "axios";
 import { useState } from "react";
 
@@ -11,7 +12,7 @@ const useAddDriver = () => {
     const [addDriverLoading, setLoading] = useState(false); // Loading state
     const [errors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
 
-    const addDriver = async (values: unknown) => {
+    const addDriver = async (values: DriverAdd) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
         try {
@@ -25,7 +26,7 @@ const useAddDriver = () => {
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
             }
-        } catch (error: unknown) {
+        } catch (error: any) {
             // console.log(error);
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);

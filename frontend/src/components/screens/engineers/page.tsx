@@ -31,6 +31,7 @@ import useAddEngineer from '@/hooks/useAddEngineer';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import useDeleteEngineer from '@/hooks/useDeleteEngineer';
+import { TEngineersList, TEngineersListTable } from '@/lib/types';
 
 
 const EngineersScreen = () => {
@@ -48,10 +49,10 @@ const EngineersScreen = () => {
     const [filtering, setFiltering] = useState("");
 
     const [openAddModal, setOpenAddModal] = useState(false)
-   
-    const [modifyEngineerModal, setModifyEngineerModal] = useState<boolean | null | unknown>();
 
-    const handleRowClick = (row: unknown) => {
+    const [modifyEngineerModal, setModifyEngineerModal] = useState<TEngineersList | any>();
+
+    const handleRowClick = (row: TEngineersListTable) => {
         setModifyEngineerModal(row?.original);
     };
 
@@ -85,7 +86,7 @@ const EngineersScreen = () => {
     const delEng = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const id = modifyEngineerModal?.unique_id;
-         await deleteEngineer(id);
+        await deleteEngineer(id);
         closeModifyEngineerModal()
     }
 
@@ -154,8 +155,8 @@ const EngineersScreen = () => {
                                         ))}
                                     </thead>
 
-                                    <TableBody> 
-                                        {table.getRowModel().rows.map((row: unknown) => (
+                                    <TableBody>
+                                        {table.getRowModel().rows.map((row: any) => (
                                             <tr
                                                 key={row.id}
 
@@ -171,8 +172,8 @@ const EngineersScreen = () => {
                                                         Delete
                                                     </button>
                                                 </td>
-                                               
-                                                {row.getVisibleCells().map((cell: unknown) => (
+
+                                                {row.getVisibleCells().map((cell: any) => (
                                                     <td
                                                         key={cell.id}
                                                         className="px-4 py-3 font-medium text-sm"

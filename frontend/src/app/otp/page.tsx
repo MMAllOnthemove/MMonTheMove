@@ -1,9 +1,9 @@
-import TookanScreen from '@/components/screens/tookan/page'
+import CreateOtpScreen from '@/components/screens/create_otp/page'
 import React from 'react'
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Tookan',
+    title: 'OTP',
     description: '...',
     robots: {
         index: false,
@@ -11,10 +11,10 @@ export const metadata: Metadata = {
     },
 }
 
-const Tookan = () => {
+const CreateOtp = () => {
     return (
-        <TookanScreen />
+        <CreateOtpScreen />
     )
 }
 
-export default Tookan
+export default CreateOtp

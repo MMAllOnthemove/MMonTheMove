@@ -2,7 +2,6 @@ import { ITookanAssignToTeam } from "@/lib/interfaces";
 import axios from "axios";
 
 const useTookanAssignTeam = () => {
-    const apiToken = process.env.NEXT_PUBLIC_TOOKAN_API_TOKEN;
     const apiLink = process.env.NEXT_PUBLIC_TOOKAN_LINK;
 
     const assignToTeam = async (values: ITookanAssignToTeam) => {
@@ -19,7 +18,7 @@ const useTookanAssignTeam = () => {
 
             return response.data;
         } catch (error) {
-            // throw error;
+            throw error;
         }
     };
 

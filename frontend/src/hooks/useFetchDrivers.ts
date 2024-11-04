@@ -9,7 +9,7 @@ type Tdrivers = {
 };
 
 const useFetchDrivers = () => {
-    const [driversList, setdrivers] = useState<Tdrivers>([]);
+    const [driversList, setdrivers] = useState<Tdrivers[]>([]);
     const [driversListLoading, setdriversLoading] = useState(true);
 
     useEffect(() => {
@@ -26,7 +26,7 @@ const useFetchDrivers = () => {
                     setdrivers(response?.data);
                 }
             } catch (error) {
-                //
+                throw error;
             } finally {
                 setdriversLoading(false);
             }

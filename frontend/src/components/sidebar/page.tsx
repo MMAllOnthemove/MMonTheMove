@@ -17,20 +17,25 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import logo from "../../assets/mmlogo.png"
+import useGetOtp from "@/hooks/useGetOtp"
+import copyToClipBoard from "@/lib/copy_to_clipboard"
 
 const Sidebar = () => {
     const { user } = useUserLoggedIn()
     const { logoutUser, logoutLoading } = useLogoutUser()
+    const { otp, otpLoading } = useGetOtp()
+    const [copySuccess, setCopySuccess] = useState('');
+    const [openDropdown, setOpenDropdown] = useState<null | boolean | number>(null);
 
-    const [openDropdown, setOpenDropdown] = useState(null);
-
-    const toggleDropdown = (index: null | unknown) => {
+    const toggleDropdown = (index: null | boolean | number) => {
         setOpenDropdown(openDropdown === index ? null : index);
     };
 
     const logout = () => {
         logoutUser()
     }
+
+
 
     return (
         <div className="flex justify-between items-center navbar border px-2">
@@ -77,16 +82,18 @@ const Sidebar = () => {
                 </SheetContent>
             </Sheet>
             <nav>
-                <div>
-                    <Image
-                        src={logo}
-                        alt="MM ALL ELECTRONICS logo"
-                        width={100}
-                        height={100}
-                    // blurDataURL="data:..." automatically provided
-                    // placeholder="blur" // Optional blur-up while loading
-                    />
-                </div>
+                <div className="flex items-center gap-3">
+                    <p className="font-medium text-sm text-gray-900">{otp ? otp?.otp_code : ''}</p>
+                    <div>
+                        <Image
+                            src={logo}
+                            alt="MM ALL ELECTRONICS logo"
+                            width={100}
+                            height={100}
+                        // blurDataURL="data:..." automatically provided
+                        // placeholder="blur" // Optional blur-up while loading
+                        />
+                    </div></div>
             </nav>
         </div>
     )

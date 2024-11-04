@@ -1,9 +1,10 @@
+import { RepairshoprPutTicket } from "@/lib/types";
 import axios from "axios";
 
 const useRepairshoprTicket = () => {
     const updateRepairTicket = async (
-        ticketId: string | number,
-        values: unknown
+        ticketId: string | number | undefined,
+        values: RepairshoprPutTicket
     ) => {
         try {
             const response = await axios.put(
@@ -19,7 +20,7 @@ const useRepairshoprTicket = () => {
 
             return response.data;
         } catch (error) {
-            //
+            throw error;
         }
     };
 

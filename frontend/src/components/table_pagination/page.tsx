@@ -1,19 +1,17 @@
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
-interface IPaginationProps {
-    table: unknown;
-}
 
-const Pagination = ({ table }: IPaginationProps) => {
+
+const Pagination = ({ table }: any) => {
     return (
         <div className="pagination flex flex-wrap gap-2 p-2 justify-between items-center rounded-lg shadow-sm">
             <div className="flex gap-2 md:flex-1">
                 <Button
                     role="button"
                     className="border rounded p-1 font-medium disabled:opacity-50 md:hidden"
-                    onClick={() => table.setPageIndex(0)}
-                    disabled={!table.getCanPreviousPage()}
+                    onClick={() => table?.setPageIndex(0)}
+                    disabled={!table?.getCanPreviousPage()}
                 >
                     &laquo;
                 </Button>

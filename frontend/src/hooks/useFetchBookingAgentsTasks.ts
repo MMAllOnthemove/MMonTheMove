@@ -1,17 +1,10 @@
+import { TAgentTasks } from "@/lib/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
-
-type TAgents = {
-    id: number;
-    unique_id: string;
-    ticket_number: string;
-    booking_agent: string;
-    department: string;
-    created_at: string;
-};
+import toast from "react-hot-toast";
 
 const useFetchAgentTasks = () => {
-    const [bookingAgentTasksList, setData] = useState<TAgents[] | unknown>([]);
+    const [bookingAgentTasksList, setData] = useState<TAgentTasks[]>([]);
     const [bookingAgentTasksListLoading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -27,8 +20,8 @@ const useFetchAgentTasks = () => {
                 if (response?.data) {
                     setData(response?.data);
                 }
-            } catch (error) {
-                // 
+            } catch (error: any) {
+                toast.error(error?.response?.data?.error);
             } finally {
                 setLoading(false);
             }

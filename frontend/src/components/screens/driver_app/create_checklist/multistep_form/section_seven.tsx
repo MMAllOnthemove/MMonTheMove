@@ -6,7 +6,7 @@ interface ISectionSeven {
 
     next_service_date: string;
     setNextServiceDate: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    cost_of_service: number;
+    cost_of_service: string;
     setCostOfService: (event: React.ChangeEvent<HTMLInputElement>) => void;
 
 
@@ -34,7 +34,8 @@ const SectionSeven: React.FC<ISectionSeven> = ({ next_service_date, setNextServi
                     <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Cost of service:</label>
                     <div>
                         <Input
-                            type="number"
+                            type="text"
+                            inputMode='decimal'
                             name="cost_of_service"
                             value={cost_of_service}
                             onChange={setCostOfService}

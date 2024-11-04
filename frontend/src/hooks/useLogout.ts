@@ -19,8 +19,8 @@ const useLogoutUser = () => {
             if (res.status === 204) {
                 window.location.reload();
             }
-        } catch (err) {
-            //
+        } catch (error) {
+            throw error;
         } finally {
             setLogoutLoading(false);
         }

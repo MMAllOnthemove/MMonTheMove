@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 const useDeleteStore = () => {
     const [deleteStoreLoading, setLoading] = useState(false); // Loading state
 
-    const deleteStore = async (engineerId: string) => {
+    const deleteStore = async (engineerId: string | undefined) => {
         setLoading(true);
         try {
             const response = await axios.delete(
@@ -17,7 +17,7 @@ const useDeleteStore = () => {
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
             }
-        } catch (error: unknown) {
+        } catch (error: any) {
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             }

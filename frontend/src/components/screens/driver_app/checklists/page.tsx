@@ -41,9 +41,9 @@ const ChecklistsScreen = () => {
     const { checklistList } = useFetchChecklists()
     const [openAddModal, setOpenAddModal] = useState(false)
 
-    const [openClickedRow, setOpenClickedRow] = useState<boolean | null>();
+    const [openClickedRow, setOpenClickedRow] = useState<boolean | null | any>();
 
-    const handleRowClick = (row: unknown) => {
+    const handleRowClick = (row: any) => {
         console.log(row)
         setOpenClickedRow(row?.original);
     };
@@ -142,7 +142,7 @@ const ChecklistsScreen = () => {
                                                 className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]"
                                             >
 
-                                                {row.getVisibleCells().map((cell: unknown) => (
+                                                {row.getVisibleCells().map((cell: any) => (
                                                     <td
                                                         key={cell.id}
                                                         className="px-4 py-3 font-medium text-sm"
@@ -168,7 +168,7 @@ const ChecklistsScreen = () => {
                                         <DialogHeader>
                                             <DialogTitle className="text-center">Add checklist</DialogTitle>
                                         </DialogHeader>
-                                            <CreateChecklistScreen onSuccess={() => setOpenAddModal(false)} />
+                                        <CreateChecklistScreen onSuccess={() => setOpenAddModal(false)} />
 
 
                                     </DialogContent>

@@ -1,11 +1,27 @@
 "use client"
+import LoadingScreen from '@/components/loading_screen/page'
 import NotLoggedInScreen from '@/components/not_logged_in/page'
+import PageTitle from '@/components/PageTitle/page'
+import ManagementSearchForm from '@/components/search_field/page'
+import Sidebar from '@/components/sidebar/page'
+import TableBody from '@/components/table_body/page'
+import Pagination from '@/components/table_pagination/page'
+import { Button } from '@/components/ui/button'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle
+} from "@/components/ui/dialog"
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import useAddAgent from '@/hooks/useAddBookingAgent'
 import useDeleteBookingAgent from '@/hooks/useDeleteBookingAgent'
 import useFetchAgent from '@/hooks/useFetchBookingAgents'
 import useUserLoggedIn from '@/hooks/useGetUser'
 import columns from '@/lib/booking_agents_table_columns'
-import React, { useState } from 'react'
+import { TBookingAgentData } from '@/lib/types'
 import {
     SortingState,
     flexRender,
@@ -14,24 +30,8 @@ import {
     getPaginationRowModel,
     getSortedRowModel,
     useReactTable,
-} from "@tanstack/react-table";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle
-} from "@/components/ui/dialog";
-import { Button } from '@/components/ui/button';
-import LoadingScreen from '@/components/loading_screen/page'
-import Sidebar from '@/components/sidebar/page'
-import ManagementSearchForm from '@/components/search_field/page'
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import TableBody from '@/components/table_body/page'
-import Pagination from '@/components/table_pagination/page';
-import PageTitle from '@/components/PageTitle/page'
-import { TBookingAgentData } from '@/lib/types'
+} from "@tanstack/react-table"
+import React, { useState } from 'react'
 
 const AgentsScreen = () => {
     const { isLoggedIn, loading } = useUserLoggedIn()
@@ -48,7 +48,7 @@ const AgentsScreen = () => {
     const [filtering, setFiltering] = useState("");
 
     const [openAddModal, setOpenAddModal] = useState(false)
-    const [modifyAgentModal, setModifyAgentModal] = useState<boolean | null | undefined>();
+    const [modifyAgentModal, setModifyAgentModal] = useState<boolean | null | undefined | any>();
     // const { hhpTask } = useFetchHHPTaskById(modifyTaskModal?.id)
 
     const handleRowClick = (row: TBookingAgentData) => {
@@ -157,7 +157,7 @@ const AgentsScreen = () => {
 
                                     <TableBody>
 
-                                        {table.getRowModel().rows.map((row: unknown) => (
+                                        {table.getRowModel().rows.map((row: any) => (
                                             <tr
                                                 key={row.id}
 
@@ -174,7 +174,7 @@ const AgentsScreen = () => {
                                                     </button>
                                                 </td>
 
-                                                {row.getVisibleCells().map((cell: unknown) => (
+                                                {row.getVisibleCells().map((cell: any) => (
                                                     <td
                                                         key={cell.id}
                                                         className="px-4 py-3 font-medium text-sm"

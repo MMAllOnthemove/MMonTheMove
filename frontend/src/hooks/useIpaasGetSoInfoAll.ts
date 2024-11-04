@@ -31,7 +31,7 @@ const useIpaasGetSOInfoAll = () => {
 
             return response.data;
         } catch (error) {
-            // throw error;
+            throw error;
         }
     };
 

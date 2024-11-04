@@ -1,4 +1,6 @@
-const columns: unknown = [
+import { TColumns } from "./types";
+
+const columns: TColumns = [
     {
         header: "First name",
         accessorKey: "agent_firstname",

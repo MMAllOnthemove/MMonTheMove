@@ -2,7 +2,6 @@ import { ITookanCreateTask } from "@/lib/interfaces";
 import axios from "axios";
 
 const useTookanApi = () => {
-    const apiToken = process.env.NEXT_PUBLIC_TOOKAN_API_TOKEN;
     const apiLink = process.env.NEXT_PUBLIC_TOOKAN_LINK;
 
     const createTask = async (values: ITookanCreateTask) => {
@@ -19,7 +18,7 @@ const useTookanApi = () => {
 
             return response.data;
         } catch (error) {
-            // throw error;
+          throw error;
         }
     };
 

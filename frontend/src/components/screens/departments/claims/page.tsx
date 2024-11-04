@@ -1,15 +1,16 @@
 "use client"
-import React, { useEffect, useState } from 'react';
 import LoadingScreen from '@/components/loading_screen/page';
 import NotLoggedInScreen from '@/components/not_logged_in/page';
 import PageTitle from '@/components/PageTitle/page';
 import Sidebar from '@/components/sidebar/page';
-import useUserLoggedIn from '@/hooks/useGetUser';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import useAddClaims from '@/hooks/useAddClaims';
+import useUserLoggedIn from '@/hooks/useGetUser';
 import useIpaasGetSOInfoAll from '@/hooks/useIpaasGetSoInfoAll';
+import React, { useEffect, useState } from 'react';
 
+import { Button } from '@/components/ui/button';
 import {
     Select,
     SelectContent,
@@ -17,8 +18,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Button } from '@/components/ui/button';
 import departments from '@/lib/departments';
+import { getSOInfoAllLogInfoSection } from '@/lib/types';
 
 const ClaimsScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
@@ -32,16 +33,14 @@ const ClaimsScreen = () => {
 
 
     useEffect(() => {
-        const handleGetSOInfo = async (serviceOrder: string) => {
+        const handleGetSOInfo = async (serviceOrder: string | number) => {
             try {
                 const data = await getSOInfoAllTookan(serviceOrder);
-                const statusDescs = data?.EtLogInfo?.results?.map(result => result?.StatusDesc);
+                const statusDescs = data?.EtLogInfo?.results?.map((result: getSOInfoAllLogInfoSection) => result?.StatusDesc);
 
-                if (statusDescs && statusDescs.length > 0) { // Check if statusDescs is defined and not empty
+                if (statusDescs && statusDescs.length > 0) {
+                    // Check if statusDescs is defined and not empty
                     setClaimStatus(statusDescs[statusDescs.length - 1]);
-                } else {
-                    // 
-
                 }
                 setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
             } catch (error) {

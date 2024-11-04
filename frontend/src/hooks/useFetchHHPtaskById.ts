@@ -46,7 +46,7 @@ const useFetchHHPTaskById = (taskId: string | number) => {
                     setHHPTask(data);
                 }
             } catch (error) {
-                //
+                throw error;
             }
         };
         fetchData();

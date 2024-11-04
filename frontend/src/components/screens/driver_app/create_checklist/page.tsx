@@ -18,7 +18,7 @@ import toast from 'react-hot-toast'
 import { closeModalInParent } from '@/lib/types'
 
 const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
-    const { user, isLoggedIn, loading } = useUserLoggedIn()
+    const { user } = useUserLoggedIn()
     const { addChecklist, addChecklistLoading } = useAddChecklist()
     const [windshield, setWindshield] = useState("")
     const [windshield_wipers, setWindshieldWipers] = useState("")
@@ -41,9 +41,9 @@ const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
     const [safety_belts, setSafetyBelts] = useState("")
 
     const [engine_start_stop, setStartStop] = useState("")
-    const [mileage, setMileage] = useState<number>(0)
+    const [mileage, setMileage] = useState<string>('')
     const [next_service_date, setNextServiceDate] = useState("")
-    const [cost_of_service, setCostOfService] = useState<number>(0)
+    const [cost_of_service, setCostOfService] = useState('0')
     const [car, setCar] = useState("")
     const [reason_for_use, selectCarUseReason] = useState("")
     const [triangle, setTriangle] = useState("")
@@ -54,7 +54,6 @@ const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
     const [driver, setDriver] = useState("")
     const [final_comment, setFinalComment] = useState("")
 
-    const [parentModal, setParentModal] = useState(true)
 
     const [step, setStep] = useState(1);
 
@@ -75,7 +74,7 @@ const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
         const response = await addChecklist(payload);
         if (response?.status === 201) {
             toast.success(`${response?.data?.message}`);
-            onSuccess();  // Call the onSuccess prop to close the modal
+            onSuccess?.();  // Call the onSuccess prop to close the modal
         }
     }
 

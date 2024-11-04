@@ -1,4 +1,5 @@
-import axios, { AxiosError } from "axios";
+import { ClaimsAdd } from "@/lib/types";
+import axios from "axios";
 import { useState } from "react";
 
 import toast from "react-hot-toast";
@@ -10,12 +11,11 @@ interface ErrorMessages {
     created_by?: string;
 }
 
-
 const useAddClaims = () => {
     const [addClaimLoading, setLoading] = useState(false); // Loading state
     const [errors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
 
-    const addAddClaim = async (values: unknown) => {
+    const addAddClaim = async (values: any) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
         try {
@@ -29,8 +29,7 @@ const useAddClaims = () => {
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
             }
-        } catch (error: unknown | AxiosError) {
-
+        } catch (error: any) {
             if (error?.response?.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {

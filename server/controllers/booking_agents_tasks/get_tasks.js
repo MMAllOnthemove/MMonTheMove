@@ -8,7 +8,7 @@ const getBookingAgentsTasks = async (req, res) => {
 
         res.json(rows);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: "Failed to get stats, try again" });
     }
 };
 

@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select";
 import useFetchAgentTasks from '@/hooks/useFetchBookingAgentsTasks';
 import { bookingAgentMapOverJobs } from '@/lib/booking_agents_map_over_tasks';
+import { TAgentTasks, TBookingAgentsTasksCount, TBookingAgentsTasksViewIndieList } from '@/lib/types';
 import moment from 'moment';
 
 const BookingAgentsReportScreen = () => {
@@ -35,27 +36,24 @@ const BookingAgentsReportScreen = () => {
     const { bookingAgentList } = useFetchAgent()
     const { bookingAgentTasksList } = useFetchAgentTasks()
     const [searchTicket, setSearchTicket] = useState("")
-    const [ticket_number, setTicketNumber] = useState("")
+    const [ticket_number, setTicketNumber] = useState<string | undefined>("")
     const [booking_agent, setBookingAgent] = useState("")
 
-    const [dateFrom, setDateFrom] = useState<string | number | Date | unknown>("");
-    const [dateTo, setDateTo] = useState<string | number | Date | unknown>("");
+    const [dateFrom, setDateFrom] = useState<string>("");
+    const [dateTo, setDateTo] = useState<string>("");
     const { fetchRSTicketData } = useRepairshoprFetchTicket(searchTicket)
 
 
-    const [openModal, setOpenModal] = useState<boolean | null | undefined | React.ReactNode>();
-    const [groupedTasks, setGroupedTasks] = useState([]);
+    const [openModal, setOpenModal] = useState<boolean | null | TBookingAgentsTasksViewIndieList | any>();
+    const [groupedTasks, setGroupedTasks] = useState<TAgentTasks[]>([]);
 
-    const handleRowClick = (row: unknown) => {
+    const handleRowClick = (row: TBookingAgentsTasksViewIndieList) => {
         setOpenModal(row);
     };
 
     const closeModal = () => {
         setOpenModal(false);
     };
-
-    // const { hhpTask } = useFetchHHPTaskById(modifyTaskModal?.id)
-
 
 
     const addTask = async (e: React.SyntheticEvent) => {
@@ -75,12 +73,12 @@ const BookingAgentsReportScreen = () => {
     // Group tasks by name and calculate jobs count based on date range
     useEffect(() => {
         const filteredTasks = bookingAgentTasksList?.filter((task) => {
-            const taskDate = moment(task.created_date).format("YYYY-MM-DD");
+            const taskDate = moment(task.created_at).format("YYYY-MM-DD");
             return taskDate >= dateFrom && taskDate <= dateTo;
         });
 
         // group tasks that have the same booking agent, so it does not show every entry, the add the entry to the jobs count
-        const grouped = filteredTasks.reduce((acc, task) => {
+        const grouped = filteredTasks.reduce((acc: { [key: string]: any }, task) => {
             const existingUser = acc[task.booking_agent];
             if (existingUser) {
                 existingUser.tasksCount++;
@@ -151,7 +149,7 @@ const BookingAgentsReportScreen = () => {
                                         </Label>
                                         <Input
                                             placeholder='Search ticket'
-                                            type="number"
+                                            type="string"
                                             id="searchTicket"
                                             name="searchTicket"
                                             onChange={(e) => setSearchTicket(e.target.value)}
@@ -234,7 +232,7 @@ const BookingAgentsReportScreen = () => {
                                     </thead>
                                     <tbody className="z-0">
 
-                                        {groupedTasks.map((item: unknown) => (
+                                        {groupedTasks.map((item: any) => (
                                             <tr onClick={() => handleRowClick(item)} key={item.createdBy} className="border-b cursor-pointer hover:bg-gray-100">
                                                 <td className="px-4 py-3 font-medium text-sm">{item.createdBy}</td>
                                                 <td className="px-4 py-3 font-medium text-sm">{item.tasksCount}</td>

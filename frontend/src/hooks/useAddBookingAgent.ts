@@ -1,3 +1,4 @@
+import { AgentsAdd } from "@/lib/types";
 import axios from "axios";
 import { useState } from "react";
 
@@ -12,7 +13,7 @@ const useAddAgent = () => {
     const [addAgentLoading, setLoading] = useState(false); // Loading state
     const [errors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
 
-    const addAgent = async (values: unknown) => {
+    const addAgent = async (values: AgentsAdd) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
         try {
@@ -26,8 +27,7 @@ const useAddAgent = () => {
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
             }
-        } catch (error: unknown) {
-
+        } catch (error: any) {
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {
