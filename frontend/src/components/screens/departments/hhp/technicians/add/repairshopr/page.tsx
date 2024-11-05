@@ -12,6 +12,7 @@ import useAddHHPTask from '@/hooks/useAddHHPTask';
 import useFetchEngineer from '@/hooks/useFetchEngineers';
 import useGetStores from '@/hooks/useGetStores';
 import useUserLoggedIn from '@/hooks/useGetUser';
+import { datetimestamp } from '@/lib/date_formats';
 import repairshopr_statuses from '@/lib/repairshopr_status';
 import warranties from '@/lib/warranties';
 import axios from 'axios';
@@ -101,10 +102,11 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
         };
         fetchRSByAssetData();
     }, [searchTicket, assetId]);
-   
+
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault()
         const job_added_by = user?.email
+        const created_at = datetimestamp;
         const payload = {
             service_order_no,
             date_booked,
@@ -121,6 +123,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
             stores,
             repairshopr_job_id,
             repeat_repair,
+            created_at
         }
         await addTask(payload)
         if (addHHPTaskErrors) {

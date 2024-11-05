@@ -8,24 +8,22 @@ CREATE TABLE company_people (
     user_id BIGSERIAL PRIMARY KEY,
     user_unique_id uuid DEFAULT gen_random_uuid(),
     full_name text,
-    user_name text,
     email text,
     user_password text,
     department text,
-    created_at date,
-    updated_at date,
+    created_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ,
     user_role text,
-    date_added text,
     reset_token VARCHAR(255),
-    reset_token_expires_at TIMESTAMP
+    reset_token_expires_at TIMESTAMPTZ
 );
 
 CREATE TABLE login_history (
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
     user_id BIGSERIAL NOT NULL,
-    login_timestamp TIMESTAMP,
-    logout_timestamp TIMESTAMP,
+    login_timestamp TIMESTAMPTZ,
+    logout_timestamp TIMESTAMPTZ,
     login_method login_method_enum,
     login_status login_status_enum,
     FOREIGN KEY (user_id) REFERENCES company_people(user_id)
@@ -40,17 +38,23 @@ create table engineers (
     engineer_lastname text,
     department departments_enum,
     engineer_code varchar(30),
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ
 );
 
-
+-- INSERT INTO engineers (engineer_firstname, engineer_lastname, department, engineer_code) VALUES ('Samuel', 'Mkhadawire', 'HA', '7186005180');
+-- INSERT INTO engineers (engineer_firstname, engineer_lastname, department, engineer_code) VALUES ('Olivier John', 'Munguakokwa', 'HHP', '7186005298');
+-- INSERT INTO engineers (engineer_firstname, engineer_lastname, department, engineer_code) VALUES ('Paulas', 'Gambu', 'HHP', '7186005890');
+-- INSERT INTO engineers (engineer_firstname, engineer_lastname, department, engineer_code) VALUES ('Andrea', 'Likomba', 'DTV', '7186005998');
+-- INSERT INTO engineers (engineer_firstname, engineer_lastname, department, engineer_code) VALUES ('Iven', 'Maluleke', 'HA', '7186006006');
+-- INSERT INTO engineers (engineer_firstname, engineer_lastname, department, engineer_code) VALUES ('Ntwanano Agreement', 'Nkwashu', 'HHP', '7186006393');
+-- INSERT INTO engineers (engineer_firstname, engineer_lastname, department, engineer_code) VALUES ('William Thabo', 'Kgatle', 'HHP', '7186006404');
 create table stores (
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
     store_name text,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ
 );
 
 create table technician_tasks (
@@ -58,8 +62,8 @@ create table technician_tasks (
     unique_id uuid DEFAULT gen_random_uuid(),
     service_order_no text unique,
     date_booked date,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW(),
+    created_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ,
     model text,
     warranty text,
     engineer text,
@@ -105,8 +109,8 @@ create table technician_tasks_history (
     unique_id uuid DEFAULT gen_random_uuid(),
     service_order_no text unique,
     date_booked date,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW(),
+    created_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ,
     model text,
     warranty text,
     engineer text,
@@ -137,7 +141,7 @@ create table technician_tasks_history (
 create table claims (
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
-    created_at TIMESTAMP DEFAULT NOW(),
+    created_at TIMESTAMPTZ,
     created_by text,
     service_order_no text,
     ticket_number text unique,
@@ -151,8 +155,8 @@ create table booking_agents (
     agent_firstname text,
     agent_lastname text,
     department text,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ
 );
 
 create table booking_agents_tasks (
@@ -162,8 +166,8 @@ create table booking_agents_tasks (
     ticket_number text,
     created_by text,
     booking_agent text,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ
 );
 
 create TYPE reason_for_use_enum as enum (
@@ -226,8 +230,8 @@ create table vehicle_checklist(
     spare_wheel FAIL_PASS_ENUM,
     hass FAIL_PASS_ENUM,
     tools FAIL_PASS_ENUM,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ
 );
 
 create table drivers (
@@ -235,8 +239,8 @@ create table drivers (
     unique_id uuid DEFAULT gen_random_uuid(),
     driver_firstname text,
     driver_lastname text,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ
 );
 
 create table otp (
@@ -244,5 +248,5 @@ create table otp (
     unique_id uuid DEFAULT gen_random_uuid(),
     created_by varchar(255),
     otp_code text,
-    created_at date
+    created_at TIMESTAMPTZ
 );

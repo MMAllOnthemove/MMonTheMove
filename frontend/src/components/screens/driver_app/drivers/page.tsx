@@ -18,6 +18,7 @@ import { Label } from '@/components/ui/label';
 import useAddDriver from '@/hooks/useAddDriver';
 import useFetchDrivers from '@/hooks/useFetchDrivers';
 import useUserLoggedIn from '@/hooks/useGetUser';
+import { datetimestamp } from '@/lib/date_formats';
 import columns from '@/lib/drivers_table_columns';
 import {
     SortingState,
@@ -66,7 +67,8 @@ const DriversScreen = () => {
 
     const addEng = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        const payload = { driver_firstname, driver_lastname };
+        const created_at = datetimestamp;
+        const payload = { driver_firstname, driver_lastname, created_at };
         await addDriver(payload);
         toast.error(`Fill in all fields`);
         setOpenAddModal(false)

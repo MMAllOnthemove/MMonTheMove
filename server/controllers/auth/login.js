@@ -37,7 +37,7 @@ const LoginUser = async (req, res) => {
                 [email]
             );
             const selectUser = await pool.query(
-                "SELECT user_unique_id, user_id, email, full_name, user_name, user_role, department FROM company_people WHERE email = $1",
+                "SELECT user_unique_id, user_id, email, full_name, user_role, department FROM company_people WHERE email = $1",
                 [email]
             );
 

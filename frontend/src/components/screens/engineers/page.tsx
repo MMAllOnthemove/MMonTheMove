@@ -32,6 +32,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import useDeleteEngineer from '@/hooks/useDeleteEngineer';
 import { TEngineersList, TEngineersListTable } from '@/lib/types';
+import { datetimestamp } from '@/lib/date_formats';
 
 
 const EngineersScreen = () => {
@@ -79,7 +80,8 @@ const EngineersScreen = () => {
 
     const addEng = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        const payload = { engineer_firstname, engineer_lastname, department };
+        const created_at = datetimestamp;
+        const payload = { engineer_firstname, engineer_lastname, department, created_at };
         await addEngineer(payload);
         setOpenAddModal(false)
     }

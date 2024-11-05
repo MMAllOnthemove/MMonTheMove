@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import departments from '@/lib/departments';
 import { getSOInfoAllLogInfoSection } from '@/lib/types';
+import { datetimestamp } from '@/lib/date_formats';
 
 const ClaimsScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
@@ -56,7 +57,8 @@ const ClaimsScreen = () => {
     const addTask = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const created_by = user?.email;
-        const payload = { claim_status, ticket_number, service_order_no, department, created_by };
+        const created_at = datetimestamp;
+        const payload = { claim_status, ticket_number, service_order_no, department, created_by, created_at };
         await addAddClaim(payload);
 
     }

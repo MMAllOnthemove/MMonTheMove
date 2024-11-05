@@ -25,7 +25,7 @@ const createOTP = async (req, res) => {
 
     try {
         const hasOTPBeenUsed = await pool.query(
-            "SELECT otp_code from otp where otp_code = $1 AND created_at = $2 LIMIT 1",
+            "SELECT otp_code from otp where otp_code = $1 AND created_at::date = $2 LIMIT 1",
             [otp_code, created_at]
         );
 

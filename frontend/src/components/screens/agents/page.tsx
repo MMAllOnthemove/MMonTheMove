@@ -21,6 +21,7 @@ import useDeleteBookingAgent from '@/hooks/useDeleteBookingAgent'
 import useFetchAgent from '@/hooks/useFetchBookingAgents'
 import useUserLoggedIn from '@/hooks/useGetUser'
 import columns from '@/lib/booking_agents_table_columns'
+import { datetimestamp } from '@/lib/date_formats'
 import { TBookingAgentData } from '@/lib/types'
 import {
     SortingState,
@@ -77,7 +78,8 @@ const AgentsScreen = () => {
 
     const addBookingAg = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        const payload = { agent_firstname, agent_lastname, department };
+        const created_at = datetimestamp;
+        const payload = { agent_firstname, agent_lastname, department, created_at };
         await addAgent(payload);
         setOpenAddModal(false)
     }

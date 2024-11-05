@@ -27,8 +27,9 @@ import {
 } from "@/components/ui/select";
 import useFetchAgentTasks from '@/hooks/useFetchBookingAgentsTasks';
 import { bookingAgentMapOverJobs } from '@/lib/booking_agents_map_over_tasks';
-import { TAgentTasks, TBookingAgentsTasksCount, TBookingAgentsTasksViewIndieList } from '@/lib/types';
+import { TAgentTasks, TBookingAgentsTasksViewIndieList } from '@/lib/types';
 import moment from 'moment';
+import { datetimestamp } from '@/lib/date_formats';
 
 const BookingAgentsReportScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
@@ -59,7 +60,8 @@ const BookingAgentsReportScreen = () => {
     const addTask = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const created_by = user?.email;
-        const payload = { ticket_number, created_by, booking_agent };
+        const created_at = datetimestamp;
+        const payload = { ticket_number, created_by, booking_agent, created_at };
         await addAgentTask(payload);
 
     }
