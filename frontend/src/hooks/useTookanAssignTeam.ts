@@ -18,7 +18,9 @@ const useTookanAssignTeam = () => {
 
             return response.data;
         } catch (error) {
-            throw error;
+            if (process.env.NODE_ENV !== "production") {
+                console.error("Error assigning to team via tookan:", error);
+            }
         }
     };
 

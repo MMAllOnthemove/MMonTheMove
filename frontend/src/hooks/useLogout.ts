@@ -20,7 +20,9 @@ const useLogoutUser = () => {
                 window.location.reload();
             }
         } catch (error) {
-            throw error;
+            if (process.env.NODE_ENV !== "production") {
+                console.error("Error logging out:", error);
+            }
         } finally {
             setLogoutLoading(false);
         }

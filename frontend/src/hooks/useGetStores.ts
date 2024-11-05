@@ -23,10 +23,12 @@ const useGetStores = () => {
                     }
                 );
                 if (response?.data) {
-                    setData([...response.data]);
+                    setData(response.data);
                 }
             } catch (error) {
-                throw error;
+                if (process.env.NODE_ENV !== "production") {
+                    console.error("Error fetching stores:", error);
+                }
             } finally {
                 setLoading(false);
             }

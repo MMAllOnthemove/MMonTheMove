@@ -20,7 +20,12 @@ const useRepairshoprTicket = () => {
 
             return response.data;
         } catch (error) {
-            throw error;
+            if (process.env.NODE_ENV !== "production") {
+                console.error(
+                    "Error updating repairshopr ticket by id:",
+                    error
+                );
+            }
         }
     };
 

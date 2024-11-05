@@ -37,8 +37,12 @@ const useGetOtp = () => {
                     setData(null);
                 }
             } catch (error: tOtpError | any) {
-                // throw error;
-                toast.error(error?.response?.data?.error);
+                if (process.env.NODE_ENV !== "production") {
+                    console.error(
+                        "Error fetching daily otp:",
+                        error?.response?.data?.error
+                    );
+                }
             } finally {
                 setLoading(false);
             }

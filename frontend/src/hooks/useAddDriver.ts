@@ -27,7 +27,6 @@ const useAddDriver = () => {
                 toast.success(`${response?.data?.message}`);
             }
         } catch (error: any) {
-            // console.log(error);
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {

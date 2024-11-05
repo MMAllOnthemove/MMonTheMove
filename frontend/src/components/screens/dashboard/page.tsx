@@ -74,7 +74,6 @@ const DashboardScreen = () => {
     const warrantyBreakdown = useMemo(() => Object.entries(getWarrantyStatusBreakdown(hhpTasks, dateFrom, dateTo)).map(([warranty, count]) => ({
         warranty, count
     })), [hhpTasks, dateFrom, dateTo])
-    // console.log(warrantyBreakdown)
 
     const unitsBookedInMonthly = useMemo(() => Object.entries(getUnitsBookedOverTime(hhpTasks, dateFrom, dateTo)).map(([yearMonth, count]) => {
         return { yearMonth: moment(yearMonth).format('MMMM'), count };
@@ -84,8 +83,6 @@ const DashboardScreen = () => {
     const engineerWorkload = useMemo(() => Object.entries(getRepairByEngineer(hhpTasks, dateFrom, dateTo)).map(([engineer, count]) => ({
         engineer, count
     })), [hhpTasks, dateFrom, dateTo])
-
-    // console.log(engineerWorkload)
 
 
     const frequentFaultsTable = useReactTable({

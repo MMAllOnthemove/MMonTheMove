@@ -72,9 +72,9 @@ const ForgotPassword = async (req, res) => {
                 },
                 (error, info) => {
                     if (error) {
-                        console.error("Error sending email:", error);
+                        // console.error("Error sending email:", error);
                     } else {
-                        console.log("Email sent:", info.response);
+                        // console.log("Email sent:", info.response);
                     }
                 }
             );
@@ -84,7 +84,6 @@ const ForgotPassword = async (req, res) => {
             });
         }
     } catch (error) {
-        console.error("Reset password validation error:", error);
         // to get error for a specific field
         const errors = {};
         // error.inner.forEach((err) => {

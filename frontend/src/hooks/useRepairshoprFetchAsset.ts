@@ -18,7 +18,9 @@ const useRepairshoprFetchAsset = (assetId: string | number) => {
 
                 if (data?.ticket?.id == assetId) setData(data);
             } catch (error) {
-                throw error;
+           if (process.env.NODE_ENV !== "production") {
+               console.error("Error fetching adding HHP task by GSPNError fetching adding HHP task by GSPN:", error);
+           }
             }
         };
         fetchData();
