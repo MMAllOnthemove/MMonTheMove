@@ -1,4 +1,4 @@
-CREATE TYPE departments as ENUM('HHP', 'DTV', 'HA', 'Claims', 'Service tracking');
+CREATE TYPE departments_enum as ENUM('HHP', 'DTV', 'HA', 'Claims', 'Service tracking');
 
 create type login_method_enum as ENUM('password', 'oauth', 'sso');
 
@@ -38,10 +38,12 @@ create table engineers (
     unique_id uuid DEFAULT gen_random_uuid(),
     engineer_firstname text,
     engineer_lastname text,
-    department text,
+    department departments_enum,
+    engineer_code varchar(30),
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
+
 
 create table stores (
     id BIGSERIAL PRIMARY KEY,
