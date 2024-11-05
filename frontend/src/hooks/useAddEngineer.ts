@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 interface ErrorMessages {
     engineer_firstname?: string;
     engineer_lastname?: string;
+    engineer_code?: string;
     department?: string;
 }
 
@@ -27,10 +28,13 @@ const useAddEngineer = () => {
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
             }
+            console.log("addEngineer response", response);
+            return response;
         } catch (error: any) {
-            if (error?.response.data?.message) {
-                toast.error(`${error?.response.data?.message}`);
-            } else if (error.response && error.response.data.errors) {
+            console.log("addEngineer error", error);
+            if (error?.response?.data?.message) {
+                toast.error(`${error?.response?.data?.message}`);
+            } else if (error?.response && error?.response?.data?.errors) {
                 setErrors(error.response.data.errors); // Set validation errors to state
             }
             // setError(error?.response?.data?.message);

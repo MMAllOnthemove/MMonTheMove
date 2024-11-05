@@ -6,25 +6,32 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
+import axios from "axios"
+import { useEffect } from "react"
 import LoginScreen from "./login/page"
 import SignupScreen from "./signup/page"
-import { useEffect } from "react"
-import useUserLoggedIn from "@/hooks/useGetUser"
-import useLogoutUser from "@/hooks/useLogout"
 
 
 export default function AuthScreen() {
-    const { user, isLoggedIn } = useUserLoggedIn()
-    const { logoutUser } = useLogoutUser()
+    // const { user, isLoggedIn } = useUserLoggedIn()
 
     useEffect(() => {
-        const ifUserHasSessionOnThisPageClearIt = async () => {
-            if (user && isLoggedIn) {
-                logoutUser()
+        const logoutUser = async () => {
+            try {
+                const res = await axios.get(
+                    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/logout`,
+                    {
+                        withCredentials: true,
+                    }
+                );
+            } catch (error) {
+                if (process.env.NODE_ENV !== "production") {
+                    console.error("Error logging out:", error);
+                }
             }
-        }
-        ifUserHasSessionOnThisPageClearIt()
-    }, [user, isLoggedIn, logoutUser])
+        };
+        logoutUser()
+    }, [])
     return (
         <div className="flex justify-center items-center h-screen">
             <Tabs defaultValue="login" className="w-[400px]">
