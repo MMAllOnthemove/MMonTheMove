@@ -4,6 +4,7 @@ import * as Yup from "yup";
 const addDriversSchema = Yup.object({
     driver_firstname: Yup.string().required("Firstname is required!"),
     driver_lastname: Yup.string().required("Lastname is required!"),
+    created_at: Yup.string(),
 });
 
 const addDrivers = async (req, res) => {

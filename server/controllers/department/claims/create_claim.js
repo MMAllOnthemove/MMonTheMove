@@ -9,6 +9,7 @@ const claimSchema = Yup.object().shape({
     ticket_number: Yup.string().required("Ticket number is required!"),
     claim_status: Yup.string().required("What is the status?"),
     department: Yup.string().required("What is the department?"),
+    created_at: Yup.string(),
     created_by: Yup.string()
         .email("Email is invalid!")
         .required("Your email is required!"),
@@ -21,6 +22,7 @@ const CreateClaim = async (req, res) => {
         claim_status,
         department,
         created_by,
+        created_at,
     } = req.body;
 
     try {
@@ -33,13 +35,14 @@ const CreateClaim = async (req, res) => {
             res.status(401).json({ message: "Task already exists" });
         } else {
             await pool.query(
-                "INSERT INTO claims (service_order_no, ticket_number, claim_status, department, created_by) values ($1, $2, $3, $4, $5) returning *",
+                "INSERT INTO claims (service_order_no, ticket_number, claim_status, department, created_by, created_at) values ($1, $2, $3, $4, $5, $6) returning *",
                 [
                     service_order_no,
                     ticket_number,
                     claim_status,
                     department,
                     created_by,
+                    created_at,
                 ]
             );
             res.status(201).json({

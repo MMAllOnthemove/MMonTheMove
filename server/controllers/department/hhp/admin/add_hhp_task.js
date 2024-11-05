@@ -38,6 +38,7 @@ const AddHHPTask = async (req, res) => {
         stores,
         repairshopr_job_id,
         repeat_repair,
+        created_at,
     } = req.body;
     try {
         await AddHHPTaskSchema.validate(req.body, { abortEarly: false });
@@ -51,7 +52,7 @@ const AddHHPTask = async (req, res) => {
             });
         } else {
             const { rows } = await pool.query(
-                "INSERT INTO technician_tasks (service_order_no, date_booked, model, warranty, engineer, fault, imei, serial_number, unit_status, ticket_number, department, job_added_by, stores, repairshopr_job_id, repeat_repair, parts_pending) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) returning *",
+                "INSERT INTO technician_tasks (service_order_no, date_booked, model, warranty, engineer, fault, imei, serial_number, unit_status, ticket_number, department, job_added_by, stores, repairshopr_job_id, repeat_repair, created_at, parts_pending) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) returning *",
                 [
                     service_order_no,
                     date_booked,
@@ -68,6 +69,7 @@ const AddHHPTask = async (req, res) => {
                     stores,
                     repairshopr_job_id,
                     repeat_repair,
+                    created_at,
                     true,
                 ]
             );

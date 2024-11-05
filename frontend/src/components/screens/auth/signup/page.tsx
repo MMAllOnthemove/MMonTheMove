@@ -1,5 +1,4 @@
 "use client"
-import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -8,13 +7,44 @@ import {
     CardTitle
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import useGetUserListRepairshopr from "@/hooks/useGetUsersListRepairshopr";
 import useSignup from "@/hooks/useSignup";
 import { datetimestamp } from "@/lib/date_formats";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
-
-
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 const SignupScreen = () => {
+    const { rsUsersListLoading, rsUsersList } = useGetUserListRepairshopr()
+
+
+    const formattedData = rsUsersList?.map((user) => ({
+        value: user[1],
+        label: user[1]
+    }))
+
+
+    // console.log(transformedData)
+    // const transformedData = rsUsersList?.forEach((user) => {
+    //     const userId = user[0];
+    //     const userName = user[1];
+    // console.log(`User ID: ${userId}, User Name: ${userName}`);
+    // });
+    const [open, setOpen] = useState(false)
 
     const { signup, loading, errors } = useSignup()
 
@@ -35,6 +65,7 @@ const SignupScreen = () => {
         const createdAt = datetimestamp;
         const payload = { fullName, username, email, password, createdAt };
         await signup(payload);
+
     }
     return (
 
@@ -47,12 +78,56 @@ const SignupScreen = () => {
                 <CardContent className="space-y-2">
                     <div className="space-y-1">
                         <Label htmlFor="fullName">Full name</Label>
-                        <input
+                        {/* <input
                             value={fullName}
                             onChange={(e) => setFullName(e.target.value)}
                             name="fullName"
                             className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
-                        />
+                        /> */}
+                        <Popover open={open} onOpenChange={setOpen}>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    aria-expanded={open}
+                                    className="w-full justify-between"
+                                >
+                                    {fullName
+                                        ? formattedData?.find((framework) => framework.value === fullName)?.label
+                                        : "Select your name..."}
+                                    <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-full p-0">
+                                <Command>
+                                    <CommandInput placeholder="Search your name..." className="h-9" />
+                                    <CommandList>
+                                        <CommandEmpty>No user found.</CommandEmpty>
+                                        <CommandGroup>
+                                            {formattedData?.map((framework) => (
+                                                <CommandItem
+                                                
+                                                    key={framework.value}
+                                                    value={framework.value}
+                                                    onSelect={(currentValue) => {
+                                                        setFullName(currentValue === fullName ? "" : currentValue)
+                                                        setOpen(false)
+                                                    }}
+                                                >
+                                                    {framework.label}
+                                                    <CheckIcon
+                                                        className={cn(
+                                                            "ml-auto h-4 w-4",
+                                                            fullName === framework.value ? "opacity-100" : "opacity-0"
+                                                        )}
+                                                    />
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    </CommandList>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
                         {errors.fullName && <p className="text-sm text-red-500 font-medium">{errors.fullName}</p>}
                     </div>
                     <div className="space-y-1">

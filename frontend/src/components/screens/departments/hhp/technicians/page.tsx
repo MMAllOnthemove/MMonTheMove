@@ -59,6 +59,7 @@ import toast from 'react-hot-toast';
 import AddgspnHHPTask from './add/gspn/page';
 import AddRepairshoprHHPTask from './add/repairshopr/page';
 import { ModifyTaskModalTechnicians, RepairshorTicketComment, TechniciansTableData } from '@/lib/types';
+import { datetimestamp } from '@/lib/date_formats';
 
 
 
@@ -143,12 +144,13 @@ const TechniciansScreen = () => {
         }
 
         const id = modifyTaskModal?.id;
+        const updated_at = datetimestamp;
         if (modifyTaskModal?.service_order_no !== service_order_no) {
             setServiceOrder(service_order_no)
         }
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no, unit_status, assessment_date, parts_pending_date, parts_issued_date, parts_issued, parts_pending, qc_date, qc_complete
+            id, service_order_no, unit_status, assessment_date, parts_pending_date, parts_issued_date, parts_issued, parts_pending, qc_date, qc_complete, updated_at
 
         }
 

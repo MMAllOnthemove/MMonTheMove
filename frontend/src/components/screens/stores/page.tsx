@@ -20,6 +20,7 @@ import useAddStore from '@/hooks/useAddStore';
 import useDeleteStore from '@/hooks/useDeleteStore';
 import useGetStores from '@/hooks/useGetStores';
 import useUserLoggedIn from '@/hooks/useGetUser';
+import { datetimestamp } from '@/lib/date_formats';
 import columns from '@/lib/stores_columns';
 import { TStoresList, TStoresListTable } from '@/lib/types';
 
@@ -79,7 +80,8 @@ const StoresScreen = () => {
 
     const addRow = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        const payload = { store_name };
+        const created_at = datetimestamp;
+        const payload = { store_name, created_at };
         await addStore(payload);
         setOpenAddModal(false)
     }

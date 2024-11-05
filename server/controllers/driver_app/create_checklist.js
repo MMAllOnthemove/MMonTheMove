@@ -25,6 +25,7 @@ const vehicleChecklistSchema = Yup.object().shape({
     reasonForUse: Yup.string()
         .oneOf(Object.values(reasonForUseEnum))
         .required(),
+    created_at: Yup.string(),
     driver: Yup.string().required(),
     footBrakes: Yup.string().oneOf(Object.values(failPassEnum)).required(),
     emergencyBrake: Yup.string().oneOf(Object.values(failPassEnum)).required(),

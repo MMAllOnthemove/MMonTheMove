@@ -14,6 +14,7 @@ import useGetStores from '@/hooks/useGetStores'
 import useUserLoggedIn from '@/hooks/useGetUser'
 import useIpaasGetSOInfoAll from '@/hooks/useIpaasGetSoInfoAll'
 import useRepairshoprFetchTicket from '@/hooks/useRepairshoprFetchTicket'
+import { datetimestamp } from '@/lib/date_formats'
 import repairshopr_statuses from '@/lib/repairshopr_status'
 import warranties from '@/lib/warranties'
 import React, { useEffect, useState } from 'react'
@@ -75,7 +76,8 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault()
-        const job_added_by = user?.email
+        const job_added_by = user?.email;
+        const created_at = datetimestamp;
         const payload = {
             service_order_no,
             date_booked,
@@ -92,6 +94,7 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
             stores,
             repairshopr_job_id,
             repeat_repair,
+            created_at
         }
         await addTask(payload)
         // Ensure onChange is defined before calling it

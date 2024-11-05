@@ -6,12 +6,12 @@ const addStoreSchema = Yup.object({
 });
 
 const addStore = async (req, res) => {
-    const { store_name } = req.body;
+    const { store_name, created_at } = req.body;
     try {
         await addStoreSchema.validate(req.body, { abortEarly: false });
         const { rows } = await pool.query(
-            "INSERT INTO stores (store_name) VALUES ($1)",
-            [store_name]
+            "INSERT INTO stores (store_name, created_at) VALUES ($1, $2)",
+            [store_name, created_at]
         );
 
         res.status(201).json({
