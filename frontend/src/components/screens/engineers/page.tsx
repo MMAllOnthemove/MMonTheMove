@@ -19,6 +19,23 @@ import {
     DialogHeader,
     DialogTitle
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils"
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
+
+
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 import ManagementSearchForm from '@/components/search_field/page';
 import { Button } from '@/components/ui/button';
 import Sidebar from '@/components/sidebar/page';
@@ -33,6 +50,8 @@ import { Input } from '@/components/ui/input';
 import useDeleteEngineer from '@/hooks/useDeleteEngineer';
 import { TEngineersList, TEngineersListTable } from '@/lib/types';
 import { datetimestamp } from '@/lib/date_formats';
+import departments from '@/lib/departments';
+
 
 
 const EngineersScreen = () => {
@@ -42,7 +61,13 @@ const EngineersScreen = () => {
     const { deleteEngineer, deleteEngineerLoading } = useDeleteEngineer()
     const [engineer_firstname, setEngineerFirstname] = useState("")
     const [engineer_lastname, setEngineerLastname] = useState("")
-    const [department] = useState("HHP")
+    const [engineer_code, setEngineerCode] = useState("")
+
+    const [department, setDepartment] = useState("")
+    // popover select
+    const [open, setOpen] = useState(false)
+
+
     // Table sorting
     const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -61,6 +86,10 @@ const EngineersScreen = () => {
         setModifyEngineerModal(false);
     };
 
+    const formattedData = departments?.map((user) => ({
+        value: user?.dep,
+        label: user?.dep
+    }))
 
     const table = useReactTable({
         data: engineersList,
@@ -81,9 +110,13 @@ const EngineersScreen = () => {
     const addEng = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const created_at = datetimestamp;
-        const payload = { engineer_firstname, engineer_lastname, department, created_at };
-        await addEngineer(payload);
-        setOpenAddModal(false)
+        const payload = { engineer_firstname, engineer_lastname, engineer_code, department, created_at };
+        const res = await addEngineer(payload);
+        if (res?.status === 201) {
+            setOpenAddModal(false)
+        } else {
+            setOpenAddModal(true)
+        }
     }
     const delEng = async (e: React.SyntheticEvent) => {
         e.preventDefault();
@@ -210,7 +243,7 @@ const EngineersScreen = () => {
                                                 <Input
                                                     value={engineer_firstname}
                                                     onChange={(e) => setEngineerFirstname(e.target.value)}
-                                                    name="email"
+                                                    name="engineer_firstname"
                                                     className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
                                                 />
                                                 {errors.engineer_firstname && <p className="text-sm text-red-500 font-medium">{errors.engineer_firstname}</p>}
@@ -220,12 +253,68 @@ const EngineersScreen = () => {
                                                 <Input
                                                     value={engineer_lastname}
                                                     onChange={(e) => setEngineerLastname(e.target.value)}
-                                                    name="email"
+                                                    name="engineer_lastname"
                                                     className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
                                                 />
                                                 {errors.engineer_lastname && <p className="text-sm text-red-500 font-medium">{errors.engineer_lastname}</p>}
                                             </div>
+                                            <div className="space-y-3 mb-3">
+                                                <Popover open={open} onOpenChange={setOpen}>
+                                                    <PopoverTrigger asChild>
+                                                        <Button
+                                                            variant="outline"
+                                                            role="combobox"
+                                                            aria-expanded={open}
+                                                            className="w-full justify-between"
+                                                        >
+                                                            {department
+                                                                ? formattedData?.find((framework) => framework.value === department)?.label
+                                                                : "Select department..."}
+                                                            <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                        </Button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-full p-0">
+                                                        <Command>
+                                                            <CommandInput placeholder="Search department..." className="h-9" />
+                                                            <CommandList>
+                                                                <CommandEmpty>No user found.</CommandEmpty>
+                                                                <CommandGroup>
+                                                                    {formattedData?.map((framework) => (
+                                                                        <CommandItem
 
+                                                                            key={framework.value}
+                                                                            value={framework.value}
+                                                                            onSelect={(currentValue) => {
+                                                                                setDepartment(currentValue === department ? "" : currentValue)
+                                                                                setOpen(false)
+                                                                            }}
+                                                                        >
+                                                                            {framework.label}
+                                                                            <CheckIcon
+                                                                                className={cn(
+                                                                                    "ml-auto h-4 w-4",
+                                                                                    department === framework.value ? "opacity-100" : "opacity-0"
+                                                                                )}
+                                                                            />
+                                                                        </CommandItem>
+                                                                    ))}
+                                                                </CommandGroup>
+                                                            </CommandList>
+                                                        </Command>
+                                                    </PopoverContent>
+                                                </Popover>
+                                            </div>
+                                            <div className="space-y-3 mb-3">
+                                                <Label htmlFor="engineer_code">Engineer code</Label>
+                                                <Input
+                                                    value={engineer_code}
+                                                    onChange={(e) => setEngineerCode(e.target.value)}
+                                                    name="engineer_code"
+                                                    className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
+                                                />
+                                                {errors.engineer_code && <p className="text-sm text-red-500 font-medium">{errors.engineer_code}</p>}
+
+                                            </div>
                                             <Button className="w-full outline-none" type="submit" onClick={addEng} disabled={addEngineerLoading}>{addEngineerLoading ? 'Creating...' : 'Add engineer'}</Button>
                                         </form>
 

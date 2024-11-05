@@ -7,10 +7,10 @@ type TEngineers = {
     engineer_firstname: string;
     engineer_lastname: string;
     department: string;
-};
+}[];
 
 const useFetchEngineer = () => {
-    const [engineersList, setEngineers] = useState<TEngineers[]>([]);
+    const [engineersList, setEngineers] = useState<TEngineers>([]);
     const [engineersListLoading, setEngineersLoading] = useState(true);
 
     useEffect(() => {

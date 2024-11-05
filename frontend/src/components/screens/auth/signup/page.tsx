@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label";
 import useGetUserListRepairshopr from "@/hooks/useGetUsersListRepairshopr";
 import useSignup from "@/hooks/useSignup";
 import { datetimestamp } from "@/lib/date_formats";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -27,9 +26,9 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
+import { CheckIcon, ChevronUpDownIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 const SignupScreen = () => {
-    const { rsUsersListLoading, rsUsersList } = useGetUserListRepairshopr()
+    const { rsUsersList } = useGetUserListRepairshopr()
 
 
     const formattedData = rsUsersList?.map((user) => ({
@@ -37,13 +36,6 @@ const SignupScreen = () => {
         label: user[1]
     }))
 
-
-    // console.log(transformedData)
-    // const transformedData = rsUsersList?.forEach((user) => {
-    //     const userId = user[0];
-    //     const userName = user[1];
-    // console.log(`User ID: ${userId}, User Name: ${userName}`);
-    // });
     const [open, setOpen] = useState(false)
 
     const { signup, loading, errors } = useSignup()
@@ -78,12 +70,6 @@ const SignupScreen = () => {
                 <CardContent className="space-y-2">
                     <div className="space-y-1">
                         <Label htmlFor="fullName">Full name</Label>
-                        {/* <input
-                            value={fullName}
-                            onChange={(e) => setFullName(e.target.value)}
-                            name="fullName"
-                            className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
-                        /> */}
                         <Popover open={open} onOpenChange={setOpen}>
                             <PopoverTrigger asChild>
                                 <Button
@@ -106,7 +92,7 @@ const SignupScreen = () => {
                                         <CommandGroup>
                                             {formattedData?.map((framework) => (
                                                 <CommandItem
-                                                
+
                                                     key={framework.value}
                                                     value={framework.value}
                                                     onSelect={(currentValue) => {
@@ -129,16 +115,6 @@ const SignupScreen = () => {
                             </PopoverContent>
                         </Popover>
                         {errors.fullName && <p className="text-sm text-red-500 font-medium">{errors.fullName}</p>}
-                    </div>
-                    <div className="space-y-1">
-                        <Label htmlFor="username">Username</Label>
-                        <input
-                            value={username}
-                            onChange={(e) => setUserName(e.target.value)}
-                            name="username"
-                            className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
-                        />
-                        {errors.username && <p className="text-sm text-red-500 font-medium">{errors.username}</p>}
                     </div>
                     <div className="space-y-1">
                         <Label htmlFor="email">Email</Label>
