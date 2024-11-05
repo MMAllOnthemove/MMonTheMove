@@ -44,7 +44,6 @@ const ChecklistsScreen = () => {
     const [openClickedRow, setOpenClickedRow] = useState<boolean | null | any>();
 
     const handleRowClick = (row: any) => {
-        console.log(row)
         setOpenClickedRow(row?.original);
     };
 

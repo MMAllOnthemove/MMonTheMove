@@ -18,7 +18,12 @@ const useRepairshoprFetchTicketId = (repairId: string | number) => {
 
                 if (data?.ticket?.id == repairId) setData(data);
             } catch (error) {
-                throw error;
+                if (process.env.NODE_ENV !== "production") {
+                    console.error(
+                        "Error fetching repairshopr ticket api data by id:",
+                        error
+                    );
+                }
             }
         };
         fetchRSTicketDataById();

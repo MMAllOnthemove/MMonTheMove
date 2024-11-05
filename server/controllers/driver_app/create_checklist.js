@@ -99,7 +99,6 @@ const createChecklist = async (req, res) => {
             message: "Successfully created",
         });
     } catch (error) {
-        console.log(error);
         // to get error for a specific field
         const errors = {};
         error.inner.forEach((err) => {

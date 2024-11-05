@@ -68,7 +68,6 @@ const DriversScreen = () => {
         e.preventDefault();
         const payload = { driver_firstname, driver_lastname };
         await addDriver(payload);
-        console.log(errors)
         toast.error(`Fill in all fields`);
         setOpenAddModal(false)
     }

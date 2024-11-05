@@ -155,7 +155,6 @@ const TechniciansScreen = () => {
         const changes = findChanges(modifyTaskModal, updatePayload)
         try {
             const statusPayloadResponse = await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, statusPayload)
-            console.log("statusPayloadResponse", statusPayloadResponse)
             await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
             if (Object.keys(changes).length > 0) {
                 await updateHHPTask(id, changes)
@@ -163,7 +162,9 @@ const TechniciansScreen = () => {
                 closeModal()
             }
         } catch (error) {
-            throw error
+            if (process.env.NODE_ENV !== 'production') {
+                console.log("error in hhp techincians screen", error)
+            }
         }
     }
 

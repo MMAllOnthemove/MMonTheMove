@@ -46,7 +46,9 @@ const useIpaasGetSOList = () => {
                     setGSPNSOList(results);
                 }
             } catch (error) {
-                throw error;
+                if (process.env.NODE_ENV !== "production") {
+                    console.error("Error fetching GSPN get so list:", error);
+                }
             } finally {
                 setGSPNSOListLoading(true);
             }

@@ -21,7 +21,12 @@ const useRepairshoprFetchTicket = (searchTicket: string | undefined) => {
                     setData(data);
                 }
             } catch (error) {
-                throw error;
+                if (process.env.NODE_ENV !== "production") {
+                    console.error(
+                        "Error repairshopr search ticket data:",
+                        error
+                    );
+                }
             }
         };
         fetchRSTicketData();

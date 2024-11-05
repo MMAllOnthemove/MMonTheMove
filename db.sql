@@ -85,20 +85,19 @@ create table technician_tasks (
     repeat_repair text
 );
 
-Add
-    a trigger for updated_at CREATE
-    OR REPLACE FUNCTION update_updated_at() RETURNS TRIGGER AS $ $ BEGIN NEW.updated_at = NOW();
-
-RETURN NEW;
-
-END;
-
-$ $ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_tasks_updated_at BEFORE
-UPDATE
-    ON tasks FOR EACH ROW EXECUTE PROCEDURE update_updated_at();
-
+-- Create a trigger function to update the 'updated_at' field
+-- CREATE OR REPLACE FUNCTION update_updated_at()
+-- RETURNS TRIGGER AS $$
+-- BEGIN
+--     -- Update the 'updated_at' field with the current timestamp
+--     NEW.updated_at = NOW();
+--     -- Return the updated row
+--     RETURN NEW;
+-- END;
+-- $$ LANGUAGE plpgsql;
+-- CREATE TRIGGER update_tasks_updated_at BEFORE
+-- UPDATE
+--     ON en FOR EACH ROW EXECUTE PROCEDURE update_updated_at();
 create table technician_tasks_history (
     id BIGSERIAL PRIMARY KEY UNIQUE,
     unique_id uuid DEFAULT gen_random_uuid(),
@@ -120,16 +119,17 @@ create table technician_tasks_history (
     reassign_engineer text,
     parts_list text [],
     assessment_date text,
+    parts_pending boolean,
     parts_pending_date text,
     parts_issued_date text,
-    parts_pending boolean,
     stores text,
     parts_ordered_date text,
     repairshopr_job_id text,
     qc_complete boolean,
     qc_date text,
+    completed_date date,
     parts_issued boolean,
-    repeat_repair boolean
+    repeat_repair text
 );
 
 create table claims (

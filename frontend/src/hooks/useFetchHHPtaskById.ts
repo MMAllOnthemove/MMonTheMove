@@ -46,7 +46,9 @@ const useFetchHHPTaskById = (taskId: string | number) => {
                     setHHPTask(data);
                 }
             } catch (error) {
-                throw error;
+                if (process.env.NODE_ENV !== "production") {
+                    console.error("Error fetching HHP task by id:", error);
+                }
             }
         };
         fetchData();

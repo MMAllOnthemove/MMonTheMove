@@ -7,7 +7,8 @@ const getOtp = async (req, res) => {
         );
 
         if (rows.length === 0) {
-            return res.status(404).json({ error: "No OTP created for today" });
+            // If "no OTP for today" is a normal case and not an error, you could use 204 No Content. This status code means "successful request, but no content to send," which could be appropriate if you don’t consider a missing OTP to be an error.
+            return res.status(204).json({ error: "No OTP created for today" });
         }
 
         res.json({ otp: rows[0] });

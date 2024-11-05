@@ -18,7 +18,9 @@ const useTookanApi = () => {
 
             return response.data;
         } catch (error) {
-          throw error;
+            if (process.env.NODE_ENV !== "production") {
+                console.error("Error creating tookan task:", error);
+            }
         }
     };
 
