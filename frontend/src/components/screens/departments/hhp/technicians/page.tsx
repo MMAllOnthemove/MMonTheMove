@@ -28,6 +28,8 @@ import useUserLoggedIn from '@/hooks/useGetUser';
 import useHHPTasks from '@/hooks/useHHPTasks';
 import columns from '@/lib/hhp_technicians_table_columns';
 import {
+    ColumnDef,
+    ColumnOrderState,
     SortingState,
     flexRender,
     getCoreRowModel,
@@ -84,6 +86,7 @@ const TechniciansScreen = () => {
     const [qc_complete, setQCComplete] = useState<string>('')
     const [qc_fail_reason, setQCFailReason] = useState('')
     const [openAddTaskModal, setOpenAddTaskModal] = useState(false)
+    const [openSortTableColumnsModal, setSortTableColumns] = useState(false)
 
     const [parts_ordered_date, setPartsOrderedDate] = useState<string | undefined>("")
     const [parts_ordered, setPartsOrdered] = useState<CheckedState | undefined>()
@@ -136,6 +139,13 @@ const TechniciansScreen = () => {
     // Table filtering
     const [filtering, setFiltering] = useState("");
 
+
+    // Table column visibility 
+    const [columnVisibility, setColumnVisibility] = useState({})
+
+    // Table column order
+    const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>([])
+
     const table = useReactTable({
         data: hhpTasks,
         columns,
@@ -146,7 +156,11 @@ const TechniciansScreen = () => {
         state: {
             sorting: sorting,
             globalFilter: filtering,
+            columnVisibility,
+            columnOrder,
         },
+        onColumnVisibilityChange: setColumnVisibility,
+        onColumnOrderChange: setColumnOrder,
         onSortingChange: setSorting,
         onGlobalFilterChange: setFiltering,
     });
@@ -220,14 +234,64 @@ const TechniciansScreen = () => {
 
                             <PageTitle title="Management" hasSpan={true} spanText={"HHP"} />
 
+                            {/* modal for sorting table columns */}
+                            {
+                                openSortTableColumnsModal && <Dialog open={openSortTableColumnsModal} onOpenChange={() => setSortTableColumns(false)} >
+                                    {/* <DialogTrigger>Open</DialogTrigger> */}
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Sort columns</DialogTitle>
+                                            <DialogDescription>
+                                                Toggle columns you want/do not want
+                                            </DialogDescription>
+                                        </DialogHeader>
 
+                                        <div className="inline-block border border-black shadow rounded">
+                                            <div className="px-1 border-b border-black">
+                                                <label>
+                                                    <input
+                                                        className='bg-sky-600 cursor-pointer checked:bg-slate-950 focus:bg-slate-950'
+                                                        {...{
+                                                            type: 'checkbox',
+                                                            checked: table.getIsAllColumnsVisible(),
+                                                            onChange: table.getToggleAllColumnsVisibilityHandler(),
+                                                        }}
+                                                    />{' '}
+                                                    Show them all
+                                                </label>
+                                            </div>
+                                            {table.getAllLeafColumns().map(column => {
+                                                return (
+                                                    <div key={column.id} className="px-1">
+                                                        <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
+                                                            <input
+                                                                className='bg-sky-600 cursor-pointer checked:bg-slate-950 focus:bg-slate-950'
+                                                                {...{
+                                                                    type: 'checkbox',
+                                                                    checked: column.getIsVisible(),
+                                                                    onChange: column.getToggleVisibilityHandler(),
+                                                                }}
+                                                            />{' '}
+                                                            {column?.columnDef?.header as any}
+
+                                                        </label>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    </DialogContent>
+                                </Dialog>
+                            }
                             <section className="flex justify-between items-center py-5">
                                 <ManagementSearchForm
                                     filtering={filtering}
                                     setFiltering={(e) => setFiltering(e.target.value)}
                                 />
 
-                                <Button type="button" onClick={() => setOpenAddTaskModal(true)}> Add task</Button>
+                                <div className="flex justify-between items-center gap-3">
+                                    <Button type="button" onClick={() => setSortTableColumns(true)} className="hidden md:block">Sort columns</Button>
+                                    <Button type="button" onClick={() => setOpenAddTaskModal(true)}> Add task</Button>
+                                </div>
 
                             </section>
                             <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg">
