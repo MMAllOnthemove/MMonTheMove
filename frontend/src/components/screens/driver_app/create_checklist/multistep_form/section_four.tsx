@@ -1,121 +1,112 @@
 import React from 'react';
 import FormWrapper from './wrapper';
+import { Textarea } from '@/components/ui/textarea';
 
 
 interface ISectionFour {
 
-    foot_brakes: string;
-    setFootbrakes: (event: React.ChangeEvent<HTMLInputElement>) => void;
-
-    emergency_brake: string;
-    setEmergencybrake: (event: React.ChangeEvent<HTMLInputElement>) => void;
-
-    steering_wheel: string;
-    setSteeringWheel: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    front_seat_adjustment: string;
-    setFrontSeatAdjustment: (event: React.ChangeEvent<HTMLInputElement>) => void;
-
+    bumpers: string;
+    setBumpers: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    bumpers_fail_reason: string;
+    setBumpersFailReason: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    muffler_exhaust_system: string;
+    setExhaust: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    muffler_exhaust_system_fail_reason: string;
+    setExhaustFailReason: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    tires: string;
+    setTires: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    tires_fail_reason: string;
+    setTiresFailReason: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
 
 
 }
 
 
 
-const SectionFour: React.FC<ISectionFour> = ({ foot_brakes, setFootbrakes, emergency_brake, setEmergencybrake, steering_wheel, setSteeringWheel, front_seat_adjustment, setFrontSeatAdjustment }) => {
+const SectionFour: React.FC<ISectionFour> = ({ bumpers, setBumpers, muffler_exhaust_system, setExhaust, tires, setTires, bumpers_fail_reason, setBumpersFailReason, muffler_exhaust_system_fail_reason, setExhaustFailReason, tires_fail_reason, setTiresFailReason }) => {
     return (
-        <FormWrapper title='Internal check'>
+        <FormWrapper title='External check'>
 
             <div className="flex flex-col gap-2">
                 <div>
-                    <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Foot pedals:</label>
+                    <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Bumpers (front and back):</label>
                     <div className="text-sm font-medium leading-none mb-2 text-gray-900">
                         <input
                             type="radio"
-                            name="foot_brakes"
-                            checked={foot_brakes === 'Fail'}
+                            name="bumpers"
+                            checked={bumpers === 'Fail'}
                             value="Fail"
-                            onChange={setFootbrakes}
+                            onChange={setBumpers}
                         /> Fail
                     </div>
                     <div className="text-sm font-medium leading-none mb-2 text-gray-900">
                         <input
                             type="radio"
-                            name="foot_brakes"
-                            checked={foot_brakes === 'Pass'}
+                            name="bumpers"
+                            checked={bumpers === 'Pass'}
                             value="Pass"
-                            onChange={setFootbrakes}
+                            onChange={setBumpers}
                         /> Pass
                     </div>
+                    {
+                        bumpers === 'Fail' ? <div>
+                            <Textarea placeholder="Reason for bumper(s) failing." value={bumpers_fail_reason} onChange={setBumpersFailReason} />
+                        </div> : null
+                    }
                 </div>
                 <div>
-                    <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Emergency brake:</label>
+                    <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Exhaust system:</label>
                     <div className="text-sm font-medium leading-none mb-2 text-gray-900">
                         <input
                             type="radio"
-                            name="emergency_brake"
-                            checked={emergency_brake === 'Fail'}
+                            name="muffler_exhaust_system"
+                            checked={muffler_exhaust_system === 'Fail'}
                             value="Fail"
-                            onChange={setEmergencybrake}
+                            onChange={setExhaust}
                         /> Fail
                     </div>
                     <div className="text-sm font-medium leading-none mb-2 text-gray-900">
                         <input
                             type="radio"
-                            name="emergency_brake"
-                            checked={emergency_brake === 'Pass'}
+                            name="muffler_exhaust_system"
+                            checked={muffler_exhaust_system === 'Pass'}
                             value="Pass"
-                            onChange={setEmergencybrake}
+                            onChange={setExhaust}
                         /> Pass
                     </div>
+                    {
+                        muffler_exhaust_system === 'Fail' ? <div>
+                            <Textarea placeholder="Reason for exhaust failing." value={muffler_exhaust_system_fail_reason} onChange={setExhaustFailReason} />
+                        </div> : null
+                    }
                 </div>
                 <div>
-                    <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Steering wheel:</label>
+                    <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Tires:</label>
                     <div className="text-sm font-medium leading-none mb-2 text-gray-900">
                         <input
                             type="radio"
-                            name="steering_wheel"
-                            checked={steering_wheel === 'Fail'}
+                            name="tires"
+                            checked={tires === 'Fail'}
                             value="Fail"
-                            onChange={setSteeringWheel}
+                            onChange={setTires}
                         /> Fail
                     </div>
                     <div className="text-sm font-medium leading-none mb-2 text-gray-900">
                         <input
                             type="radio"
-                            name="steering_wheel"
-                            checked={steering_wheel === 'Pass'}
+                            name="tires"
+                            checked={tires === 'Pass'}
                             value="Pass"
-                            onChange={setSteeringWheel}
+                            onChange={setTires}
                         /> Pass
                     </div>
+                    {
+                        tires === 'Fail' ? <div>
+                            <Textarea placeholder="Reason for tires failing." value={tires_fail_reason} onChange={setTiresFailReason} />
+                        </div> : null
+                    }
                 </div>
-                <div>
-                    <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Front seat adjustment:</label>
-                    <div className="text-sm font-medium leading-none mb-2 text-gray-900">
-                        <input
-                            type="radio"
-                            name="front_seat_adjustment"
-                            checked={front_seat_adjustment === 'Fail'}
-                            value="Fail"
-                            onChange={setFrontSeatAdjustment}
-                        /> Fail
-                    </div>
-                    <div className="text-sm font-medium leading-none mb-2 text-gray-900">
-                        <input
-                            type="radio"
-                            name="front_seat_adjustment"
-                            checked={front_seat_adjustment === 'Pass'}
-                            value="Pass"
-                            onChange={setFrontSeatAdjustment}
-                        /> Pass
-                    </div>
-                </div>
-
-
-
             </div>
-
-
         </FormWrapper>
     )
 }

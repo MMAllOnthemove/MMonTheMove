@@ -19,7 +19,6 @@ const CreateOtpScreen = () => {
 
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { addOTP, otpAddLoading } = useAddOtp()
-    const [created_by, setCreatedBy] = useState('')
     const [otp_code, setOtpCode] = useState('')
 
     const submit = async (e: React.SyntheticEvent) => {

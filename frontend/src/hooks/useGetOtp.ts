@@ -1,7 +1,6 @@
 "use client";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 
 type TOtp = {
     id: string;
@@ -10,13 +9,6 @@ type TOtp = {
     otp_code: string | null;
 };
 
-type tOtpError = {
-    response: {
-        data: {
-            error: string;
-        };
-    };
-};
 const useGetOtp = () => {
     const [otp, setData] = useState<TOtp | null | any>();
     const [otpLoading, setLoading] = useState(true);
@@ -36,7 +28,7 @@ const useGetOtp = () => {
                 } else {
                     setData(null);
                 }
-            } catch (error: tOtpError | any) {
+            } catch (error: any) {
                 if (process.env.NODE_ENV !== "production") {
                     console.error(
                         "Error fetching daily otp:",

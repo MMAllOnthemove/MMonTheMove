@@ -42,7 +42,6 @@ const SignupScreen = () => {
 
 
     const [fullName, setFullName] = useState("")
-    const [username, setUserName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [passwordShown, setPasswordShown] = useState(false);
@@ -55,7 +54,7 @@ const SignupScreen = () => {
     const signupUser = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const createdAt = datetimestamp;
-        const payload = { fullName, username, email, password, createdAt };
+        const payload = { fullName, email, password, createdAt };
         await signup(payload);
 
     }

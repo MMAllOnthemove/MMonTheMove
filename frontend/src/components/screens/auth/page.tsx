@@ -18,7 +18,7 @@ export default function AuthScreen() {
     useEffect(() => {
         const logoutUser = async () => {
             try {
-                const res = await axios.get(
+                await axios.get(
                     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/logout`,
                     {
                         withCredentials: true,

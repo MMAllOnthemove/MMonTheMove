@@ -9,6 +9,7 @@ import {
     SheetTitle,
     SheetTrigger
 } from "@/components/ui/sheet"
+import useGetOtp from "@/hooks/useGetOtp"
 import useUserLoggedIn from '@/hooks/useGetUser'
 import useLogoutUser from '@/hooks/useLogout'
 import { menuItems } from '@/lib/sidebar_links'
@@ -17,14 +18,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import logo from "../../assets/mmlogo.png"
-import useGetOtp from "@/hooks/useGetOtp"
-import copyToClipBoard from "@/lib/copy_to_clipboard"
 
 const Sidebar = () => {
     const { user } = useUserLoggedIn()
     const { logoutUser, logoutLoading } = useLogoutUser()
-    const { otp, otpLoading } = useGetOtp()
-    const [copySuccess, setCopySuccess] = useState('');
+    const { otp } = useGetOtp()
     const [openDropdown, setOpenDropdown] = useState<null | boolean | number>(null);
 
     const toggleDropdown = (index: null | boolean | number) => {
