@@ -84,11 +84,14 @@ create table technician_tasks (
     stores text,
     parts_ordered_date text,
     repairshopr_job_id text,
-    qc_complete boolean,
+    qc_complete text,
     qc_date text,
     completed_date date,
     parts_issued boolean,
-    repeat_repair text
+    repeat_repair text,
+    units_assessed boolean,
+    qc_fail_reason text,
+    parts_ordered boolean
 );
 
 -- Create a trigger function to update the 'updated_at' field
@@ -131,11 +134,12 @@ create table technician_tasks_history (
     stores text,
     parts_ordered_date text,
     repairshopr_job_id text,
-    qc_complete boolean,
+    qc_complete text,
     qc_date text,
     completed_date date,
     parts_issued boolean,
-    repeat_repair text
+    repeat_repair text,
+    units_assessed boolean
 );
 
 create table claims (

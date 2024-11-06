@@ -36,7 +36,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Label } from "@/components/ui/label";
 import {
@@ -53,13 +53,13 @@ import useRepairshoprTicket from '@/hooks/useRepairshoprTicket';
 import findChanges from '@/lib/find_changes';
 
 import useUpdateHHPTask from '@/hooks/updateHHPTask';
+import { datetimestamp } from '@/lib/date_formats';
 import repairshopr_statuses from '@/lib/repairshopr_status';
+import { ModifyTaskModalTechnicians, RepairshorTicketComment, TechniciansTableData } from '@/lib/types';
 import { CheckedState } from '@radix-ui/react-checkbox';
 import toast from 'react-hot-toast';
 import AddgspnHHPTask from './add/gspn/page';
 import AddRepairshoprHHPTask from './add/repairshopr/page';
-import { ModifyTaskModalTechnicians, RepairshorTicketComment, TechniciansTableData } from '@/lib/types';
-import { datetimestamp } from '@/lib/date_formats';
 
 
 
@@ -81,9 +81,47 @@ const TechniciansScreen = () => {
     const [parts_issued, setPartsIssued] = useState<CheckedState | undefined>()
     const [parts_pending, setPartsPending] = useState<CheckedState | undefined>()
     const [qc_date, setQCCompleteDate] = useState<string | undefined>("")
-    const [qc_complete, setQCComplete] = useState<CheckedState | undefined>()
+    const [qc_complete, setQCComplete] = useState<string>('')
+    const [qc_fail_reason, setQCFailReason] = useState('')
     const [openAddTaskModal, setOpenAddTaskModal] = useState(false)
 
+    const [parts_ordered_date, setPartsOrderedDate] = useState<string | undefined>("")
+    const [parts_ordered, setPartsOrdered] = useState<CheckedState | undefined>()
+
+
+    const [units_assessed, setUnitAssessed] = useState<CheckedState | undefined>()
+
+    const handleUnitsAssessed = (e: React.SyntheticEvent | any) => {
+        if (!units_assessed) {
+            setUnitAssessed(e);
+            setAssessmentDate(datetimestamp)
+        }
+    }
+    const handleQCcheck = (e: React.SyntheticEvent | any) => {
+        setQCComplete(e.target.value);
+        if (qc_complete === 'Pass') {
+            setQCCompleteDate(datetimestamp)
+        }
+    }
+
+    const handlePartsOrdered = (e: React.SyntheticEvent | any) => {
+        if (!parts_ordered) {
+            setPartsOrdered(e);
+            setPartsOrderedDate(datetimestamp)
+        }
+    }
+    const handlePartsPending = (e: React.SyntheticEvent | any) => {
+        if (!parts_pending) {
+            setPartsPending(e);
+            setPartsPendingDate(datetimestamp)
+        }
+    }
+    const handlePartsIssued = (e: React.SyntheticEvent | any) => {
+        if (!parts_issued) {
+            setPartsIssued(e);
+            setPartsIssuedDate(datetimestamp)
+        }
+    }
     const handleRowClick = (row: TechniciansTableData) => {
         setModifyTaskModal(row?.original);
     };
@@ -150,17 +188,17 @@ const TechniciansScreen = () => {
         }
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no, unit_status, assessment_date, parts_pending_date, parts_issued_date, parts_issued, parts_pending, qc_date, qc_complete, updated_at
+            id, service_order_no, unit_status, assessment_date, parts_pending_date, parts_issued_date, parts_issued, parts_pending, qc_date, qc_complete, qc_fail_reason, updated_at, units_assessed, parts_ordered, parts_ordered_date
 
         }
-
         const changes = findChanges(modifyTaskModal, updatePayload)
         try {
-            const statusPayloadResponse = await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, statusPayload)
-            await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
+            if (unit_status !== "" || unit_status !== null || unit_status !== undefined) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, statusPayload)
+
+            if (reparshoprComment) await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
             if (Object.keys(changes).length > 0) {
                 await updateHHPTask(id, changes)
-                toast.success(`${statusPayloadResponse?.data?.message}`);
+                toast.success(`Successfully updated`);
                 closeModal()
             }
         } catch (error) {
@@ -336,59 +374,86 @@ const TechniciansScreen = () => {
                                                 </AccordionContent>
                                             </AccordionItem>
                                             <AccordionItem value="item-2">
-                                                <AccordionTrigger>Assessment, QC and dates</AccordionTrigger>
+                                                <AccordionTrigger>Assessment, QC </AccordionTrigger>
                                                 <AccordionContent>
                                                     <div className="mb-3">
-                                                        <Label htmlFor="assessment_date">Assessment date</Label>
-                                                        <Input type="date" value={assessment_date} name="assessment_date" onChange={(e) => setAssessmentDate(e.target.value)} />
+                                                        <div className="flex items-center space-x-2 mb-3">
+                                                            <Checkbox id="units_assessed" checked={units_assessed}
+                                                                onCheckedChange={handleUnitsAssessed} />
+                                                            <label
+                                                                htmlFor="units_assessed"
+                                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                                            >
+                                                                Unit assessed?
+                                                            </label>
+                                                        </div>
                                                     </div>
-                                                    <hr className="py-2" />
-                                                    <div className="flex items-center space-x-2 mb-3">
-                                                        <Checkbox id="parts_pending" checked={parts_pending}
-                                                            onCheckedChange={(e) => setPartsPending(e)} />
-                                                        <label
-                                                            htmlFor="parts_pending"
-                                                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                                        >
-                                                            Parts pending?
-                                                        </label>
+                                                    <div>
+                                                        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">QC completete?</label>
+                                                        <div className="text-sm font-medium leading-none mb-2 text-gray-900">
+                                                            <input
+                                                                type="radio"
+                                                                name="qc_complete"
+                                                                checked={qc_complete === 'Fail'}
+                                                                value="Fail"
+                                                                onChange={handleQCcheck}
+                                                            /> Fail
+                                                        </div>
+                                                        <div className="text-sm font-medium leading-none mb-2 text-gray-900">
+                                                            <input
+                                                                type="radio"
+                                                                name="qc_complete"
+                                                                checked={qc_complete === 'Pass'}
+                                                                value="Pass"
+                                                                onChange={handleQCcheck}
+                                                            /> Pass
+                                                        </div>
+                                                        {
+                                                            qc_complete === 'Fail' ? <div>
+                                                                <Textarea placeholder="Reason for QC failing." value={qc_fail_reason} onChange={(e => setQCFailReason(e.target.value))} />
+                                                            </div> : null
+                                                        }
                                                     </div>
-                                                    <hr className="py-2" />
+
+                                                </AccordionContent>
+                                            </AccordionItem>
+                                            <AccordionItem value="item-3">
+                                                <AccordionTrigger>Parts department</AccordionTrigger>
+                                                <AccordionContent>
                                                     <div className="mb-3">
-                                                        <Label htmlFor="parts_pending_date">Parts pending date</Label>
-                                                        <Input type="date" value={parts_pending_date} name="parts_pending_date" onChange={(e) => setPartsPendingDate(e.target.value)} />
+                                                        <div className="flex items-center space-x-2 mb-3">
+                                                            <Checkbox id="parts_pending" checked={parts_pending}
+                                                                onCheckedChange={handlePartsPending} />
+                                                            <label
+                                                                htmlFor="parts_pending"
+                                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                                            >
+                                                                Parts pending?
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div className="mb-3">
+                                                        <div className="flex items-center space-x-2 mb-3">
+                                                            <Checkbox id="parts_ordered" checked={parts_ordered}
+                                                                onCheckedChange={handlePartsOrdered} />
+                                                            <label
+                                                                htmlFor="parts_ordered"
+                                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                                            >
+                                                                Parts ordered?
+                                                            </label>
+                                                        </div>
                                                     </div>
                                                     <hr className="py-2" />
                                                     <div className="flex items-center space-x-2 mb-3">
                                                         <Checkbox id="parts_issued" checked={parts_issued}
-                                                            onCheckedChange={(e) => setPartsIssued(e)} />
+                                                            onCheckedChange={handlePartsIssued} />
                                                         <label
                                                             htmlFor="parts_issued"
                                                             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                                                         >
                                                             Parts issued?
                                                         </label>
-                                                    </div>
-                                                    <hr className="py-2" />
-                                                    <div className="mb-3">
-                                                        <Label htmlFor="parts_issued_date">Parts issued date</Label>
-                                                        <Input type="date" value={parts_issued_date} name="parts_issued_date" onChange={(e) => setPartsIssuedDate(e.target.value)} />
-                                                    </div>
-                                                    <hr className="py-2" />
-                                                    <div className="flex items-center space-x-2 mb-3">
-                                                        <Checkbox id="qc" checked={qc_complete}
-                                                            onCheckedChange={(e) => setQCComplete(e)} />
-                                                        <label
-                                                            htmlFor="qc"
-                                                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                                        >
-                                                            Mark as QC done
-                                                        </label>
-                                                    </div>
-                                                    <hr className="py-2" />
-                                                    <div className="mb-3">
-                                                        <Label htmlFor="qc_date">QC complete date</Label>
-                                                        <Input type="date" value={qc_date} name="qc_date" onChange={(e) => setQCCompleteDate(e.target.value)} />
                                                     </div>
                                                 </AccordionContent>
                                             </AccordionItem>

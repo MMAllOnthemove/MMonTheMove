@@ -78,7 +78,9 @@ const TookanScreen = () => {
                 setAddress(fullAddress);
                 setFault(data.Return.EsModelInfo.DefectDesc);
             } catch (error) {
-                console.error(error);
+                if (process.env.NODE_ENV !== 'production') {
+                    console.error(error)
+                }
             }
         };
         handleGetSOInfo(serviceOrder)
@@ -116,7 +118,9 @@ const TookanScreen = () => {
                 setIsModalOpen(true);
             }
         } catch (error) {
-            console.error(error);
+            if (process.env.NODE_ENV !== 'production') {
+                console.error(error)
+            }
         }
     };
     const handleAssignTookanTask = async (e: React.SyntheticEvent) => {
@@ -139,7 +143,9 @@ const TookanScreen = () => {
 
             }
         } catch (error) {
-            console.error(error);
+            if (process.env.NODE_ENV !== 'production') {
+                console.error(error)
+            }
         }
     };
 

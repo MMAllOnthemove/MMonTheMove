@@ -99,7 +99,9 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
                 setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
                 setFault(data?.Return?.EsModelInfo?.DefectDesc);
             } catch (error) {
-                console.error(error);
+                if (process.env.NODE_ENV !== 'production') {
+                    console.error(error)
+                }
             }
         };
         handleGetSOInfo(searchServiceOrder)
@@ -112,6 +114,7 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
         const created_at = datetimestamp;
 
         const date_booked = moment(`${date_gspn_booked}${time_booked}`, "YYYYMMDDHHmmss").format("YYYY-MM-DD HH:mm:ss.SSS");
+
         const payload = {
             service_order_no,
             date_booked,

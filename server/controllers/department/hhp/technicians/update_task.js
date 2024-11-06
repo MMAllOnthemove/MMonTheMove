@@ -35,7 +35,10 @@ export const UpdateTask = async (req, res) => {
             message: "HHP task updated",
         });
     } catch (err) {
-        console.error("Error updating record:", err);
+        if (process.env.NODE_ENV !== "production") {
+            console.error("Error updating record:", err);
+        }
+
         res.status(500).json({ error: "Database error" });
     }
 };
