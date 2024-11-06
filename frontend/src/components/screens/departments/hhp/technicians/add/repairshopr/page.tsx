@@ -53,10 +53,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
         value: user?.store_name,
         label: user?.store_name
     }))
-    const statusListFomatted = repairshopr_statuses?.map((user) => ({
-        value: user?._status,
-        label: user?._status
-    }))
+
     const [imei, setIMEI] = useState("")
     const [repairshopr_job_id, setRepairshoprJobId] = useState('')
     const [service_order_no, setServiceOrderNo] = useState("")
@@ -66,7 +63,6 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
     const [date_booked, setDateBooked] = useState("")
     const [model, setModel] = useState("")
     const [serial_number, setSerialNumber] = useState("")
-    const [open, setOpen] = useState(false)
     const [storeComboBox, setStoreComboBox] = useState(false)
     const [engineersComboBox, setEngineerComboBox] = useState(false)
     const [department] = useState("HHP")
@@ -84,6 +80,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                 setServiceOrderNo(data?.tickets[0]["properties"]["Service Order No."])
                 setTicketNumber(data?.tickets[0]?.number)
                 setRepairshoprJobId(data?.tickets[0]?.id)
+                setStatus(data?.tickets[0]?.status)
                 setDateBooked(data?.tickets[0]?.created_at
                 )
                 setFault(data?.tickets[0]?.subject)
@@ -234,55 +231,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                     {addHHPTaskErrors.engineer && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.engineer}</p>}
 
                 </div>
-                <div className="mb-3">
 
-                    <Popover open={open} onOpenChange={setOpen}>
-                        <PopoverTrigger asChild>
-                            <Button
-                                variant="outline"
-                                role="combobox"
-                                aria-expanded={open}
-                                className="w-full justify-between"
-                            >
-                                {status
-                                    ? statusListFomatted?.find((framework) => framework.value === status)?.label
-                                    : "Select status..."}
-                                <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-full p-0">
-                            <Command>
-                                <CommandInput placeholder="Search status..." className="h-9" />
-                                <CommandList>
-                                    <CommandEmpty>No status found.</CommandEmpty>
-                                    <CommandGroup>
-                                        {statusListFomatted?.map((framework) => (
-                                            <CommandItem
-
-                                                key={framework.value}
-                                                value={framework.value}
-                                                onSelect={(currentValue) => {
-                                                    setStatus(currentValue === status ? "" : currentValue)
-                                                    setOpen(false)
-                                                }}
-                                            >
-                                                {framework.label}
-                                                <CheckIcon
-                                                    className={cn(
-                                                        "ml-auto h-4 w-4",
-                                                        status === framework.value ? "opacity-100" : "opacity-0"
-                                                    )}
-                                                />
-                                            </CommandItem>
-                                        ))}
-                                    </CommandGroup>
-                                </CommandList>
-                            </Command>
-                        </PopoverContent>
-                    </Popover>
-                    {addHHPTaskErrors.status && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.status}</p>}
-
-                </div>
                 <div className="mb-3">
                     <Popover open={storeComboBox} onOpenChange={setStoreComboBox}>
                         <PopoverTrigger asChild>
