@@ -1,5 +1,3 @@
-import { ChangeEventHandler } from "react";
-
 export interface ISignUpFormValues {
     fullName: string;
     username: string;

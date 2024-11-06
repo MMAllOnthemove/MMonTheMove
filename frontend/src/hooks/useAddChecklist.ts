@@ -1,4 +1,3 @@
-import { ChecklistAdd } from "@/lib/types";
 import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -54,11 +53,15 @@ const useAddChecklist = () => {
 
             return response;
         } catch (error: any) {
-            if (error?.response.data?.message) {
-                toast.error(`${error?.response.data?.message}`);
+            if (error?.response?.data?.message) {
+                toast.error(`${error?.response?.data?.message}`);
             } else if (error.response && error.response.data.errors) {
+                console.log(
+                    "Client validation errors:",
+                    error.response.data.errors
+                );
                 toast.error(`Fill in all fields`);
-                setErrors(error.response.data.errors); // Set validation errors to state
+                setErrors(error.response.data.errors);
             }
         } finally {
             setLoading(false); // Stop loading

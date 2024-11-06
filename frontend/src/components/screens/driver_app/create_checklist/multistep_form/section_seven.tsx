@@ -1,48 +1,62 @@
 import React from 'react';
 import FormWrapper from './wrapper';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 interface ISectionSeven {
-
-    next_service_date: string;
-    setNextServiceDate: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    cost_of_service: string;
-    setCostOfService: (event: React.ChangeEvent<HTMLInputElement>) => void;
-
-
+    engine_start_stop: string;
+    setStartStop: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    engine_start_stop_fail_reason: string;
+    setStartStopFailReason: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    mileage: string;
+    setMileage: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 
 
-const SectionSeven: React.FC<ISectionSeven> = ({ next_service_date, setNextServiceDate, cost_of_service, setCostOfService }) => {
+const SectionSeven: React.FC<ISectionSeven> = ({ engine_start_stop, setStartStop, mileage, setMileage, engine_start_stop_fail_reason, setStartStopFailReason }) => {
     return (
-        <FormWrapper title='Vehicle service'>
+        <FormWrapper title='Internal check'>
 
             <div className="flex flex-col gap-2">
                 <div>
-                    <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Next service date:</label>
-                    <div>
-                        <Input
-                            type="date"
-                            name="next_service_date"
-                            value={next_service_date}
-                            onChange={setNextServiceDate}
-                        />
+                    <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Horn:</label>
+                    <div className="text-sm font-medium leading-none mb-2 text-gray-900">
+                        <input
+                            type="radio"
+                            name="engine_start_stop"
+                            checked={engine_start_stop === 'Fail'}
+                            value="Fail"
+                            onChange={setStartStop}
+                        /> Fail
                     </div>
+                    <div className="text-sm font-medium leading-none mb-2 text-gray-900">
+                        <input
+                            type="radio"
+                            name="engine_start_stop"
+                            checked={engine_start_stop === 'Pass'}
+                            value="Pass"
+                            onChange={setStartStop}
+                        /> Pass
+                    </div>
+                    {
+                        engine_start_stop === 'Fail' ? <div>
+                            <Textarea placeholder="Reason for horn failing." value={engine_start_stop_fail_reason} onChange={setStartStopFailReason} />
+                        </div> : null
+                    }
                 </div>
                 <div>
-                    <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Cost of service:</label>
+                    <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Mileage:</label>
                     <div>
                         <Input
+                            name="mileage"
                             type="text"
                             inputMode='decimal'
-                            name="cost_of_service"
-                            value={cost_of_service}
-                            onChange={setCostOfService}
+                            value={mileage}
+                            onChange={setMileage}
                         />
                     </div>
                 </div>
-
             </div>
 
 

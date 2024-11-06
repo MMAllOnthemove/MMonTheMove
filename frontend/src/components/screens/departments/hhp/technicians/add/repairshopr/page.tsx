@@ -1,6 +1,19 @@
 import { Button } from '@/components/ui/button';
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
 import {
     Select,
     SelectContent,
@@ -14,7 +27,9 @@ import useGetStores from '@/hooks/useGetStores';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import { datetimestamp } from '@/lib/date_formats';
 import repairshopr_statuses from '@/lib/repairshopr_status';
+import { cn } from "@/lib/utils";
 import warranties from '@/lib/warranties';
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
@@ -30,7 +45,18 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
     const { engineersList } = useFetchEngineer()
     const { storesList } = useGetStores()
     const { addTask, addHHPTaskLoading, addHHPTaskErrors } = useAddHHPTask();
-
+    const engineerListFomatted = engineersList?.map((user) => ({
+        value: user?.engineer_firstname + " " + user?.engineer_lastname,
+        label: user?.engineer_firstname
+    }))
+    const storeListFomatted = storesList?.map((user) => ({
+        value: user?.store_name,
+        label: user?.store_name
+    }))
+    const statusListFomatted = repairshopr_statuses?.map((user) => ({
+        value: user?._status,
+        label: user?._status
+    }))
     const [imei, setIMEI] = useState("")
     const [repairshopr_job_id, setRepairshoprJobId] = useState('')
     const [service_order_no, setServiceOrderNo] = useState("")
@@ -40,9 +66,10 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
     const [date_booked, setDateBooked] = useState("")
     const [model, setModel] = useState("")
     const [serial_number, setSerialNumber] = useState("")
-
+    const [open, setOpen] = useState(false)
+    const [storeComboBox, setStoreComboBox] = useState(false)
+    const [engineersComboBox, setEngineerComboBox] = useState(false)
     const [department] = useState("HHP")
-
 
     // Fetch ticket info
     useEffect(() => {
@@ -130,6 +157,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
             onChange(false)
         }
 
+
     }
     return (
         <div>
@@ -159,46 +187,147 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
 
                 </div>
                 <div className="mb-3">
+                    <Popover open={engineersComboBox} onOpenChange={setEngineerComboBox}>
+                        <PopoverTrigger asChild>
+                            <Button
+                                variant="outline"
+                                role="combobox"
+                                aria-expanded={engineersComboBox}
+                                className="w-full justify-between"
+                            >
+                                {engineer
+                                    ? engineerListFomatted?.find((framework) => framework.value === engineer)?.label
+                                    : "Select engineer..."}
+                                <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0">
+                            <Command>
+                                <CommandInput placeholder="Search engineer..." className="h-9" />
+                                <CommandList>
+                                    <CommandEmpty>No engineer found.</CommandEmpty>
+                                    <CommandGroup>
+                                        {engineerListFomatted?.map((framework) => (
+                                            <CommandItem
 
-                    <Select name="engineer" value={engineer} onValueChange={(e) => setEngineer(e)}>
-                        <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select engineer" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {engineersList.map((dep) => (
-                                <SelectItem key={dep.unique_id} value={`${dep.engineer_firstname} ${dep?.engineer_lastname}`}>{`${dep.engineer_firstname} ${dep?.engineer_lastname}`}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                                                key={framework.value}
+                                                value={framework.value}
+                                                onSelect={(currentValue) => {
+                                                    setEngineer(currentValue === engineer ? "" : currentValue)
+                                                    setEngineerComboBox(false)
+                                                }}
+                                            >
+                                                {framework.label}
+                                                <CheckIcon
+                                                    className={cn(
+                                                        "ml-auto h-4 w-4",
+                                                        engineer === framework.value ? "opacity-100" : "opacity-0"
+                                                    )}
+                                                />
+                                            </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                </CommandList>
+                            </Command>
+                        </PopoverContent>
+                    </Popover>
                     {addHHPTaskErrors.engineer && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.engineer}</p>}
 
                 </div>
                 <div className="mb-3">
 
-                    <Select name="status" value={status} onValueChange={(e) => setStatus(e)}>
-                        <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {repairshopr_statuses.map((dep) => (
-                                <SelectItem key={dep.id} value={`${dep._status}`}>{`${dep._status}`}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                    <Popover open={open} onOpenChange={setOpen}>
+                        <PopoverTrigger asChild>
+                            <Button
+                                variant="outline"
+                                role="combobox"
+                                aria-expanded={open}
+                                className="w-full justify-between"
+                            >
+                                {status
+                                    ? statusListFomatted?.find((framework) => framework.value === status)?.label
+                                    : "Select status..."}
+                                <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0">
+                            <Command>
+                                <CommandInput placeholder="Search status..." className="h-9" />
+                                <CommandList>
+                                    <CommandEmpty>No status found.</CommandEmpty>
+                                    <CommandGroup>
+                                        {statusListFomatted?.map((framework) => (
+                                            <CommandItem
+
+                                                key={framework.value}
+                                                value={framework.value}
+                                                onSelect={(currentValue) => {
+                                                    setStatus(currentValue === status ? "" : currentValue)
+                                                    setOpen(false)
+                                                }}
+                                            >
+                                                {framework.label}
+                                                <CheckIcon
+                                                    className={cn(
+                                                        "ml-auto h-4 w-4",
+                                                        status === framework.value ? "opacity-100" : "opacity-0"
+                                                    )}
+                                                />
+                                            </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                </CommandList>
+                            </Command>
+                        </PopoverContent>
+                    </Popover>
                     {addHHPTaskErrors.status && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.status}</p>}
 
                 </div>
                 <div className="mb-3">
-                    <Select name="stores" value={stores} onValueChange={(e) => setStore(e)}>
-                        <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select stores" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {storesList.map((dep) => (
-                                <SelectItem key={dep.id} value={`${dep.store_name}`}>{`${dep.store_name}`}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                    <Popover open={storeComboBox} onOpenChange={setStoreComboBox}>
+                        <PopoverTrigger asChild>
+                            <Button
+                                variant="outline"
+                                role="combobox"
+                                aria-expanded={storeComboBox}
+                                className="w-full justify-between"
+                            >
+                                {stores
+                                    ? storeListFomatted?.find((framework) => framework.value === stores)?.label
+                                    : "Select store or customer..."}
+                                <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0">
+                            <Command>
+                                <CommandInput placeholder="Search type of customer..." className="h-9" />
+                                <CommandList>
+                                    <CommandEmpty>No customer type found.</CommandEmpty>
+                                    <CommandGroup>
+                                        {storeListFomatted?.map((framework) => (
+                                            <CommandItem
+
+                                                key={framework.value}
+                                                value={framework.value}
+                                                onSelect={(currentValue) => {
+                                                    setStore(currentValue === stores ? "" : currentValue)
+                                                    setStoreComboBox(false)
+                                                }}
+                                            >
+                                                {framework.label}
+                                                <CheckIcon
+                                                    className={cn(
+                                                        "ml-auto h-4 w-4",
+                                                        stores === framework.value ? "opacity-100" : "opacity-0"
+                                                    )}
+                                                />
+                                            </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                </CommandList>
+                            </Command>
+                        </PopoverContent>
+                    </Popover>
                     {addHHPTaskErrors.stores && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.stores}</p>}
 
                 </div>

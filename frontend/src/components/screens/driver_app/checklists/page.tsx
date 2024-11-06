@@ -245,8 +245,7 @@ const ChecklistsScreen = () => {
                                                             <li>Spare wheel: <span className={`${openClickedRow?.spare_wheel === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.spare_wheel}</span></li>
                                                             <li>Reason for use: <span className="text-gray-600 font-medium">{openClickedRow?.reason_for_use}</span></li>
                                                             <li>Created by: <span className="text-gray-600 font-medium">{openClickedRow?.created_by}</span></li>
-                                                            <li>Created at: <span className="text-gray-600 font-medium">{openClickedRow?.formatted_created_at}</span></li>
-                                                            <li>Final comment: <span className="text-gray-600 font-medium">{openClickedRow?.final_comment}</span></li>
+                                                            <li>Created at: <span className="text-gray-600 font-medium">{openClickedRow?.created_at}</span></li>
                                                         </ul>
                                                     </div>
                                                 </AccordionContent>

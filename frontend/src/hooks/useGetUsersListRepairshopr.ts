@@ -1,12 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-interface User {
-    id: number;
-    name: string;
-}
-
-type Users = User[];
 
 const useGetUserListRepairshopr = () => {
     const [rsUsersList, setData] = useState([]);

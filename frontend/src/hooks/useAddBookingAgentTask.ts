@@ -1,4 +1,3 @@
-import { AgentsTask } from "@/lib/types";
 import axios from "axios";
 import { useState } from "react";
 

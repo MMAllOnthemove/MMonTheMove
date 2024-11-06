@@ -18,9 +18,10 @@ const addStore = async (req, res) => {
             message: "Successfully created",
         });
     } catch (error) {
+        console.log("error: ", error);
         // to get error for a specific field
         const errors = {};
-        error.inner.forEach((err) => {
+        error?.inner?.forEach((err) => {
             errors[err.path] = err.message; // `err.path` is the field name, `err.message` is the error message
         });
         res.status(500).json({ errors });

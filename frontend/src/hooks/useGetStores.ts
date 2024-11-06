@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 type TStores = {
     id: string;
     unique_id: string;
-    store_name: string | null;
+    store_name: string;
 };
 
 const useGetStores = () => {
