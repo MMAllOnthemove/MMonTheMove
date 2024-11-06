@@ -26,7 +26,6 @@ import useFetchEngineer from '@/hooks/useFetchEngineers';
 import useGetStores from '@/hooks/useGetStores';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import { datetimestamp } from '@/lib/date_formats';
-import repairshopr_statuses from '@/lib/repairshopr_status';
 import { cn } from "@/lib/utils";
 import warranties from '@/lib/warranties';
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
