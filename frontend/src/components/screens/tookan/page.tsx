@@ -64,7 +64,7 @@ const TookanScreen = () => {
 
     const latitude = latitudeLogintude?.split(", ")[0]
     const longitude = latitudeLogintude?.split(", ")[1]
-
+    const [assToTeamLoading, setAssignToTeamLoading] = useState(false)
 
     useEffect(() => {
         const handleGetSOInfo = async (serviceOrder: string) => {
@@ -135,6 +135,7 @@ const TookanScreen = () => {
         };
 
         try {
+            setAssignToTeamLoading(true)
             const response = await assignToTeam(values);
             if (response.status === 200) {
                 toast.success(response.message);
@@ -156,6 +157,8 @@ const TookanScreen = () => {
             if (process.env.NODE_ENV !== 'production') {
                 console.error(error)
             }
+        } finally {
+            setAssignToTeamLoading(false)
         }
     };
 
@@ -298,8 +301,8 @@ const TookanScreen = () => {
                                                     </SelectContent>
                                                 </Select>
                                             </div>
-                                            <Button type="submit" className='w-full'>
-                                                Assign task
+                                            <Button type="submit" disabled={assToTeamLoading} className='w-full'>
+                                                {assToTeamLoading ? 'Assigning...' : 'Assign to team'}
                                             </Button>
                                         </form>
 

@@ -344,13 +344,13 @@ const TechniciansScreen = () => {
                                                 className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]"
                                             >
                                                 <td className="px-4 py-3 font-medium text-sm max-w-full">
-                                                    <button
+                                                    <Button
                                                         type="button"
                                                         role="button"
-                                                        className="text-blue-600 dark:text-blue-500 hover:underline"
+                                                        className="text-blue-600 dark:text-blue-500 hover:underline bg-transparent"
                                                     >
                                                         Edit
-                                                    </button>
+                                                    </Button>
                                                 </td>
 
                                                 {row.getVisibleCells().map((cell: any) => (
@@ -394,7 +394,6 @@ const TechniciansScreen = () => {
                                             <TabsContent value="repairshopr"><AddRepairshoprHHPTask onChange={() => setOpenAddTaskModal(false)} /></TabsContent>
                                         </Tabs>
 
-                                        {/* <Button className="w-full outline-none" type="button"> Update</Button> */}
 
                                     </DialogContent>
                                 </Dialog>

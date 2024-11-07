@@ -12,3 +12,4 @@ frontend/db/db.sql
 so.md
 frontend/db/draft.sql
 db.sql
+frontend/src/app/testing/page.tsx
