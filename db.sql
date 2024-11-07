@@ -11,19 +11,19 @@ CREATE TABLE company_people (
     email text,
     user_password text,
     department text,
-    created_at TIMESTAMPTZ,
-    updated_at TIMESTAMPTZ,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
     user_role text,
     reset_token VARCHAR(255),
-    reset_token_expires_at TIMESTAMPTZ
+    reset_token_expires_at TIMESTAMP
 );
 
 CREATE TABLE login_history (
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
     user_id BIGSERIAL NOT NULL,
-    login_timestamp TIMESTAMPTZ,
-    logout_timestamp TIMESTAMPTZ,
+    login_timestamp TIMESTAMP,
+    logout_timestamp TIMESTAMP,
     login_method login_method_enum,
     login_status login_status_enum,
     FOREIGN KEY (user_id) REFERENCES company_people(user_id)
@@ -38,8 +38,8 @@ create table engineers (
     engineer_lastname text,
     department departments_enum,
     engineer_code varchar(30),
-    created_at TIMESTAMPTZ,
-    updated_at TIMESTAMPTZ
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
 );
 
 -- INSERT INTO engineers (engineer_firstname, engineer_lastname, department, engineer_code) VALUES ('Samuel', 'Mkhadawire', 'HA', '7186005180');
@@ -67,17 +67,17 @@ create table stores (
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
     store_name text,
-    created_at TIMESTAMPTZ,
-    updated_at TIMESTAMPTZ
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
 );
 
 create table technician_tasks (
     id BIGSERIAL PRIMARY KEY UNIQUE,
     unique_id uuid DEFAULT gen_random_uuid(),
     service_order_no text unique,
-    date_booked TIMESTAMPTZ,
-    created_at TIMESTAMPTZ,
-    updated_at TIMESTAMPTZ,
+    date_booked TIMESTAMP,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
     model text,
     warranty text,
     engineer text,
@@ -108,10 +108,7 @@ create table technician_tasks (
     qc_fail_reason text,
     parts_ordered boolean
 );
-ALTER TABLE
-    technician_tasks
-ALTER COLUMN
-    date_booked TYPE TIMESTAMP;
+
 -- Create a trigger function to update the 'updated_at' field
 -- CREATE OR REPLACE FUNCTION update_updated_at()
 -- RETURNS TRIGGER AS $$
@@ -130,8 +127,8 @@ create table technician_tasks_history (
     unique_id uuid DEFAULT gen_random_uuid(),
     service_order_no text unique,
     date_booked date,
-    created_at TIMESTAMPTZ,
-    updated_at TIMESTAMPTZ,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
     model text,
     warranty text,
     engineer text,
@@ -165,7 +162,7 @@ create table technician_tasks_history (
 create table claims (
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
-    created_at TIMESTAMPTZ,
+    created_at TIMESTAMP,
     created_by text,
     service_order_no text,
     ticket_number text unique,
@@ -179,8 +176,8 @@ create table booking_agents (
     agent_firstname text,
     agent_lastname text,
     department text,
-    created_at TIMESTAMPTZ,
-    updated_at TIMESTAMPTZ
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
 );
 
 create table booking_agents_tasks (
@@ -190,8 +187,8 @@ create table booking_agents_tasks (
     ticket_number text,
     created_by text,
     booking_agent text,
-    created_at TIMESTAMPTZ,
-    updated_at TIMESTAMPTZ
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
 );
 
 create TYPE reason_for_use_enum as enum (
@@ -261,7 +258,7 @@ create table vehicle_checklist(
     safety_belts_fail_reason text,
     engine_start_stop FAIL_PASS_ENUM,
     engine_start_stop_fail_reason text,
-    next_service_date TIMESTAMPTZ,
+    next_service_date TIMESTAMP,
     cost_of_service bigserial,
     created_by text,
     updated_by text,
@@ -278,8 +275,8 @@ create table vehicle_checklist(
     hass_fail_reason text,
     tools FAIL_PASS_ENUM,
     tools_fail_reason text,
-    created_at TIMESTAMPTZ,
-    updated_at TIMESTAMPTZ
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
 );
 
 -- Insert fake data into drivers table
@@ -300,8 +297,8 @@ create table drivers (
     unique_id uuid DEFAULT gen_random_uuid(),
     driver_firstname text,
     driver_lastname text,
-    created_at TIMESTAMPTZ,
-    updated_at TIMESTAMPTZ
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
 );
 
 create table otp (
@@ -309,5 +306,5 @@ create table otp (
     unique_id uuid DEFAULT gen_random_uuid(),
     created_by varchar(255),
     otp_code text,
-    created_at TIMESTAMPTZ
+    created_at TIMESTAMP
 );
