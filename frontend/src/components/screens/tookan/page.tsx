@@ -139,7 +139,17 @@ const TookanScreen = () => {
             if (response.status === 200) {
                 toast.success(response.message);
                 setIsModalOpen(false);
-                window.location.reload();
+                // window.location.reload();
+                setFirstname('')
+                setLastname('')
+                setEmail('')
+                setPhone('')
+                setAddress('')
+                setServiceOrder('')
+                setStartDate('')
+                setEndDate('')
+                setFault('')
+                setLatitudeLongitude('')
 
             }
         } catch (error) {

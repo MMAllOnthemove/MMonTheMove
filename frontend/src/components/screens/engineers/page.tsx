@@ -113,6 +113,10 @@ const EngineersScreen = () => {
         const payload = { engineer_firstname, engineer_lastname, engineer_code, department, created_at };
         const res = await addEngineer(payload);
         if (res?.status === 201) {
+            setEngineerFirstname('')
+            setEngineerLastname('')
+            setEngineerCode('')
+            setDepartment('')
             setOpenAddModal(false)
         } else {
             setOpenAddModal(true)

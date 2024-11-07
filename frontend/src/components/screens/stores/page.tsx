@@ -83,6 +83,7 @@ const StoresScreen = () => {
         const created_at = datetimestamp;
         const payload = { store_name, created_at };
         await addStore(payload);
+        setStoreName('')
         setOpenAddModal(false)
     }
     const delEng = async (e: React.SyntheticEvent) => {

@@ -166,6 +166,21 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
             created_at
         }
         await addTask(payload)
+        setSearchTicket('')
+        setWarranty('')
+        setEngineer('')
+        setStatus('')
+        setStore('')
+        setRepeatRepair('')
+        setIMEI('')
+        setRepairshoprJobId(0)
+        setServiceOrderNo('')
+        setFault('')
+        setTicketNumber('')
+        setAssetId('')
+        setDateBooked('')
+        setModel('')
+        setSerialNumber('')
         if (addHHPTaskErrors) {
             onChange(false)
         }

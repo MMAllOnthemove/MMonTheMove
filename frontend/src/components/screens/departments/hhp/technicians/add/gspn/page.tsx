@@ -138,6 +138,21 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
             created_at
         }
         await addTask(payload)
+        setSearchSericeOrder('')
+        setWarranty('')
+        setEngineer('')
+        setStatus('')
+        setStore('')
+        setRepeatRepair('')
+        setIMEI('')
+        setRepairshoprJobId(0)
+        setServiceOrderNo('')
+        setFault('')
+        setTicketNumber('')
+        setDateGSPNBooked('')
+        setTimeBooked('')
+        setModel('')
+        setSerialNumber('')
         // Ensure onChange is defined before calling it
         if (addHHPTaskErrors) {
             onChange(false)
