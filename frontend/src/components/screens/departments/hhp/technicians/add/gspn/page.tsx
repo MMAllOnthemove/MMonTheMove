@@ -32,7 +32,8 @@ import repairshopr_statuses from '@/lib/repairshopr_status'
 import { cn } from "@/lib/utils"
 import warranties from '@/lib/warranties'
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline"
-import moment from 'moment'
+// import moment from 'moment-timezone';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react'
 
 
@@ -108,16 +109,15 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
             }
         };
         handleGetSOInfo(searchServiceOrder)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchServiceOrder])
 
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault()
         const job_added_by = user?.email;
-        const created_at = datetimestamp;
-
-        const date_booked = moment(`${date_gspn_booked}${time_booked}`, "YYYYMMDDHHmmss").format("YYYY-MM-DD HH:mm:ss.SSS");
+        const created_at = datetimestamp;  // const date_booked = moment.tz(`${date_gspn_booked}${date_gspn_booked}`, "YYYYMMDDHHmmss", "Africa/Johannesburg");
+        const date_booked = moment(`${date_gspn_booked}${time_booked}`, "YYYYMMDDHHmmss").format("YYYY-MM-DD HH:mm:ss");
 
         const payload = {
             service_order_no,

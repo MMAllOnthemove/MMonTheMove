@@ -75,7 +75,7 @@ create table technician_tasks (
     id BIGSERIAL PRIMARY KEY UNIQUE,
     unique_id uuid DEFAULT gen_random_uuid(),
     service_order_no text unique,
-    date_booked date,
+    date_booked TIMESTAMPTZ,
     created_at TIMESTAMPTZ,
     updated_at TIMESTAMPTZ,
     model text,
@@ -100,6 +100,7 @@ create table technician_tasks (
     repairshopr_job_id text,
     qc_complete text,
     qc_date text,
+    unit_complete boolean,
     completed_date date,
     parts_issued boolean,
     repeat_repair text,
@@ -107,7 +108,10 @@ create table technician_tasks (
     qc_fail_reason text,
     parts_ordered boolean
 );
-
+ALTER TABLE
+    technician_tasks
+ALTER COLUMN
+    date_booked TYPE TIMESTAMP;
 -- Create a trigger function to update the 'updated_at' field
 -- CREATE OR REPLACE FUNCTION update_updated_at()
 -- RETURNS TRIGGER AS $$
