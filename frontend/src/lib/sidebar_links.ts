@@ -30,13 +30,18 @@ export const menuItems = [
         sublinks: [{ id: 6, item: "Analytics", pageRoute: "/dashboard" }],
     },
     {
+        label: "Driver app",
+        sublinks: [
+            { id: 7, item: "Checklists", pageRoute: "/drivers/checklists" },
+        ],
+    },
+    {
         label: "Admin",
         sublinks: [
-            { id: 7, item: "Add engineer", pageRoute: "/engineers" },
-            { id: 8, item: "Add booking agent", pageRoute: "/agents" },
-            { id: 9, item: "Add store", pageRoute: "/stores" },
-            { id: 10, item: "Add driver", pageRoute: "/drivers" },
-            { id: 11, item: "Driver app", pageRoute: "/drivers/checklists" },
+            { id: 8, item: "Add engineer", pageRoute: "/engineers" },
+            { id: 9, item: "Add booking agent", pageRoute: "/agents" },
+            { id: 10, item: "Add store", pageRoute: "/stores" },
+            { id: 11, item: "Add driver", pageRoute: "/drivers" },
         ],
     },
 ];
