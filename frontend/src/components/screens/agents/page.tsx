@@ -81,6 +81,8 @@ const AgentsScreen = () => {
         const created_at = datetimestamp;
         const payload = { agent_firstname, agent_lastname, department, created_at };
         await addAgent(payload);
+        setAgentFirstname('')
+        setAgentLastname('')
         setOpenAddModal(false)
     }
     const deleteBookingAg = async (e: React.SyntheticEvent) => {

@@ -81,7 +81,7 @@ const Sidebar = () => {
             </Sheet>
             <nav>
                 <div className="flex items-center gap-3">
-                    <p className="font-medium text-sm text-gray-900">{otp ? otp?.otp_code : ''}</p>
+                    <p className="font-medium text-sm text-gray-900"><span className="text-gray-500">OTP:</span>{otp ? otp?.otp_code : ''}</p>
                     <div>
                         <Image
                             src={logo}

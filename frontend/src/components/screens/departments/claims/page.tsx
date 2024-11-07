@@ -60,7 +60,11 @@ const ClaimsScreen = () => {
         const created_at = datetimestamp;
         const payload = { claim_status, ticket_number, service_order_no, department, created_by, created_at };
         await addAddClaim(payload);
-
+        setSearchServiceOrder('')
+        setClaimStatus('')
+        setTicketNumber('')
+        setServiceOrder('')
+        setDepartment('')
     }
     return (
         <>

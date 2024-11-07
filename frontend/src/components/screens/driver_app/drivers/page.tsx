@@ -71,6 +71,8 @@ const DriversScreen = () => {
         const payload = { driver_firstname, driver_lastname, created_at };
         await addDriver(payload);
         toast.error(`Fill in all fields`);
+        setDriverFirstname('')
+        setDriverLastname('')
         setOpenAddModal(false)
     }
 
