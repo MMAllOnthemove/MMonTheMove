@@ -136,7 +136,7 @@ const SignupScreen = () => {
                                 type={passwordShown ? "text" : "password"}
                             />
 
-                            <button
+                            <Button
                                 type="button"
                                 onClick={togglePassword}
                                 className="bg-transparent border-none outline-none"
@@ -148,7 +148,7 @@ const SignupScreen = () => {
                                         <EyeSlashIcon className="w-6 h-6  dark:text-[#eee]" />
                                     )}
                                 </span>
-                            </button>
+                            </Button>
                         </div>
                         {errors.password && <p className="text-sm text-red-500 font-medium">{errors.password}</p>}
                     </div>

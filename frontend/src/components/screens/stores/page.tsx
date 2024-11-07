@@ -170,7 +170,7 @@ const StoresScreen = () => {
                                                         onClick={() => handleRowClick(row)}
                                                         type="button"
                                                         role="button"
-                                                        className="text-red-500 dark:text-red-500 hover:underline"
+                                                        className="text-red-500 dark:text-red-500 hover:underline bg-transparent"
                                                     >
                                                         Delete
                                                     </button>
