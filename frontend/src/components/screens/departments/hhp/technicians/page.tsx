@@ -62,7 +62,7 @@ import { CheckedState } from '@radix-ui/react-checkbox';
 import toast from 'react-hot-toast';
 import AddgspnHHPTask from './add/gspn/page';
 import AddRepairshoprHHPTask from './add/repairshopr/page';
-
+import moment from 'moment';
 
 
 
@@ -518,6 +518,17 @@ const TechniciansScreen = () => {
                                                         >
                                                             Parts issued?
                                                         </label>
+                                                    </div>
+                                                </AccordionContent>
+                                            </AccordionItem>
+                                            <AccordionItem value="item-4">
+                                                <AccordionTrigger>More info</AccordionTrigger>
+                                                <AccordionContent>
+                                                    <div>
+                                                        <ul className="list-decimal list-inside">
+                                                            <li>Booked date and time: <span className="text-gray-600 font-medium">{moment(modifyTaskModal?.date_booked_datetime).format("YYYY-MM-DD HH:mm:ss")}</span></li>
+                                                            <li>Assessment date and time: <span className="text-gray-600 font-medium">{modifyTaskModal?.assessment_datetime ? moment(modifyTaskModal?.assessment_datetime).format("YYYY-MM-DD HH:mm:ss") : null}</span></li>
+                                                        </ul>
                                                     </div>
                                                 </AccordionContent>
                                             </AccordionItem>
