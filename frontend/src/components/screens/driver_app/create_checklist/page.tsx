@@ -194,7 +194,7 @@ const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
                         type="button"
                         disabled={addChecklistLoading}
                         onClick={submit}
-                        className="px-4 py-2 font-semibold text-white bg-green-500 rounded hover:bg-green-700"
+                        className="px-4 py-2 font-semibold text-white bg-gray-900 rounded hover:bg-green-700"
                     >
                         {addChecklistLoading ? 'Creating...' :
                             'Submit'}
