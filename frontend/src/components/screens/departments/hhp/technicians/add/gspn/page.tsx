@@ -100,6 +100,8 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
                 setModel(data?.Return?.EsModelInfo?.Model);
                 setSerialNumber(data?.Return?.EsModelInfo?.SerialNo);
                 setFault(data?.Return?.EsModelInfo?.DefectDesc);
+                if (data?.Return?.EsJobInfo?.RedoFlag === 'Y') setRepeatRepair('Yes')
+                if (data?.Return?.EsJobInfo?.RedoFlag === 'N') setRepeatRepair('No')
             } catch (error) {
                 if (process.env.NODE_ENV !== 'production') {
                     console.error(error)
@@ -118,6 +120,7 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
         const job_added_by = user?.email;
         const created_at = datetimestamp;  // const date_booked = moment.tz(`${date_gspn_booked}${date_gspn_booked}`, "YYYYMMDDHHmmss", "Africa/Johannesburg");
         const date_booked = moment(`${date_gspn_booked}${time_booked}`, "YYYYMMDDHHmmss").format("YYYY-MM-DD HH:mm:ss");
+
 
         const payload = {
             service_order_no,
@@ -335,21 +338,6 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
                         </PopoverContent>
                     </Popover>
                     {addHHPTaskErrors.stores && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.stores}</p>}
-
-                </div>
-                <div className="mb-3">
-                    <Select name="repeat_repair" value={repeat_repair} onValueChange={(e) => setRepeatRepair(e)}>
-                        <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Repeat repair?" />
-                        </SelectTrigger>
-                        <SelectContent>
-
-                            <SelectItem value={'Yes'}>Yes</SelectItem>
-                            <SelectItem value={'No'}>No</SelectItem>
-
-                        </SelectContent>
-                    </Select>
-                    {addHHPTaskErrors.repeat_repair && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.repeat_repair}</p>}
 
                 </div>
                 <Button className="w-full outline-none" type="submit" onClick={handleSubmit} disabled={addHHPTaskLoading}> {addHHPTaskLoading ? 'Adding...' : 'Add task'}</Button>

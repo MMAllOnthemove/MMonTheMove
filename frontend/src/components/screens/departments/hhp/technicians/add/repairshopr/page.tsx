@@ -84,6 +84,8 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                 setDateBooked(data?.tickets[0]?.created_at
                 )
                 setFault(data?.tickets[0]?.subject)
+                if (data?.tickets[0]?.subject.startsWith('Rework')) setRepeatRepair('Yes')
+                if (!data?.tickets[0]?.subject.startsWith('Rework')) setRepeatRepair('No')
             }
         };
         fetchRSData();
@@ -147,6 +149,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
         e.preventDefault()
         const job_added_by = user?.email
         const created_at = datetimestamp;
+
         const payload = {
             service_order_no,
             date_booked,
@@ -173,7 +176,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
         setStore('')
         setRepeatRepair('')
         setIMEI('')
-        setRepairshoprJobId(0)
+        setRepairshoprJobId('')
         setServiceOrderNo('')
         setFault('')
         setTicketNumber('')
@@ -309,21 +312,6 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                         </PopoverContent>
                     </Popover>
                     {addHHPTaskErrors.stores && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.stores}</p>}
-
-                </div>
-                <div className="mb-3">
-                    <Select name="repeat_repair" value={repeat_repair} onValueChange={(e) => setRepeatRepair(e)}>
-                        <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Repeat repair?" />
-                        </SelectTrigger>
-                        <SelectContent>
-
-                            <SelectItem value={'Yes'}>Yes</SelectItem>
-                            <SelectItem value={'No'}>No</SelectItem>
-
-                        </SelectContent>
-                    </Select>
-                    {addHHPTaskErrors.repeat_repair && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.repeat_repair}</p>}
 
                 </div>
                 <Button className="w-full outline-none" type="submit" onClick={handleSubmit} disabled={addHHPTaskLoading}> {addHHPTaskLoading ? 'Adding...' : 'Add task'}</Button>
