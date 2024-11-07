@@ -75,7 +75,7 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
     const [storeComboBox, setStoreComboBox] = useState(false)
     const [engineersComboBox, setEngineerComboBox] = useState(false)
     const [department] = useState("HHP")
-
+    const [loadGSPNApiData, setLoadGSPNApiData] = useState(false)
     const { fetchRSTicketData } = useRepairshoprFetchTicket(ticket_number)
 
 
@@ -88,6 +88,7 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
 
     useEffect(() => {
         const handleGetSOInfo = async (serviceOrder: string) => {
+            setLoadGSPNApiData(true)
             try {
                 const data = await getSOInfoAllTookan(serviceOrder);
 
@@ -102,10 +103,13 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
                 if (process.env.NODE_ENV !== 'production') {
                     console.error(error)
                 }
+            } finally {
+                setLoadGSPNApiData(false);
             }
         };
         handleGetSOInfo(searchServiceOrder)
-    }, [searchServiceOrder, getSOInfoAllTookan])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchServiceOrder])
 
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
@@ -155,7 +159,7 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
                 </div>
                 <div className="mb-3">
                     <Label htmlFor="imei">IMEI</Label>
-                    <Input type="text" name="imei" defaultValue={imei} disabled aria-disabled />
+                    <Input type="text" name="imei" defaultValue={loadGSPNApiData ? 'Loading...' : imei} disabled aria-disabled />
                 </div>
                 <div className="mb-3">
 

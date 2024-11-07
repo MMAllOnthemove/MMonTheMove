@@ -49,6 +49,20 @@ create table engineers (
 -- INSERT INTO engineers (engineer_firstname, engineer_lastname, department, engineer_code) VALUES ('Iven', 'Maluleke', 'HA', '7186006006');
 -- INSERT INTO engineers (engineer_firstname, engineer_lastname, department, engineer_code) VALUES ('Ntwanano Agreement', 'Nkwashu', 'HHP', '7186006393');
 -- INSERT INTO engineers (engineer_firstname, engineer_lastname, department, engineer_code) VALUES ('William Thabo', 'Kgatle', 'HHP', '7186006404');
+---------------------------------------------------------------------
+-- INSERT INTO stores (store_name, created_at, updated_at)
+-- VALUES 
+--     ('Springfield Mall', '2022-01-01 12:00:00+00', '2022-01-15 14:00:00+00'),
+--     ('Downtown Grocery', '2022-02-20 10:00:00+00', '2022-03-01 16:00:00+00'),
+--     ('Oceanview Supermarket', '2022-03-15 11:00:00+00', '2022-04-01 12:00:00+00'),
+--     ('Main Street Convenience', '2022-04-10 09:00:00+00', '2022-05-01 10:00:00+00'),
+--     ('Uptown Department Store', '2022-05-20 13:00:00+00', '2022-06-01 14:00:00+00'),
+--     ('Beachside Pharmacy', '2022-06-15 10:00:00+00', '2022-07-01 11:00:00+00'),
+--     ('City Center Bookstore', '2022-07-20 11:00:00+00', '2022-08-01 12:00:00+00'),
+--     ('Suburban Hardware', '2022-08-15 09:00:00+00', '2022-09-01 10:00:00+00'),
+--     ('Hilltop Bakery', '2022-09-20 12:00:00+00', '2022-10-01 13:00:00+00'),
+-- 	    ('Carry In', '2022-09-20 12:00:00+00', '2022-10-01 13:00:00+00'),
+--     ('Valley Florist', '2022-10-15 10:00:00+00', '2022-11-01 11:00:00+00');
 create table stores (
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
@@ -139,7 +153,9 @@ create table technician_tasks_history (
     completed_date date,
     parts_issued boolean,
     repeat_repair text,
-    units_assessed boolean
+    units_assessed boolean,
+    qc_fail_reason text,
+    parts_ordered boolean
 );
 
 create table claims (
@@ -262,6 +278,19 @@ create table vehicle_checklist(
     updated_at TIMESTAMPTZ
 );
 
+-- Insert fake data into drivers table
+-- INSERT INTO drivers (driver_firstname, driver_lastname, created_at, updated_at)
+-- VALUES 
+-- ('John', 'Doe', NOW() - INTERVAL '30 days', NOW() - INTERVAL '15 days'),
+-- ('Jane', 'Smith', NOW() - INTERVAL '45 days', NOW() - INTERVAL '20 days'),
+-- ('Robert', 'Brown', NOW() - INTERVAL '60 days', NOW() - INTERVAL '10 days'),
+-- ('Alice', 'Johnson', NOW() - INTERVAL '75 days', NOW() - INTERVAL '5 days'),
+-- ('Michael', 'Williams', NOW() - INTERVAL '90 days', NOW() - INTERVAL '25 days'),
+-- ('Emma', 'Jones', NOW() - INTERVAL '10 days', NOW() - INTERVAL '3 days'),
+-- ('Oliver', 'Garcia', NOW() - INTERVAL '120 days', NOW() - INTERVAL '50 days'),
+-- ('Isabella', 'Martinez', NOW() - INTERVAL '15 days', NOW() - INTERVAL '7 days'),
+-- ('Liam', 'Rodriguez', NOW() - INTERVAL '180 days', NOW() - INTERVAL '90 days'),
+-- ('Sophia', 'Hernandez', NOW() - INTERVAL '200 days', NOW() - INTERVAL '100 days');
 create table drivers (
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),

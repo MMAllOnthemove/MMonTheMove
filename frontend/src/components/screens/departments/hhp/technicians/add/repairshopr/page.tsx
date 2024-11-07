@@ -65,6 +65,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
     const [storeComboBox, setStoreComboBox] = useState(false)
     const [engineersComboBox, setEngineerComboBox] = useState(false)
     const [department] = useState("HHP")
+    const [loadApi, setLoadpi] = useState(false)
 
     // Fetch ticket info
     useEffect(() => {
@@ -90,36 +91,52 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
 
     useEffect(() => {
         const fetchRSByIdData = async () => {
-            const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/tickets/${repairshopr_job_id}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
-                },
-            });
+            try {
+                const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/tickets/${repairshopr_job_id}`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
+                    },
+                });
 
-            if (data?.ticket?.id == repairshopr_job_id) {
-                setAssetId(data?.ticket?.asset_ids[0])
+                if (data?.ticket?.id == repairshopr_job_id) {
+                    setAssetId(data?.ticket?.asset_ids[0])
+                }
+            } catch (error) {
+                if (process.env.NODE_ENV !== 'production') {
+                    console.error(error)
+                }
             }
+        }
 
-        };
         fetchRSByIdData();
     }, [searchTicket, repairshopr_job_id]);
 
 
     useEffect(() => {
         const fetchRSByAssetData = async () => {
-            const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/customer_assets/${assetId}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
-                },
-            });
+            setLoadpi(true)
+            try {
 
-            if (data?.asset?.id == assetId) {
-                setIMEI(data?.asset?.properties["IMEI No."])
-                setModel(data?.asset?.properties["Model No.:"])
-                setSerialNumber(data?.asset?.asset_serial)
+                const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/customer_assets/${assetId}`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
+                    },
+                });
 
+                if (data?.asset?.id == assetId) {
+                    setIMEI(data?.asset?.properties["IMEI No."])
+                    setModel(data?.asset?.properties["Model No.:"])
+                    setSerialNumber(data?.asset?.asset_serial)
+
+                }
+            } catch (error) {
+                if (process.env.NODE_ENV !== 'production') {
+                    console.error(error)
+                }
+            } finally {
+                setLoadpi(false)
             }
 
         };
@@ -165,7 +182,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                 </div>
                 <div className="mb-3">
                     <Label htmlFor="imei">IMEI</Label>
-                    <Input type="text" name="imei" defaultValue={imei} disabled aria-disabled />
+                    <Input type="text" name="imei" defaultValue={loadApi ? 'Loading...' : imei} disabled aria-disabled />
                 </div>
                 <div className="mb-3">
 
