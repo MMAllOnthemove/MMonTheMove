@@ -18,6 +18,7 @@ import { router as stores } from "./routes/stores/index.js";
 import { router as checklists } from "./routes/driver_app/checklists/index.js";
 import { router as drivers } from "./routes/driver_app/drivers/index.js";
 import { router as otp } from "./routes/otp/index.js";
+import { router as fileRoutes } from "./routes/uploads/fileRoutes.cjs";
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(
@@ -46,6 +47,7 @@ app.use("/claims", claims);
 app.use("/checklists", checklists);
 app.use("/drivers", drivers);
 app.use("/otp", otp);
+app.use("/api/files", fileRoutes);
 
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {

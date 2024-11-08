@@ -7,6 +7,8 @@ import Sidebar from '@/components/sidebar/page';
 import TableBody from '@/components/table_body/page';
 import Pagination from '@/components/table_pagination/page';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEditor, EditorContent } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
 
 import {
     Accordion,
@@ -62,7 +64,8 @@ import moment from 'moment';
 import toast from 'react-hot-toast';
 import AddgspnHHPTask from './add/gspn/page';
 import AddRepairshoprHHPTask from './add/repairshopr/page';
-
+import Toolbar from '@/components/toolbar_editor/page';
+import Underline from "@tiptap/extension-underline";
 
 
 const TechniciansScreen = () => {
@@ -164,7 +167,18 @@ const TechniciansScreen = () => {
         onGlobalFilterChange: setFiltering,
     });
 
-
+    const editor = useEditor({
+        extensions: [StarterKit, Underline],
+        editorProps: {
+            attributes: {
+                class:
+                    "flex flex-col px-4 py-3 justify-start border-b border-r border-l border-gray-700 text-gray-400 items-start w-full gap-3 font-medium text-[16px] pt-4 rounded-bl-md rounded-br-md outline-none",
+            },
+        },
+        onUpdate: ({ editor }) => {
+            setRepairshoprComment(editor.getHTML());
+        },
+    });
 
     useEffect(() => {
         // store values from db but still allow user to update those same fields
@@ -419,7 +433,11 @@ const TechniciansScreen = () => {
                                                     </div>
                                                     <div className="mb-3">
                                                         <Label htmlFor="reparshoprComment">Repairshopr note</Label>
-                                                        <Textarea value={reparshoprComment} name="reparshoprComment" onChange={(e) => setRepairshoprComment(e.target.value)} />
+                                                        {/* <Textarea value={reparshoprComment} name="reparshoprComment" onChange={(e) => setRepairshoprComment(e.target.value)} /> */}
+                                                        <>
+                                                            <Toolbar editor={editor} content={reparshoprComment} />
+                                                            <EditorContent className="border border-[#f8f9fa] rounded text-[#131515] font-medium shadow-none" style={{ whiteSpace: "pre-line" }} editor={editor} />
+                                                        </>
                                                     </div>
                                                     <div className="mb-3">
                                                         <Select name="status" value={unit_status} onValueChange={(e) => setRepairshoprStatus(e)}>
