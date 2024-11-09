@@ -47,7 +47,7 @@ app.use("/claims", claims);
 app.use("/checklists", checklists);
 app.use("/drivers", drivers);
 app.use("/otp", otp);
-app.use("/api/files", fileRoutes);
+app.use("/api/v1/hhp/files", fileRoutes);
 
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {

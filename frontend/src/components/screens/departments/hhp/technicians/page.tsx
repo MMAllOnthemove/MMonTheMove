@@ -7,8 +7,6 @@ import Sidebar from '@/components/sidebar/page';
 import TableBody from '@/components/table_body/page';
 import Pagination from '@/components/table_pagination/page';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
 
 import {
     Accordion,
@@ -17,7 +15,6 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
     Dialog,
     DialogContent,
@@ -25,7 +22,6 @@ import {
     DialogHeader,
     DialogTitle
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import useUserLoggedIn from '@/hooks/useGetUser';
 import useHHPTasks from '@/hooks/useHHPTasks';
 import columns from '@/lib/hhp_technicians_table_columns';
@@ -41,31 +37,21 @@ import {
 } from "@tanstack/react-table";
 import React, { useEffect, useState } from "react";
 
-import { Label } from "@/components/ui/label";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-
-import { Textarea } from "@/components/ui/textarea";
 import useRepairshoprComment from '@/hooks/useRepairshoprComment';
 import useRepairshoprTicket from '@/hooks/useRepairshoprTicket';
 import findChanges from '@/lib/find_changes';
 
 import useUpdateHHPTask from '@/hooks/updateHHPTask';
 import { datetimestamp } from '@/lib/date_formats';
-import repairshopr_statuses from '@/lib/repairshopr_status';
 import { ModifyTaskModalTechnicians, RepairshorTicketComment, TechniciansTableData } from '@/lib/types';
 import { CheckedState } from '@radix-ui/react-checkbox';
-import moment from 'moment';
 import toast from 'react-hot-toast';
 import AddgspnHHPTask from './add/gspn/page';
 import AddRepairshoprHHPTask from './add/repairshopr/page';
-import Toolbar from '@/components/toolbar_editor/page';
-import Underline from "@tiptap/extension-underline";
+import QC from './qc/page';
+import TasksUpdate from './tasks_update/page';
+import moment from 'moment';
+import Parts from './parts/page';
 
 
 const TechniciansScreen = () => {
@@ -84,49 +70,17 @@ const TechniciansScreen = () => {
     const [parts_issued_date, setPartsIssuedDate] = useState<string | undefined>("")
     const [parts_issued, setPartsIssued] = useState<CheckedState | undefined>()
     const [parts_pending, setPartsPending] = useState<CheckedState | undefined>()
-    const [qc_date, setQCCompleteDate] = useState<string | undefined>("")
-    const [qc_complete, setQCComplete] = useState<string>('')
-    const [qc_fail_reason, setQCFailReason] = useState('')
+
     const [openAddTaskModal, setOpenAddTaskModal] = useState(false)
     const [openSortTableColumnsModal, setSortTableColumns] = useState(false)
-
     const [parts_ordered_date, setPartsOrderedDate] = useState<string | undefined>("")
     const [parts_ordered, setPartsOrdered] = useState<CheckedState | undefined>()
+    const [qc_complete, setQCComplete] = useState<string>('')
+    const [qc_fail_reason, setQCFailReason] = useState('')
+    const [qc_date, setQCCompleteDate] = useState<string | undefined>("")
 
+    const [units_assessed, setUnitAssessed] = useState<string | boolean | any>()
 
-    const [units_assessed, setUnitAssessed] = useState<CheckedState | undefined>()
-
-    const handleUnitsAssessed = (e: React.SyntheticEvent | any) => {
-        if (!units_assessed) {
-            setUnitAssessed(e);
-            setAssessmentDate(datetimestamp)
-        }
-    }
-    const handleQCcheck = (e: React.SyntheticEvent | any) => {
-        setQCComplete(e.target.value);
-        if (qc_complete === 'Pass') {
-            setQCCompleteDate(datetimestamp)
-        }
-    }
-
-    const handlePartsOrdered = (e: React.SyntheticEvent | any) => {
-        if (!parts_ordered) {
-            setPartsOrdered(e);
-            setPartsOrderedDate(datetimestamp)
-        }
-    }
-    const handlePartsPending = (e: React.SyntheticEvent | any) => {
-        if (!parts_pending) {
-            setPartsPending(e);
-            setPartsPendingDate(datetimestamp)
-        }
-    }
-    const handlePartsIssued = (e: React.SyntheticEvent | any) => {
-        if (!parts_issued) {
-            setPartsIssued(e);
-            setPartsIssuedDate(datetimestamp)
-        }
-    }
     const handleRowClick = (row: TechniciansTableData) => {
         setModifyTaskModal(row?.original);
     };
@@ -167,18 +121,6 @@ const TechniciansScreen = () => {
         onGlobalFilterChange: setFiltering,
     });
 
-    const editor = useEditor({
-        extensions: [StarterKit, Underline],
-        editorProps: {
-            attributes: {
-                class:
-                    "flex flex-col px-4 py-3 justify-start border-b border-r border-l border-gray-700 text-gray-400 items-start w-full gap-3 font-medium text-[16px] pt-4 rounded-bl-md rounded-br-md outline-none",
-            },
-        },
-        onUpdate: ({ editor }) => {
-            setRepairshoprComment(editor.getHTML());
-        },
-    });
 
     useEffect(() => {
         // store values from db but still allow user to update those same fields
@@ -193,6 +135,43 @@ const TechniciansScreen = () => {
         setServiceOrder(modifyTaskModal?.service_order_no)
     }, [modifyTaskModal?.assessment_date, modifyTaskModal?.parts_issued, modifyTaskModal?.parts_issued_date, modifyTaskModal?.parts_pending, modifyTaskModal?.parts_pending_date, modifyTaskModal?.qc_complete, modifyTaskModal?.qc_date, modifyTaskModal?.service_order_no])
 
+
+    // Update the QC tab
+
+    const handleQCSubmit = async (e: React.SyntheticEvent) => {
+        e.preventDefault();
+        const id = modifyTaskModal?.id;
+        const updated_at = datetimestamp;
+        if (modifyTaskModal?.service_order_no !== service_order_no) {
+            setServiceOrder(service_order_no)
+        }
+
+        const updatePayload = {
+            // This goes to our in house db
+            id, updated_at, qc_fail_reason, qc_date, qc_complete
+        }
+        const changes = findChanges(modifyTaskModal, updatePayload)
+        const commentPayload: RepairshorTicketComment = {
+            "subject": "Update",
+            "tech": user?.full_name,
+            "body": "QC has failed (Logs attached) due to: " + qc_fail_reason,
+            "hidden": true,
+            "do_not_email": true
+        }
+        try {
+            if (Object.keys(changes).length > 0) {
+                await updateHHPTask(id, changes)
+                if (qc_complete === 'Fail') await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
+                toast.success(`Successfully updated`);
+                closeModal()
+            }
+        } catch (error) {
+            if (process.env.NODE_ENV !== 'production') {
+                console.log("error in qc techincians screen", error)
+            }
+        }
+    }
+    // Update the techs tab
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
@@ -215,8 +194,7 @@ const TechniciansScreen = () => {
         }
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no, unit_status, assessment_date, parts_pending_date, parts_issued_date, parts_issued, parts_pending, qc_date, qc_complete, qc_fail_reason, updated_at, units_assessed, parts_ordered, parts_ordered_date
-
+            id, service_order_no, unit_status, assessment_date, updated_at, units_assessed
         }
         const changes = findChanges(modifyTaskModal, updatePayload)
         try {
@@ -231,6 +209,30 @@ const TechniciansScreen = () => {
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') {
                 console.log("error in hhp techincians screen", error)
+            }
+        }
+    }
+
+    // Update the parts tab
+    const handlePartsSubmit = async (e: React.SyntheticEvent) => {
+        e.preventDefault();
+
+        const id = modifyTaskModal?.id;
+        const updated_at = datetimestamp;
+        const updatePayload = {
+            // This goes to our in house db
+            id, updated_at, parts_issued, parts_issued_date, parts_ordered, parts_ordered_date, parts_pending, parts_pending_date
+        }
+        const changes = findChanges(modifyTaskModal, updatePayload)
+        try {
+            if (Object.keys(changes).length > 0) {
+                await updateHHPTask(id, changes)
+                toast.success(`Successfully updated`);
+                closeModal()
+            }
+        } catch (error) {
+            if (process.env.NODE_ENV !== 'production') {
+                console.log("error in hhp parts screen", error)
             }
         }
     }
@@ -423,134 +425,36 @@ const TechniciansScreen = () => {
 
                                             </DialogDescription>
                                         </DialogHeader>
-                                        <Accordion type="single" collapsible>
-                                            <AccordionItem value="item-1">
-                                                <AccordionTrigger>Service order, note and status</AccordionTrigger>
-                                                <AccordionContent>
-                                                    <div className="mb-3">
-                                                        <Label htmlFor="serviceOrder">Service order</Label>
-                                                        <Input type="text" name="serviceOrder" value={service_order_no} onChange={(e) => setServiceOrder(e.target.value)} />
-                                                    </div>
-                                                    <div className="mb-3">
-                                                        <Label htmlFor="reparshoprComment">Repairshopr note</Label>
-                                                        {/* <Textarea value={reparshoprComment} name="reparshoprComment" onChange={(e) => setRepairshoprComment(e.target.value)} /> */}
-                                                        <>
-                                                            <Toolbar editor={editor} content={reparshoprComment} />
-                                                            <EditorContent className="border border-[#f8f9fa] rounded text-[#131515] font-medium shadow-none" style={{ whiteSpace: "pre-line" }} editor={editor} />
-                                                        </>
-                                                    </div>
-                                                    <div className="mb-3">
-                                                        <Select name="status" value={unit_status} onValueChange={(e) => setRepairshoprStatus(e)}>
-                                                            <SelectTrigger className="w-full">
-                                                                <SelectValue placeholder="Status" />
-                                                            </SelectTrigger>
-                                                            <SelectContent>
-                                                                {repairshopr_statuses.map((dep) => (
-                                                                    <SelectItem key={dep.id} value={`${dep._status}`}>{dep._status}</SelectItem>
-                                                                ))}
-                                                            </SelectContent>
-                                                        </Select>
-                                                    </div>
-                                                </AccordionContent>
-                                            </AccordionItem>
-                                            <AccordionItem value="item-2">
-                                                <AccordionTrigger>Assessment, QC </AccordionTrigger>
-                                                <AccordionContent>
-                                                    <div className="mb-3">
-                                                        <div className="flex items-center space-x-2 mb-3">
-                                                            <Checkbox id="units_assessed" checked={units_assessed}
-                                                                onCheckedChange={handleUnitsAssessed} />
-                                                            <label
-                                                                htmlFor="units_assessed"
-                                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                                            >
-                                                                Unit assessed?
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">QC completete?</label>
-                                                        <div className="text-sm font-medium leading-none mb-2 text-gray-900">
-                                                            <input
-                                                                type="radio"
-                                                                name="qc_complete"
-                                                                checked={qc_complete === 'Fail'}
-                                                                value="Fail"
-                                                                onChange={handleQCcheck}
-                                                            /> Fail
-                                                        </div>
-                                                        <div className="text-sm font-medium leading-none mb-2 text-gray-900">
-                                                            <input
-                                                                type="radio"
-                                                                name="qc_complete"
-                                                                checked={qc_complete === 'Pass'}
-                                                                value="Pass"
-                                                                onChange={handleQCcheck}
-                                                            /> Pass
-                                                        </div>
-                                                        {
-                                                            qc_complete === 'Fail' ? <div>
-                                                                <Textarea placeholder="Reason for QC failing." value={qc_fail_reason} onChange={(e => setQCFailReason(e.target.value))} />
-                                                            </div> : null
-                                                        }
-                                                    </div>
+                                        <Tabs defaultValue="Techs" className='w-full'>
+                                            <TabsList>
+                                                <TabsTrigger value="Techs">Techs</TabsTrigger>
+                                                <TabsTrigger value="QC">QC</TabsTrigger>
+                                                <TabsTrigger value="Parts">Parts</TabsTrigger>
+                                            </TabsList>
+                                            <TabsContent value="Techs">
+                                                <TasksUpdate setAssessmentDateProp={setAssessmentDate} units_assessedProp={units_assessed} setUnitAssessedProp={(e) => setUnitAssessed(e)} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={(e) => setRepairshoprStatus(e)} submitTasksUpdate={handleSubmit} />
+                                                <Accordion type="single" collapsible>
+                                                    <AccordionItem value="item-1">
+                                                        <AccordionTrigger>More info</AccordionTrigger>
+                                                        <AccordionContent>
+                                                            <div>
+                                                                <ul className="list-decimal list-inside">
+                                                                    <li>Booked date and time: <span className="text-gray-600 font-medium">{moment(modifyTaskModal?.date_booked_datetime).format("YYYY-MM-DD HH:mm:ss")}</span></li>
+                                                                    <li>Assessment date and time: <span className="text-gray-600 font-medium">{modifyTaskModal?.assessment_datetime ? moment(modifyTaskModal?.assessment_datetime).format("YYYY-MM-DD HH:mm:ss") : null}</span></li>
+                                                                </ul>
+                                                            </div>
+                                                        </AccordionContent>
+                                                    </AccordionItem>
+                                                </Accordion>
 
-                                                </AccordionContent>
-                                            </AccordionItem>
-                                            <AccordionItem value="item-3">
-                                                <AccordionTrigger>Parts department</AccordionTrigger>
-                                                <AccordionContent>
-                                                    <div className="mb-3">
-                                                        <div className="flex items-center space-x-2 mb-3">
-                                                            <Checkbox id="parts_pending" checked={parts_pending}
-                                                                onCheckedChange={handlePartsPending} />
-                                                            <label
-                                                                htmlFor="parts_pending"
-                                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                                            >
-                                                                Parts pending?
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                    <div className="mb-3">
-                                                        <div className="flex items-center space-x-2 mb-3">
-                                                            <Checkbox id="parts_ordered" checked={parts_ordered}
-                                                                onCheckedChange={handlePartsOrdered} />
-                                                            <label
-                                                                htmlFor="parts_ordered"
-                                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                                            >
-                                                                Parts ordered?
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                    <hr className="py-2" />
-                                                    <div className="flex items-center space-x-2 mb-3">
-                                                        <Checkbox id="parts_issued" checked={parts_issued}
-                                                            onCheckedChange={handlePartsIssued} />
-                                                        <label
-                                                            htmlFor="parts_issued"
-                                                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                                        >
-                                                            Parts issued?
-                                                        </label>
-                                                    </div>
-                                                </AccordionContent>
-                                            </AccordionItem>
-                                            <AccordionItem value="item-4">
-                                                <AccordionTrigger>More info</AccordionTrigger>
-                                                <AccordionContent>
-                                                    <div>
-                                                        <ul className="list-decimal list-inside">
-                                                            <li>Booked date and time: <span className="text-gray-600 font-medium">{moment(modifyTaskModal?.date_booked_datetime).format("YYYY-MM-DD HH:mm:ss")}</span></li>
-                                                            <li>Assessment date and time: <span className="text-gray-600 font-medium">{modifyTaskModal?.assessment_datetime ? moment(modifyTaskModal?.assessment_datetime).format("YYYY-MM-DD HH:mm:ss") : null}</span></li>
-                                                        </ul>
-                                                    </div>
-                                                </AccordionContent>
-                                            </AccordionItem>
-                                        </Accordion>
-
-                                        <Button className="w-full outline-none" type="button" onClick={handleSubmit}> Update</Button>
+                                            </TabsContent>
+                                            <TabsContent value="QC">
+                                                <QC qc_fail_reasonProp={qc_fail_reason} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} submitQC={handleQCSubmit} />
+                                            </TabsContent>
+                                            <TabsContent value="Parts">
+                                                <Parts parts_orderedProp={parts_ordered} setPartsOrderedProp={(e) => setPartsOrdered(e)} parts_pendingProp={parts_pending} setPartsPendingProp={(e) => setPartsPending(e)} parts_issuedProp={parts_issued} setPartsIssuedProp={(e) => setPartsIssued(e)} setPartsIssuedDateProp={setPartsIssuedDate} setPartsPendingDateProp={setPartsPendingDate} setPartsOrderedDateProp={setPartsOrderedDate} submitPartsUpdate={handlePartsSubmit} />
+                                            </TabsContent>
+                                        </Tabs>
 
                                     </DialogContent>
                                 </Dialog>
