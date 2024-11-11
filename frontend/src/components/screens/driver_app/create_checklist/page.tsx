@@ -15,6 +15,7 @@ import SectionSix from './multistep_form/section_six'
 import SectionThree from './multistep_form/section_three'
 import SectionTwo from './multistep_form/section_two'
 import SectionNine from './multistep_form/section_nine'
+import axios from 'axios'
 
 const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
     const { user } = useUserLoggedIn()
@@ -75,7 +76,13 @@ const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
     const [tools, setTools] = useState("")
     const [tools_fail_reason, setToolsFailReason] = useState("")
 
+    const [checklistFiles, setChecklistFiles] = useState([]);
+    const [checklistFilesUploading, setChecklistFilesUploading] = useState(false);
+    // const [qcFilesUrls, setQCFilesUrls] = useState([]);
 
+    const handleChecklistFiles = (event: any) => {
+        setChecklistFiles(event.target.files);
+    };
 
     const [step, setStep] = useState(1);
 
@@ -87,6 +94,39 @@ const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
         setStep((prev) => Math.max(prev - 1, 1));
     };
 
+
+    // send files to backend first
+    // submit cheklist files to backend and repairshopr
+    const submitChecklistFiles = async () => {
+        setChecklistFilesUploading(true);
+        try {
+            const formData = new FormData();
+            const carName = car
+            Array.from(checklistFiles).forEach((file) => {
+                formData.append('files', file);
+            });
+            // Append car once
+            formData.append('car', carName);
+            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/files/checklists`, formData, {
+                withCredentials: true,
+            })
+
+            if (data) {
+                toast.success(`${data?.message}`)
+                setChecklistFiles([])
+            }
+            // setQCFilesUrls(data?.fileUrls)
+            setChecklistFilesUploading(false)
+        } catch (error) {
+            toast.error("Error uploading cheklist files");
+            setChecklistFilesUploading(false)
+            if (process.env.NODE_ENV !== "production") {
+                console.error("Error uploading cheklist files:", error);
+            }
+        }
+    }
+
+    // send form values to backend
     const submit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const created_at = datetimestamp;
@@ -223,7 +263,7 @@ const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
             {step === 6 && <SectionSix horn={horn} setHorn={(e) => setHorn(e.target.value)} horn_fail_reason={horn_fail_reason} setHornFailReason={(e) => setHornFailReason(e.target.value)} speedometer={speedometer} setSpeedometer={(e) => setSpeedometer(e.target.value)} speedometer_fail_reason={speedometer_fail_reason} setSpeedometerFailReason={(e) => setSpeedometerFailReason(e.target.value)} interior_exterior_view_mirros={interior_exterior_view_mirros} setInteriorExteriorMirror={(e) => setInteriorExteriorMirror(e.target.value)} interior_exterior_view_mirros_fail_reason={interior_exterior_view_mirros_fail_reason} setInteriorExteriorMirrorFailReason={(e) => setInteriorExteriorMirrorFailReason(e.target.value)} safety_belts={safety_belts} setSafetyBelts={(e) => setSafetyBelts(e.target.value)} safety_belts_fail_reason={safety_belts_fail_reason} setSafetyBeltsFailReason={(e) => setSafetyBeltsFailReason(e.target.value)} />}
             {step === 7 && <SectionSeven engine_start_stop={engine_start_stop} setStartStop={(e) => setStartStop(e.target.value)} engine_start_stop_fail_reason={engine_start_stop_fail_reason} setStartStopFailReason={(e) => setStartStopFailReason(e.target.value)} mileage={mileage} setMileage={(e) => setMileage(e.target.value)} />}
             {step === 8 && <SectionEight triangle={triangle} setTriangle={(e) => setTriangle(e.target.value)} triangle_fail_reason={triangle_fail_reason} setTriangleFailReason={(e) => setTriangleFailReason(e.target.value)} car_jack={car_jack} setCarJack={(e) => setCarJack(e.target.value)} car_jack_fail_reason={car_jack_fail_reason} setCarJackFailReason={(e) => setCarJackFailReason(e.target.value)} spare_wheel={spare_wheel} setSpareWheel={(e) => setSpareWheel(e.target.value)} spare_wheel_fail_reason={spare_wheel_fail_reason} setSpareWheelFailReason={(e) => setSpareWheelFailReason(e.target.value)} />}
-            {step === 9 && <SectionNine hass={hass} setHass={(e) => setHass(e.target.value)} hass_fail_reason={hass_fail_reason} setHassFailReason={(e) => setHassFailReason(e.target.value)} tools={tools} setTools={(e) => setTools(e.target.value)} tools_fail_reason={tools_fail_reason} setToolsFailReason={(e) => setToolsFailReason(e.target.value)} />}
+            {step === 9 && <SectionNine hass={hass} setHass={(e) => setHass(e.target.value)} hass_fail_reason={hass_fail_reason} setHassFailReason={(e) => setHassFailReason(e.target.value)} tools={tools} setTools={(e) => setTools(e.target.value)} tools_fail_reason={tools_fail_reason} setToolsFailReason={(e) => setToolsFailReason(e.target.value)} checklist_FilesLoadingProp={checklistFilesUploading} setChecklistFilesProp={handleChecklistFiles} submitChecklistFiles={submitChecklistFiles} />}
             <div className="flex justify-between mt-4">
                 {step > 1 && (
                     <Button
