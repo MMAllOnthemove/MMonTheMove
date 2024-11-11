@@ -7,7 +7,6 @@ import Sidebar from '@/components/sidebar/page';
 import TableBody from '@/components/table_body/page';
 import Pagination from '@/components/table_pagination/page';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import {
     Accordion,
     AccordionContent,
@@ -36,22 +35,22 @@ import {
     useReactTable
 } from "@tanstack/react-table";
 import React, { useEffect, useState } from "react";
-
 import useRepairshoprComment from '@/hooks/useRepairshoprComment';
 import useRepairshoprTicket from '@/hooks/useRepairshoprTicket';
 import findChanges from '@/lib/find_changes';
-
 import useUpdateHHPTask from '@/hooks/updateHHPTask';
 import { datetimestamp } from '@/lib/date_formats';
 import { ModifyTaskModalTechnicians, RepairshorTicketComment, TechniciansTableData } from '@/lib/types';
 import { CheckedState } from '@radix-ui/react-checkbox';
+import moment from 'moment';
 import toast from 'react-hot-toast';
 import AddgspnHHPTask from './add/gspn/page';
 import AddRepairshoprHHPTask from './add/repairshopr/page';
+import Parts from './parts/page';
 import QC from './qc/page';
 import TasksUpdate from './tasks_update/page';
-import moment from 'moment';
-import Parts from './parts/page';
+import axios from 'axios';
+import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
 
 
 const TechniciansScreen = () => {
@@ -60,6 +59,7 @@ const TechniciansScreen = () => {
     const { updateRepairTicket } = useRepairshoprTicket()
     const { updateRepairTicketComment } = useRepairshoprComment()
     const { updateHHPTask } = useUpdateHHPTask()
+    const { addRepairTicketFile } = useRepairshoprFile()
 
     const [modifyTaskModal, setModifyTaskModal] = useState<ModifyTaskModalTechnicians | any>();
     const [service_order_no, setServiceOrder] = useState<string | number | undefined>("")
@@ -70,7 +70,6 @@ const TechniciansScreen = () => {
     const [parts_issued_date, setPartsIssuedDate] = useState<string | undefined>("")
     const [parts_issued, setPartsIssued] = useState<CheckedState | undefined>()
     const [parts_pending, setPartsPending] = useState<CheckedState | undefined>()
-
     const [openAddTaskModal, setOpenAddTaskModal] = useState(false)
     const [openSortTableColumnsModal, setSortTableColumns] = useState(false)
     const [parts_ordered_date, setPartsOrderedDate] = useState<string | undefined>("")
@@ -78,7 +77,6 @@ const TechniciansScreen = () => {
     const [qc_complete, setQCComplete] = useState<string>('')
     const [qc_fail_reason, setQCFailReason] = useState('')
     const [qc_date, setQCCompleteDate] = useState<string | undefined>("")
-
     const [units_assessed, setUnitAssessed] = useState<string | boolean | any>()
 
     const handleRowClick = (row: TechniciansTableData) => {
@@ -136,8 +134,50 @@ const TechniciansScreen = () => {
     }, [modifyTaskModal?.assessment_date, modifyTaskModal?.parts_issued, modifyTaskModal?.parts_issued_date, modifyTaskModal?.parts_pending, modifyTaskModal?.parts_pending_date, modifyTaskModal?.qc_complete, modifyTaskModal?.qc_date, modifyTaskModal?.service_order_no])
 
 
-    // Update the QC tab
+    const [qcFiles, setQCFiles] = useState([]);
+    const [qcFilesUploading, setQCFilesUploading] = useState(false);
+    // const [qcFilesUrls, setQCFilesUrls] = useState([]);
 
+    const handleQCFiles = (event: any) => {
+        setQCFiles(event.target.files);
+    };
+
+    // submit qc images to backend and repairshopr
+    const submitQCFiles = async () => {
+        setQCFilesUploading(true);
+        try {
+            const formData = new FormData();
+            const ticket_number = modifyTaskModal?.ticket_number
+            Array.from(qcFiles).forEach((file) => {
+                formData.append('files', file);
+            });
+            // Append ticket_number once
+            formData.append('ticket_number', ticket_number);
+            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/files/qc`, formData)
+
+            if (data) {
+                toast.success(`${data?.message}`)
+                const repairshopr_payload = {
+                    files: data.fileUrls.map((url: any) => ({
+                        url: url,
+                        filename: url.split('/').pop(), // Extract filename from URL
+                    })),
+                };
+                await addRepairTicketFile(modifyTaskModal?.repairshopr_job_id, repairshopr_payload)
+                setQCFiles([])
+            }
+            // setQCFilesUrls(data?.fileUrls)
+            setQCFilesUploading(false)
+        } catch (error) {
+            toast.error("Error uploading qc images");
+            setQCFilesUploading(false)
+            if (process.env.NODE_ENV !== "production") {
+                console.error("Error uploading qc images:", error);
+            }
+        }
+    }
+
+    // Update the QC tab
     const handleQCSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const id = modifyTaskModal?.id;
@@ -159,9 +199,11 @@ const TechniciansScreen = () => {
             "do_not_email": true
         }
         try {
+
             if (Object.keys(changes).length > 0) {
                 await updateHHPTask(id, changes)
                 if (qc_complete === 'Fail') await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
+
                 toast.success(`Successfully updated`);
                 closeModal()
             }
@@ -172,7 +214,6 @@ const TechniciansScreen = () => {
         }
     }
     // Update the techs tab
-
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
 
@@ -449,7 +490,7 @@ const TechniciansScreen = () => {
 
                                             </TabsContent>
                                             <TabsContent value="QC">
-                                                <QC qc_fail_reasonProp={qc_fail_reason} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} submitQC={handleQCSubmit} />
+                                                <QC qc_fail_reasonProp={qc_fail_reason} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} qc_FilesLoadingProp={qcFilesUploading} setQCFilesProp={handleQCFiles} submitQCFiles={submitQCFiles} submitQC={handleQCSubmit} />
                                             </TabsContent>
                                             <TabsContent value="Parts">
                                                 <Parts parts_orderedProp={parts_ordered} setPartsOrderedProp={(e) => setPartsOrdered(e)} parts_pendingProp={parts_pending} setPartsPendingProp={(e) => setPartsPending(e)} parts_issuedProp={parts_issued} setPartsIssuedProp={(e) => setPartsIssued(e)} setPartsIssuedDateProp={setPartsIssuedDate} setPartsPendingDateProp={setPartsPendingDate} setPartsOrderedDateProp={setPartsOrderedDate} submitPartsUpdate={handlePartsSubmit} />

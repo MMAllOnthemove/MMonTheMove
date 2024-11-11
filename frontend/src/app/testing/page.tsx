@@ -24,11 +24,11 @@ const Testing = () => {
         }
 
         setUploading(true);
-     
+
         try {
             const formData = new FormData();
             formData.append('file', selectedFile);
-            const apiResponse = await fetch(`http://localhost:8000/api/v1/hhp/files`, {
+            const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/files`, {
                 method: 'POST',
                 credentials: 'include',
                 body: formData
