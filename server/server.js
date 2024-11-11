@@ -18,8 +18,8 @@ import { router as stores } from "./routes/stores/index.js";
 import { router as checklists } from "./routes/driver_app/checklists/index.js";
 import { router as drivers } from "./routes/driver_app/drivers/index.js";
 import { router as otp } from "./routes/otp/index.js";
-import fileRoutesModule from "./routes/uploads/fileRoutes.cjs";
-const { router: fileRoutes } = fileRoutesModule;
+import QCfileRoutesModule from "./routes/file_uploads/index.cjs";
+const { router: fileRoutes } = QCfileRoutesModule;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(
