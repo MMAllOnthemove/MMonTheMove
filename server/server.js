@@ -18,7 +18,8 @@ import { router as stores } from "./routes/stores/index.js";
 import { router as checklists } from "./routes/driver_app/checklists/index.js";
 import { router as drivers } from "./routes/driver_app/drivers/index.js";
 import { router as otp } from "./routes/otp/index.js";
-import { router as fileRoutes } from "./routes/uploads/fileRoutes.cjs";
+import fileRoutesModule from "./routes/uploads/fileRoutes.cjs";
+const { router: fileRoutes } = fileRoutesModule;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(
