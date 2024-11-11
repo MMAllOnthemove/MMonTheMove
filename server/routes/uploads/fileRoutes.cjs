@@ -12,6 +12,7 @@ const upload = multer({
 });
 const router = express.Router();
 
-router.post("/qc", upload.single("file"), uploadQCFile);
+// 'files' because we are uploading one or more files
+router.post("/qc", upload.array("files", 15), uploadQCFile);
 router.post("/", upload.single("file"), uploadFile);
 module.exports = { router };

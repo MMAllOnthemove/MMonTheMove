@@ -1,19 +1,28 @@
 "use client"
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { datetimestamp } from '@/lib/date_formats';
 import React, { ChangeEvent } from "react";
-
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion";
 type TQC = {
     qc_fail_reasonProp: string
     qc_completeProp: string
+    qc_FilesLoadingProp: boolean
     setQCCompleteProp: (data: string) => void;
     setQCCompleteDateProp: (data: string) => void;
     setQCFailReasonProp: (data: ChangeEvent<HTMLTextAreaElement>) => void;
+    setQCFilesProp: (data: ChangeEvent<HTMLInputElement>) => void;
+    submitQCFiles: (data: React.SyntheticEvent) => void;
     submitQC: (data: React.SyntheticEvent) => void;
 }
-const QC = ({ qc_fail_reasonProp, qc_completeProp, setQCCompleteProp, setQCCompleteDateProp, setQCFailReasonProp, submitQC }: TQC) => {
+const QC = ({ qc_fail_reasonProp, qc_completeProp, setQCCompleteProp, setQCCompleteDateProp, setQCFailReasonProp, qc_FilesLoadingProp, setQCFilesProp, submitQCFiles, submitQC }: TQC) => {
 
 
 
@@ -54,6 +63,18 @@ const QC = ({ qc_fail_reasonProp, qc_completeProp, setQCCompleteProp, setQCCompl
                     <Textarea className='mb-3' placeholder="Reason for QC failing." value={qc_fail_reasonProp} onChange={setQCFailReasonProp} />
                 </div> : null
             }
+            <Accordion type="single" collapsible>
+                <AccordionItem value="item-1">
+                    <AccordionTrigger>Attachments</AccordionTrigger>
+                    <AccordionContent>
+                        <div className="flex items-center">
+                            <Input type="file" multiple className="my-3" onChange={setQCFilesProp} />
+                            <Button className="ml-3" disabled={qc_FilesLoadingProp} onClick={submitQCFiles}>{qc_FilesLoadingProp ? 'Uploading' : 'Attach'}</Button>
+                        </div>
+                    </AccordionContent>
+                </AccordionItem>
+            </Accordion>
+
             <Button className="w-full outline-none" type="submit" onClick={submitQC}> Update</Button>
         </form>
 
