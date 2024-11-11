@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { datetimestamp } from '@/lib/date_formats';
 import React, { ChangeEvent } from "react";
-
+import moment from "moment"
 import { Label } from "@/components/ui/label";
 import {
     Select,
@@ -14,7 +14,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import repairshopr_statuses from "@/lib/repairshopr_status";
@@ -24,15 +29,20 @@ type TTasksUpdate = {
     service_order_noProp: string | number | undefined
     reparshoprCommentProp: string
     unit_statusProp: string | undefined
+    date_booked_datetime: string;
+    assessment_datetime: string;
+    hhp_tasks_loading: boolean;
+
     setUnitAssessedProp: (data: CheckedState | string | undefined) => void;
     setAssessmentDateProp: (data: string) => void;
     setServiceOrderProp: (data: ChangeEvent<HTMLInputElement>) => void;
     setRepairshoprCommentProp: (data: ChangeEvent<HTMLTextAreaElement>) => void;
     setRepairshoprStatusProp: (data: string | number) => void;
     submitTasksUpdate: (data: React.SyntheticEvent) => void;
-
+    setHHPFilesProp: (data: ChangeEvent<HTMLInputElement>) => void;
+    submitHHPFiles: (data: React.SyntheticEvent) => void;
 }
-const TasksUpdate = ({ units_assessedProp, service_order_noProp, reparshoprCommentProp, unit_statusProp, setUnitAssessedProp, setAssessmentDateProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate }: TTasksUpdate) => {
+const TasksUpdate = ({ hhp_tasks_loading, setHHPFilesProp, submitHHPFiles, units_assessedProp, service_order_noProp, reparshoprCommentProp, unit_statusProp, setUnitAssessedProp, setAssessmentDateProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked_datetime, assessment_datetime }: TTasksUpdate) => {
 
     const handleUnitsAssessed = (e: React.SyntheticEvent | any) => {
         if (!units_assessedProp) {
@@ -42,7 +52,7 @@ const TasksUpdate = ({ units_assessedProp, service_order_noProp, reparshoprComme
     }
 
 
-  
+
     return (
         <form>
             <div className="mb-3">
@@ -75,6 +85,28 @@ const TasksUpdate = ({ units_assessedProp, service_order_noProp, reparshoprComme
                     Unit assessed?
                 </label>
             </div>
+            <Accordion type="single" collapsible>
+                <AccordionItem value="item-1">
+                    <AccordionTrigger>More info</AccordionTrigger>
+                    <AccordionContent>
+                        <div>
+                            <ul className="list-decimal list-inside">
+                                <li>Booked date and time: <span className="text-gray-600 font-medium">{moment(date_booked_datetime).format("YYYY-MM-DD HH:mm:ss")}</span></li>
+                                <li>Assessment date and time: <span className="text-gray-600 font-medium">{assessment_datetime ? moment(assessment_datetime).format("YYYY-MM-DD HH:mm:ss") : null}</span></li>
+                            </ul>
+                        </div>
+                    </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-2">
+                    <AccordionTrigger>Attachments</AccordionTrigger>
+                    <AccordionContent>
+                        <div className="flex items-center">
+                            <Input type="file" multiple className="my-3" onChange={setHHPFilesProp} />
+                            <Button className="ml-3" disabled={hhp_tasks_loading} onClick={submitHHPFiles}>{hhp_tasks_loading ? 'Uploading' : 'Attach'}</Button>
+                        </div>
+                    </AccordionContent>
+                </AccordionItem>
+            </Accordion>
             <Button className="w-full outline-none" type="submit" onClick={submitTasksUpdate}> Update</Button>
 
         </form >

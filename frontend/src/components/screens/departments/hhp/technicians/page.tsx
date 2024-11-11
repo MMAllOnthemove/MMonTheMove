@@ -7,12 +7,7 @@ import Sidebar from '@/components/sidebar/page';
 import TableBody from '@/components/table_body/page';
 import Pagination from '@/components/table_pagination/page';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion";
+
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -21,9 +16,17 @@ import {
     DialogHeader,
     DialogTitle
 } from "@/components/ui/dialog";
+import useUpdateHHPTask from '@/hooks/updateHHPTask';
+import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import useHHPTasks from '@/hooks/useHHPTasks';
+import useRepairshoprComment from '@/hooks/useRepairshoprComment';
+import useRepairshoprTicket from '@/hooks/useRepairshoprTicket';
+import { datetimestamp } from '@/lib/date_formats';
+import findChanges from '@/lib/find_changes';
 import columns from '@/lib/hhp_technicians_table_columns';
+import { ModifyTaskModalTechnicians, RepairshorTicketComment, TechniciansTableData } from '@/lib/types';
+import { CheckedState } from '@radix-ui/react-checkbox';
 import {
     ColumnOrderState,
     SortingState,
@@ -34,23 +37,14 @@ import {
     getSortedRowModel,
     useReactTable
 } from "@tanstack/react-table";
+import axios from 'axios';
 import React, { useEffect, useState } from "react";
-import useRepairshoprComment from '@/hooks/useRepairshoprComment';
-import useRepairshoprTicket from '@/hooks/useRepairshoprTicket';
-import findChanges from '@/lib/find_changes';
-import useUpdateHHPTask from '@/hooks/updateHHPTask';
-import { datetimestamp } from '@/lib/date_formats';
-import { ModifyTaskModalTechnicians, RepairshorTicketComment, TechniciansTableData } from '@/lib/types';
-import { CheckedState } from '@radix-ui/react-checkbox';
-import moment from 'moment';
 import toast from 'react-hot-toast';
 import AddgspnHHPTask from './add/gspn/page';
 import AddRepairshoprHHPTask from './add/repairshopr/page';
 import Parts from './parts/page';
 import QC from './qc/page';
 import TasksUpdate from './tasks_update/page';
-import axios from 'axios';
-import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
 
 
 const TechniciansScreen = () => {
@@ -142,7 +136,7 @@ const TechniciansScreen = () => {
         setQCFiles(event.target.files);
     };
 
-    // submit qc images to backend and repairshopr
+    // submit qc files to backend and repairshopr
     const submitQCFiles = async () => {
         setQCFilesUploading(true);
         try {
@@ -153,7 +147,9 @@ const TechniciansScreen = () => {
             });
             // Append ticket_number once
             formData.append('ticket_number', ticket_number);
-            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/files/qc`, formData)
+            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/files/qc`, formData, {
+                withCredentials: true,
+            })
 
             if (data) {
                 toast.success(`${data?.message}`)
@@ -210,6 +206,51 @@ const TechniciansScreen = () => {
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') {
                 console.log("error in qc techincians screen", error)
+            }
+        }
+    }
+
+
+    const [hhpFiles, setHHPFiles] = useState([]);
+    const [hhpFilesUploading, setHHPFilesUploading] = useState(false);
+
+    const handleHHPFiles = (event: any) => {
+        setHHPFiles(event.target.files);
+    };
+
+    // submit hhp files to backend and repairshopr
+    const submitHHPFiles = async () => {
+        setHHPFilesUploading(true);
+        try {
+            const formData = new FormData();
+            const ticket_number = modifyTaskModal?.ticket_number
+            Array.from(hhpFiles).forEach((file) => {
+                formData.append('files', file);
+            });
+            // Append ticket_number once
+            formData.append('ticket_number', ticket_number);
+            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/files`, formData, {
+                withCredentials: true,
+            })
+
+            if (data) {
+                toast.success(`${data?.message}`)
+                const repairshopr_payload = {
+                    files: data.fileUrls.map((url: any) => ({
+                        url: url,
+                        filename: url.split('/').pop(), // Extract filename from URL
+                    })),
+                };
+                await addRepairTicketFile(modifyTaskModal?.repairshopr_job_id, repairshopr_payload)
+                setQCFiles([])
+            }
+            // setQCFilesUrls(data?.fileUrls)
+            setHHPFilesUploading(false)
+        } catch (error) {
+            toast.error("Error uploading hhp files");
+            setHHPFilesUploading(false)
+            if (process.env.NODE_ENV !== "production") {
+                console.error("Error uploading hhp files:", error);
             }
         }
     }
@@ -473,20 +514,8 @@ const TechniciansScreen = () => {
                                                 <TabsTrigger value="Parts">Parts</TabsTrigger>
                                             </TabsList>
                                             <TabsContent value="Techs">
-                                                <TasksUpdate setAssessmentDateProp={setAssessmentDate} units_assessedProp={units_assessed} setUnitAssessedProp={(e) => setUnitAssessed(e)} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={(e) => setRepairshoprStatus(e)} submitTasksUpdate={handleSubmit} />
-                                                <Accordion type="single" collapsible>
-                                                    <AccordionItem value="item-1">
-                                                        <AccordionTrigger>More info</AccordionTrigger>
-                                                        <AccordionContent>
-                                                            <div>
-                                                                <ul className="list-decimal list-inside">
-                                                                    <li>Booked date and time: <span className="text-gray-600 font-medium">{moment(modifyTaskModal?.date_booked_datetime).format("YYYY-MM-DD HH:mm:ss")}</span></li>
-                                                                    <li>Assessment date and time: <span className="text-gray-600 font-medium">{modifyTaskModal?.assessment_datetime ? moment(modifyTaskModal?.assessment_datetime).format("YYYY-MM-DD HH:mm:ss") : null}</span></li>
-                                                                </ul>
-                                                            </div>
-                                                        </AccordionContent>
-                                                    </AccordionItem>
-                                                </Accordion>
+                                                <TasksUpdate hhp_tasks_loading={hhpFilesUploading} setHHPFilesProp={handleHHPFiles} submitHHPFiles={submitHHPFiles} date_booked_datetime={modifyTaskModal?.date_booked_datetime} assessment_datetime={modifyTaskModal?.assessment_datetime} setAssessmentDateProp={setAssessmentDate} units_assessedProp={units_assessed} setUnitAssessedProp={(e) => setUnitAssessed(e)} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={(e) => setRepairshoprStatus(e)} submitTasksUpdate={handleSubmit} />
+
 
                                             </TabsContent>
                                             <TabsContent value="QC">
