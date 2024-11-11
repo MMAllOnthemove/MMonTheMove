@@ -18,18 +18,16 @@ import useUserLoggedIn from '@/hooks/useGetUser';
 import useRepairshoprFetchTicket from '@/hooks/useRepairshoprFetchTicket';
 import React, { useEffect, useState } from 'react';
 
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+
 import useFetchAgentTasks from '@/hooks/useFetchBookingAgentsTasks';
 import { bookingAgentMapOverJobs } from '@/lib/booking_agents_map_over_tasks';
+import { datetimestamp } from '@/lib/date_formats';
 import { TAgentTasks, TBookingAgentsTasksViewIndieList } from '@/lib/types';
 import moment from 'moment';
-import { datetimestamp } from '@/lib/date_formats';
+import TableHead from './tablehead';
+import TableBody from './tablebody';
+import ReportTableHead from './report_tablehead';
+import ReportTableBody from './report_tablebody';
 
 const BookingAgentsReportScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
@@ -166,81 +164,14 @@ const BookingAgentsReportScreen = () => {
 
                                     <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg mb-4">
                                         <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-                                            <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] uppercase font-semibold">
-                                                <tr className=" font-semibold">
-                                                    <th className="px-4 py-3 cursor-pointer font-semibold">
-                                                        Ticket number
-                                                    </th>
-                                                    <th className="px-4 py-3 cursor-pointer font-semibold">
-                                                        Agent
-                                                    </th>
-                                                    <th className="px-4 py-3 cursor-pointer font-semibold">
-                                                        Action
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="z-0">
-                                                <tr className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]">
-                                                    <td className="px-4 py-3 font-medium text-sm max-w-full">
-                                                        {ticket_number}
-                                                    </td>
-                                                    <td className="px-4 py-3 font-medium text-sm max-w-full">
-                                                        <span>
-                                                            <label
-                                                                htmlFor="booking_agent"
-                                                                className='sr-only'
-                                                            >
-                                                                Booking agent
-                                                            </label>
-
-                                                            <Select name="booking_agent" value={booking_agent} onValueChange={(e) => setBookingAgent(e)}>
-                                                                <SelectTrigger className="w-full">
-                                                                    <SelectValue placeholder="Booking agent" />
-                                                                </SelectTrigger>
-                                                                <SelectContent>
-                                                                    {bookingAgentList.map((dep) => (
-                                                                        <SelectItem key={dep.id} value={`${dep.agent_firstname} ${dep.agent_lastname}`}>{`${dep.agent_firstname} ${dep.agent_lastname}`}</SelectItem>
-                                                                    ))}
-                                                                </SelectContent>
-                                                            </Select>
-                                                            {errors.booking_agent && <p className="text-sm text-red-500 font-medium">{errors.booking_agent}</p>}
-
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-4 py-3 font-medium text-sm max-w-full">
-                                                        <Button
-                                                            type="button"
-                                                            role="button"
-                                                            onClick={addTask}
-
-                                                            disabled={addAgentTaskLoading}> {addAgentTaskLoading ? 'Adding...' : 'Add task'}
-                                                        </Button>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
+                                            <TableHead />
+                                            <TableBody ticket_number={ticket_number} booking_agent={booking_agent} setBookingAgent={(e) => setBookingAgent(e)} bookingAgentList={bookingAgentList} addAgentTaskLoading={addAgentTaskLoading} addTask={addTask} errors={errors} />
                                         </table>
                                     </div> : null}
                             <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg">
                                 <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-                                    <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white  text-sm uppercase font-semibold">
-                                        <tr className=" font-semibold">
-                                            <th className="px-4 py-3 cursor-pointer  font-semibold">
-                                                Booking Agent
-                                            </th>
-                                            <th className="px-4 py-3 cursor-pointer  font-semibold">
-                                                Jobs booked
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="z-0">
-
-                                        {groupedTasks.map((item: any) => (
-                                            <tr onClick={() => handleRowClick(item)} key={item.createdBy} className="border-b cursor-pointer hover:bg-gray-100">
-                                                <td className="px-4 py-3 font-medium text-sm">{item.createdBy}</td>
-                                                <td className="px-4 py-3 font-medium text-sm">{item.tasksCount}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
+                                    <ReportTableHead />
+                                    <ReportTableBody groupedTasks={groupedTasks} handleRowClick={handleRowClick} />
                                 </table>
                             </div>
                             {
