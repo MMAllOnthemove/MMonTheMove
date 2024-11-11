@@ -1,9 +1,9 @@
 "use client"
-
+import dynamic from 'next/dynamic'
 import { Button } from "@/components/ui/button";
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import LoadingScreen from "../loading_screen/page";
+const LoadingScreen = dynamic(() => import("../loading_screen/page"))
 
 
 
