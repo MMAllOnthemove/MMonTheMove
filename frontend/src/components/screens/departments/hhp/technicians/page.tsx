@@ -445,7 +445,7 @@ const TechniciansScreen = () => {
                                                     <Button
                                                         type="button"
                                                         role="button"
-                                                        className="text-blue-600 dark:text-blue-500 hover:underline bg-transparent"
+                                                        className="text-blue-600 dark:text-blue-500 hover:underline bg-transparent shadow-none outline-none focus:bg-transparent active:bg-transparent hover:bg-transparent"
                                                     >
                                                         Edit
                                                     </Button>
