@@ -34,7 +34,7 @@ import toast from 'react-hot-toast';
 
 
 const DriversScreen = () => {
-    const { isLoggedIn, loading } = useUserLoggedIn()
+    const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { driversList } = useFetchDrivers()
     const { addDriver, addDriverLoading, errors } = useAddDriver()
     const [driver_firstname, setDriverFirstname] = useState("")
@@ -70,7 +70,6 @@ const DriversScreen = () => {
         const created_at = datetimestamp;
         const payload = { driver_firstname, driver_lastname, created_at };
         await addDriver(payload);
-        toast.error(`Fill in all fields`);
         setDriverFirstname('')
         setDriverLastname('')
         setOpenAddModal(false)
@@ -81,7 +80,7 @@ const DriversScreen = () => {
             {
                 loading ? (
                     <LoadingScreen />
-                ) : isLoggedIn ? (
+                ) : isLoggedIn && user?.user_role === "admin" ? (
                     <>
                         <Sidebar />
                         <main className='container p-1'>
