@@ -62,7 +62,12 @@ const uploadChecklistFiles = async (req, res) => {
                 // Remove temporary file from local storage
                 fs.unlink(file.path, (err) => {
                     if (err)
-                        console.error("Error deleting file:", file.path, err);
+                        if (process.env.NODE_ENV !== "production")
+                            console.error(
+                                "Error deleting file:",
+                                file.path,
+                                err
+                            );
                 });
 
                 // Construct URL for uploaded file
@@ -70,17 +75,13 @@ const uploadChecklistFiles = async (req, res) => {
             })
         );
 
-        console.log("Uploaded file URLs:", fileUrls);
-
         res.status(201).json({ message: "Files uploaded", fileUrls: fileUrls });
     } catch (err) {
         if (err instanceof yup.ValidationError) {
-            console.error("Validation error:", err);
             res.status(400).json({
                 message: "Please check your files and try again",
             });
         } else {
-            console.error("Upload hhp file error:", err);
             res.status(500).json({ message: "Failed to upload, try again" });
         }
     } finally {

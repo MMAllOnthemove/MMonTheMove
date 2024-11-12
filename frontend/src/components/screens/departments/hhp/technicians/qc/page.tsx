@@ -34,8 +34,6 @@ const QC = ({ qc_fail_reasonProp, qc_completeProp, setQCCompleteProp, setQCCompl
         }
     };
 
-    // console.log('qc values', qc_fail_reasonProp, qc_completeProp)
-
 
     return (
         <form>

@@ -45,7 +45,9 @@ const ClaimsScreen = () => {
                 }
                 setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
             } catch (error) {
-                console.error(error);
+                if (process.env.NODE_ENV !== 'production') {
+                    console.error(error)
+                }
             }
         };
         handleGetSOInfo(searchServiceOrder)

@@ -28,10 +28,8 @@ const useAddEngineer = () => {
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
             }
-            console.log("addEngineer response", response);
             return response;
         } catch (error: any) {
-            console.log("addEngineer error", error);
             if (error?.response?.data?.message) {
                 toast.error(`${error?.response?.data?.message}`);
             } else if (error?.response && error?.response?.data?.errors) {
