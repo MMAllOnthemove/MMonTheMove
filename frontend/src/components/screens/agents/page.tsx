@@ -32,7 +32,7 @@ const Sidebar = dynamic(() => import('@/components/sidebar/page'))
 const Pagination = dynamic(() => import('@/components/table_pagination/page'))
 
 const AgentsScreen = () => {
-    const { isLoggedIn, loading } = useUserLoggedIn()
+    const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { bookingAgentList } = useFetchAgent()
     const { addAgent, addAgentLoading, errors } = useAddAgent()
     const { deleteAgent, deleteAgentLoading } = useDeleteBookingAgent()
@@ -96,7 +96,7 @@ const AgentsScreen = () => {
             {
                 loading ? (
                     <LoadingScreen />
-                ) : isLoggedIn ? (
+                ) : isLoggedIn && user?.user_role === "admin" ? (
                     <>
                         <Sidebar />
                         <main className='container p-1'>

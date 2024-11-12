@@ -132,20 +132,20 @@ const SignupScreen = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 name="password"
-                                className="bg-white outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
+                                className="bg-white outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 outline-none shadow-none"
                                 type={passwordShown ? "text" : "password"}
                             />
 
                             <Button
                                 type="button"
                                 onClick={togglePassword}
-                                className="bg-transparent border-none outline-none"
+                                className="bg-transparent border-none outline-none shadow-none hover:bg-transparent"
                             >
                                 <span>
                                     {!passwordShown ? (
-                                        <EyeIcon className="w-6 h-6  dark:text-[#eee]" />
+                                        <EyeIcon className="w-6 h-6 text-gray-600" />
                                     ) : (
-                                        <EyeSlashIcon className="w-6 h-6  dark:text-[#eee]" />
+                                        <EyeSlashIcon className="w-6 h-6 text-gray-600" />
                                     )}
                                 </span>
                             </Button>

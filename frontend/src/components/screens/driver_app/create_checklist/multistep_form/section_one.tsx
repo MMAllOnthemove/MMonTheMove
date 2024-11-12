@@ -179,7 +179,7 @@ const SectionOne: React.FC<ISectionOne> = ({ car, setCar, reason_for_use, select
                                                 setDriversOpen(false)
                                             }}
                                         >
-                                            {framework.label}
+                                            {framework.value}
                                             <CheckIcon
                                                 className={cn(
                                                     "ml-auto h-4 w-4",

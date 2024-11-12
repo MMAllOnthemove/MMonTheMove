@@ -37,7 +37,7 @@ import React, { useState } from 'react';
 
 
 const StoresScreen = () => {
-    const { isLoggedIn, loading } = useUserLoggedIn()
+    const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { storesList } = useGetStores()
     const { addStore, addStoreLoading, errors } = useAddStore()
     const { deleteStore, deleteStoreLoading } = useDeleteStore()
@@ -98,7 +98,7 @@ const StoresScreen = () => {
             {
                 loading ? (
                     <LoadingScreen />
-                ) : isLoggedIn ? (
+                ) : isLoggedIn && user?.user_role === "admin" ? (
                     <>
                         <Sidebar />
                         <main className='container p-1'>
@@ -170,7 +170,7 @@ const StoresScreen = () => {
                                                         onClick={() => handleRowClick(row)}
                                                         type="button"
                                                         role="button"
-                                                        className="text-red-500 dark:text-red-500 hover:underline bg-transparent"
+                                                        className="text-red-500 dark:text-red-500 bg-transparent  outline-none shadow-none hover:bg-transparent"
                                                     >
                                                         Delete
                                                     </button>
