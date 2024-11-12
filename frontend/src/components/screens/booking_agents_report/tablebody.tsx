@@ -13,9 +13,11 @@ type TTableBody = {
     setBookingAgent: (e: string) => void;
     bookingAgentList: Array<{ id: string, agent_firstname: string, agent_lastname: string }>
     addAgentTaskLoading: boolean;
-    addTask: (data: boolean) => void;
+    addTask: (data: React.SyntheticEvent) => void;
     errors: {
-        booking_agent: string | undefined,
+        ticket_number?: string;
+        created_by?: string;
+        booking_agent?: string;
     }
 }
 const TableBody = ({ ticket_number, booking_agent, bookingAgentList, addAgentTaskLoading, setBookingAgent, addTask, errors }: TTableBody) => {

@@ -18,7 +18,7 @@ const useHHPAddGSPNtask = () => {
             return response.data;
         } catch (error) {
             if (process.env.NODE_ENV !== "production") {
-                console.error("Erro adding HHP task by GSPN:", error);
+                console.error("Error adding HHP task by GSPN:", error);
             }
         }
     };

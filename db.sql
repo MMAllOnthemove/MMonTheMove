@@ -308,3 +308,19 @@ create table otp (
     otp_code text,
     created_at TIMESTAMP
 );
+
+create table parts_for_tasks (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    task_row_id BIGSERIAL not null,
+    ticket_number text,
+    part_name text,
+    part_desc text,
+    seal_number text,
+    part_quantity integer,
+    parts_status text,
+    created_at TIMESTAMP,
+    created_by text,
+    updated_at TIMESTAMP,
+    FOREIGN KEY (task_row_id) REFERENCES technician_tasks(id)
+)

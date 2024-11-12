@@ -45,6 +45,8 @@ import AddRepairshoprHHPTask from './add/repairshopr/page';
 import Parts from './parts/page';
 import QC from './qc/page';
 import TasksUpdate from './tasks_update/page';
+import useAddPart from '@/hooks/useAddPart';
+import useIpaasSOPartsInfo from '@/hooks/useIpaasGetSOPartsInfo';
 
 
 const TechniciansScreen = () => {
@@ -54,7 +56,8 @@ const TechniciansScreen = () => {
     const { updateRepairTicketComment } = useRepairshoprComment()
     const { updateHHPTask } = useUpdateHHPTask()
     const { addRepairTicketFile } = useRepairshoprFile()
-
+    const { addThisPart, addPartLoading, addPartErrors } = useAddPart()
+    const { getSOPartsInfo } = useIpaasSOPartsInfo()
     const [modifyTaskModal, setModifyTaskModal] = useState<ModifyTaskModalTechnicians | any>();
     const [service_order_no, setServiceOrder] = useState<string | number | undefined>("")
     const [reparshoprComment, setRepairshoprComment] = useState("")
@@ -72,6 +75,29 @@ const TechniciansScreen = () => {
     const [qc_fail_reason, setQCFailReason] = useState('')
     const [qc_date, setQCCompleteDate] = useState<string | undefined>("")
     const [units_assessed, setUnitAssessed] = useState<string | boolean | any>()
+    const [submitPartsUpdateLoading, setSubmitPartsUpdateLoading] = useState(false)
+    // parts
+    const [search_part, setSearchPart] = useState("")
+    const [part_name, setPartName] = useState("")
+    const [part_desc, setPartDesc] = useState("")
+    const [part_quantity, setPartQuantity] = useState<number | undefined>()
+
+    // search parts from ipaas
+    useEffect(() => {
+        const handleGetSOPartInfo = async (search_part: string) => {
+            try {
+                const data = await getSOPartsInfo(search_part);
+                setPartName(data?.Return?.EsPartsInfo?.PartsNo)
+                setPartDesc(data?.Return?.EsPartsInfo?.PartsDescription)
+            } catch (error) {
+                if (process.env.NODE_ENV !== 'production') {
+                    console.error(error)
+                }
+            }
+        };
+        handleGetSOPartInfo(search_part)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [search_part])
 
     const handleRowClick = (row: TechniciansTableData) => {
         setModifyTaskModal(row?.original);
@@ -307,16 +333,32 @@ const TechniciansScreen = () => {
         }
         const changes = findChanges(modifyTaskModal, updatePayload)
         try {
+            setSubmitPartsUpdateLoading(true)
             if (Object.keys(changes).length > 0) {
                 await updateHHPTask(id, changes)
                 toast.success(`Successfully updated`);
                 closeModal()
             }
+            setSubmitPartsUpdateLoading(false)
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') {
                 console.log("error in hhp parts screen", error)
             }
+        } finally {
+            setSubmitPartsUpdateLoading(false)
         }
+    }
+
+
+    // add part searched
+
+    const addPart = async () => {
+        const task_row_id = modifyTaskModal?.id;
+        const ticket_number = modifyTaskModal?.ticket_number
+        const created_at = datetimestamp;
+        const created_by = user?.email
+        const payload = { task_row_id, ticket_number, part_name, part_desc, part_quantity, created_at, created_by }
+        await addThisPart(payload);
     }
 
     return (
@@ -522,7 +564,7 @@ const TechniciansScreen = () => {
                                                 <QC qc_fail_reasonProp={qc_fail_reason} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} qc_FilesLoadingProp={qcFilesUploading} setQCFilesProp={handleQCFiles} submitQCFiles={submitQCFiles} submitQC={handleQCSubmit} />
                                             </TabsContent>
                                             <TabsContent value="Parts">
-                                                <Parts parts_orderedProp={parts_ordered} setPartsOrderedProp={(e) => setPartsOrdered(e)} parts_pendingProp={parts_pending} setPartsPendingProp={(e) => setPartsPending(e)} parts_issuedProp={parts_issued} setPartsIssuedProp={(e) => setPartsIssued(e)} setPartsIssuedDateProp={setPartsIssuedDate} setPartsPendingDateProp={setPartsPendingDate} setPartsOrderedDateProp={setPartsOrderedDate} submitPartsUpdate={handlePartsSubmit} />
+                                                <Parts parts_orderedProp={parts_ordered} setPartsOrderedProp={(e) => setPartsOrdered(e)} parts_pendingProp={parts_pending} setPartsPendingProp={(e) => setPartsPending(e)} parts_issuedProp={parts_issued} setPartsIssuedProp={(e) => setPartsIssued(e)} setPartsIssuedDateProp={setPartsIssuedDate} setPartsPendingDateProp={setPartsPendingDate} setPartsOrderedDateProp={setPartsOrderedDate} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} />
                                             </TabsContent>
                                         </Tabs>
 
