@@ -3,7 +3,6 @@ import LoadingScreen from '@/components/loading_screen/page'
 import NotLoggedInScreen from '@/components/not_logged_in/page'
 import PageTitle from '@/components/PageTitle/page'
 import Sidebar from '@/components/sidebar/page'
-import TableBody from '@/components/table_body/page'
 import Pagination from '@/components/table_pagination/page'
 import {
     Card,
@@ -293,7 +292,7 @@ const DashboardScreen = () => {
                                         ))}
                                     </thead>
 
-                                    <TableBody>
+                                    <tbody className="z-0">
                                         {frequentFaultsTable.getRowModel().rows.map((row: any) => (
                                             <tr
                                                 key={row.id}
@@ -315,7 +314,7 @@ const DashboardScreen = () => {
                                                 ))}
                                             </tr>
                                         ))}
-                                    </TableBody>
+                                    </tbody>
                                 </table>
                             </div>
                             <div className="h-2" />
@@ -363,7 +362,7 @@ const DashboardScreen = () => {
                                         ))}
                                     </thead>
 
-                                    <TableBody>
+                                    <tbody className="z-0">
                                         {engineerWorkloadTable.getRowModel().rows.map((row: any) => (
                                             <tr
                                                 key={row.id}
@@ -385,7 +384,7 @@ const DashboardScreen = () => {
                                                 ))}
                                             </tr>
                                         ))}
-                                    </TableBody>
+                                    </tbody>
                                 </table>
                             </div>
                             <div className="h-2" />

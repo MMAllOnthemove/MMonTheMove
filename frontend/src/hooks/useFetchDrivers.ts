@@ -25,9 +25,12 @@ const useFetchDrivers = () => {
                 if (response?.data) {
                     setdrivers(response?.data);
                 }
-            } catch (error) {
+            } catch (error: any) {
                 if (process.env.NODE_ENV !== "production") {
-                    console.error("Error fetching drivers:", error);
+                    console.error(
+                        "Error fetching drivers:",
+                        error?.response?.data?.error
+                    );
                 }
             } finally {
                 setdriversLoading(false);

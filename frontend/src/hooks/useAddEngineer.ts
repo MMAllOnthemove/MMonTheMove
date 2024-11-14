@@ -35,7 +35,6 @@ const useAddEngineer = () => {
             } else if (error?.response && error?.response?.data?.errors) {
                 setErrors(error.response.data.errors); // Set validation errors to state
             }
-            // setError(error?.response?.data?.message);
         } finally {
             setLoading(false); // Stop loading
         }

@@ -82,7 +82,7 @@ const BookingAgentsReportScreen = () => {
             if (existingUser) {
                 existingUser.tasksCount++;
             } else {
-                acc[task.booking_agent] = { createdBy: task.booking_agent, tasksCount: 0 };
+                acc[task.booking_agent] = { createdBy: task.booking_agent, tasksCount: 1 };
             }
             return acc;
         }, {});

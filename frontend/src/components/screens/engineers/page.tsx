@@ -1,7 +1,16 @@
 "use client"
-import useFetchEngineer from '@/hooks/useFetchEngineers'
-import useUserLoggedIn from '@/hooks/useGetUser'
-import React, { useState } from 'react'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle
+} from "@/components/ui/dialog";
+import useFetchEngineer from '@/hooks/useFetchEngineers';
+import useUserLoggedIn from '@/hooks/useGetUser';
+import columns from '@/lib/engineers_columns';
+import { cn } from "@/lib/utils";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import {
     SortingState,
     flexRender,
@@ -11,18 +20,16 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-import columns from '@/lib/engineers_columns';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle
-} from "@/components/ui/dialog";
-import { cn } from "@/lib/utils"
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
+import React, { useState } from 'react';
 
 
+import LoadingScreen from '@/components/loading_screen/page';
+import NotLoggedInScreen from '@/components/not_logged_in/page';
+import PageTitle from '@/components/PageTitle/page';
+import ManagementSearchForm from '@/components/search_field/page';
+import Sidebar from '@/components/sidebar/page';
+import Pagination from '@/components/table_pagination/page';
+import { Button } from '@/components/ui/button';
 import {
     Command,
     CommandEmpty,
@@ -30,27 +37,19 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover"
-import ManagementSearchForm from '@/components/search_field/page';
-import { Button } from '@/components/ui/button';
-import Sidebar from '@/components/sidebar/page';
-import LoadingScreen from '@/components/loading_screen/page';
-import PageTitle from '@/components/PageTitle/page';
-import Pagination from '@/components/table_pagination/page';
-import NotLoggedInScreen from '@/components/not_logged_in/page';
-import TableBody from '@/components/table_body/page';
+} from "@/components/ui/popover";
 import useAddEngineer from '@/hooks/useAddEngineer';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import useDeleteEngineer from '@/hooks/useDeleteEngineer';
-import { TEngineersList, TEngineersListTable } from '@/lib/types';
 import { datetimestamp } from '@/lib/date_formats';
 import departments from '@/lib/departments';
+import { TEngineersList, TEngineersListTable } from '@/lib/types';
 
 
 
@@ -194,7 +193,7 @@ const EngineersScreen = () => {
                                         ))}
                                     </thead>
 
-                                    <TableBody>
+                                    <tbody className="z-0">
                                         {table.getRowModel().rows.map((row: any) => (
                                             <tr
                                                 key={row.id}
@@ -225,7 +224,7 @@ const EngineersScreen = () => {
                                                 ))}
                                             </tr>
                                         ))}
-                                    </TableBody>
+                                    </tbody>
                                 </table>
                             </div>
                             <div className="h-2" />

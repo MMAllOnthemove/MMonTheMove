@@ -31,7 +31,7 @@ export const UpdateTask = async (req, res) => {
             text: query,
             values: values,
         });
-        
+
         res.status(201).json({
             message: "HHP task updated",
         });
@@ -39,7 +39,6 @@ export const UpdateTask = async (req, res) => {
         if (process.env.NODE_ENV !== "production") {
             console.error("Error updating record:", err);
         }
-
-        res.status(500).json({ error: "Database error" });
+        res.status(500).json({ error: "Could not update, try again" });
     }
 };

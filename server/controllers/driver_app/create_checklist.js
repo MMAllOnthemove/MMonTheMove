@@ -3,19 +3,11 @@ import * as Yup from "yup";
 
 const reasonForUseEnum = [
     "Fuel",
-    "Callout (TV)",
-    "Callout (Microwave)",
-    "Callout (Fridge)",
+    "Callout",
     "Taking vehicle for service",
-    "Microwave pickup",
-    "Microwave delivery",
-    "TV delivery",
-    "TV pickup",
-    "Fridge delivery",
-    "Fridge pickup",
+    "Pickup",
+    "Delivery",
     "Driving to help another driver who is stuck",
-    "Mobile devices delivery",
-    "Mobile devices collection",
     "Other",
 ];
 

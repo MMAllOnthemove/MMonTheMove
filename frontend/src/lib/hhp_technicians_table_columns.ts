@@ -10,6 +10,10 @@ const columns: TColumns = [
         accessorKey: "ticket_number",
     },
     {
+        header: "Model",
+        accessorKey: "model",
+    },
+    {
         header: "Booked",
         accessorKey: "date_booked",
         // cell: info => moment(info).format("YYYY-MM-DD")

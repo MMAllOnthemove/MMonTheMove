@@ -158,7 +158,7 @@ const StoresScreen = () => {
                                         ))}
                                     </thead>
 
-                                    <TableBody>
+                                    <tbody className="z-0">
                                         {table.getRowModel().rows.map((row: any) => (
                                             <tr
                                                 key={row.id}
@@ -189,7 +189,7 @@ const StoresScreen = () => {
                                                 ))}
                                             </tr>
                                         ))}
-                                    </TableBody>
+                                    </tbody>
                                 </table>
                             </div>
                             <div className="h-2" />
