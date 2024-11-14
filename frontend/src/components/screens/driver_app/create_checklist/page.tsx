@@ -117,8 +117,8 @@ const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
             }
             // setQCFilesUrls(data?.fileUrls)
             setChecklistFilesUploading(false)
-        } catch (error) {
-            toast.error("Error uploading cheklist files");
+        } catch (error: any) {
+            toast.error(error?.response?.data?.error);
             setChecklistFilesUploading(false)
             if (process.env.NODE_ENV !== "production") {
                 console.error("Error uploading cheklist files:", error);
