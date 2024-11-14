@@ -1,11 +1,22 @@
 "use client";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 type TStores = {
     id: string;
     unique_id: string;
     store_name: string;
+};
+
+type TError = {
+    error: {
+        response: {
+            data: {
+                error: any;
+            };
+        };
+    };
 };
 
 const useGetStores = () => {
@@ -25,10 +36,8 @@ const useGetStores = () => {
                 if (response?.data) {
                     setData(response.data);
                 }
-            } catch (error) {
-                if (process.env.NODE_ENV !== "production") {
-                    console.error("Error fetching stores:", error);
-                }
+            } catch (error: any) {
+                if (error) toast.error(error?.response?.data?.error);
             } finally {
                 setLoading(false);
             }

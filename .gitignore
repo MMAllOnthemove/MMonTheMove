@@ -12,3 +12,6 @@ frontend/db/db.sql
 so.md
 frontend/db/draft.sql
 db.sql
+frontend/src/app/ignore/page.tsx
+frontend/src/hooks/useFetchJobsFromRepairshopr.ts
+.github/workflows/github-actions.yml

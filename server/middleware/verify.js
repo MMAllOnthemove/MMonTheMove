@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 export function authenticateToken(req, res, next) {
     const token = req.cookies.refreshToken;
     jwt.verify(token, `${process.env.JWT_TOKEN_KEY}`, (err, user) => {
-        if (err) return res.sendStatus(403);
+        if (err) return res.status(403).json({ error: "Not logged in" });
         req.user = user; // Attach user object to the request
         next();
     });

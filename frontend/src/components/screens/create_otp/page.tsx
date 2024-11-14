@@ -26,6 +26,7 @@ const CreateOtpScreen = () => {
         const created_by = user?.email;
         const payload = { created_by, otp_code }
         await addOTP(payload)
+        setOtpCode("")
     }
     return (
         <>

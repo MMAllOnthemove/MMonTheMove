@@ -1,4 +1,5 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 
 type TUpdateValues = {
     id: string | number;
@@ -29,10 +30,8 @@ const useUpdateHHPTask = () => {
             );
 
             return response.data;
-        } catch (error) {
-            if (process.env.NODE_ENV !== "production") {
-                console.error("Error updating HHP tasks:", error);
-            }
+        } catch (error: any) {
+            if (error) toast.error(error?.response?.data?.error);
         }
     };
 

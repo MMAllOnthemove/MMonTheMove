@@ -1,4 +1,4 @@
-import React from 'react'
+import { Button } from '@/components/ui/button';
 import {
     Select,
     SelectContent,
@@ -6,7 +6,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Button } from '@/components/ui/button';
+import React from 'react';
 type TTableBody = {
     ticket_number: string,
     booking_agent: string,

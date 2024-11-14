@@ -56,11 +56,6 @@ const useAddChecklist = () => {
             if (error?.response?.data?.message) {
                 toast.error(`${error?.response?.data?.message}`);
             } else if (error.response && error.response.data.errors) {
-                if (process.env.NODE_ENV !== "production")
-                    console.log(
-                        "Client validation errors:",
-                        error.response.data.errors
-                    );
                 toast.error(`Fill in all fields`);
                 setErrors(error.response.data.errors);
             }

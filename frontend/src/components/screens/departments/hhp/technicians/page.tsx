@@ -4,7 +4,6 @@ import NotLoggedInScreen from '@/components/not_logged_in/page';
 import PageTitle from '@/components/PageTitle/page';
 import ManagementSearchForm from '@/components/search_field/page';
 import Sidebar from '@/components/sidebar/page';
-import TableBody from '@/components/table_body/page';
 import Pagination from '@/components/table_pagination/page';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -17,9 +16,11 @@ import {
     DialogTitle
 } from "@/components/ui/dialog";
 import useUpdateHHPTask from '@/hooks/updateHHPTask';
+import useAddPart from '@/hooks/useAddPart';
 import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import useHHPTasks from '@/hooks/useHHPTasks';
+import useIpaasSOPartsInfo from '@/hooks/useIpaasGetSOPartsInfo';
 import useRepairshoprComment from '@/hooks/useRepairshoprComment';
 import useRepairshoprTicket from '@/hooks/useRepairshoprTicket';
 import { datetimestamp } from '@/lib/date_formats';
@@ -30,7 +31,6 @@ import { CheckedState } from '@radix-ui/react-checkbox';
 import {
     ColumnOrderState,
     SortingState,
-    flexRender,
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
@@ -44,9 +44,9 @@ import AddgspnHHPTask from './add/gspn/page';
 import AddRepairshoprHHPTask from './add/repairshopr/page';
 import Parts from './parts/page';
 import QC from './qc/page';
+import TableBody from './tablebody';
+import TableHead from './tablehead';
 import TasksUpdate from './tasks_update/page';
-import useAddPart from '@/hooks/useAddPart';
-import useIpaasSOPartsInfo from '@/hooks/useIpaasGetSOPartsInfo';
 
 
 const TechniciansScreen = () => {
@@ -225,7 +225,7 @@ const TechniciansScreen = () => {
             if (Object.keys(changes).length > 0) {
                 await updateHHPTask(id, changes)
                 if (qc_complete === 'Fail') await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
-
+                setQCFailReason("")
                 toast.success(`Successfully updated`);
                 closeModal()
             }
@@ -268,7 +268,7 @@ const TechniciansScreen = () => {
                     })),
                 };
                 await addRepairTicketFile(modifyTaskModal?.repairshopr_job_id, repairshopr_payload)
-                setQCFiles([])
+                setHHPFiles([])
             }
             // setQCFilesUrls(data?.fileUrls)
             setHHPFilesUploading(false)
@@ -311,6 +311,10 @@ const TechniciansScreen = () => {
             if (reparshoprComment) await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
             if (Object.keys(changes).length > 0) {
                 await updateHHPTask(id, changes)
+                setServiceOrder("")
+                setRepairshoprStatus("")
+                setAssessmentDate("")
+                setUnitAssessed('')
                 toast.success(`Successfully updated`);
                 closeModal()
             }
@@ -359,6 +363,10 @@ const TechniciansScreen = () => {
         const created_by = user?.email
         const payload = { task_row_id, ticket_number, part_name, part_desc, part_quantity, created_at, created_by }
         await addThisPart(payload);
+        setSearchPart("")
+        setPartName("")
+        setPartDesc("")
+        setPartQuantity(0)
     }
 
     return (
@@ -435,78 +443,8 @@ const TechniciansScreen = () => {
                             </section>
                             <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg">
                                 <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-                                    <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] uppercase font-semibold">
-                                        {table.getHeaderGroups().map((headerGroup) => (
-                                            <tr key={headerGroup.id} className=" font-semibold">
-                                                <th className="px-4 py-3 cursor-pointer  font-semibold">
-                                                    Action
-                                                </th>
-
-                                                {headerGroup.headers.map((header) => {
-                                                    return (
-                                                        <th
-                                                            key={header.id}
-                                                            className="px-4 py-3 cursor-pointer  font-semibold"
-                                                        >
-                                                            {header.isPlaceholder ? null : (
-                                                                <div
-                                                                    {...{
-                                                                        className: header.column.getCanSort()
-                                                                            ? "cursor-pointer select-none"
-                                                                            : "",
-                                                                        onClick:
-                                                                            header.column.getToggleSortingHandler(),
-                                                                    }}
-                                                                >
-                                                                    {flexRender(
-                                                                        header.column.columnDef.header,
-                                                                        header.getContext()
-                                                                    )}
-                                                                    {{
-                                                                        asc: " 👇",
-                                                                        desc: " 👆",
-                                                                    }[header.column.getIsSorted() as string] ??
-                                                                        null}
-                                                                </div>
-                                                            )}
-                                                        </th>
-                                                    );
-                                                })}
-                                            </tr>
-                                        ))}
-                                    </thead>
-
-                                    <TableBody>
-                                        {table.getRowModel().rows.map((row: any) => (
-                                            <tr
-                                                key={row.id}
-                                                onClick={() => handleRowClick(row)}
-                                                className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]"
-                                            >
-                                                <td className="px-4 py-3 font-medium text-sm max-w-full">
-                                                    <Button
-                                                        type="button"
-                                                        role="button"
-                                                        className="text-blue-600 dark:text-blue-500 hover:underline bg-transparent shadow-none outline-none focus:bg-transparent active:bg-transparent hover:bg-transparent"
-                                                    >
-                                                        Edit
-                                                    </Button>
-                                                </td>
-
-                                                {row.getVisibleCells().map((cell: any) => (
-                                                    <td
-                                                        key={cell.id}
-                                                        className="px-4 py-3 font-medium text-sm"
-                                                    >
-                                                        {flexRender(
-                                                            cell.column.columnDef.cell,
-                                                            cell.getContext()
-                                                        )}
-                                                    </td>
-                                                ))}
-                                            </tr>
-                                        ))}
-                                    </TableBody>
+                                    <TableHead table={table} />
+                                    <TableBody table={table} handleRowClick={handleRowClick} />
                                 </table>
                             </div>
                             <div className="h-2" />
