@@ -63,9 +63,12 @@ const uploadTechnicianFiles = async (req, res) => {
                 fs.unlink(file.path, (err) => {
                     if (err)
                         if (process.env.NODE_ENV !== "production") {
-                             console.error("Error deleting file:", file.path, err);
+                            console.error(
+                                "Error deleting file:",
+                                file.path,
+                                err
+                            );
                         }
-                       
                 });
 
                 // Construct URL for uploaded file
@@ -73,9 +76,9 @@ const uploadTechnicianFiles = async (req, res) => {
             })
         );
 
-
         res.status(201).json({ message: "Files uploaded", fileUrls: fileUrls });
     } catch (err) {
+        console.log("err adding file", err);
         if (err instanceof yup.ValidationError) {
             res.status(400).json({
                 message: "Please check your files and try again",

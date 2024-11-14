@@ -8,10 +8,9 @@ import { UpdateTask } from "../../../controllers/department/hhp/technicians/upda
 const router = express.Router();
 
 import { limiter } from "../../../middleware/rateLimiter.js";
-import { authenticateAdmin } from "../../../middleware/verify_admin.js";
 import { authenticateToken } from "../../../middleware/verify.js";
 
-router.post("/", limiter, authenticateAdmin, AddHHPTask);
+router.post("/", limiter, authenticateToken, AddHHPTask);
 router.get("/", authenticateToken, GetAllTasks);
 router.get("/:id", authenticateToken, GetTaskById);
 router.patch("/:id", authenticateToken, UpdateTask);
