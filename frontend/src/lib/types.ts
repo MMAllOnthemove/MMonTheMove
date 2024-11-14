@@ -249,6 +249,7 @@ export type RepairshorTicketComment = {
     do_not_email: boolean;
     sms_body?: string;
 };
+
 export type RepairshoprPutTicket = {
     customer_id?: number;
     ticket_type_id?: number;

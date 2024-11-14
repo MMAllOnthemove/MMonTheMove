@@ -1,4 +1,5 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 
 type TuseRepairshoprFile = {
     files: {
@@ -25,10 +26,9 @@ const useRepairshoprFile = () => {
             );
 
             return response.data;
-        } catch (error) {
-            if (process.env.NODE_ENV !== "production") {
-                console.error("Error ading repairshopr file:", error);
-            }
+        } catch (error: any) {
+            if (error?.response?.data?.error)
+                toast.error(error?.response?.data?.error);
         }
     };
 

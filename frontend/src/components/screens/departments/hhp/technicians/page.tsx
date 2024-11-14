@@ -190,8 +190,8 @@ const TechniciansScreen = () => {
             }
             // setQCFilesUrls(data?.fileUrls)
             setQCFilesUploading(false)
-        } catch (error) {
-            toast.error("Error uploading qc images");
+        } catch (error: any) {
+            toast.error(error?.response?.data?.error);
             setQCFilesUploading(false)
             if (process.env.NODE_ENV !== "production") {
                 console.error("Error uploading qc images:", error);
@@ -272,8 +272,8 @@ const TechniciansScreen = () => {
             }
             // setQCFilesUrls(data?.fileUrls)
             setHHPFilesUploading(false)
-        } catch (error) {
-            toast.error("Error uploading hhp files");
+        } catch (error: any) {
+            toast.error(error?.response?.data?.error);
             setHHPFilesUploading(false)
             if (process.env.NODE_ENV !== "production") {
                 console.error("Error uploading hhp files:", error);
@@ -287,6 +287,7 @@ const TechniciansScreen = () => {
         const statusPayload = {
             "status": unit_status
         }
+
         const commentPayload: RepairshorTicketComment = {
             "subject": "Update",
             "tech": user?.full_name,
@@ -305,6 +306,7 @@ const TechniciansScreen = () => {
             id, service_order_no, unit_status, assessment_date, updated_at, units_assessed
         }
         const changes = findChanges(modifyTaskModal, updatePayload)
+
         try {
             if (unit_status !== "" || unit_status !== null || unit_status !== undefined) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, statusPayload)
 

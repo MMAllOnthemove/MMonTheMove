@@ -78,7 +78,6 @@ const uploadTechnicianFiles = async (req, res) => {
 
         res.status(201).json({ message: "Files uploaded", fileUrls: fileUrls });
     } catch (err) {
-        console.log("err adding file", err);
         if (err instanceof yup.ValidationError) {
             res.status(400).json({
                 message: "Please check your files and try again",

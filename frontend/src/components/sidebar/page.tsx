@@ -104,14 +104,14 @@ const Sidebar = () => {
                         <span className="text-gray-500">OTP:</span>
                         {otp ? otp?.otp_code : ""}
                     </p>
-                    <div>
+                    <Link href="/" className="no-underline hover:no-underline cursor-pointer">
                         <Image
                             src={logo}
                             alt="MM ALL ELECTRONICS logo"
                             width={100}
                             height={100}
                         />
-                    </div>
+                    </Link>
                 </div>
             </nav>
         </div>
