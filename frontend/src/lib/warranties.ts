@@ -7,6 +7,10 @@ const warranties = [
         id: 2,
         warranty: "OOW",
     },
+    {
+        id: 3,
+        warranty: "ADH",
+    },
 ];
 
 export default warranties;

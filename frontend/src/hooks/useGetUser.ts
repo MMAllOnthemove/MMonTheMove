@@ -8,6 +8,7 @@ type TUser = {
     email: string;
     full_name: string;
     user_role: string;
+    repairshopr_id: number;
     department: string;
 };
 
@@ -26,7 +27,7 @@ const useUserLoggedIn = () => {
                         withCredentials: true,
                     }
                 );
-   
+
                 if (response?.data) {
                     setUser(response.data?.user);
                     setIsLoggedIn(true); // User is logged in if data is returned

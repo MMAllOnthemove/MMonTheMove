@@ -10,6 +10,7 @@ import * as Yup from "yup";
 // Define Yup schema for request body validation
 const signupSchema = Yup.object().shape({
     fullName: Yup.string(),
+    repairshopr_id: Yup.number(),
     email: Yup.string()
         .email("Email is invalid!")
         .required("Email is required!"),
@@ -22,7 +23,8 @@ const signupSchema = Yup.object().shape({
 const SignupUser = async (req, res) => {
     try {
         await signupSchema.validate(req.body, { abortEarly: false });
-        const { fullName, username, email, password, createdAt } = req.body;
+        const { fullName, repairshopr_id, email, password, createdAt } =
+            req.body;
         let capitalizedEmail = email.toLowerCase();
         // Check if domain is allowed
         const emailRegex = /\@allelectronics.co.za$/;
@@ -49,9 +51,10 @@ const SignupUser = async (req, res) => {
 
             const hashedPassword = await bcrypt.hash(password, 10);
             const result = await pool.query(
-                "INSERT INTO company_people (full_name, email, user_password, created_at) VALUES ($1, $2, $3, $4) RETURNING full_name, email, user_id, user_role",
+                "INSERT INTO company_people (full_name, repairshopr_id, email, user_password, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING full_name, repairshopr_id, email, user_id, user_role",
                 [
                     fullName,
+                    repairshopr_id,
                     capitalizedEmail,
                     hashedPassword,
                     createdAt,
@@ -69,7 +72,6 @@ const SignupUser = async (req, res) => {
             });
         }
     } catch (error) {
-
         // to get error for a specific field
         const errors = {};
         error.inner.forEach((err) => {

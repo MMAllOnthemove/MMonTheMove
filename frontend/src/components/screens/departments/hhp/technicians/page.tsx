@@ -74,8 +74,12 @@ const TechniciansScreen = () => {
     const [qc_complete, setQCComplete] = useState<string>('')
     const [qc_fail_reason, setQCFailReason] = useState('')
     const [qc_date, setQCCompleteDate] = useState<string | undefined>("")
+    const [engineer, setEngineer] = useState<string>("")
     const [units_assessed, setUnitAssessed] = useState<string | boolean | any>()
     const [submitPartsUpdateLoading, setSubmitPartsUpdateLoading] = useState(false)
+    const [repairshopr_id, setUserId] = useState<number | undefined>(); // To store the selected repairshopr user ID
+    const [engineersComboBox, setEngineerComboBox] = useState(false)
+
     // parts
     const [search_part, setSearchPart] = useState("")
     const [part_name, setPartName] = useState("")
@@ -143,6 +147,9 @@ const TechniciansScreen = () => {
     useEffect(() => {
         // store values from db but still allow user to update those same fields
         // this helps when comparing
+        setRepairshoprStatus(modifyTaskModal?.unit_status)
+        setUserId(modifyTaskModal?.repairshopr_id)
+        setEngineer(modifyTaskModal?.engineer)
         setAssessmentDate(modifyTaskModal?.assessment_date)
         setPartsIssued(modifyTaskModal?.parts_issued)
         setPartsIssuedDate(modifyTaskModal?.parts_issued_date)
@@ -303,12 +310,15 @@ const TechniciansScreen = () => {
         }
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no, unit_status, assessment_date, updated_at, units_assessed
+            id, service_order_no, unit_status, assessment_date, updated_at, units_assessed, repairshopr_id
         }
         const changes = findChanges(modifyTaskModal, updatePayload)
-
+        const changeIdOnRepairshoprPayload = {
+            "user_id": repairshopr_id,
+        }
         try {
             if (unit_status !== "" || unit_status !== null || unit_status !== undefined) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, statusPayload)
+            if (repairshopr_id || repairshopr_id !== null || repairshopr_id !== undefined) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, changeIdOnRepairshoprPayload)
 
             if (reparshoprComment) await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
             if (Object.keys(changes).length > 0) {
@@ -496,9 +506,7 @@ const TechniciansScreen = () => {
                                                 <TabsTrigger value="Parts">Parts</TabsTrigger>
                                             </TabsList>
                                             <TabsContent value="Techs">
-                                                <TasksUpdate hhp_tasks_loading={hhpFilesUploading} setHHPFilesProp={handleHHPFiles} submitHHPFiles={submitHHPFiles} date_booked_datetime={modifyTaskModal?.date_booked_datetime} assessment_datetime={modifyTaskModal?.assessment_datetime} setAssessmentDateProp={setAssessmentDate} units_assessedProp={units_assessed} setUnitAssessedProp={(e) => setUnitAssessed(e)} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={(e) => setRepairshoprStatus(e)} submitTasksUpdate={handleSubmit} />
-
-
+                                                <TasksUpdate hhp_tasks_loading={hhpFilesUploading} setHHPFilesProp={handleHHPFiles} submitHHPFiles={submitHHPFiles} date_booked_datetime={modifyTaskModal?.date_booked_datetime} assessment_datetime={modifyTaskModal?.assessment_datetime} setAssessmentDateProp={setAssessmentDate} units_assessedProp={units_assessed} setUnitAssessedProp={(e) => setUnitAssessed(e)} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={(e) => setRepairshoprStatus(e)} submitTasksUpdate={handleSubmit} engineer={engineer} engineersComboBox={engineersComboBox} setEngineer={setEngineer} setEngineerComboBox={setEngineerComboBox} setUserId={setUserId} />
                                             </TabsContent>
                                             <TabsContent value="QC">
                                                 <QC qc_fail_reasonProp={qc_fail_reason} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} qc_FilesLoadingProp={qcFilesUploading} setQCFilesProp={handleQCFiles} submitQCFiles={submitQCFiles} submitQC={handleQCSubmit} />

@@ -37,7 +37,7 @@ const LoginUser = async (req, res) => {
                 [email]
             );
             const selectUser = await pool.query(
-                "SELECT user_unique_id, user_id, email, full_name, user_role, department FROM company_people WHERE email = $1",
+                "SELECT user_unique_id, user_id, email, full_name, user_role, repairshopr_id, department FROM company_people WHERE email = $1",
                 [email]
             );
 
@@ -78,8 +78,6 @@ const LoginUser = async (req, res) => {
             });
         }
     } catch (error) {
-     
-
         // to get error for a specific field
         const errors = {};
         error.inner.forEach((err) => {

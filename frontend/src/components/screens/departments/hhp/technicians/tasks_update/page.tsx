@@ -7,6 +7,20 @@ import { datetimestamp } from '@/lib/date_formats';
 import React, { ChangeEvent } from "react";
 import moment from "moment"
 import { Label } from "@/components/ui/label";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command";
 import {
     Select,
     SelectContent,
@@ -24,6 +38,8 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import repairshopr_statuses from "@/lib/repairshopr_status";
 import { CheckedState } from '@radix-ui/react-checkbox';
+import useFetchEngineer from "@/hooks/useFetchEngineers";
+import { cn } from "@/lib/utils";
 type TTasksUpdate = {
     units_assessedProp: CheckedState | undefined
     service_order_noProp: string | number | undefined
@@ -32,7 +48,11 @@ type TTasksUpdate = {
     date_booked_datetime: string;
     assessment_datetime: string;
     hhp_tasks_loading: boolean;
-
+    engineer: string;
+    engineersComboBox: boolean;
+    setEngineer: (data: string) => void;
+    setEngineerComboBox: (data: boolean) => void;
+    setUserId: (data: number | undefined) => void;
     setUnitAssessedProp: (data: CheckedState | string | undefined) => void;
     setAssessmentDateProp: (data: string) => void;
     setServiceOrderProp: (data: ChangeEvent<HTMLInputElement>) => void;
@@ -42,8 +62,13 @@ type TTasksUpdate = {
     setHHPFilesProp: (data: ChangeEvent<HTMLInputElement>) => void;
     submitHHPFiles: (data: React.SyntheticEvent) => void;
 }
-const TasksUpdate = ({ hhp_tasks_loading, setHHPFilesProp, submitHHPFiles, units_assessedProp, service_order_noProp, reparshoprCommentProp, unit_statusProp, setUnitAssessedProp, setAssessmentDateProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked_datetime, assessment_datetime }: TTasksUpdate) => {
-
+const TasksUpdate = ({ hhp_tasks_loading, setHHPFilesProp, submitHHPFiles, units_assessedProp, service_order_noProp, reparshoprCommentProp, unit_statusProp, setUnitAssessedProp, setAssessmentDateProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked_datetime, assessment_datetime, engineer, engineersComboBox, setEngineerComboBox, setUserId, setEngineer }: TTasksUpdate) => {
+    const { engineersList } = useFetchEngineer()
+    const engineerListFomatted = engineersList?.map((user) => ({
+        repairshopr_id: user?.repairshopr_id,
+        value: user?.engineer_firstname + " " + user?.engineer_lastname,
+        label: user?.engineer_firstname
+    }))
     const handleUnitsAssessed = (e: React.SyntheticEvent | any) => {
         if (!units_assessedProp) {
             setUnitAssessedProp(e);
@@ -74,6 +99,54 @@ const TasksUpdate = ({ hhp_tasks_loading, setHHPFilesProp, submitHHPFiles, units
                         ))}
                     </SelectContent>
                 </Select>
+            </div>
+            <div className="mb-3">
+                <Popover open={engineersComboBox} onOpenChange={setEngineerComboBox}>
+                    <PopoverTrigger asChild>
+                        <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={engineersComboBox}
+                            className="w-full justify-between"
+                        >
+                            {engineer
+                                ? engineerListFomatted?.find((framework) => framework.value === engineer)?.label
+                                : "Select engineer..."}
+                            <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full p-0">
+                        <Command>
+                            <CommandInput placeholder="Search engineer..." className="h-9" />
+                            <CommandList>
+                                <CommandEmpty>No engineer found.</CommandEmpty>
+                                <CommandGroup>
+                                    {engineerListFomatted?.map((framework) => (
+                                        <CommandItem
+
+                                            key={framework.value}
+                                            value={framework.value}
+                                            onSelect={(currentValue) => {
+                                                setEngineer(currentValue === engineer ? "" : currentValue)
+                                                setUserId(framework?.repairshopr_id); // Store the corresponding repairshopr ID
+                                                setEngineerComboBox(false)
+                                            }}
+                                        >
+                                            {framework.label}
+                                            <CheckIcon
+                                                className={cn(
+                                                    "ml-auto h-4 w-4",
+                                                    engineer === framework.value ? "opacity-100" : "opacity-0"
+                                                )}
+                                            />
+                                        </CommandItem>
+                                    ))}
+                                </CommandGroup>
+                            </CommandList>
+                        </Command>
+                    </PopoverContent>
+                </Popover>
+
             </div>
             <div className="flex items-center space-x-2 mb-3">
                 <Checkbox id="units_assessed" checked={units_assessedProp}

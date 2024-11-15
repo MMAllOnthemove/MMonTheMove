@@ -1,4 +1,3 @@
-
 export const menuItems = [
     {
         label: "HHP",
@@ -11,7 +10,7 @@ export const menuItems = [
         ],
     },
     {
-        label: "Booking agents report",
+        label: "Booking agents stats",
         sublinks: [
             { id: 3, item: "Analytics", pageRoute: "/booking_agents_report" },
         ],

@@ -64,7 +64,7 @@ const SectionFive: React.FC<ISectionFive> = ({ foot_brakes, setFootbrakes, emerg
                     }
                 </div>
                 <div>
-                    <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Emergency brake:</label>
+                    <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Hand brake:</label>
                     <div className="text-sm font-medium leading-none mb-2 text-gray-900">
                         <input
                             type="radio"

@@ -31,7 +31,10 @@ const SignupScreen = () => {
     const { rsUsersList } = useGetUserListRepairshopr()
 
 
+
+
     const formattedData = rsUsersList?.map((user) => ({
+        repairshopr_id: user[0],
         value: user[1],
         label: user[1]
     }))
@@ -43,6 +46,7 @@ const SignupScreen = () => {
 
     const [fullName, setFullName] = useState("")
     const [email, setEmail] = useState("")
+    const [repairshopr_id, setUserId] = useState<number | null>(null); // To store the selected repairshopr user ID
     const [password, setPassword] = useState("")
     const [passwordShown, setPasswordShown] = useState(false);
 
@@ -54,8 +58,9 @@ const SignupScreen = () => {
     const signupUser = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const createdAt = datetimestamp;
-        const payload = { fullName, email, password, createdAt };
+        const payload = { fullName, email, repairshopr_id, password, createdAt };
         await signup(payload);
+        // console.log(repairshopr_id);
 
     }
     return (
@@ -96,6 +101,7 @@ const SignupScreen = () => {
                                                     value={framework.value}
                                                     onSelect={(currentValue) => {
                                                         setFullName(currentValue === fullName ? "" : currentValue)
+                                                        setUserId(framework?.repairshopr_id); // Store the corresponding repairshopr ID
                                                         setOpen(false)
                                                     }}
                                                 >

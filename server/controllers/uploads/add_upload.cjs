@@ -17,7 +17,6 @@ const uploadFile = async (req, res) => {
         if (!file) {
             return res.status(400).json({ error: "No file uploaded" });
         }
-        console.log("file", file);
         await sftpClient.put(
             `${file.path}`,
             `/root/uploads/hhp/${file.originalname}`
@@ -29,7 +28,6 @@ const uploadFile = async (req, res) => {
         const fileAddress = `https://repair.mmallonthemove.co.za/files/hhp/${file.originalname}`;
         res.json({ fileAddress });
     } catch (err) {
-        console.error("Upload error:", err);
         res.status(500).json({ error: "Failed to upload file" });
     } finally {
         sftpClient.end();

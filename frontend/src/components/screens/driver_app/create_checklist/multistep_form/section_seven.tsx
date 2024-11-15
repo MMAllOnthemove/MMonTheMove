@@ -20,7 +20,7 @@ const SectionSeven: React.FC<ISectionSeven> = ({ engine_start_stop, setStartStop
 
             <div className="flex flex-col gap-2">
                 <div>
-                    <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Horn:</label>
+                    <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Start/stop:</label>
                     <div className="text-sm font-medium leading-none mb-2 text-gray-900">
                         <input
                             type="radio"

@@ -15,6 +15,8 @@ CREATE TABLE company_people (
     updated_at TIMESTAMP,
     user_role text,
     reset_token VARCHAR(255),
+    repairshopr_id INTEGER,
+    gspn_username varchar(30),
     reset_token_expires_at TIMESTAMP
 );
 
@@ -37,6 +39,7 @@ create table engineers (
     engineer_firstname text,
     engineer_lastname text,
     department departments_enum,
+    repairshopr_id INTEGER,
     engineer_code varchar(30),
     created_at TIMESTAMP,
     updated_at TIMESTAMP
@@ -263,6 +266,7 @@ create table vehicle_checklist(
     created_by text,
     updated_by text,
     mileage bigserial,
+    mileage_after bigserial,
     license_plate text,
     car text,
     triangle FAIL_PASS_ENUM,
