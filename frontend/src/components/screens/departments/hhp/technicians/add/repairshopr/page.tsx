@@ -25,6 +25,7 @@ import useAddHHPTask from '@/hooks/useAddHHPTask';
 import useFetchEngineer from '@/hooks/useFetchEngineers';
 import useGetStores from '@/hooks/useGetStores';
 import useUserLoggedIn from '@/hooks/useGetUser';
+import useRepairshoprTicket from '@/hooks/useRepairshoprTicket';
 import { datetimestamp } from '@/lib/date_formats';
 import { cn } from "@/lib/utils";
 import warranties from '@/lib/warranties';
@@ -35,6 +36,8 @@ import React, { useEffect, useState } from 'react';
 
 const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) => {
     const { user } = useUserLoggedIn()
+    const { updateRepairTicket } = useRepairshoprTicket()
+
     const [searchTicket, setSearchTicket] = useState("")
     const [warranty, setWarranty] = useState("")
     const [engineer, setEngineer] = useState("")
@@ -44,7 +47,10 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
     const { engineersList } = useFetchEngineer()
     const { storesList } = useGetStores()
     const { addTask, addHHPTaskLoading, addHHPTaskErrors } = useAddHHPTask();
+    const [repairshopr_id, setUserId] = useState<number | undefined>(); // To store the selected repairshopr user ID
+
     const engineerListFomatted = engineersList?.map((user) => ({
+        repairshopr_id: user?.repairshopr_id,
         value: user?.engineer_firstname + " " + user?.engineer_lastname,
         label: user?.engineer_firstname
     }))
@@ -168,7 +174,12 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
             repeat_repair,
             created_at
         }
+        const userIdPayload = {
+            "user_id": repairshopr_id,
+        }
         await addTask(payload)
+        if (engineer !== "" || engineer !== null || engineer !== undefined) await updateRepairTicket(repairshopr_job_id, userIdPayload)
+
         setSearchTicket('')
         setWarranty('')
         setEngineer('')
@@ -245,6 +256,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                                                 value={framework.value}
                                                 onSelect={(currentValue) => {
                                                     setEngineer(currentValue === engineer ? "" : currentValue)
+                                                    setUserId(framework?.repairshopr_id); // Store the corresponding repairshopr ID
                                                     setEngineerComboBox(false)
                                                 }}
                                             >

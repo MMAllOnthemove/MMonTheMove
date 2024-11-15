@@ -27,6 +27,7 @@ import useGetStores from '@/hooks/useGetStores'
 import useUserLoggedIn from '@/hooks/useGetUser'
 import useIpaasGetSOInfoAll from '@/hooks/useIpaasGetSoInfoAll'
 import useRepairshoprFetchTicket from '@/hooks/useRepairshoprFetchTicket'
+import useRepairshoprTicket from '@/hooks/useRepairshoprTicket'
 import { datetimestamp } from '@/lib/date_formats'
 import repairshopr_statuses from '@/lib/repairshopr_status'
 import { cn } from "@/lib/utils"
@@ -41,8 +42,10 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
     const { user } = useUserLoggedIn()
     const { engineersList } = useFetchEngineer()
     const { storesList } = useGetStores()
-
+    const [repairshopr_id, setUserId] = useState<number | undefined>(); // To store the selected repairshopr user ID
+    const { updateRepairTicket } = useRepairshoprTicket()
     const engineerListFomatted = engineersList?.map((user) => ({
+        repairshopr_id: user?.repairshopr_id,
         value: user?.engineer_firstname + " " + user?.engineer_lastname,
         label: user?.engineer_firstname
     }))
@@ -140,7 +143,11 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
             repeat_repair,
             created_at
         }
+        const userIdPayload = {
+            "user_id": repairshopr_id,
+        }
         await addTask(payload)
+        if (engineer !== "" || engineer !== null || engineer !== undefined) await updateRepairTicket(repairshopr_job_id, userIdPayload)
         setSearchSericeOrder('')
         setWarranty('')
         setEngineer('')
@@ -271,6 +278,7 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
                                                 value={framework.value}
                                                 onSelect={(currentValue) => {
                                                     setEngineer(currentValue === engineer ? "" : currentValue)
+                                                    setUserId(framework?.repairshopr_id); // Store the corresponding repairshopr ID
                                                     setEngineerComboBox(false)
                                                 }}
                                             >

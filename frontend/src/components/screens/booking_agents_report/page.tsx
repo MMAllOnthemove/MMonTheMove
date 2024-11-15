@@ -35,7 +35,8 @@ const BookingAgentsReportScreen = () => {
     const { bookingAgentTasksList } = useFetchAgentTasks()
     const [searchTicket, setSearchTicket] = useState("")
     const [ticket_number, setTicketNumber] = useState<string | undefined>("")
-    const [booking_agent, setBookingAgent] = useState("")
+    const [booking_agent, setBookingAgent] = useState<string | undefined>("")
+    const [repairshopr_id, setUserId] = useState<number | undefined>(); // To store the selected repairshopr user ID
 
     const [dateFrom, setDateFrom] = useState<string>("");
     const [dateTo, setDateTo] = useState<string>("");
@@ -63,8 +64,11 @@ const BookingAgentsReportScreen = () => {
 
     }
     useEffect(() => {
-        if (fetchRSTicketData) {
+        const k: any = fetchRSTicketData?.tickets[0]['user_id']
+        if (fetchRSTicketData || k == user?.repairshopr_id) {
+
             setTicketNumber(fetchRSTicketData?.tickets[0]?.number)
+            setBookingAgent(user?.full_name)
         }
     }, [searchTicket, fetchRSTicketData])
 
@@ -164,7 +168,7 @@ const BookingAgentsReportScreen = () => {
                                     <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg mb-4">
                                         <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
                                             <TableHead />
-                                            <TableBody ticket_number={ticket_number} booking_agent={booking_agent} setBookingAgent={(e) => setBookingAgent(e)} bookingAgentList={bookingAgentList} addAgentTaskLoading={addAgentTaskLoading} addTask={addTask} errors={errors} />
+                                            <TableBody ticket_number={ticket_number} booking_agent={booking_agent} addAgentTaskLoading={addAgentTaskLoading} addTask={addTask} />
                                         </table>
                                     </div> : null}
                             <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg">
