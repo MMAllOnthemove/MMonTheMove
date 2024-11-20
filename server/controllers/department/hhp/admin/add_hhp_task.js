@@ -41,6 +41,7 @@ const AddHHPTask = async (req, res) => {
         repeat_repair,
         created_at,
     } = req.body;
+
     try {
         await AddHHPTaskSchema.validate(req.body, { abortEarly: false });
         const findIfExists = await pool.query(
@@ -48,7 +49,7 @@ const AddHHPTask = async (req, res) => {
             [ticket_number]
         );
         if (findIfExists.rows.length > 0) {
-            return res.status(401).json({
+            return res.status(409).json({
                 message: "Ticket already exists",
             });
         } else {
@@ -73,17 +74,20 @@ const AddHHPTask = async (req, res) => {
                     created_at,
                 ]
             );
-            res.status(201).json({
+            return res.status(201).json({
                 message: "HHP task created",
             });
         }
     } catch (error) {
-        // to get error for a specific field
+        // Handle validation or other errors
         const errors = {};
-        error.inner.forEach((err) => {
-            errors[err.path] = err.message; // `err.path` is the field name, `err.message` is the error message
-        });
-        res.status(500).json({ errors });
+        if (error.inner) {
+            error.inner.forEach((err) => {
+                errors[err.path] = err.message; // Collect field validation errors
+            });
+            return res.status(400).json({ errors });
+        }
+        return res.status(500).json({ message: "Internal Server Error" });
     }
 };
 export default AddHHPTask;

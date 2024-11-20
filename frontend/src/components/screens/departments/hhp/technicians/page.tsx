@@ -5,8 +5,6 @@ import PageTitle from '@/components/PageTitle/page';
 import ManagementSearchForm from '@/components/search_field/page';
 import Sidebar from '@/components/sidebar/page';
 import Pagination from '@/components/table_pagination/page';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -15,9 +13,20 @@ import {
     DialogHeader,
     DialogTitle
 } from "@/components/ui/dialog";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useUpdateHHPTask from '@/hooks/updateHHPTask';
 import useAddPart from '@/hooks/useAddPart';
 import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
+import useDeletePart from '@/hooks/useDeleteTaskPart';
+import useFetchEngineer from '@/hooks/useFetchEngineers';
+import useFetchPartsForTask from '@/hooks/useGetPartsForTask';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import useHHPTasks from '@/hooks/useHHPTasks';
 import useIpaasSOPartsInfo from '@/hooks/useIpaasGetSOPartsInfo';
@@ -30,15 +39,15 @@ import { ModifyTaskModalTechnicians, RepairshorTicketComment, TechniciansTableDa
 import { CheckedState } from '@radix-ui/react-checkbox';
 import {
     ColumnOrderState,
-    SortingState,
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
+    SortingState,
     useReactTable
 } from "@tanstack/react-table";
 import axios from 'axios';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import toast from 'react-hot-toast';
 import AddgspnHHPTask from './add/gspn/page';
 import AddRepairshoprHHPTask from './add/repairshopr/page';
@@ -58,6 +67,7 @@ const TechniciansScreen = () => {
     const { addRepairTicketFile } = useRepairshoprFile()
     const { addThisPart, addPartLoading, addPartErrors } = useAddPart()
     const { getSOPartsInfo } = useIpaasSOPartsInfo()
+    const { deletePart, deletePartLoading } = useDeletePart()
     const [modifyTaskModal, setModifyTaskModal] = useState<ModifyTaskModalTechnicians | any>();
     const [service_order_no, setServiceOrder] = useState<string | number | undefined>("")
     const [reparshoprComment, setRepairshoprComment] = useState("")
@@ -71,20 +81,32 @@ const TechniciansScreen = () => {
     const [openSortTableColumnsModal, setSortTableColumns] = useState(false)
     const [parts_ordered_date, setPartsOrderedDate] = useState<string | undefined>("")
     const [parts_ordered, setPartsOrdered] = useState<CheckedState | undefined>()
+    const [parts_requested, setPartsRequested] = useState<CheckedState | undefined>()
+    const [parts_requested_date, setPartsRequestedDate] = useState<string | undefined>("")
     const [qc_complete, setQCComplete] = useState<string>('')
-    const [qc_fail_reason, setQCFailReason] = useState('')
+    const [qc_comment, setQCFailReason] = useState('')
     const [qc_date, setQCCompleteDate] = useState<string | undefined>("")
     const [engineer, setEngineer] = useState<string>("")
-    const [units_assessed, setUnitAssessed] = useState<string | boolean | any>()
     const [submitPartsUpdateLoading, setSubmitPartsUpdateLoading] = useState(false)
     const [repairshopr_id, setUserId] = useState<number | undefined>(); // To store the selected repairshopr user ID
     const [engineersComboBox, setEngineerComboBox] = useState(false)
+
+    // engineer filters
+    const [engineerFilter, setEngineerFilter] = useState<string>("")
 
     // parts
     const [search_part, setSearchPart] = useState("")
     const [part_name, setPartName] = useState("")
     const [part_desc, setPartDesc] = useState("")
     const [part_quantity, setPartQuantity] = useState<number | undefined>()
+    const { engineersList } = useFetchEngineer()
+    // for filtering by engineer
+    const engineerListFomatted = engineersList?.map((user) => ({
+        id: user?.id,
+        repairshopr_id: user?.repairshopr_id,
+        value: user?.engineer_firstname + " " + user?.engineer_lastname,
+        label: user?.engineer_firstname
+    }))
 
     // search parts from ipaas
     useEffect(() => {
@@ -105,10 +127,29 @@ const TechniciansScreen = () => {
 
     const handleRowClick = (row: TechniciansTableData) => {
         setModifyTaskModal(row?.original);
-    };
 
+        // by opening the modal, that will be the assessment_date and assessed_true
+        const units_assessed = true;
+        const assessment_date = datetimestamp;
+        const id = row?.original?.id;
+        const payload = { assessment_date, units_assessed }
+        axios.patch(
+            `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/assess/` +
+            id,
+            payload,
+            {
+                withCredentials: true,
+            }
+        );
+    };
+    // parts for row clicked
+    // put it here after the handleRowClick
+    const { taskPartsList } = useFetchPartsForTask(modifyTaskModal?.id)
     const closeModal = () => {
         setModifyTaskModal(false);
+    };
+    const handleDelete = async (id: string | undefined) => {
+        await deletePart(id);
     };
 
     // Table sorting
@@ -124,8 +165,19 @@ const TechniciansScreen = () => {
     // Table column order
     const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>([])
 
+
+    // Data for the table, so we can filter it
+    const filterHHPData = useMemo(() => {
+        // Filter by engineer
+        if (engineerFilter) {
+            return hhpTasks?.filter(task => task?.engineer?.toLowerCase()?.includes(engineerFilter.toLowerCase()))
+        }
+        return hhpTasks
+    }, [engineerFilter, hhpTasks])
+
+
     const table = useReactTable({
-        data: hhpTasks,
+        data: filterHHPData,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -153,12 +205,14 @@ const TechniciansScreen = () => {
         setAssessmentDate(modifyTaskModal?.assessment_date)
         setPartsIssued(modifyTaskModal?.parts_issued)
         setPartsIssuedDate(modifyTaskModal?.parts_issued_date)
+        setPartsRequestedDate(modifyTaskModal?.parts_requested_date)
+        setPartsRequested(modifyTaskModal?.parts_requested)
         setPartsPending(modifyTaskModal?.parts_pending)
         setPartsPendingDate(modifyTaskModal?.parts_pending_date)
         setQCComplete(modifyTaskModal?.qc_complete)
         setQCCompleteDate(modifyTaskModal?.qc_date)
         setServiceOrder(modifyTaskModal?.service_order_no)
-    }, [modifyTaskModal?.assessment_date, modifyTaskModal?.parts_issued, modifyTaskModal?.parts_issued_date, modifyTaskModal?.parts_pending, modifyTaskModal?.parts_pending_date, modifyTaskModal?.qc_complete, modifyTaskModal?.qc_date, modifyTaskModal?.service_order_no])
+    }, [modifyTaskModal?.assessment_date, modifyTaskModal?.parts_requested, modifyTaskModal?.parts_requested_date, modifyTaskModal?.unit_status, modifyTaskModal?.engineer, modifyTaskModal?.repairshopr_id, modifyTaskModal?.parts_issued, modifyTaskModal?.parts_issued_date, modifyTaskModal?.parts_pending, modifyTaskModal?.parts_pending_date, modifyTaskModal?.qc_complete, modifyTaskModal?.qc_date, modifyTaskModal?.service_order_no])
 
 
     const [qcFiles, setQCFiles] = useState([]);
@@ -217,13 +271,13 @@ const TechniciansScreen = () => {
 
         const updatePayload = {
             // This goes to our in house db
-            id, updated_at, qc_fail_reason, qc_date, qc_complete
+            id, updated_at, qc_comment, qc_date, qc_complete
         }
         const changes = findChanges(modifyTaskModal, updatePayload)
         const commentPayload: RepairshorTicketComment = {
             "subject": "Update",
             "tech": user?.full_name,
-            "body": "QC has failed (Logs attached) due to: " + qc_fail_reason,
+            "body": "QC analysis: " + qc_comment,
             "hidden": true,
             "do_not_email": true
         }
@@ -310,7 +364,7 @@ const TechniciansScreen = () => {
         }
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no, unit_status, assessment_date, updated_at, units_assessed, repairshopr_id
+            id, service_order_no, unit_status, assessment_date, updated_at, repairshopr_id
         }
         const changes = findChanges(modifyTaskModal, updatePayload)
         const changeIdOnRepairshoprPayload = {
@@ -326,7 +380,6 @@ const TechniciansScreen = () => {
                 setServiceOrder("")
                 setRepairshoprStatus("")
                 setAssessmentDate("")
-                setUnitAssessed('')
                 toast.success(`Successfully updated`);
                 closeModal()
             }
@@ -345,7 +398,7 @@ const TechniciansScreen = () => {
         const updated_at = datetimestamp;
         const updatePayload = {
             // This goes to our in house db
-            id, updated_at, parts_issued, parts_issued_date, parts_ordered, parts_ordered_date, parts_pending, parts_pending_date
+            id, updated_at, parts_issued, parts_issued_date, parts_requested, parts_requested_date, parts_ordered, parts_ordered_date, parts_pending, parts_pending_date
         }
         const changes = findChanges(modifyTaskModal, updatePayload)
         try {
@@ -448,6 +501,16 @@ const TechniciansScreen = () => {
                                 />
 
                                 <div className="flex justify-between items-center gap-3">
+                                    <Select name="engineerFilter" value={engineerFilter} onValueChange={(e) => setEngineerFilter(e)}>
+                                        <SelectTrigger className="w-full hidden md:flex">
+                                            <SelectValue placeholder="Filter by" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {engineerListFomatted.map((dep) => (
+                                                <SelectItem key={dep.id} value={`${dep.value}`}>{`${dep.label}`}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                     <Button type="button" onClick={() => setSortTableColumns(true)} className="hidden md:block">Sort columns</Button>
                                     <Button type="button" onClick={() => setOpenAddTaskModal(true)}> Add task</Button>
                                 </div>
@@ -506,13 +569,13 @@ const TechniciansScreen = () => {
                                                 <TabsTrigger value="Parts">Parts</TabsTrigger>
                                             </TabsList>
                                             <TabsContent value="Techs">
-                                                <TasksUpdate hhp_tasks_loading={hhpFilesUploading} setHHPFilesProp={handleHHPFiles} submitHHPFiles={submitHHPFiles} date_booked_datetime={modifyTaskModal?.date_booked_datetime} assessment_datetime={modifyTaskModal?.assessment_datetime} setAssessmentDateProp={setAssessmentDate} units_assessedProp={units_assessed} setUnitAssessedProp={(e) => setUnitAssessed(e)} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={(e) => setRepairshoprStatus(e)} submitTasksUpdate={handleSubmit} engineer={engineer} engineersComboBox={engineersComboBox} setEngineer={setEngineer} setEngineerComboBox={setEngineerComboBox} setUserId={setUserId} />
+                                                <TasksUpdate assessment_datetime={modifyTaskModal?.assessment_datetime} hhp_tasks_loading={hhpFilesUploading} setHHPFilesProp={handleHHPFiles} submitHHPFiles={submitHHPFiles} date_booked_datetime={modifyTaskModal?.date_booked_datetime} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={(e) => setRepairshoprStatus(e)} submitTasksUpdate={handleSubmit} engineer={engineer} engineersComboBox={engineersComboBox} setEngineer={setEngineer} setEngineerComboBox={setEngineerComboBox} setUserId={setUserId} />
                                             </TabsContent>
                                             <TabsContent value="QC">
-                                                <QC qc_fail_reasonProp={qc_fail_reason} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} qc_FilesLoadingProp={qcFilesUploading} setQCFilesProp={handleQCFiles} submitQCFiles={submitQCFiles} submitQC={handleQCSubmit} />
+                                                <QC qc_fail_reasonProp={qc_comment} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} qc_FilesLoadingProp={qcFilesUploading} setQCFilesProp={handleQCFiles} submitQCFiles={submitQCFiles} submitQC={handleQCSubmit} />
                                             </TabsContent>
                                             <TabsContent value="Parts">
-                                                <Parts parts_orderedProp={parts_ordered} setPartsOrderedProp={(e) => setPartsOrdered(e)} parts_pendingProp={parts_pending} setPartsPendingProp={(e) => setPartsPending(e)} parts_issuedProp={parts_issued} setPartsIssuedProp={(e) => setPartsIssued(e)} setPartsIssuedDateProp={setPartsIssuedDate} setPartsPendingDateProp={setPartsPendingDate} setPartsOrderedDateProp={setPartsOrderedDate} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} />
+                                                    <Parts deletePartLoading={deletePartLoading} part_data={[...taskPartsList]} parts_requestedProp={parts_requested} setPartsRequestedProp={(e) => setPartsRequested(e)} setPartsRequestedDateProp={setPartsRequestedDate} parts_orderedProp={parts_ordered} setPartsOrderedProp={(e) => setPartsOrdered(e)} parts_pendingProp={parts_pending} setPartsPendingProp={(e) => setPartsPending(e)} parts_issuedProp={parts_issued} setPartsIssuedProp={(e) => setPartsIssued(e)} setPartsIssuedDateProp={setPartsIssuedDate} setPartsPendingDateProp={setPartsPendingDate} setPartsOrderedDateProp={setPartsOrderedDate} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} handleDelete={handleDelete} />
                                             </TabsContent>
                                         </Tabs>
 

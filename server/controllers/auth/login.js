@@ -7,15 +7,12 @@ import {
 } from "../../utils/token_generate.js";
 import * as Yup from "yup";
 import LoginHistory from "./login_history.js";
-// Login route
-// authentication
 
 // Define Yup schema for request body validation
 const loginSchema = Yup.object({
     email: Yup.string()
         .email("Email is invalid!")
         .required("Email is required!"),
-    // .matches(/\@allelectronics.co.za$/, "Domain not allowed"),
     password: Yup.string()
         .required("Please Enter password")
         .min(6, "Password must be minimum 6 characters!"),
@@ -29,61 +26,72 @@ const LoginUser = async (req, res) => {
         const { email, password } = req.body;
         const emailRegex = /\@allelectronics.co.za$/;
         if (!emailRegex.test(email)) {
-            res.status(401).json({ message: "Domain not allowed" });
-            return;
-        } else {
-            const result = await pool.query(
-                "SELECT email, user_password FROM company_people WHERE email = $1",
-                [email]
-            );
-            const selectUser = await pool.query(
-                "SELECT user_unique_id, user_id, email, full_name, user_role, repairshopr_id, department FROM company_people WHERE email = $1",
-                [email]
-            );
-
-            if (result.rows.length === 0) {
-                // Add the user to login history table as failed
-                await LoginHistory(
-                    selectUser.rows[0].user_id,
-                    "password",
-                    "failure"
-                );
-                return res.status(401).json({ message: "Invalid credentials" });
-            }
-
-            const user = selectUser.rows[0];
-            const validPassword = await bcrypt.compare(
-                password,
-                result.rows[0].user_password
-            );
-
-            if (!validPassword) {
-                return res.status(401).json({ message: "Invalid credentials" });
-            }
-            // Add the user to login history table as success
-            await LoginHistory(
-                selectUser.rows[0].user_id,
-                "password",
-                "success"
-            );
-            const accessToken = generateAccessToken(user);
-            const refreshToken = generateRefreshToken(user);
-
-            res.cookie("refreshToken", refreshToken, {
-                httpOnly: true,
-            });
-            res.status(201).json({
-                message: "Successfully logged in",
-                token: accessToken,
-            });
+            return res.status(401).json({ message: "Domain not allowed" });
         }
-    } catch (error) {
-        // to get error for a specific field
-        const errors = {};
-        error.inner.forEach((err) => {
-            errors[err.path] = err.message; // `err.path` is the field name, `err.message` is the error message
+
+        // Query the database for user details and password in a single query
+        const result = await pool.query(
+            "SELECT user_unique_id, user_id, email, full_name, user_role, repairshopr_id, department, user_password FROM company_people WHERE email = $1",
+            [email]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({ message: "Invalid credentials" });
+        }
+
+        const user = result.rows[0];
+        const validPassword = await bcrypt.compare(
+            password,
+            user.user_password
+        );
+
+        if (!validPassword) {
+            return res.status(401).json({ message: "Invalid credentials" });
+        }
+
+        // Add the user to login history table as success
+        await LoginHistory(user.user_id, "password", "success");
+
+        // Exclude the password and use only the relevant fields for the tokens
+        const userForToken = {
+            user_unique_id: user.user_unique_id,
+            user_id: user.user_id,
+            email: user.email,
+            full_name: user.full_name,
+            user_role: user.user_role,
+            repairshopr_id: user.repairshopr_id,
+            department: user.department,
+        };
+
+        // Generate tokens (without the password)
+        const accessToken = generateAccessToken(userForToken);
+        const refreshToken = generateRefreshToken(userForToken);
+
+        // Send the refresh token as a secure, httpOnly cookie (considering HTTPS)
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production", // only set secure in production
+            sameSite: "Strict", // for CSRF protection
         });
-        res.status(500).json({ errors });
+
+        // Respond with success message and access token
+        res.status(201).json({
+            message: "Successfully logged in",
+            token: accessToken,
+        });
+    } catch (error) {
+        // Handle validation or other errors
+        if (error.inner) {
+            // Yup validation error
+            const errors = {};
+            error.inner.forEach((err) => {
+                errors[err.path] = err.message;
+            });
+            return res.status(400).json({ errors });
+        }
+
+        // Generic error handling
+        return res.status(500).json({ message: "Internal server error" });
     }
 };
 

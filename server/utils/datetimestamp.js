@@ -1,6 +1,2 @@
-export const datetimestamp = new Date(
-    Date.now() + 1000 * 60 * -new Date().getTimezoneOffset()
-)
-    .toISOString()
-    .replace("T", " ")
-    .replace("Z", "");
+import moment from "moment";
+export const datetimestamp = moment().format("YYYY-MM-DD HH:mm:ss");

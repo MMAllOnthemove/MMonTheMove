@@ -9,15 +9,7 @@ type TStores = {
     store_name: string;
 };
 
-type TError = {
-    error: {
-        response: {
-            data: {
-                error: any;
-            };
-        };
-    };
-};
+
 
 const useGetStores = () => {
     const [storesList, setData] = useState<TStores[]>([]);

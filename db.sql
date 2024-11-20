@@ -77,7 +77,7 @@ create table stores (
 create table technician_tasks (
     id BIGSERIAL PRIMARY KEY UNIQUE,
     unique_id uuid DEFAULT gen_random_uuid(),
-    service_order_no text unique,
+    service_order_no text,
     date_booked TIMESTAMP,
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
@@ -88,7 +88,7 @@ create table technician_tasks (
     imei text,
     serial_number text,
     unit_status text,
-    ticket_number text unique,
+    ticket_number text,
     department text,
     job_added_by text,
     updated_by text,
@@ -108,8 +108,10 @@ create table technician_tasks (
     parts_issued boolean,
     repeat_repair text,
     units_assessed boolean,
-    qc_fail_reason text,
-    parts_ordered boolean
+    qc_comment text,
+    parts_ordered boolean,
+    parts_requested boolean,
+    parts_requested_date text
 );
 
 -- Create a trigger function to update the 'updated_at' field
@@ -158,7 +160,7 @@ create table technician_tasks_history (
     parts_issued boolean,
     repeat_repair text,
     units_assessed boolean,
-    qc_fail_reason text,
+    qc_comment text,
     parts_ordered boolean
 );
 
@@ -190,9 +192,15 @@ create table booking_agents_tasks (
     ticket_number text,
     created_by text,
     booking_agent text,
+    original_ticket_date timestamp,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
+
+alter table
+    booking_agents_tasks
+add
+    column original ticket_date timestamp;
 
 create TYPE reason_for_use_enum as enum (
     'Fuel',
@@ -209,7 +217,8 @@ create TYPE reason_for_use_enum as enum (
     'Driving to help another driver who is stuck',
     'Mobile devices delivery',
     'Mobile devices collection',
-    'Other'
+    'Other',
+    'Regular check, no callout'
 );
 
 create type fail_pass_enum as enum ('Pass', 'Fail');
@@ -261,12 +270,12 @@ create table vehicle_checklist(
     safety_belts_fail_reason text,
     engine_start_stop FAIL_PASS_ENUM,
     engine_start_stop_fail_reason text,
-    next_service_date TIMESTAMP,
+    next_service_date text,
     cost_of_service bigserial,
     created_by text,
     updated_by text,
     mileage bigserial,
-    mileage_after bigserial,
+    mileage_after text,
     license_plate text,
     car text,
     triangle FAIL_PASS_ENUM,
@@ -280,7 +289,7 @@ create table vehicle_checklist(
     tools FAIL_PASS_ENUM,
     tools_fail_reason text,
     created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    updated_at text
 );
 
 -- Insert fake data into drivers table

@@ -6,9 +6,9 @@ const getStores = async (req, res) => {
             "SELECT * from stores order by created_at desc"
         );
 
-        res.json(rows);
+        return res.json(rows);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 };
 

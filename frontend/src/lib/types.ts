@@ -47,6 +47,7 @@ export type TColumns = {
 export type VehicleInspection = {
     id: number;
     unique_id: string;
+    car: string;
     reason_for_use: string;
     service_order_no: string;
     ticket_number: string;
@@ -87,10 +88,11 @@ export type VehicleInspection = {
     car_jack: string;
     spare_wheel: string;
     hass: string;
+    hass_fail_reason: string;
     tools: string;
     created_at: Date;
     updated_at: Date;
-}[];
+};
 export type TechniciansTableData = {
     original: {
         id: string;
@@ -146,6 +148,7 @@ export type ModifyTaskModalTechnicians = {
     parts_issued_date: string;
     parts_pending: boolean;
     parts_ordered_date: string;
+    parts_requested_date: string;
     repairshopr_job_id: string | number | undefined;
     qc_complete: null | boolean;
     qc_date: string;
@@ -154,14 +157,15 @@ export type ModifyTaskModalTechnicians = {
     completed_date: string;
 };
 export type TAgentTasks = {
-    id: number;
-    unique_id: string;
-    ticket_number: string;
-    booking_agent: string;
-    department: string;
-    created_at: string;
-    createdBy?: string | undefined;
-    tasksCount?: number;
+    id?: number;
+    unique_id?: string;
+    ticket_number?: string;
+    booking_agent?: string | undefined | any;
+    department?: string;
+    created_at?: string;
+    original_ticket_date?: string;
+    tickets?: string[];
+    count?: number;
 };
 export type TBookingAgentsTasksCount = {
     booking_agent?: string;
@@ -223,7 +227,25 @@ export type TicketData = {
             child?: boolean;
             recurring?: boolean;
             customer_reply?: boolean;
-            comments?: Comment[];
+            comments?: {
+                id: number;
+                ticket_id: number;
+                subject: string;
+                body: string;
+                tech: string;
+                created_at: string;
+                updated_at: string;
+                hidden: boolean;
+                sms_body: string | null;
+                user_id: number;
+                ticket_automation_id: string | number | null;
+                destination_emails: string;
+                account_id: number;
+                email_sender: string | null;
+                new_sms_body: string | null;
+                is_rich_text: boolean;
+                display_order: string | null;
+            }[];
             // user?: User;
         }
     ];
@@ -409,4 +431,44 @@ export type ChecklistAdd = {
     spareWheel?: string;
     hass?: string;
     tools?: string;
+};
+export type THHPTasks = {
+    id: string;
+    unique_id: string;
+    service_order_no: string | null;
+    date_booked: string;
+    created_at: string | null;
+    model: string | null;
+    warranty: string | null;
+    engineer: string | null;
+    fault: string | null;
+    imei: string | null;
+    serial_number: string | null;
+    repairshopr_status: string | null;
+    gspn_status: string | null;
+    ticket_number: string | null;
+    department: string | null;
+    job_added_by: string | null;
+    assessment_date: string | null;
+    parts_pending_date: string | null;
+    parts_issued_date: string | null;
+    parts_pending: string | null;
+    stores: string | null;
+    parts_ordered_date: string | null;
+    qc_complete: string | boolean | null;
+    qc_complete_date: string | null;
+    repair_completed: string | null;
+};
+export type TTaskParts = {
+    id: string;
+    unique_id: string;
+    ticket_number: string;
+    part_name: string;
+    part_desc: string;
+    seal_number: string | null;
+    part_quantity: number;
+    parts_status: string | null;
+    created_at: string;
+    created_by: string;
+    updated_at: string | null;
 };

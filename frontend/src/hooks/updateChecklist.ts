@@ -26,7 +26,6 @@ const useUpdateChecklist = () => {
             if (response?.data) toast.success(response?.data?.message);
             window.location.reload();
         } catch (error: any) {
-            console.log("update checklist error", error);
             if (error) toast.error(error?.response?.data?.error);
         }
     };

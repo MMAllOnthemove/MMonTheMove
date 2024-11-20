@@ -35,16 +35,7 @@ const useUserLoggedIn = () => {
                     setIsLoggedIn(false); // No user data means not logged in
                 }
             } catch (error) {
-                // todo: comeback to this
-
-                console.log("user hook error", error);
-
-                // if (error) {
-                //     setIsLoggedIn(false);
-                //     if (process.env.NODE_ENV !== "production") {
-                //         console.error("Error fetching user:", error);
-                //     }
-                // }
+                //
             } finally {
                 setLoading(false);
             }

@@ -50,6 +50,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
     const [repairshopr_id, setUserId] = useState<number | undefined>(); // To store the selected repairshopr user ID
 
     const engineerListFomatted = engineersList?.map((user) => ({
+        id: user?.id,
         repairshopr_id: user?.repairshopr_id,
         value: user?.engineer_firstname + " " + user?.engineer_lastname,
         label: user?.engineer_firstname
@@ -252,7 +253,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                                         {engineerListFomatted?.map((framework) => (
                                             <CommandItem
 
-                                                key={framework.value}
+                                                key={framework.id}
                                                 value={framework.value}
                                                 onSelect={(currentValue) => {
                                                     setEngineer(currentValue === engineer ? "" : currentValue)

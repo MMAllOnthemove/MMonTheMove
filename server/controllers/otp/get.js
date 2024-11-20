@@ -11,9 +11,9 @@ const getOtp = async (req, res) => {
             return res.status(204).json({ error: "No OTP created for today" });
         }
 
-        res.json({ otp: rows[0] });
+        return res.json({ otp: rows[0] });
     } catch (error) {
-        res.status(500).json({ error: "Failed to retrieve OTP" });
+        return res.status(500).json({ error: "Failed to retrieve OTP" });
     }
 };
 

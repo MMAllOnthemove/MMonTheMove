@@ -1,16 +1,15 @@
 import axios from "axios";
 import { useState } from "react";
-
 import toast from "react-hot-toast";
 
-const useDeleteBookingAgent = () => {
-    const [deleteAgentLoading, setLoading] = useState(false); // Loading state
+const useDeleteTaskPart = () => {
+    const [deletePartLoading, setLoading] = useState(false); // Loading state
 
-    const deleteAgent = async (agentId: string) => {
+    const deleteTaskPart = async (id: string) => {
         setLoading(true);
         try {
             const response = await axios.delete(
-                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/booking_agents/${agentId}`,
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/parts/${id}`,
                 {
                     withCredentials: true,
                 }
@@ -19,7 +18,7 @@ const useDeleteBookingAgent = () => {
                 toast.success(`${response?.data?.message}`);
             }
         } catch (error: any) {
-            if (error?.response.data?.message) {
+            if (error?.response.data?.error) {
                 toast.error(`${error?.response.data?.error}`);
             }
         } finally {
@@ -27,7 +26,7 @@ const useDeleteBookingAgent = () => {
         }
     };
 
-    return { deleteAgent, deleteAgentLoading };
+    return { deleteTaskPart, deletePartLoading };
 };
 
-export default useDeleteBookingAgent;
+export default useDeleteTaskPart;

@@ -28,7 +28,7 @@ const uploadFile = async (req, res) => {
         const fileAddress = `https://repair.mmallonthemove.co.za/files/hhp/${file.originalname}`;
         res.json({ fileAddress });
     } catch (err) {
-        res.status(500).json({ error: "Failed to upload file" });
+        return res.status(500).json({ error: "Failed to upload file" });
     } finally {
         sftpClient.end();
     }
