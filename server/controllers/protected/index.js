@@ -7,11 +7,7 @@ const ProtectedRoute = async (req, res) => {
         // Add your protected route logic here
         res.json({ message: "Protected resource" });
     } catch (error) {
-        if (process.env.NODE_ENV !== "production") {
-            console.error("Error accessing protected resource:", error);
-        }
-
-        res.status(500).json({ message: "Internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
     }
 };
 

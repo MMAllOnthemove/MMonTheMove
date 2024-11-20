@@ -20,9 +20,9 @@ import { router as drivers } from "./routes/driver_app/drivers/index.js";
 import { router as otp } from "./routes/otp/index.js";
 import QCfileRoutesModule from "./routes/file_uploads/index.cjs";
 import { router as parts } from "./routes/parts/index.js";
+
 const { router: fileRoutes } = QCfileRoutesModule;
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(helmet());
+
 app.use(
     cors({
         origin: ["http://localhost:3000"],
@@ -30,6 +30,10 @@ app.use(
         credentials: true,
     })
 );
+
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(helmet());
 
 app.use(cookieParser());
 app.use(express.json()); // Handle JSON requests

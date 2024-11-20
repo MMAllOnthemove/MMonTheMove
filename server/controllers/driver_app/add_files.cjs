@@ -57,32 +57,43 @@ const uploadChecklistFiles = async (req, res) => {
                 // we will now reference it as https://url.com/files/driver_app_checklists/filename
 
                 const remotePath = `/root/uploads/driver_app_checklists/checklist-${car}%${date}-${file.originalname}`;
-                await sftpClient.put(file.path, remotePath);
+                try {
+                    await sftpClient.put(file.path, remotePath);
 
-                // Remove temporary file from local storage
-                fs.unlink(file.path, (err) => {
-                    if (err)
-                        if (process.env.NODE_ENV !== "production")
-                            console.error(
-                                "Error deleting file:",
-                                file.path,
-                                err
-                            );
-                });
-
-                // Construct URL for uploaded file
-                return `https://repair.mmallonthemove.co.za/files/driver_app_checklists/checklist-${car}%${date}-${file.originalname}`;
+                    // Remove temporary file from local storage
+                    fs.unlink(file.path, (err) => {
+                        if (err)
+                            if (process.env.NODE_ENV !== "production")
+                                console.error(
+                                    "Error deleting file:",
+                                    file.path,
+                                    err
+                                );
+                    });
+                    // Construct URL for uploaded file
+                    return `https://repair.mmallonthemove.co.za/files/driver_app_checklists/checklist-${car}%${date}-${file.originalname}`;
+                } catch (uploadError) {
+                    console.error("Error uploading file:", uploadError);
+                    throw new Error(
+                        `Failed to upload file: ${file.originalname}`
+                    );
+                }
+              
             })
         );
 
-        res.status(201).json({ message: "Files uploaded", fileUrls: fileUrls });
+        return res
+            .status(201)
+            .json({ message: "Files uploaded", fileUrls: fileUrls });
     } catch (err) {
         if (err instanceof yup.ValidationError) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: "Please check your files and try again",
             });
         } else {
-            res.status(500).json({ message: "Failed to upload, try again" });
+            return res
+                .status(500)
+                .json({ message: "Failed to upload, try again" });
         }
     } finally {
         sftpClient.end();

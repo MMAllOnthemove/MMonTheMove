@@ -56,11 +56,8 @@ const QC = ({ qc_fail_reasonProp, qc_completeProp, setQCCompleteProp, setQCCompl
                     onChange={handleQCcheck}
                 /> Pass
             </div>
-            {
-                qc_completeProp === 'Fail' ? <div>
-                    <Textarea className='mb-3' placeholder="Reason for QC failing." value={qc_fail_reasonProp} onChange={setQCFailReasonProp} />
-                </div> : null
-            }
+            <Textarea className='mb-3' placeholder="Reason for QC failing/passing." value={qc_fail_reasonProp} onChange={setQCFailReasonProp} />
+
             <Accordion type="single" collapsible>
                 <AccordionItem value="item-1">
                     <AccordionTrigger>Attachments</AccordionTrigger>

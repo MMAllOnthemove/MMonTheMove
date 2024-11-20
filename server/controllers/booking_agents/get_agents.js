@@ -6,9 +6,15 @@ const getAgents = async (req, res) => {
             "SELECT id, unique_id, agent_firstname, agent_lastname, department from booking_agents order by created_at desc"
         );
 
-        res.json(rows);
+        return res.status(200).json(rows); // Explicit 200 OK status
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({
+            message: "Internal server error",
+            error:
+                process.env.NODE_ENV === "production"
+                    ? undefined
+                    : error.message, // Hide detailed error message in production
+        });
     }
 };
 

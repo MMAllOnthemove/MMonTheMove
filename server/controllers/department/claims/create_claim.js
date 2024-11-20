@@ -32,7 +32,7 @@ const CreateClaim = async (req, res) => {
             [service_order_no]
         );
         if (findIfExists.rows.length > 0) {
-            res.status(401).json({ message: "Task already exists" });
+            return res.status(409).json({ message: "Task already exists" });
         } else {
             await pool.query(
                 "INSERT INTO claims (service_order_no, ticket_number, claim_status, department, created_by, created_at) values ($1, $2, $3, $4, $5, $6) returning *",
@@ -45,17 +45,20 @@ const CreateClaim = async (req, res) => {
                     created_at,
                 ]
             );
-            res.status(201).json({
+            return res.status(201).json({
                 message: "Successfully created",
             });
         }
     } catch (error) {
-        // to get error for a specific field
+        // Handle validation or other errors
         const errors = {};
-        error.inner.forEach((err) => {
-            errors[err.path] = err.message; // `err.path` is the field name, `err.message` is the error message
-        });
-        res.status(500).json({ errors });
+        if (error.inner) {
+            error.inner.forEach((err) => {
+                errors[err.path] = err.message; // Collect field validation errors
+            });
+            return res.status(400).json({ errors });
+        }
+        return res.status(500).json({ message: "Internal Server Error" });
     }
 };
 

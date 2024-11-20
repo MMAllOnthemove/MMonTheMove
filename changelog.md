@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.3] - 2024-11-20
+
+### Added
+
+-   allow to select engineer and show only that engineers tasks
+-   navbar to navigate better and faster
+-   ‘regular check, no callout’ as reason for making a checklist if there is no callout
+-   qc comment for both failed and pass
+-   when tech clicks row, open the job and auto add that as the assessment date
+-   show the part desc fully when opening the parts tab
+-   parts requested and parts requested date columns
+-   booking agent check if task has HHP if not, error
+-   for parts tab, show parts added
+-   can delete those parts
+-   booking agents show date booked instead data added to system
+
+### Fixed
+
+-   Sort engineers, drivers alphabetically
+-   booking agents stats, modal overflow is now auto
+-   changed column mileage_after bigserial to mileage_after text
+-   rename column qc_fail_reason TO qc_comment
+-   booking agent stats are not accurate
+-   modify kms after to not set default
+
 ## [0.0.2] - 2024-11-15
 
 ### Added

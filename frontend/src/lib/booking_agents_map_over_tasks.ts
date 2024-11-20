@@ -10,7 +10,9 @@ export const bookingAgentMapOverJobs = (
     arr =
         dateFrom.length > 0 && dateTo.length > 0
             ? arr.filter((agent) => {
-                  const date = moment(agent.created_at).format("YYYY-MM-DD");
+                  const date = moment(agent.original_ticket_date).format(
+                      "YYYY-MM-DD"
+                  );
                   return (
                       date >= dateFrom &&
                       agent.booking_agent === agentName &&

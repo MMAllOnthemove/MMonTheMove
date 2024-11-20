@@ -12,40 +12,41 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import useAddAgentTask from '@/hooks/useAddBookingAgentTask';
-import useFetchAgent from '@/hooks/useFetchBookingAgents';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import useRepairshoprFetchTicket from '@/hooks/useRepairshoprFetchTicket';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 
 import useFetchAgentTasks from '@/hooks/useFetchBookingAgentsTasks';
-import { bookingAgentMapOverJobs } from '@/lib/booking_agents_map_over_tasks';
 import { datetimestamp } from '@/lib/date_formats';
-import { TAgentTasks, TBookingAgentsTasksViewIndieList } from '@/lib/types';
+import { TBookingAgentsTasksViewIndieList } from '@/lib/types';
 import moment from 'moment';
 import ReportTableBody from './report_tablebody';
 import ReportTableHead from './report_tablehead';
 import TableBody from './tablebody';
 import TableHead from './tablehead';
 
+interface GroupedData {
+    booking_agent: string;
+    count?: number;
+    tickets: string[];
+}
 const BookingAgentsReportScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { addAgentTask, addAgentTaskLoading, errors } = useAddAgentTask()
-    const { bookingAgentList } = useFetchAgent()
     const { bookingAgentTasksList } = useFetchAgentTasks()
     const [searchTicket, setSearchTicket] = useState("")
     const [ticket_number, setTicketNumber] = useState<string | undefined>("")
     const [booking_agent, setBookingAgent] = useState<string | undefined>("")
-    const [repairshopr_id, setUserId] = useState<number | undefined>(); // To store the selected repairshopr user ID
-
+    const [original_ticket_date, setDateBooked] = useState<string | undefined>("")
     const [dateFrom, setDateFrom] = useState<string>("");
     const [dateTo, setDateTo] = useState<string>("");
+    // This simply means which department the task is from
+    const [problemType, setProblemType] = useState<string | undefined>("")
     const { fetchRSTicketData } = useRepairshoprFetchTicket(searchTicket)
 
 
     const [openModal, setOpenModal] = useState<boolean | null | TBookingAgentsTasksViewIndieList | any>();
-    const [groupedTasks, setGroupedTasks] = useState<TAgentTasks[]>([]);
-
     const handleRowClick = (row: TBookingAgentsTasksViewIndieList) => {
         setOpenModal(row);
     };
@@ -59,40 +60,52 @@ const BookingAgentsReportScreen = () => {
         e.preventDefault();
         const created_by = user?.email;
         const created_at = datetimestamp;
-        const payload = { ticket_number, created_by, booking_agent, created_at };
+        const payload = { ticket_number, created_by, booking_agent, created_at, original_ticket_date, problemType };
         await addAgentTask(payload);
 
     }
     useEffect(() => {
         const k: any = fetchRSTicketData?.tickets[0]['user_id']
         if (fetchRSTicketData || k == user?.repairshopr_id) {
-
+            setDateBooked(fetchRSTicketData?.tickets[0]?.created_at)
             setTicketNumber(fetchRSTicketData?.tickets[0]?.number)
+            setProblemType(fetchRSTicketData?.tickets[0]?.problem_type)
             setBookingAgent(user?.full_name)
         }
-    }, [searchTicket, fetchRSTicketData])
+    }, [searchTicket, fetchRSTicketData, user?.full_name, user?.repairshopr_id])
 
 
     // Group tasks by name and calculate jobs count based on date range
-    useEffect(() => {
-        const filteredTasks = bookingAgentTasksList?.filter((task) => {
-            const taskDate = moment(task.created_at).format("YYYY-MM-DD");
-            return taskDate >= dateFrom && taskDate <= dateTo;
+    const filteredData = useMemo(() => {
+        if (!dateFrom || !dateTo) return []; // Show no data if dates are not selected
+        const filteredTasks = bookingAgentTasksList?.filter((ticket) => {
+            const taskDate = moment(ticket.original_ticket_date).format("YYYY-MM-DD");
+            return (!dateFrom || taskDate >= dateFrom) && (!dateTo || taskDate <= dateTo);
         });
 
         // group tasks that have the same booking agent, so it does not show every entry, the add the entry to the jobs count
-        const grouped = filteredTasks.reduce((acc: { [key: string]: any }, task) => {
-            const existingUser = acc[task.booking_agent];
-            if (existingUser) {
-                existingUser.tasksCount++;
+        const filtered = filteredTasks.reduce<GroupedData[]>((acc, ticket: any) => {
+            const existingGroup = acc.find(
+                (group: string | any) => group.booking_agent === ticket.booking_agent
+            );
+            if (existingGroup) {
+                existingGroup.count = (existingGroup.count ?? 0) + 1;
+                existingGroup?.tickets?.push(ticket.ticket_number);
             } else {
-                acc[task.booking_agent] = { createdBy: task.booking_agent, tasksCount: 1 };
+                acc.push({
+                    booking_agent: ticket.booking_agent,
+                    count: 1,
+                    tickets: [ticket.ticket_number],
+                });
             }
-            return acc;
-        }, {});
 
-        setGroupedTasks(Object.values(grouped));
-    }, [bookingAgentTasksList, dateFrom, dateTo]);
+            return acc;
+        }, []);
+        // Sort grouped data by highest count
+        filtered.sort((a: number | any, b: number | any) => b.count - a.count);
+        return filtered
+
+    }, [bookingAgentTasksList, dateFrom, dateTo]); // Dependencies for recalculation
 
     return (
         <>
@@ -164,7 +177,6 @@ const BookingAgentsReportScreen = () => {
                             </section>
                             {
                                 ticket_number ?
-
                                     <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg mb-4">
                                         <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
                                             <TableHead />
@@ -174,7 +186,7 @@ const BookingAgentsReportScreen = () => {
                             <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg">
                                 <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
                                     <ReportTableHead />
-                                    <ReportTableBody groupedTasks={groupedTasks} handleRowClick={handleRowClick} />
+                                    <ReportTableBody groupedTasks={filteredData} handleRowClick={handleRowClick} />
                                 </table>
                             </div>
                             {
@@ -182,14 +194,13 @@ const BookingAgentsReportScreen = () => {
                                     {/* <DialogTrigger>Open</DialogTrigger> */}
                                     <DialogContent>
                                         <DialogHeader>
-                                            <DialogTitle>{openModal?.createdBy}&apos;s tasks list</DialogTitle>
+                                            <DialogTitle>{openModal?.booking_agent}&apos;s tasks list</DialogTitle>
                                         </DialogHeader>
 
-                                        <div className="divide-y-1">
-                                            {bookingAgentMapOverJobs(bookingAgentTasksList, dateFrom,
-                                                dateTo, openModal?.createdBy)?.map((x) => <p className=" font-semibold" key={x.id}>
-                                                    {x?.ticket_number}
-                                                </p>)}
+                                        <div className="divide-y-1 overflow-auto h-[200px]">
+                                            {openModal?.tickets?.map((x, i) => <p className="font-semibold" key={i}>
+                                                {x}
+                                            </p>)}
                                         </div>
 
                                     </DialogContent>

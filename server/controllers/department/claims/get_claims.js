@@ -6,9 +6,9 @@ const getClaims = async (req, res) => {
             "SELECT id, unique_id, created_at, created_by, service_order_no, ticket_number, claim_status, department FROM claims order by created_at desc"
         );
 
-        res.json(rows);
+        return res.status(200).json(rows); // Explicit 200 OK status
     } catch (error) {
-        res.status(500).json({ error: "Failed to get task, try again" });
+        return res.status(500).json({ error: "Failed to get task, try again" });
     }
 };
 

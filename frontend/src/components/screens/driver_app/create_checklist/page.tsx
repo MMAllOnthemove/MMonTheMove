@@ -2,20 +2,20 @@
 import { Button } from '@/components/ui/button'
 import useAddChecklist from '@/hooks/useAddChecklist'
 import useUserLoggedIn from '@/hooks/useGetUser'
-import { datetimestamp } from '@/lib/date_formats'
 import { closeModalInParent } from '@/lib/types'
+import axios from 'axios'
+import moment from 'moment'
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
 import SectionEight from './multistep_form/section_eight'
 import SectionFive from './multistep_form/section_five'
 import SectionFour from './multistep_form/section_four'
+import SectionNine from './multistep_form/section_nine'
 import SectionOne from './multistep_form/section_one'
 import SectionSeven from './multistep_form/section_seven'
 import SectionSix from './multistep_form/section_six'
 import SectionThree from './multistep_form/section_three'
 import SectionTwo from './multistep_form/section_two'
-import SectionNine from './multistep_form/section_nine'
-import axios from 'axios'
 
 const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
     const { user } = useUserLoggedIn()
@@ -129,7 +129,7 @@ const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
     // send form values to backend
     const submit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        const created_at = datetimestamp;
+        const created_at = moment().format("YYYY-MM-DD HH:mm:ss");;
         const created_by = user?.email
         // Submit the form here
         const payload = {

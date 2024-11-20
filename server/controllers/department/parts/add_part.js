@@ -26,6 +26,7 @@ const AddPart = async (req, res) => {
         created_at,
         created_by,
     } = req.body;
+
     try {
         await AddPartSchema.validate(req.body, { abortEarly: false });
 
@@ -41,16 +42,20 @@ const AddPart = async (req, res) => {
                 created_by,
             ]
         );
-        res.status(201).json({
+        return res.status(201).json({
             message: "Part added",
         });
     } catch (error) {
         // to get error for a specific field
         const errors = {};
-        error?.inner?.forEach((err) => {
-            errors[err.path] = err.message; // `err.path` is the field name, `err.message` is the error message
-        });
-        res.status(500).json({ errors });
+        if (error.inner) {
+            error?.inner?.forEach((err) => {
+                errors[err.path] = err.message; // `err.path` is the field name, `err.message` is the error message
+            });
+            return res.status(500).json({ errors });
+        }
+        // Handle other errors
+        return res.status(500).json({ message: "Internal server error" });
     }
 };
 export default AddPart;

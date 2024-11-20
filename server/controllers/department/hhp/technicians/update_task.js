@@ -31,14 +31,20 @@ export const UpdateTask = async (req, res) => {
             text: query,
             values: values,
         });
+        // Check if the update was successful
+        if (result.rowCount === 0) {
+            return res
+                .status(404)
+                .json({ error: "Task not found or no changes made" });
+        }
 
-        res.status(201).json({
+        return res.status(201).json({
             message: "HHP task updated",
         });
     } catch (err) {
         if (process.env.NODE_ENV !== "production") {
             console.error("Error updating record:", err);
         }
-        res.status(500).json({ error: "Could not update, try again" });
+        return res.status(500).json({ error: "Could not update, try again" });
     }
 };

@@ -40,8 +40,7 @@ const ForgotPassword = async (req, res) => {
         const { email } = req.body;
         const emailRegex = /\@allelectronics.co.za$/;
         if (!emailRegex.test(email)) {
-            res.status(401).json({ message: "Domain not allowed" });
-            return;
+            return res.status(401).json({ message: "Domain not allowed" });
         } else {
             // Check if user exists in the database
             const result = await pool.query(
@@ -79,7 +78,7 @@ const ForgotPassword = async (req, res) => {
                 }
             );
 
-            res.json({
+            return res.json({
                 message: "Password reset link has been sent to your email",
             });
         }
@@ -90,7 +89,7 @@ const ForgotPassword = async (req, res) => {
         //     errors[err.path] = err.message; // `err.path` is the field name, `err.message` is the error message
         // });
         // console.log(errors);
-        res.status(500).json({ errors });
+        return res.status(500).json({ errors });
     }
 };
 

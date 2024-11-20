@@ -29,16 +29,20 @@ const addDrivers = async (req, res) => {
             values: values,
         });
 
-        res.status(201).json({
+        return res.status(201).json({
             message: "Successfully created",
         });
     } catch (error) {
         // to get error for a specific field
         const errors = {};
-        error.inner.forEach((err) => {
-            errors[err.path] = err.message; // `err.path` is the field name, `err.message` is the error message
-        });
-        res.status(500).json({ errors });
+        if (error.inner) {
+            error?.inner?.forEach((err) => {
+                errors[err.path] = err.message; // `err.path` is the field name, `err.message` is the error message
+            });
+            return res.status(500).json({ errors });
+        }
+        // Handle other errors
+        return res.status(500).json({ message: "Internal server error" });
     }
 };
 

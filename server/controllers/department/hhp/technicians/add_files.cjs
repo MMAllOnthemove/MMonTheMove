@@ -25,12 +25,7 @@ const fileUploadSchema = yup.object().shape({
 });
 const sftpClient = new sftp();
 
-const datetimestamp = new Date(
-    Date.now() + 1000 * 60 * -new Date().getTimezoneOffset()
-)
-    .toISOString()
-    .replace("T", " ")
-    .replace("Z", "");
+const datetimestamp = moment().format("YYYY-MM-DD HH:mm:ss");
 
 // Format date to remove special characters for filenames
 const date = moment(datetimestamp).format("YYYY-MM-DD%HH:mm:ss");
@@ -45,45 +40,54 @@ const uploadTechnicianFiles = async (req, res) => {
         // const { files } = req.files;
         // Validate files using Yup schema
         await fileUploadSchema.validate({ files: req.files });
+
         // connect to server
         await sftpClient.connect(sftpConfig);
 
         // Upload all files and remove local temporary files afterward
         const fileUrls = await Promise.all(
             req.files.map(async (file) => {
-                // Because we have 'files' as a directory pointing to '/uploads' folder in our root
-                // we will only reference it as 'files'
-                // e.g. we have a directory inside 'files' called 'hhp/qc'
-                // we will now reference it as https://url.com/files/hhp/qc/filename
-
                 const remotePath = `/root/uploads/hhp/${ticket_number}-hhp-${file.originalname}`;
-                await sftpClient.put(file.path, remotePath);
 
-                // Remove temporary file from local storage
-                fs.unlink(file.path, (err) => {
-                    if (err)
-                        if (process.env.NODE_ENV !== "production") {
+                try {
+                    // Upload the file to SFTP
+                    await sftpClient.put(file.path, remotePath);
+
+                    // Remove the temporary file from local storage
+                    fs.unlink(file.path, (err) => {
+                        if (err) {
                             console.error(
                                 "Error deleting file:",
                                 file.path,
                                 err
                             );
                         }
-                });
+                    });
 
-                // Construct URL for uploaded file
-                return `https://repair.mmallonthemove.co.za/files/hhp/${ticket_number}-hhp-${file.originalname}`;
+                    // Construct and return the file URL
+                    return `https://repair.mmallonthemove.co.za/files/hhp/${ticket_number}-hhp-${file.originalname}`;
+                } catch (uploadError) {
+                    console.error("Error uploading file:", uploadError);
+                    throw new Error(
+                        `Failed to upload file: ${file.originalname}`
+                    );
+                }
             })
         );
 
-        res.status(201).json({ message: "Files uploaded", fileUrls: fileUrls });
+        return res
+            .status(201)
+            .json({ message: "Files uploaded", fileUrls: fileUrls });
     } catch (err) {
+        console.log("upload error", err);
         if (err instanceof yup.ValidationError) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: "Please check your files and try again",
             });
         } else {
-            res.status(500).json({ message: "Failed to upload, try again" });
+            return res
+                .status(500)
+                .json({ message: "Failed to upload, try again" });
         }
     } finally {
         sftpClient.end();

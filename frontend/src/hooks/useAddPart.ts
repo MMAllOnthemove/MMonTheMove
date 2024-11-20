@@ -35,6 +35,7 @@ const useAddPart = () => {
             );
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
+                window.location.reload();
             }
         } catch (error: any) {
             if (error?.response.data?.message) {

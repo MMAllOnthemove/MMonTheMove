@@ -5,7 +5,8 @@ const vehicle_use_reasons = [
     { id: 6, name: "Pickup" },
     { id: 7, name: "Delivery" },
     { id: 12, name: "Driving to help another driver who is stuck" },
-    { id: 15, name: "Other" },
+    { id: 15, name: "Regular check, no callout" },
+    { id: 16, name: "Other" },
 ];
 
 export default vehicle_use_reasons;

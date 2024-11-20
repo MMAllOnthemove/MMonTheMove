@@ -2,16 +2,16 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 type TUpdateValues = {
-    id: string | number;
-    service_order_no: string;
-    unit_status: string;
-    assessment_date: string;
-    parts_pending_date: string;
-    parts_issued_date: string;
-    parts_issued: boolean;
-    parts_pending: boolean;
-    qc_date: string;
-    qc_complete: boolean;
+    id?: string | number;
+    service_order_no?: string;
+    unit_status?: string;
+    assessment_date?: string;
+    parts_pending_date?: string;
+    parts_issued_date?: string;
+    parts_issued?: boolean;
+    parts_pending?: boolean;
+    qc_date?: string;
+    qc_complete?: boolean;
 };
 
 const useUpdateHHPTask = () => {

@@ -4,7 +4,6 @@ import NotLoggedInScreen from '@/components/not_logged_in/page';
 import PageTitle from '@/components/PageTitle/page';
 import ManagementSearchForm from '@/components/search_field/page';
 import Sidebar from '@/components/sidebar/page';
-import TableBody from '@/components/table_body/page';
 import Pagination from '@/components/table_pagination/page';
 import { Button } from '@/components/ui/button';
 import {

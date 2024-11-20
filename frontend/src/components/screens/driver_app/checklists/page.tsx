@@ -64,7 +64,7 @@ const ChecklistsScreen = () => {
         // this helps when comparing
         setNextService(openClickedRow?.formatted_next_service_date || "")
         setMileageAfter(openClickedRow?.mileage_after || "")
-    }, [openClickedRow?.mileage_after])
+    }, [openClickedRow?.mileage_after, openClickedRow?.formatted_next_service_date])
 
 
     // update the mileage after return

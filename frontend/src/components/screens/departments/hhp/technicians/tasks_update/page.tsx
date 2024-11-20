@@ -1,18 +1,12 @@
 "use client"
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { datetimestamp } from '@/lib/date_formats';
-import React, { ChangeEvent } from "react";
-import moment from "moment"
-import { Label } from "@/components/ui/label";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 import {
     Command,
     CommandEmpty,
@@ -21,6 +15,13 @@ import {
     CommandItem,
     CommandList,
 } from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
 import {
     Select,
     SelectContent,
@@ -28,33 +29,28 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Textarea } from "@/components/ui/textarea";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
+import moment from "moment";
+import React, { ChangeEvent } from "react";
 
-import { Checkbox } from "@/components/ui/checkbox";
-import repairshopr_statuses from "@/lib/repairshopr_status";
-import { CheckedState } from '@radix-ui/react-checkbox';
 import useFetchEngineer from "@/hooks/useFetchEngineers";
+import repairshopr_statuses from "@/lib/repairshopr_status";
 import { cn } from "@/lib/utils";
+
+
 type TTasksUpdate = {
-    units_assessedProp: CheckedState | undefined
+    assessment_datetime: string;
     service_order_noProp: string | number | undefined
     reparshoprCommentProp: string
     unit_statusProp: string | undefined
     date_booked_datetime: string;
-    assessment_datetime: string;
     hhp_tasks_loading: boolean;
     engineer: string;
     engineersComboBox: boolean;
     setEngineer: (data: string) => void;
     setEngineerComboBox: (data: boolean) => void;
     setUserId: (data: number | undefined) => void;
-    setUnitAssessedProp: (data: CheckedState | string | undefined) => void;
-    setAssessmentDateProp: (data: string) => void;
     setServiceOrderProp: (data: ChangeEvent<HTMLInputElement>) => void;
     setRepairshoprCommentProp: (data: ChangeEvent<HTMLTextAreaElement>) => void;
     setRepairshoprStatusProp: (data: string) => void;
@@ -62,19 +58,14 @@ type TTasksUpdate = {
     setHHPFilesProp: (data: ChangeEvent<HTMLInputElement>) => void;
     submitHHPFiles: (data: React.SyntheticEvent) => void;
 }
-const TasksUpdate = ({ hhp_tasks_loading, setHHPFilesProp, submitHHPFiles, units_assessedProp, service_order_noProp, reparshoprCommentProp, unit_statusProp, setUnitAssessedProp, setAssessmentDateProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked_datetime, assessment_datetime, engineer, engineersComboBox, setEngineerComboBox, setUserId, setEngineer }: TTasksUpdate) => {
+const TasksUpdate = ({ assessment_datetime, hhp_tasks_loading, setHHPFilesProp, submitHHPFiles, service_order_noProp, reparshoprCommentProp, unit_statusProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked_datetime, engineer, engineersComboBox, setEngineerComboBox, setUserId, setEngineer }: TTasksUpdate) => {
     const { engineersList } = useFetchEngineer()
     const engineerListFomatted = engineersList?.map((user) => ({
         repairshopr_id: user?.repairshopr_id,
         value: user?.engineer_firstname + " " + user?.engineer_lastname,
         label: user?.engineer_firstname
     }))
-    const handleUnitsAssessed = (e: React.SyntheticEvent | any) => {
-        if (!units_assessedProp) {
-            setUnitAssessedProp(e);
-            setAssessmentDateProp(datetimestamp)
-        }
-    }
+
 
 
 
@@ -82,7 +73,7 @@ const TasksUpdate = ({ hhp_tasks_loading, setHHPFilesProp, submitHHPFiles, units
         <form>
             <div className="mb-3">
                 <Label htmlFor="serviceOrder">Service order</Label>
-                <Input type="text" name="serviceOrder" value={service_order_noProp} onChange={setServiceOrderProp} />
+                <Input type="text" name="serviceOrder" value={service_order_noProp || ''} onChange={setServiceOrderProp} />
             </div>
             <div className="mb-3">
                 <Label htmlFor="reparshoprComment">Repairshopr note</Label>
@@ -147,16 +138,6 @@ const TasksUpdate = ({ hhp_tasks_loading, setHHPFilesProp, submitHHPFiles, units
                     </PopoverContent>
                 </Popover>
 
-            </div>
-            <div className="flex items-center space-x-2 mb-3">
-                <Checkbox id="units_assessed" checked={units_assessedProp}
-                    onCheckedChange={handleUnitsAssessed} />
-                <label
-                    htmlFor="units_assessed"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                    Unit assessed?
-                </label>
             </div>
             <Accordion type="single" collapsible>
                 <AccordionItem value="item-1">
