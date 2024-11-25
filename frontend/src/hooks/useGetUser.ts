@@ -35,7 +35,8 @@ const useUserLoggedIn = () => {
                     setIsLoggedIn(false); // No user data means not logged in
                 }
             } catch (error) {
-                //
+                if (process.env.NODE_ENV != "production")
+                    console.error("user not fetched");
             } finally {
                 setLoading(false);
             }

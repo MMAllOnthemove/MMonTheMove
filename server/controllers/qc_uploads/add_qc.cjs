@@ -68,9 +68,9 @@ const uploadQCFile = async (req, res) => {
                     return `https://repair.mmallonthemove.co.za/files/hhp/qc/${ticket_number}-qc-${file.originalname}`;
                 } catch (error) {
                     console.error("Error uploading file:", error);
-                    throw new Error(
-                        `Failed to upload file: ${file.originalname}`
-                    );
+                    // throw new Error(
+                    //     `Failed to upload file: ${file.originalname}`
+                    // );
                 }
             })
         );

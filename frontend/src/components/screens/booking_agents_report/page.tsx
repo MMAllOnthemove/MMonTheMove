@@ -107,6 +107,12 @@ const BookingAgentsReportScreen = () => {
 
     }, [bookingAgentTasksList, dateFrom, dateTo]); // Dependencies for recalculation
 
+    // Calculate total jobs count
+    const totalJobsCount = useMemo(() => {
+        return filteredData.reduce((total, group: any) => total + group?.count, 0);
+    }, [filteredData]);
+
+
     return (
         <>
             {
@@ -186,7 +192,7 @@ const BookingAgentsReportScreen = () => {
                             <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg">
                                 <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
                                     <ReportTableHead />
-                                    <ReportTableBody groupedTasks={filteredData} handleRowClick={handleRowClick} />
+                                    <ReportTableBody groupedTasks={filteredData} handleRowClick={handleRowClick} totalJobs={totalJobsCount} />
                                 </table>
                             </div>
                             {
@@ -198,7 +204,7 @@ const BookingAgentsReportScreen = () => {
                                         </DialogHeader>
 
                                         <div className="divide-y-1 overflow-auto h-[200px]">
-                                            {openModal?.tickets?.map((x, i) => <p className="font-semibold" key={i}>
+                                            {openModal?.tickets?.map((x: any, i: any) => <p className="font-semibold" key={i}>
                                                 {x}
                                             </p>)}
                                         </div>

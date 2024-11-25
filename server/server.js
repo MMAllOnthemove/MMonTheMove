@@ -18,6 +18,7 @@ import { router as stores } from "./routes/stores/index.js";
 import { router as checklists } from "./routes/driver_app/checklists/index.js";
 import { router as drivers } from "./routes/driver_app/drivers/index.js";
 import { router as otp } from "./routes/otp/index.js";
+import { router as add_images_checklist } from "./routes/tools/index.js";
 import QCfileRoutesModule from "./routes/file_uploads/index.cjs";
 import { router as parts } from "./routes/parts/index.js";
 
@@ -30,7 +31,6 @@ app.use(
         credentials: true,
     })
 );
-
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet());
@@ -55,6 +55,7 @@ app.use("/drivers", drivers);
 app.use("/otp", otp);
 app.use("/api/v1/hhp/files", fileRoutes);
 app.use("/api/v1/parts", parts);
+app.use("/tools/dev/add_images_checklist", add_images_checklist);
 
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;
 app.listen(PORT, () => {

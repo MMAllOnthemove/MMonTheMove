@@ -14,13 +14,6 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 import useAddHHPTask from '@/hooks/useAddHHPTask'
 import useFetchEngineer from '@/hooks/useFetchEngineers'
 import useGetStores from '@/hooks/useGetStores'
@@ -31,10 +24,9 @@ import useRepairshoprTicket from '@/hooks/useRepairshoprTicket'
 import { datetimestamp } from '@/lib/date_formats'
 import repairshopr_statuses from '@/lib/repairshopr_status'
 import { cn } from "@/lib/utils"
-import warranties from '@/lib/warranties'
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline"
 // import moment from 'moment-timezone';
-import moment from 'moment';
+import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 
 
@@ -95,6 +87,8 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
             setLoadGSPNApiData(true)
             try {
                 const data = await getSOInfoAllTookan(serviceOrder);
+                if (data?.Return?.EsModelInfo?.WtyType === "OW") setWarranty('OOW')
+                if (data?.Return?.EsModelInfo?.WtyType === "LP") setWarranty('IW')
 
                 setIMEI(data?.Return?.EsModelInfo?.IMEI);
                 setServiceOrderNo(data?.Return?.EsHeaderInfo?.SvcOrderNo);
@@ -185,21 +179,6 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
                 <div className="mb-3">
                     <Label htmlFor="imei">IMEI</Label>
                     <Input type="text" name="imei" defaultValue={loadGSPNApiData ? 'Loading...' : imei} disabled aria-disabled />
-                </div>
-                <div className="mb-3">
-
-                    <Select name="warranty" value={warranty} onValueChange={(e) => setWarranty(e)}>
-                        <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select warranty" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {warranties.map((dep) => (
-                                <SelectItem key={dep.id} value={`${dep.warranty}`}>{`${dep.warranty}`}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    {addHHPTaskErrors.warranty && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.warranty}</p>}
-
                 </div>
                 <div className="mb-3">
 

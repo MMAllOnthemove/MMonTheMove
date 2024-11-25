@@ -37,6 +37,7 @@ import React, { ChangeEvent } from "react";
 import useFetchEngineer from "@/hooks/useFetchEngineers";
 import repairshopr_statuses from "@/lib/repairshopr_status";
 import { cn } from "@/lib/utils";
+import warranties from "@/lib/warranties";
 
 
 type TTasksUpdate = {
@@ -47,8 +48,10 @@ type TTasksUpdate = {
     date_booked_datetime: string;
     hhp_tasks_loading: boolean;
     engineer: string;
+    warranty: string;
     engineersComboBox: boolean;
     setEngineer: (data: string) => void;
+    setWarranty: (data: string) => void;
     setEngineerComboBox: (data: boolean) => void;
     setUserId: (data: number | undefined) => void;
     setServiceOrderProp: (data: ChangeEvent<HTMLInputElement>) => void;
@@ -58,7 +61,7 @@ type TTasksUpdate = {
     setHHPFilesProp: (data: ChangeEvent<HTMLInputElement>) => void;
     submitHHPFiles: (data: React.SyntheticEvent) => void;
 }
-const TasksUpdate = ({ assessment_datetime, hhp_tasks_loading, setHHPFilesProp, submitHHPFiles, service_order_noProp, reparshoprCommentProp, unit_statusProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked_datetime, engineer, engineersComboBox, setEngineerComboBox, setUserId, setEngineer }: TTasksUpdate) => {
+const TasksUpdate = ({ assessment_datetime, hhp_tasks_loading, setHHPFilesProp, submitHHPFiles, service_order_noProp, reparshoprCommentProp, unit_statusProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked_datetime, engineer, engineersComboBox, setEngineerComboBox, setUserId, setEngineer, warranty, setWarranty }: TTasksUpdate) => {
     const { engineersList } = useFetchEngineer()
     const engineerListFomatted = engineersList?.map((user) => ({
         repairshopr_id: user?.repairshopr_id,
@@ -87,6 +90,30 @@ const TasksUpdate = ({ assessment_datetime, hhp_tasks_loading, setHHPFilesProp, 
                     <SelectContent>
                         {repairshopr_statuses.map((dep) => (
                             <SelectItem key={dep.id} value={`${dep._status}`}>{dep._status}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+            <div className="mb-3">
+                <Select name="status" value={unit_statusProp} onValueChange={setRepairshoprStatusProp}>
+                    <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {repairshopr_statuses.map((dep) => (
+                            <SelectItem key={dep.id} value={`${dep._status}`}>{dep._status}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+            <div className="mb-3">
+                <Select name="warranty" value={warranty} onValueChange={setWarranty}>
+                    <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Void warranty" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {warranties.map((dep) => (
+                            <SelectItem key={dep.id} value={`${dep.warranty}`}>{dep.warranty}</SelectItem>
                         ))}
                     </SelectContent>
                 </Select>

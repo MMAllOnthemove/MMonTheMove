@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const useRepairshoprFetchTicketId = (repairId: string | number) => {
+const useRepairshoprFetchTicketId = (repairId?: string | number) => {
     const [fetchRSTicketDataById, setData] = useState("");
     useEffect(() => {
         const fetchRSTicketDataById = async () => {

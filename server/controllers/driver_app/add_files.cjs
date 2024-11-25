@@ -33,7 +33,7 @@ const datetimestamp = new Date(
     .replace("Z", "");
 
 // Format date to remove special characters for filenames
-const date = moment(datetimestamp).format("YYYY-MM-DD%HH:mm:ss");
+const date = moment(datetimestamp).format("YYYY-MM-DD");
 
 const uploadChecklistFiles = async (req, res) => {
     try {
@@ -56,7 +56,7 @@ const uploadChecklistFiles = async (req, res) => {
                 // e.g. we have a directory inside 'files' called 'driver_app_checklists'
                 // we will now reference it as https://url.com/files/driver_app_checklists/filename
 
-                const remotePath = `/root/uploads/driver_app_checklists/checklist-${car}%${date}-${file.originalname}`;
+                const remotePath = `/root/uploads/driver_app_checklists/${car}%${date}-${file.originalname}`;
                 try {
                     await sftpClient.put(file.path, remotePath);
 
@@ -71,14 +71,13 @@ const uploadChecklistFiles = async (req, res) => {
                                 );
                     });
                     // Construct URL for uploaded file
-                    return `https://repair.mmallonthemove.co.za/files/driver_app_checklists/checklist-${car}%${date}-${file.originalname}`;
+                    return `https://repair.mmallonthemove.co.za/files/driver_app_checklists/${car}%${date}-${file.originalname}`;
                 } catch (uploadError) {
                     console.error("Error uploading file:", uploadError);
-                    throw new Error(
-                        `Failed to upload file: ${file.originalname}`
-                    );
+                    // throw new Error(
+                    //     `Failed to upload file: ${file.originalname}`
+                    // );
                 }
-              
             })
         );
 

@@ -12,9 +12,11 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { menuItems } from "@/lib/sidebar_links"
-import React from "react"
+import React, { useState } from "react"
 
 export default function Navbar() {
+    // customize open on hover
+    const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
     return (
 
         <Breadcrumb>
@@ -22,8 +24,9 @@ export default function Navbar() {
                 {/* Dynamic Breadcrumb Items with Dropdowns */}
                 {menuItems.map((menu) => (
                     <React.Fragment key={menu.label}>
-                        <BreadcrumbItem >
-                            <DropdownMenu>
+                        <BreadcrumbItem onMouseEnter={() => setHoveredMenu(menu.label)}
+                            onMouseLeave={() => setHoveredMenu(null)}>
+                            <DropdownMenu open={hoveredMenu === menu.label}>
                                 <DropdownMenuTrigger className="flex items-center gap-1 outline-none border-none">
                                     <span>{menu.label}</span>
                                     <BreadcrumbEllipsis className="h-4 w-4" />

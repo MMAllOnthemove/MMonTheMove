@@ -68,9 +68,9 @@ const uploadTechnicianFiles = async (req, res) => {
                     return `https://repair.mmallonthemove.co.za/files/hhp/${ticket_number}-hhp-${file.originalname}`;
                 } catch (uploadError) {
                     console.error("Error uploading file:", uploadError);
-                    throw new Error(
-                        `Failed to upload file: ${file.originalname}`
-                    );
+                    // throw new Error(
+                    //     `Failed to upload file: ${file.originalname}`
+                    // );
                 }
             })
         );
@@ -79,7 +79,6 @@ const uploadTechnicianFiles = async (req, res) => {
             .status(201)
             .json({ message: "Files uploaded", fileUrls: fileUrls });
     } catch (err) {
-        console.log("upload error", err);
         if (err instanceof yup.ValidationError) {
             return res.status(400).json({
                 message: "Please check your files and try again",

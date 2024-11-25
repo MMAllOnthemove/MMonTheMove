@@ -156,3 +156,14 @@ input[type="radio"]:checked {
 /* input[type="radio"]:checked:hover {
     @apply bg-accent hover:opacity-80 border-accent hover:border-accent;
 } */
+
+/* customize open on hover */
+.dropdown-menu-content {
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    opacity: 0;
+    visibility: hidden;
+}
+.dropdown-menu-content[data-open="true"] {
+    opacity: 1;
+    visibility: visible;
+}

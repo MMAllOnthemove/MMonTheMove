@@ -111,7 +111,9 @@ create table technician_tasks (
     qc_comment text,
     parts_ordered boolean,
     parts_requested boolean,
-    parts_requested_date text
+    parts_requested_date text,
+    collected boolean,
+    collected_date text
 );
 
 -- Create a trigger function to update the 'updated_at' field
@@ -292,7 +294,13 @@ create table vehicle_checklist(
     updated_at text
 );
 
--- Insert fake data into drivers table
+create table vehicle_checklist_images (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    vehicle_checklist_id bigint REFERENCES vehicle_checklist(id),
+    image_url text,
+    created_at TIMESTAMP
+) -- Insert fake data into drivers table
 -- INSERT INTO drivers (driver_firstname, driver_lastname, created_at, updated_at)
 -- VALUES 
 -- ('John', 'Doe', NOW() - INTERVAL '30 days', NOW() - INTERVAL '15 days'),

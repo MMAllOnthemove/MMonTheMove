@@ -6,6 +6,7 @@ const useDeletePart = () => {
     const [deletePartLoading, setLoading] = useState(false); // Loading state
 
     const deletePart = async (id: string | undefined) => {
+        if (!id) return;
         setLoading(true);
         try {
             const response = await axios.delete(
@@ -16,7 +17,6 @@ const useDeletePart = () => {
             );
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
-                window.location.reload();
             }
         } catch (error: any) {
             if (error?.response.data?.message) {

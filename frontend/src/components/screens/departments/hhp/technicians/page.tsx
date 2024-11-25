@@ -43,6 +43,7 @@ import {
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
+    PaginationState,
     SortingState,
     useReactTable
 } from "@tanstack/react-table";
@@ -56,6 +57,14 @@ import QC from './qc/page';
 import TableBody from './tablebody';
 import TableHead from './tablehead';
 import TasksUpdate from './tasks_update/page';
+type PropertiesType = {
+    IMEI?: string;
+    Warranty?: string;
+    "Warranty "?: string;
+    "Backup Requires"?: string;
+    "Item Condition"?: string;
+    "Item Condition "?: string;
+};
 
 
 const TechniciansScreen = () => {
@@ -65,10 +74,13 @@ const TechniciansScreen = () => {
     const { updateRepairTicketComment } = useRepairshoprComment()
     const { updateHHPTask } = useUpdateHHPTask()
     const { addRepairTicketFile } = useRepairshoprFile()
+
+    const [modifyTaskModal, setModifyTaskModal] = useState<ModifyTaskModalTechnicians | any>();
+    // parts for row clicked
+    const { taskPartsList, refetch } = useFetchPartsForTask(modifyTaskModal?.id)
     const { addThisPart, addPartLoading, addPartErrors } = useAddPart()
     const { getSOPartsInfo } = useIpaasSOPartsInfo()
     const { deletePart, deletePartLoading } = useDeletePart()
-    const [modifyTaskModal, setModifyTaskModal] = useState<ModifyTaskModalTechnicians | any>();
     const [service_order_no, setServiceOrder] = useState<string | number | undefined>("")
     const [reparshoprComment, setRepairshoprComment] = useState("")
     const [unit_status, setRepairshoprStatus] = useState<string>("")
@@ -90,6 +102,40 @@ const TechniciansScreen = () => {
     const [submitPartsUpdateLoading, setSubmitPartsUpdateLoading] = useState(false)
     const [repairshopr_id, setUserId] = useState<number | undefined>(); // To store the selected repairshopr user ID
     const [engineersComboBox, setEngineerComboBox] = useState(false)
+    const [warranty, setWarranty] = useState("")
+    const [addPartOnRepairshoprLoading, setaddPartOnRepairshoprLoading] = useState(false)
+    // for purpose of updating
+    const [repairshoprWarranty, setRepairshoprWarranty] = useState<string>("")
+    const [repairshoprBackupRequires, setRepairshoprBackupRequires] = useState<string>("");
+    const [repairshoprItemCondition, setRepairshoprItemCondition] = useState<string>("")
+    const [repairshoprIMEI, setRepairshoprIMEI] = useState<string>("")
+
+
+    // fetch repairshopr ticket by id so we an update warranty (it requires so much parameters just for that)
+    const fetchRSTicketDataById = async (repairId: string) => {
+        try {
+            const { data } = await axios.get(
+                `https://allelectronics.repairshopr.com/api/v1/tickets/${repairId}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
+                    },
+                }
+            );
+            if (data?.ticket?.id == repairId) {
+                return data;
+            };
+        } catch (error) {
+            if (process.env.NODE_ENV !== "production") {
+                console.error(
+                    "Error fetching repairshopr ticket api data by id:",
+                    error
+                );
+            }
+        }
+    };
+
 
     // engineer filters
     const [engineerFilter, setEngineerFilter] = useState<string>("")
@@ -125,31 +171,63 @@ const TechniciansScreen = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [search_part])
 
-    const handleRowClick = (row: TechniciansTableData) => {
+    const handleRowClick = async (row: TechniciansTableData) => {
         setModifyTaskModal(row?.original);
 
         // by opening the modal, that will be the assessment_date and assessed_true
-        const units_assessed = true;
-        const assessment_date = datetimestamp;
-        const id = row?.original?.id;
-        const payload = { assessment_date, units_assessed }
-        axios.patch(
-            `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/assess/` +
-            id,
-            payload,
-            {
-                withCredentials: true,
+        // check if logged in user matches the engineer name, so only engineer can set auto assess
+        if (row?.original?.engineer === user?.full_name) {
+            const units_assessed = true;
+            const assessment_date = datetimestamp;
+            const id = row?.original?.id;
+            const payload = { assessment_date, units_assessed }
+            axios.patch(
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/assess/` +
+                id,
+                payload,
+                {
+                    withCredentials: true,
+                }
+            );
+        }
+        // fetch data for this open ticket so we can update on repairshopr
+        // example data since repairshopr is so f*ckn foolish
+        try {
+            const getTicketDataFromRepairshopr = await fetchRSTicketDataById(row?.original?.repairshopr_job_id);
+            const properties = getTicketDataFromRepairshopr?.ticket?.properties;
+            if (properties) {
+                const fieldsToExtract = ["IMEI", "Warranty", "Backup Requires", "Item Condition"];
+                const extractedValues: Record<string, string> = {};
+                fieldsToExtract.forEach((field: any) => {
+                    // Find the correct key for the field
+                    const matchedKey = Object?.keys(properties).find(
+                        (key) => key.trim() === field
+                    );
+                    // Assign the value to the extractedValues object if key is found
+                    extractedValues[field] = matchedKey ? properties[matchedKey as keyof PropertiesType] : null;
+                });
+                setRepairshoprWarranty(extractedValues["Warranty"])
+                setRepairshoprBackupRequires(extractedValues["Backup Requires"])
+                setRepairshoprItemCondition(extractedValues["Item Condition"])
+                setRepairshoprIMEI(extractedValues["IMEI"])
+            } else {
+                // 
             }
-        );
+        } catch (error) {
+            if (process.env.NODE_ENV !== 'production') {
+                console.error(error)
+            }
+        }
+
     };
-    // parts for row clicked
-    // put it here after the handleRowClick
-    const { taskPartsList } = useFetchPartsForTask(modifyTaskModal?.id)
+
     const closeModal = () => {
         setModifyTaskModal(false);
     };
     const handleDelete = async (id: string | undefined) => {
+        // console.log(id)
         await deletePart(id);
+        refetch(); // Refresh the list of parts
     };
 
     // Table sorting
@@ -168,13 +246,23 @@ const TechniciansScreen = () => {
 
     // Data for the table, so we can filter it
     const filterHHPData = useMemo(() => {
-        // Filter by engineer
+        if (!hhpTasks) return [];
         if (engineerFilter) {
-            return hhpTasks?.filter(task => task?.engineer?.toLowerCase()?.includes(engineerFilter.toLowerCase()))
+            return hhpTasks.filter((task) =>
+                task?.engineer?.toLowerCase()?.includes(engineerFilter.toLowerCase())
+            );
         }
-        return hhpTasks
-    }, [engineerFilter, hhpTasks])
+        return hhpTasks;
+    }, [engineerFilter, hhpTasks]);
 
+
+
+
+
+    const [pagination, setPagination] = useState<PaginationState>({
+        pageIndex: 0,
+        pageSize: 10,
+    })
 
     const table = useReactTable({
         data: filterHHPData,
@@ -186,6 +274,7 @@ const TechniciansScreen = () => {
         state: {
             sorting: sorting,
             globalFilter: filtering,
+            pagination,
             columnVisibility,
             columnOrder,
         },
@@ -193,6 +282,7 @@ const TechniciansScreen = () => {
         onColumnOrderChange: setColumnOrder,
         onSortingChange: setSorting,
         onGlobalFilterChange: setFiltering,
+        onPaginationChange: setPagination,
     });
 
 
@@ -212,7 +302,8 @@ const TechniciansScreen = () => {
         setQCComplete(modifyTaskModal?.qc_complete)
         setQCCompleteDate(modifyTaskModal?.qc_date)
         setServiceOrder(modifyTaskModal?.service_order_no)
-    }, [modifyTaskModal?.assessment_date, modifyTaskModal?.parts_requested, modifyTaskModal?.parts_requested_date, modifyTaskModal?.unit_status, modifyTaskModal?.engineer, modifyTaskModal?.repairshopr_id, modifyTaskModal?.parts_issued, modifyTaskModal?.parts_issued_date, modifyTaskModal?.parts_pending, modifyTaskModal?.parts_pending_date, modifyTaskModal?.qc_complete, modifyTaskModal?.qc_date, modifyTaskModal?.service_order_no])
+        setWarranty(modifyTaskModal?.warranty)
+    }, [modifyTaskModal?.warranty, modifyTaskModal?.assessment_date, modifyTaskModal?.parts_requested, modifyTaskModal?.parts_requested_date, modifyTaskModal?.unit_status, modifyTaskModal?.engineer, modifyTaskModal?.repairshopr_id, modifyTaskModal?.parts_issued, modifyTaskModal?.parts_issued_date, modifyTaskModal?.parts_pending, modifyTaskModal?.parts_pending_date, modifyTaskModal?.qc_complete, modifyTaskModal?.qc_date, modifyTaskModal?.service_order_no])
 
 
     const [qcFiles, setQCFiles] = useState([]);
@@ -277,7 +368,7 @@ const TechniciansScreen = () => {
         const commentPayload: RepairshorTicketComment = {
             "subject": "Update",
             "tech": user?.full_name,
-            "body": "QC analysis: " + qc_comment,
+            "body": "*QC analysis: " + qc_comment,
             "hidden": true,
             "do_not_email": true
         }
@@ -285,7 +376,7 @@ const TechniciansScreen = () => {
 
             if (Object.keys(changes).length > 0) {
                 await updateHHPTask(id, changes)
-                if (qc_complete === 'Fail') await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
+                if (qc_comment?.length > 0) await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
                 setQCFailReason("")
                 toast.success(`Successfully updated`);
                 closeModal()
@@ -352,7 +443,7 @@ const TechniciansScreen = () => {
         const commentPayload: RepairshorTicketComment = {
             "subject": "Update",
             "tech": user?.full_name,
-            "body": reparshoprComment,
+            "body": '*' + reparshoprComment,
             "hidden": true,
             "do_not_email": true
         }
@@ -362,24 +453,46 @@ const TechniciansScreen = () => {
         if (modifyTaskModal?.service_order_no !== service_order_no) {
             setServiceOrder(service_order_no)
         }
+        // this will be essenstial to also update the warranty in our system if user voids it
+        if (repairshoprWarranty === "69476" || 69476) setWarranty('IW')
+        if (repairshoprWarranty === "69477" || 69477) setWarranty('OOW')
+
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no, unit_status, assessment_date, updated_at, repairshopr_id
+            id, service_order_no, unit_status, assessment_date, updated_at, repairshopr_id, warranty
         }
         const changes = findChanges(modifyTaskModal, updatePayload)
         const changeIdOnRepairshoprPayload = {
             "user_id": repairshopr_id,
         }
+        // this will update repairshopr warranty using the imei, backup, item condition, warranty
+        const updateTicketWarrantyPayload = {
+            "properties": {
+                "IMEI": repairshoprIMEI,
+                "Warranty": repairshoprWarranty,
+                "Backup Requires": repairshoprBackupRequires,
+                "Item Condition ": repairshoprItemCondition
+            }
+        }
         try {
             if (unit_status !== "" || unit_status !== null || unit_status !== undefined) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, statusPayload)
             if (repairshopr_id || repairshopr_id !== null || repairshopr_id !== undefined) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, changeIdOnRepairshoprPayload)
+            if (repairshoprWarranty || repairshoprWarranty !== null || repairshoprWarranty !== undefined) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, updateTicketWarrantyPayload)
 
             if (reparshoprComment) await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
             if (Object.keys(changes).length > 0) {
                 await updateHHPTask(id, changes)
                 setServiceOrder("")
+                setRepairshoprComment("")
                 setRepairshoprStatus("")
                 setAssessmentDate("")
+                setQCFailReason("")
+                setEngineer("")
+                setWarranty("")
+                setRepairshoprWarranty("")
+                setRepairshoprBackupRequires("")
+                setRepairshoprItemCondition("")
+                setRepairshoprIMEI("")
                 toast.success(`Successfully updated`);
                 closeModal()
             }
@@ -396,6 +509,16 @@ const TechniciansScreen = () => {
 
         const id = modifyTaskModal?.id;
         const updated_at = datetimestamp;
+        const firstApprovalPayload = {
+            "status": "Parts Request 1st Approval"
+        }
+        const partsOrderedPayload = {
+            "status": "Parts to be ordered"
+        }
+        const partsIssuedPayload = {
+            "status": "Parts Issued"
+        }
+
         const updatePayload = {
             // This goes to our in house db
             id, updated_at, parts_issued, parts_issued_date, parts_requested, parts_requested_date, parts_ordered, parts_ordered_date, parts_pending, parts_pending_date
@@ -403,9 +526,19 @@ const TechniciansScreen = () => {
         const changes = findChanges(modifyTaskModal, updatePayload)
         try {
             setSubmitPartsUpdateLoading(true)
+
             if (Object.keys(changes).length > 0) {
-                await updateHHPTask(id, changes)
+                if (changes?.parts_requested) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, firstApprovalPayload)
+                if (changes?.parts_ordered) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, partsOrderedPayload)
+                if (changes?.parts_issued) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, partsIssuedPayload)
+                // await updateHHPTask(id, changes)
                 toast.success(`Successfully updated`);
+                setPartsIssuedDate("")
+                setPartsIssued(undefined)
+                setPartsPending(undefined)
+                setPartsPendingDate("")
+                setPartsOrdered(undefined)
+                setPartsOrderedDate("")
                 closeModal()
             }
             setSubmitPartsUpdateLoading(false)
@@ -418,20 +551,46 @@ const TechniciansScreen = () => {
         }
     }
 
-
     // add part searched
-
     const addPart = async () => {
+
         const task_row_id = modifyTaskModal?.id;
         const ticket_number = modifyTaskModal?.ticket_number
         const created_at = datetimestamp;
         const created_by = user?.email
         const payload = { task_row_id, ticket_number, part_name, part_desc, part_quantity, created_at, created_by }
         await addThisPart(payload);
+        refetch(); // Refresh the list of parts
         setSearchPart("")
         setPartName("")
         setPartDesc("")
         setPartQuantity(0)
+    }
+
+    const addPartListToRepairshoprComment = async () => {
+        setaddPartOnRepairshoprLoading(true)
+        try {
+            // this will send the parts as as list on repairshopr
+            const partsList = taskPartsList.map((part, index) => {
+                return `${index + 1}. ${part.part_name} - ${part.part_desc} (Quantity: ${part.part_quantity})`;
+            }).join('\n');
+
+            const comment = `Parts added:\n${partsList}`;
+            const commentPayload: RepairshorTicketComment = {
+                "subject": "Update",
+                "tech": user?.full_name,
+                "body": '*' + comment,
+                "hidden": true,
+                "do_not_email": true
+            }
+            if (comment) await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
+        } catch (error) {
+            if (process.env.NODE_ENV !== 'production') {
+                console.log("comment part", error)
+            }
+        } finally {
+            setaddPartOnRepairshoprLoading(false); // Stop loading
+        }
     }
 
     return (
@@ -569,13 +728,13 @@ const TechniciansScreen = () => {
                                                 <TabsTrigger value="Parts">Parts</TabsTrigger>
                                             </TabsList>
                                             <TabsContent value="Techs">
-                                                <TasksUpdate assessment_datetime={modifyTaskModal?.assessment_datetime} hhp_tasks_loading={hhpFilesUploading} setHHPFilesProp={handleHHPFiles} submitHHPFiles={submitHHPFiles} date_booked_datetime={modifyTaskModal?.date_booked_datetime} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={(e) => setRepairshoprStatus(e)} submitTasksUpdate={handleSubmit} engineer={engineer} engineersComboBox={engineersComboBox} setEngineer={setEngineer} setEngineerComboBox={setEngineerComboBox} setUserId={setUserId} />
+                                                <TasksUpdate assessment_datetime={modifyTaskModal?.assessment_datetime} hhp_tasks_loading={hhpFilesUploading} setHHPFilesProp={handleHHPFiles} submitHHPFiles={submitHHPFiles} date_booked_datetime={modifyTaskModal?.date_booked_datetime} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={(e) => setRepairshoprStatus(e)} submitTasksUpdate={handleSubmit} engineer={engineer} engineersComboBox={engineersComboBox} setEngineer={setEngineer} setEngineerComboBox={setEngineerComboBox} setUserId={setUserId} warranty={warranty} setWarranty={setWarranty} />
                                             </TabsContent>
                                             <TabsContent value="QC">
                                                 <QC qc_fail_reasonProp={qc_comment} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} qc_FilesLoadingProp={qcFilesUploading} setQCFilesProp={handleQCFiles} submitQCFiles={submitQCFiles} submitQC={handleQCSubmit} />
                                             </TabsContent>
                                             <TabsContent value="Parts">
-                                                    <Parts deletePartLoading={deletePartLoading} part_data={[...taskPartsList]} parts_requestedProp={parts_requested} setPartsRequestedProp={(e) => setPartsRequested(e)} setPartsRequestedDateProp={setPartsRequestedDate} parts_orderedProp={parts_ordered} setPartsOrderedProp={(e) => setPartsOrdered(e)} parts_pendingProp={parts_pending} setPartsPendingProp={(e) => setPartsPending(e)} parts_issuedProp={parts_issued} setPartsIssuedProp={(e) => setPartsIssued(e)} setPartsIssuedDateProp={setPartsIssuedDate} setPartsPendingDateProp={setPartsPendingDate} setPartsOrderedDateProp={setPartsOrderedDate} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} handleDelete={handleDelete} />
+                                                <Parts deletePartLoading={deletePartLoading} part_data={[...taskPartsList]} parts_requestedProp={parts_requested} setPartsRequestedProp={(e) => setPartsRequested(e)} setPartsRequestedDateProp={setPartsRequestedDate} parts_orderedProp={parts_ordered} setPartsOrderedProp={(e) => setPartsOrdered(e)} parts_pendingProp={parts_pending} setPartsPendingProp={(e) => setPartsPending(e)} parts_issuedProp={parts_issued} setPartsIssuedProp={(e) => setPartsIssued(e)} setPartsIssuedDateProp={setPartsIssuedDate} setPartsPendingDateProp={setPartsPendingDate} setPartsOrderedDateProp={setPartsOrderedDate} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} handleDelete={handleDelete} addPartOnRepairshoprLoading={addPartOnRepairshoprLoading} addPartOnRepairshopr={addPartListToRepairshoprComment} />
                                             </TabsContent>
                                         </Tabs>
 

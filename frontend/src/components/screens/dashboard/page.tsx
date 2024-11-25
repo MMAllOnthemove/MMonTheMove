@@ -45,14 +45,6 @@ const DashboardScreen = () => {
     const [dateTo, setDateTo] = useState("")
 
 
-
-    // const storeRepairsCount = useMemo(() => Object.entries(
-    //     getRepairsByStore(hhpTasks, dateFrom, dateTo)
-    // ).map(([store, count]) => ({
-    //     store,
-    //     count,
-    // })), [hhpTasks, dateFrom, dateTo])
-
     const averageRepairTime = useMemo(() => calculateAverageRepairTime(hhpTasks), [hhpTasks])
 
     const averageCompletionRate = useMemo(() => getCompletionRate(hhpTasks), [hhpTasks])

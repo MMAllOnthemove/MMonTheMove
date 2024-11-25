@@ -10,8 +10,8 @@ const Pagination = ({ table }: any) => {
                 <Button
                     role="button"
                     className="border rounded p-1 font-medium disabled:opacity-50 md:hidden"
-                    onClick={() => table?.setPageIndex(0)}
-                    disabled={!table?.getCanPreviousPage()}
+                    onClick={() => table.firstPage()}
+                    disabled={!table.getCanPreviousPage()}
                 >
                     &laquo;
                 </Button>
@@ -34,7 +34,7 @@ const Pagination = ({ table }: any) => {
                 <Button
                     role="button"
                     className="border rounded p-1 font-medium disabled:opacity-50 md:block hidden"
-                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                    onClick={() => table.lastPage()}
                     disabled={!table.getCanNextPage()}
                 >
                     &raquo;

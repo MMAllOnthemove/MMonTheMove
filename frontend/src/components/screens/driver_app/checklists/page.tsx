@@ -1,21 +1,12 @@
 "use client"
-import {
-    SortingState,
-    flexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    useReactTable,
-} from "@tanstack/react-table";
-import { useEffect, useState } from 'react';
-
 import LoadingScreen from '@/components/loading_screen/page';
 import NotLoggedInScreen from '@/components/not_logged_in/page';
 import PageTitle from '@/components/PageTitle/page';
 import ManagementSearchForm from '@/components/search_field/page';
 import Sidebar from '@/components/sidebar/page';
 import Pagination from '@/components/table_pagination/page';
+import Image from 'next/image';
+
 import {
     Accordion,
     AccordionContent,
@@ -30,10 +21,36 @@ import {
     DialogTitle
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+// Import Swiper React components
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+
+
+// import required modules
+import { Card, CardContent } from '@/components/ui/card';
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from "@/components/ui/tabs";
 import useUpdateChecklist from "@/hooks/updateChecklist";
 import useFetchChecklists from '@/hooks/useGetChecklists';
 import useUserLoggedIn from '@/hooks/useGetUser';
+import { VehicleInspection } from "@/lib/types";
 import columns from '@/lib/vehicle_checklist_table_columns';
+import {
+    SortingState,
+    flexRender,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    useReactTable,
+} from "@tanstack/react-table";
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import CreateChecklistScreen from '../create_checklist/page';
 
 
@@ -47,14 +64,34 @@ const ChecklistsScreen = () => {
 
     const [openChecklistSummaryRow, setOpenChecklistSummaryRow] = useState(null); // Track which row is open
     const { updateChecklist, loadUpdateChecklist } = useUpdateChecklist()
+    const [todaysCheckList, setTodaysChecklist] = useState<VehicleInspection[]>([]);
+    const [oldCheckList, setOldChecklist] = useState<VehicleInspection[]>([]);
     const handleChecklistSummaryRowClick = (rowKey: any) => {
         // Toggle open/close for the clicked row
         setOpenChecklistSummaryRow(openChecklistSummaryRow === rowKey ? null : rowKey);
     };
 
-    const handleRowClick = (row: any) => {
-        setOpenClickedRow(row?.original);
-    };
+    const handleRowClick = useCallback(
+        (row: any) => {
+            setOpenClickedRow(row?.original);
+            const todayDate = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+            // Filter today's checklist
+            const today = checklistList?.filter(
+                (checklist) =>
+                    checklist.car === row?.original?.car && checklist.formatted_created_at === todayDate
+            );
+
+            // Filter historical checklists
+            const history = checklistList?.filter(
+                (checklist) =>
+                    checklist.car === row?.original?.car && checklist.formatted_created_at !== todayDate
+            );
+
+            setTodaysChecklist(today)
+            setOldChecklist(history)
+        },
+        [checklistList],
+    );
 
     const closeOpenClickedRow = () => {
         setOpenClickedRow(false);
@@ -72,8 +109,6 @@ const ChecklistsScreen = () => {
         const rowId = openClickedRow?.id
         const payload = { rowId, mileage_after, next_service_date }
         await updateChecklist(rowId, payload)
-
-
     }
 
     // Table sorting
@@ -83,8 +118,18 @@ const ChecklistsScreen = () => {
     const [filtering, setFiltering] = useState("");
 
 
+    // Get unique cars
+    const uniqueCars = useMemo(
+        () => Array.from(new Set(checklistList.map((item) => item.car)))
+            .map((car) => {
+                return checklistList.find((item) => item.car === car);
+            }),
+        [checklistList]
+    );
+
+
     const table = useReactTable({
-        data: checklistList,
+        data: uniqueCars,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -205,187 +250,265 @@ const ChecklistsScreen = () => {
                                             <DialogTitle>Checklist details</DialogTitle>
 
                                         </DialogHeader>
-                                        <Accordion type="single" collapsible>
-                                            <AccordionItem value="item-1">
-                                                <AccordionTrigger>External tests</AccordionTrigger>
-                                                <AccordionContent>
-                                                    <div>
-                                                        <ul className="list-decimal list-inside">
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('windshield')}>Windshield: <span className={`${openClickedRow?.windshield === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.windshield}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'windshield' && openClickedRow?.windshield !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.windshield_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('rear_window')}>Rear window: <span className={`${openClickedRow?.rear_window === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.rear_window}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'rear_window' && openClickedRow?.rear_window !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.rear_window_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('windshield_wipers')}>Windshield wipers: <span className={`${openClickedRow?.windshield_wipers === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.windshield_wipers}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'windshield_wipers' && openClickedRow?.windshield_wipers !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.windshield_wipers_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('headlights')}>Headlights: <span className={`${openClickedRow?.headlights === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.headlights}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'headlights' && openClickedRow?.headlights !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.headlights_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('tail_lights')}>Tail lights: <span className={`${openClickedRow?.tail_lights === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.tail_lights}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'tail_lights' && openClickedRow?.tail_lights !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.tail_lights_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('turn_indicator_lights')}>Turn indicator lights: <span className={`${openClickedRow?.turn_indicator_lights === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.turn_indicator_lights}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'turn_indicator_lights' && openClickedRow?.turn_indicator_lights !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.turn_indicator_lights_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('stop_lights')}>Stop lights: <span className={`${openClickedRow?.stop_lights === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.stop_lights}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'stop_lights' && openClickedRow?.stop_lights !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.stop_lights_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('doors')}>Doors: <span className={`${openClickedRow?.doors === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.doors}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'doors' && openClickedRow?.doors !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.doors_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('bumpers')}>Bumpers: <span className={`${openClickedRow?.bumpers === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.bumpers}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'bumpers' && openClickedRow?.bumpers !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.bumpers_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('muffler_exhaust_system')}>Exhaust system: <span className={`${openClickedRow?.muffler_exhaust_system === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.muffler_exhaust_system}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'muffler_exhaust_system' && openClickedRow?.muffler_exhaust_system !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.muffler_exhaust_system_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('tires')}>Tires: <span className={`${openClickedRow?.tires === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.tires}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'tires' && openClickedRow?.tires !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.tires_fail_reason}</p>
-                                                            )}
-                                                        </ul>
-                                                    </div>
-                                                </AccordionContent>
-                                            </AccordionItem>
-                                            <AccordionItem value="item-2">
-                                                <AccordionTrigger>Internal tests</AccordionTrigger>
-                                                <AccordionContent>
-                                                    <div>
-                                                        <ul className="list-decimal list-inside">
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('foot_brakes')}>Foot brakes: <span className={`${openClickedRow?.foot_brakes === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.foot_brakes}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'foot_brakes' && openClickedRow?.foot_brakes !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.foot_brakes_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('emergency_brake')}>Hand brake: <span className={`${openClickedRow?.emergency_brake === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.emergency_brake}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'emergency_brake' && openClickedRow?.emergency_brake !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.emergency_brake_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('front_seat_adjustment')}>Front seat adjustment: <span className={`${openClickedRow?.front_seat_adjustment === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.front_seat_adjustment}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'front_seat_adjustment' && openClickedRow?.front_seat_adjustment !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.front_seat_adjustment_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('horn')}>Horn: <span className={`${openClickedRow?.horn === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.horn}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'horn' && openClickedRow?.horn !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.horn_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('speedometer')}>Speedometer: <span className={`${openClickedRow?.speedometer === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.speedometer}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'speedometer' && openClickedRow?.speedometer !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.speedometer_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('interior_exterior_view_mirros')}>Internal mirror: <span className={`${openClickedRow?.interior_exterior_view_mirros === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.interior_exterior_view_mirros}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'interior_exterior_view_mirros' && openClickedRow?.interior_exterior_view_mirros !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.interior_exterior_view_mirros_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('safety_belts')}>Safely belts: <span className={`${openClickedRow?.safety_belts === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.safety_belts}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'safety_belts' && openClickedRow?.safety_belts !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.safety_belts_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('engine_start_stop')}>Engine start/stop: <span className={`${openClickedRow?.engine_start_stop === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.engine_start_stop}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'engine_start_stop' && openClickedRow?.engine_start_stop !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.engine_start_stop_fail_reason}</p>
-                                                            )}
-                                                        </ul>
-                                                    </div>
-                                                </AccordionContent>
-                                            </AccordionItem>
-                                            <AccordionItem value="item-3">
-                                                <AccordionTrigger>Accessories</AccordionTrigger>
-                                                <AccordionContent>
-                                                    <div>
-                                                        <ul className="list-decimal list-inside">
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('triangle')}>Triangle: <span className={`${openClickedRow?.triangle === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.triangle}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'triangle' && openClickedRow?.triangle !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.triangle_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('car_jack')}>Car jack: <span className={`${openClickedRow?.car_jack === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.car_jack}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'car_jack' && openClickedRow?.car_jack !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.car_jack_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('spare_wheel')}>Spare wheel: <span className={`${openClickedRow?.spare_wheel === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.spare_wheel}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'spare_wheel' && openClickedRow?.spare_wheel !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.spare_wheel_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('hass')}>Hass: <span className={`${openClickedRow?.hass === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.hass}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'hass' && openClickedRow?.hass !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.hass_fail_reason}</p>
-                                                            )}
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('tools')}>Hand tools: <span className={`${openClickedRow?.tools === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.tools}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'tools' && openClickedRow?.tools !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.tools_fail_reason}</p>
-                                                            )}
-                                                        </ul>
-                                                    </div>
-                                                </AccordionContent>
-                                            </AccordionItem>
-                                            <AccordionItem value="item-4">
-                                                <AccordionTrigger>Update checklist</AccordionTrigger>
-                                                <AccordionContent>
-                                                    <div>
-                                                        <Input className="mb-3" type="date" name="next_service_date" placeholder="Next service date" id="next_service_date" value={next_service_date} onChange={(e) => setNextService(e.target.value)} />
-                                                        <Input className="mb-3" type="text" name="mileage_after" placeholder="Mileage when driver comes back" id="mileage_after" value={mileage_after} onChange={(e) => setMileageAfter(e.target.value)} />
-                                                        <Button className="w-full" onClick={updateVehicleChecklist} disabled={loadUpdateChecklist}>{loadUpdateChecklist ? 'Updating...' : 'Update checklist'}</Button>
-                                                    </div>
-                                                </AccordionContent>
-                                            </AccordionItem>
-                                            <AccordionItem value="item-5">
-                                                <AccordionTrigger>More info</AccordionTrigger>
-                                                <AccordionContent>
-                                                    <div>
-                                                        <ul className="list-decimal list-inside">
-                                                            <li>Driver: <span className="text-gray-600 font-medium">{openClickedRow?.driver}</span></li>
-                                                            <li>Car: <span className="text-gray-600 font-medium">{openClickedRow?.car}</span></li>
-                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('spare_wheel')}>Spare wheel: <span className={`${openClickedRow?.spare_wheel === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{openClickedRow?.spare_wheel}</span></li>
-                                                            {/* Conditionally show the reason if the row is open */}
-                                                            {openChecklistSummaryRow === 'spare_wheel' && openClickedRow?.spare_wheel !== "Pass" && (
-                                                                <p className="text-gray-500">Reason: {openClickedRow?.spare_wheel_fail_reason}</p>
-                                                            )}
-                                                            <li>Reason for use: <span className="text-gray-600 font-medium">{openClickedRow?.reason_for_use}</span></li>
-                                                            <li>Mileage start: <span className="text-gray-600 font-medium">{openClickedRow?.mileage}</span></li>
-                                                            <li>Mileage end: <span className="text-gray-600 font-medium">{openClickedRow?.mileage_after}</span></li>
-                                                            <li>Created by: <span className="text-gray-600 font-medium">{openClickedRow?.created_by}</span></li>
-                                                            <li>Created at: <span className="text-gray-600 font-medium">{openClickedRow?.created_at}</span></li>
-                                                        </ul>
-                                                    </div>
-                                                </AccordionContent>
-                                            </AccordionItem>
-                                        </Accordion>
+                                        <Tabs defaultValue="today" className="w-full">
+                                            <TabsList className="grid w-full grid-cols-3">
+                                                <TabsTrigger value="today" className=" rounded border active:border-emerald-500 focus:border-emerald-500">Today</TabsTrigger>
+                                                <TabsTrigger value="images" className=" rounded border active:border-emerald-500 focus:border-emerald-500">Images</TabsTrigger>
+                                                <TabsTrigger value="history" className=" rounded border active:border-emerald-500 focus:border-emerald-500">History</TabsTrigger>
+                                            </TabsList>
+                                            <TabsContent value="today">
 
+                                                {todaysCheckList ?
+                                                    todaysCheckList?.map((x) => (
+                                                        <Accordion type="single" collapsible key={x?.id}>
+                                                            <AccordionItem value="item-1">
+                                                                <AccordionTrigger>External tests</AccordionTrigger>
+                                                                <AccordionContent>
+                                                                    <div>
+                                                                        <ul className="list-decimal list-inside">
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('windshield')}>Windshield: <span className={`${x?.windshield === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.windshield}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'windshield' && x?.windshield !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.windshield_fail_reason}</p>
+                                                                            )}
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('rear_window')}>Rear window: <span className={`${x?.rear_window === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.rear_window}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'rear_window' && x?.rear_window !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.rear_window_fail_reason}</p>
+                                                                            )}
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('windshield_wipers')}>Windshield wipers: <span className={`${x?.windshield_wipers === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.windshield_wipers}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'windshield_wipers' && x?.windshield_wipers !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.windshield_wipers_fail_reason}</p>
+                                                                            )}
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('headlights')}>Headlights: <span className={`${x?.headlights === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.headlights}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'headlights' && x?.headlights !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.headlights_fail_reason}</p>
+                                                                            )}
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('tail_lights')}>Tail lights: <span className={`${x?.tail_lights === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.tail_lights}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'tail_lights' && x?.tail_lights !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.tail_lights_fail_reason}</p>
+                                                                            )}
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('turn_indicator_lights')}>Turn indicator lights: <span className={`${x?.turn_indicator_lights === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.turn_indicator_lights}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'turn_indicator_lights' && x?.turn_indicator_lights !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.turn_indicator_lights_fail_reason}</p>
+                                                                            )}
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('stop_lights')}>Stop lights: <span className={`${x?.stop_lights === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.stop_lights}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'stop_lights' && x?.stop_lights !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.stop_lights_fail_reason}</p>
+                                                                            )}
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('doors')}>Doors: <span className={`${x?.doors === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.doors}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'doors' && x?.doors !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.doors_fail_reason}</p>
+                                                                            )}
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('bumpers')}>Bumpers: <span className={`${x?.bumpers === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.bumpers}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'bumpers' && x?.bumpers !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.bumpers_fail_reason}</p>
+                                                                            )}
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('muffler_exhaust_system')}>Exhaust system: <span className={`${x?.muffler_exhaust_system === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.muffler_exhaust_system}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'muffler_exhaust_system' && x?.muffler_exhaust_system !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.muffler_exhaust_system_fail_reason}</p>
+                                                                            )}
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('tires')}>Tires: <span className={`${x?.tires === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.tires}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'tires' && x?.tires !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.tires_fail_reason}</p>
+                                                                            )}
+                                                                        </ul>
+                                                                    </div>
+                                                                </AccordionContent>
+                                                            </AccordionItem>
+                                                            <AccordionItem value="item-2">
+                                                                <AccordionTrigger>Internal tests</AccordionTrigger>
+                                                                <AccordionContent>
+                                                                    <div>
+                                                                        <ul className="list-decimal list-inside">
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('foot_brakes')}>Foot brakes: <span className={`${x?.foot_brakes === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.foot_brakes}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'foot_brakes' && x?.foot_brakes !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.foot_brakes_fail_reason}</p>
+                                                                            )}
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('emergency_brake')}>Hand brake: <span className={`${x?.emergency_brake === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.emergency_brake}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'emergency_brake' && x?.emergency_brake !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.emergency_brake_fail_reason}</p>
+                                                                            )}
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('front_seat_adjustment')}>Front seat adjustment: <span className={`${x?.front_seat_adjustment === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.front_seat_adjustment}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'front_seat_adjustment' && x?.front_seat_adjustment !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.front_seat_adjustment_fail_reason}</p>
+                                                                            )}
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('horn')}>Horn: <span className={`${x?.horn === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.horn}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'horn' && x?.horn !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.horn_fail_reason}</p>
+                                                                            )}
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('speedometer')}>Speedometer: <span className={`${x?.speedometer === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.speedometer}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'speedometer' && x?.speedometer !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.speedometer_fail_reason}</p>
+                                                                            )}
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('interior_exterior_view_mirros')}>Internal mirror: <span className={`${x?.interior_exterior_view_mirros === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.interior_exterior_view_mirros}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'interior_exterior_view_mirros' && x?.interior_exterior_view_mirros !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.interior_exterior_view_mirros_fail_reason}</p>
+                                                                            )}
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('safety_belts')}>Safely belts: <span className={`${x?.safety_belts === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.safety_belts}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'safety_belts' && x?.safety_belts !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.safety_belts_fail_reason}</p>
+                                                                            )}
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('engine_start_stop')}>Engine start/stop: <span className={`${x?.engine_start_stop === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.engine_start_stop}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'engine_start_stop' && x?.engine_start_stop !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.engine_start_stop_fail_reason}</p>
+                                                                            )}
+                                                                        </ul>
+                                                                    </div>
+                                                                </AccordionContent>
+                                                            </AccordionItem>
+                                                            <AccordionItem value="item-3">
+                                                                <AccordionTrigger>Accessories</AccordionTrigger>
+                                                                <AccordionContent>
+
+                                                                    <ul className="list-decimal list-inside">
+                                                                        <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('triangle')}>Triangle: <span className={`${x?.triangle === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.triangle}</span></li>
+                                                                        {/* Conditionally show the reason if the row is open */}
+                                                                        {openChecklistSummaryRow === 'triangle' && x?.triangle !== "Pass" && (
+                                                                            <p className="text-gray-500">Reason: {x?.triangle_fail_reason}</p>
+                                                                        )}
+                                                                        <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('car_jack')}>Car jack: <span className={`${x?.car_jack === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.car_jack}</span></li>
+                                                                        {/* Conditionally show the reason if the row is open */}
+                                                                        {openChecklistSummaryRow === 'car_jack' && x?.car_jack !== "Pass" && (
+                                                                            <p className="text-gray-500">Reason: {x?.car_jack_fail_reason}</p>
+                                                                        )}
+                                                                        <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('spare_wheel')}>Spare wheel: <span className={`${x?.spare_wheel === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.spare_wheel}</span></li>
+                                                                        {/* Conditionally show the reason if the row is open */}
+                                                                        {openChecklistSummaryRow === 'spare_wheel' && x?.spare_wheel !== "Pass" && (
+                                                                            <p className="text-gray-500">Reason: {x?.spare_wheel_fail_reason}</p>
+                                                                        )}
+                                                                        <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('hass')}>Hass: <span className={`${x?.hass === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.hass}</span></li>
+                                                                        {/* Conditionally show the reason if the row is open */}
+                                                                        {openChecklistSummaryRow === 'hass' && x?.hass !== "Pass" && (
+                                                                            <p className="text-gray-500">Reason: {x?.hass_fail_reason}</p>
+                                                                        )}
+                                                                        <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('tools')}>Hand tools: <span className={`${x?.tools === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.tools}</span></li>
+                                                                        {/* Conditionally show the reason if the row is open */}
+                                                                        {openChecklistSummaryRow === 'tools' && x?.tools !== "Pass" && (
+                                                                            <p className="text-gray-500">Reason: {x?.tools_fail_reason}</p>
+                                                                        )}
+                                                                    </ul>
+
+                                                                </AccordionContent>
+                                                            </AccordionItem>
+                                                            <AccordionItem value="item-4">
+                                                                <AccordionTrigger>Update checklist</AccordionTrigger>
+                                                                <AccordionContent>
+                                                                    <div>
+                                                                        <Input className="mb-3" type="date" name="next_service_date" placeholder="Next service date" id="next_service_date" value={next_service_date} onChange={(e) => setNextService(e.target.value)} />
+                                                                        <Input className="mb-3" type="text" name="mileage_after" placeholder="Mileage when driver comes back" id="mileage_after" value={mileage_after} onChange={(e) => setMileageAfter(e.target.value)} />
+                                                                        <Button className="w-full" onClick={updateVehicleChecklist} disabled={loadUpdateChecklist}>{loadUpdateChecklist ? 'Updating...' : 'Update checklist'}</Button>
+                                                                    </div>
+                                                                </AccordionContent>
+                                                            </AccordionItem>
+                                                            <AccordionItem value="item-5">
+                                                                <AccordionTrigger>More info</AccordionTrigger>
+                                                                <AccordionContent>
+                                                                    <div>
+                                                                        <ul className="list-decimal list-inside">
+                                                                            <li>Driver: <span className="text-gray-600 font-medium">{x?.driver}</span></li>
+                                                                            <li>Car: <span className="text-gray-600 font-medium">{x?.car}</span></li>
+                                                                            <li className="cursor-pointer" onClick={() => handleChecklistSummaryRowClick('spare_wheel')}>Spare wheel: <span className={`${x?.spare_wheel === 'Pass' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>{x?.spare_wheel}</span></li>
+                                                                            {/* Conditionally show the reason if the row is open */}
+                                                                            {openChecklistSummaryRow === 'spare_wheel' && x?.spare_wheel !== "Pass" && (
+                                                                                <p className="text-gray-500">Reason: {x?.spare_wheel_fail_reason}</p>
+                                                                            )}
+                                                                            <li>Reason for use: <span className="text-gray-600 font-medium">{x?.reason_for_use}</span></li>
+                                                                            <li>Mileage start: <span className="text-gray-600 font-medium">{x?.mileage}</span></li>
+                                                                            <li>Mileage end: <span className="text-gray-600 font-medium">{x?.mileage_after}</span></li>
+                                                                            <li>Created by: <span className="text-gray-600 font-medium">{x?.created_by}</span></li>
+                                                                            <li>Created at: <span className="text-gray-600 font-medium">{x?.created_at}</span></li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </AccordionContent>
+                                                            </AccordionItem>
+                                                        </Accordion>
+                                                    ))
+                                                    : (
+                                                        <p>No checklist found for today.</p>
+                                                    )}
+
+                                            </TabsContent>
+                                            <TabsContent value="images" >
+                                                {/* <Carousel>
+                                                    <CarouselContent>
+                                                        <CarouselItem>...</CarouselItem>
+                                                        <CarouselItem>...</CarouselItem>
+                                                        <CarouselItem>...</CarouselItem>
+                                                    </CarouselContent>
+                                                    <CarouselPrevious />
+                                                    <CarouselNext />
+                                                </Carousel> */}
+
+
+                                                {/* 
+                                                <Carousel className="w-full max-w-sm mx-auto">
+                                                    <CarouselContent className="-ml-1">
+                                                        {Array.from({ length: 5 }).map((_, index) => (
+                                                            <CarouselItem key={index} className="pl-1 md:basis-1/2 lg:basis-1/3">
+                                                                <div className="p-1">
+                                                                    <Card>
+                                                                        <CardContent className="flex aspect-square items-center justify-center p-6">
+                                                                            <span className="text-2xl font-semibold">{index + 1}</span>
+                                                                        </CardContent>
+                                                                    </Card>
+                                                                </div>
+                                                            </CarouselItem>
+                                                        ))}
+                                                    </CarouselContent>
+                                                    <CarouselPrevious />
+                                                    <CarouselNext />
+                                                </Carousel> */}
+
+                                                <div className="p-1">
+                                                    {todaysCheckList?.length > 0 ? todaysCheckList?.flatMap((item, itemIndex) =>
+                                                        item?.image_urls?.map((url: any, urlIndex: any) => (
+                                                            <Card key={`${itemIndex}-${urlIndex}`}>
+                                                                <CardContent className="flex aspect-square items-center justify-center p-6 overflow-hidden">
+                                                                    {url ?
+                                                                        <Image
+                                                                            className="w-full h-full rounded-md object-contain"
+                                                                            alt={`Checklist image ${urlIndex + 1}`}
+                                                                            src={url}
+                                                                        /> : null}
+                                                                </CardContent>
+                                                            </Card>
+                                                        ))
+                                                    ) : null}
+                                                </div>
+                                            </TabsContent>
+
+                                            <TabsContent value="history">
+                                                {oldCheckList.length > 0 ? (
+                                                    <ul>
+                                                        {oldCheckList.map((checklist) => (
+                                                            <li key={checklist.unique_id}>
+                                                                {checklist.formatted_created_at}: {checklist.reason_for_use}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                ) : (
+                                                    <p>No previous checklists available.</p>
+                                                )}
+                                            </TabsContent>
+                                        </Tabs>
                                     </DialogContent>
                                 </Dialog>
                             }

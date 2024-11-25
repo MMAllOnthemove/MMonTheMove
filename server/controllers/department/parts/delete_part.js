@@ -4,7 +4,7 @@ const deletePart = async (req, res) => {
     const { id } = req.params;
     try {
         const { rows } = await pool.query(
-            "DELETE FROM parts_for_tasks WHERE id = $1",
+            "DELETE FROM parts_for_tasks WHERE id = $1 returning *",
             [id]
         );
         if (rows.length === 0) {
