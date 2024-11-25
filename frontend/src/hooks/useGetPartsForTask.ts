@@ -6,34 +6,34 @@ const useFetchPartsForTask = (id: string) => {
     const [taskPartsList, setData] = useState<TTaskParts[]>([]);
     const [taskPartsListLoading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            if (!id) return; // Exit if id is undefined
-            try {
-                setLoading(true);
-                const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/parts/${id}`,
-                    {
-                        withCredentials: true,
-                    }
-                );
-                if (response?.data) {
-                    setData([...response?.data]);
+    const refetch = async () => {
+        if (!id) return; // Exit if id is undefined
+        try {
+            setLoading(true);
+            const response = await axios.get(
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/parts/${id}`,
+                {
+                    withCredentials: true,
                 }
-            } catch (error: any) {
-                if (error?.response?.data?.error) {
-                    // toast.error(`${error?.response?.data?.error}`);
-                    // console.error(`${error?.response?.data?.error}`);
-                }
-            } finally {
-                setLoading(false);
+            );
+            if (response?.data) {
+                setData(response?.data);
             }
-        };
+        } catch (error: any) {
+            if (error?.response?.data?.error) {
+                console.error(`${error?.response?.data?.error}`);
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        fetchData();
+    useEffect(() => {
+        refetch();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
-    return { taskPartsList, taskPartsListLoading };
+    return { taskPartsList, taskPartsListLoading, refetch };
 };
 
 export default useFetchPartsForTask;

@@ -5,6 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.6] - 2024-11-23
+
+### Added
+
+-   allow voiding warranty from the app to repairshopr
+-   add parts as comment from the app repairshopr
+-   change parts status from the app to repairshopr
+
+### Fixed
+
+-   deleting parts refreshes the list
+-   delete parts from task, do not reload window
+-   adding part refreshes the list immediately
+
+## [0.0.5] - 2024-11-22
+
+### Added
+
+-   Add a star or prefix to show where comment came from (displayed on rs)
+
+### Fixed
+
+-   Sort by date booked HHP tasks
+-   ADH/IW
+
+## [0.0.4] - 2024-11-21
+
+### Added
+
+-   Open navlinks on hover
+-   total to units booked agents table
+-   set warranty automatic
+-   checklists, show cars, clicking cars gives you tabs for checklist
+
+### Fixed
+
+-   check if logged in user matches the engineer name, so only engineer can set auto assess
+-   Update QC comment regardless of fail/pass
+
 ## [0.0.3] - 2024-11-20
 
 ### Added

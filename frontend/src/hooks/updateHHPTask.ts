@@ -28,7 +28,8 @@ const useUpdateHHPTask = () => {
                     withCredentials: true,
                 }
             );
-            window.location.reload();
+            // todo: uncomment if test fails
+            // window.location.reload();
             return response.data;
         } catch (error: any) {
             if (error) toast.error(error?.response?.data?.error);

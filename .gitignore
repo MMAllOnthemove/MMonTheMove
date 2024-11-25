@@ -16,3 +16,8 @@ frontend/src/app/ignore/page.tsx
 frontend/src/hooks/useFetchJobsFromRepairshopr.ts
 .github/workflows/github-actions.yml
 frontend/src/app/search_ticket/page.tsx
+frontend/src/app/audit_checklists/page.tsx
+frontend/src/app/strip_char_add_images_checklist/page.tsx
+frontend/src/app/strip_char/page.tsx
+frontend/src/app/hhp_tasks_auto_update/page.tsx
+frontend/src/app/hhp_tasks_audit/page.tsx

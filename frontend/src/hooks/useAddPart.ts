@@ -1,3 +1,4 @@
+import { TAddPart } from "@/lib/types";
 import axios from "axios";
 import { useState } from "react";
 
@@ -7,16 +8,6 @@ interface ErrorMessages {
     part_desc?: string;
     part_quantity?: string;
 }
-
-type TAddPart = {
-    task_row_id: string;
-    ticket_number: string;
-    part_name: string;
-    part_desc: string;
-    part_quantity: number | undefined;
-    created_at: string;
-    created_by: string;
-};
 
 const useAddPart = () => {
     const [addPartLoading, setLoading] = useState(false); // Loading state
@@ -35,7 +26,6 @@ const useAddPart = () => {
             );
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
-                window.location.reload();
             }
         } catch (error: any) {
             if (error?.response.data?.message) {

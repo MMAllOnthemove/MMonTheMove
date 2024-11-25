@@ -42,10 +42,12 @@ const AddPart = async (req, res) => {
                 created_by,
             ]
         );
+        console.log(rows);
         return res.status(201).json({
             message: "Part added",
         });
     } catch (error) {
+        console.log(error);
         // to get error for a specific field
         const errors = {};
         if (error.inner) {

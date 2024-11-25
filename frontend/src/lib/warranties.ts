@@ -9,7 +9,7 @@ const warranties = [
     },
     {
         id: 3,
-        warranty: "ADH",
+        warranty: "ADH/IW",
     },
 ];
 

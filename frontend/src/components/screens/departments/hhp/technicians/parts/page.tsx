@@ -33,7 +33,9 @@ type TPartsHHPUpdate = {
     setPartsRequestedDateProp: (data: string) => void;
     setPartsIssuedDateProp: (data: string) => void;
     addPartLoading: boolean;
+    addPartOnRepairshoprLoading: boolean;
     submitPartsUpdateLoading: boolean;
+    addPartOnRepairshopr: (data: React.SyntheticEvent) => void;
     addPart: (data: React.SyntheticEvent) => void;
     submitPartsUpdate: (data: React.SyntheticEvent) => void;
     part_data: TTaskParts[];
@@ -45,7 +47,7 @@ type TPartsHHPUpdate = {
         part_quantity?: string;
     }
 }
-const Parts = ({ parts_orderedProp, parts_pendingProp, deletePartLoading, parts_issuedProp, part_data, handleDelete, parts_requestedProp, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsPendingProp, setPartsPendingDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, submitPartsUpdate, errors }: TPartsHHPUpdate) => {
+const Parts = ({ parts_orderedProp, parts_pendingProp, deletePartLoading, parts_issuedProp, part_data, handleDelete, parts_requestedProp, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsPendingProp, setPartsPendingDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, errors }: TPartsHHPUpdate) => {
     const handlePartsOrdered = (e: React.SyntheticEvent | any) => {
         if (!parts_orderedProp) {
             setPartsOrderedProp(e);
@@ -86,12 +88,12 @@ const Parts = ({ parts_orderedProp, parts_pendingProp, deletePartLoading, parts_
                         <div className="grid items-center grid-cols-[3fr_1fr] gap-2 my-3">
 
                             <div>
-                                <Input type="text" className="text-xs" placeholder="Part desc" name="part_desc" disabled value={part_desc} onChange={(e) => setPartDesc(e.target.value)} />
+                                <Input type="text" className="text-xs" placeholder="Part desc" name="part_desc" disabled value={part_desc || ''} onChange={(e) => setPartDesc(e.target.value)} />
                                 {errors.part_desc && <p className="text-sm text-red-500 font-medium">{errors.part_desc}</p>}
 
                             </div>
                             <div>
-                                <Input type="number" placeholder="Quantity" name="part_quantity" size={1} minLength={1} maxLength={1} value={part_quantity} onChange={(e) => setPartQuantity(parseInt(e.target.value, 10))} />
+                                <Input type="number" placeholder="Quantity" name="part_quantity" size={1} minLength={1} maxLength={1} value={part_quantity || 0} onChange={(e) => setPartQuantity(parseInt(e.target.value, 10))} />
                                 {errors.part_quantity && <p className="text-sm text-red-500 font-medium">{errors.part_quantity}</p>}
 
                             </div>
@@ -105,11 +107,19 @@ const Parts = ({ parts_orderedProp, parts_pendingProp, deletePartLoading, parts_
                     <AccordionTrigger>Added parts</AccordionTrigger>
                     <AccordionContent>
 
-                        {part_data && [...part_data]?.map((item) => (
-                            <p className="flex items-center justify-between border-b border-grey-50" key={item.id}>
-                                {item.part_name} <button type="button" disabled={deletePartLoading} onClick={() => handleDelete(item.id)}>{deletePartLoading ? '...' : <XMarkIcon className="h-4 w-4" />}</button>
-                            </p>
-                        ))}
+                        <div>
+                            {part_data?.length > 0 ? part_data?.map((item) => (
+                                <p className="flex items-center justify-between border-b border-grey-50" key={item.id}>
+                                    {item.part_name} <button type="button" disabled={deletePartLoading} onClick={() => handleDelete(item.id)}>{deletePartLoading ? '...' : <XMarkIcon className="h-4 w-4" />}</button>
+                                </p>
+                            )) : "No parts for this task"}
+                            {part_data?.length > 0 ? (
+                                <div className="flex items-center justify-between">
+                                    <Button type="button" className="outline-none mt-3 text-xs bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985]" onClick={addPartOnRepairshopr} disabled={addPartOnRepairshoprLoading}>{addPartOnRepairshoprLoading ? 'Loading...' : 'Comment these parts'}</Button>
+                                    <p className="text-sm font-medium text-gray-800">Total: {part_data?.length}</p>
+                                </div>
+                            ) : null}
+                        </div>
                     </AccordionContent>
                 </AccordionItem>
 
@@ -137,7 +147,7 @@ const Parts = ({ parts_orderedProp, parts_pendingProp, deletePartLoading, parts_
                                     htmlFor="parts_ordered"
                                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                                 >
-                                    Parts requested?
+                                    Parts requested 1st approval?
                                 </label>
                             </div>
                         </div>

@@ -1,4 +1,5 @@
 const sftp = require("ssh2-sftp-client");
+const cors = require("cors");
 
 const sftpConfig = {
     host: `${process.env.SFTP_HOST}`,
@@ -8,6 +9,7 @@ const sftpConfig = {
 };
 
 const sftpClient = new sftp();
+
 
 const uploadFile = async (req, res) => {
     try {

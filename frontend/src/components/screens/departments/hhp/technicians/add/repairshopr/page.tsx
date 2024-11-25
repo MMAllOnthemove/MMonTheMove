@@ -14,13 +14,6 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import useAddHHPTask from '@/hooks/useAddHHPTask';
 import useFetchEngineer from '@/hooks/useFetchEngineers';
 import useGetStores from '@/hooks/useGetStores';
@@ -28,7 +21,6 @@ import useUserLoggedIn from '@/hooks/useGetUser';
 import useRepairshoprTicket from '@/hooks/useRepairshoprTicket';
 import { datetimestamp } from '@/lib/date_formats';
 import { cn } from "@/lib/utils";
-import warranties from '@/lib/warranties';
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
@@ -84,6 +76,8 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                 },
             });
             if (data?.tickets[0]?.number == searchTicket) {
+                if (data?.tickets[0]["properties"]["Warranty"] === '75130') setWarranty('IW')
+                if (data?.tickets[0]["properties"]["Warranty"] === '69477') setWarranty('OOW')
                 setServiceOrderNo(data?.tickets[0]["properties"]["Service Order No."])
                 setTicketNumber(data?.tickets[0]?.number)
                 setRepairshoprJobId(data?.tickets[0]?.id)
@@ -213,21 +207,6 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                 <div className="mb-3">
                     <Label htmlFor="imei">IMEI</Label>
                     <Input type="text" name="imei" defaultValue={loadApi ? 'Loading...' : imei} disabled aria-disabled />
-                </div>
-                <div className="mb-3">
-
-                    <Select name="warranty" value={warranty} onValueChange={(e) => setWarranty(e)}>
-                        <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select warranty" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {warranties.map((dep) => (
-                                <SelectItem key={dep.id} value={`${dep.warranty}`}>{`${dep.warranty}`}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    {addHHPTaskErrors.warranty && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.warranty}</p>}
-
                 </div>
                 <div className="mb-3">
                     <Popover open={engineersComboBox} onOpenChange={setEngineerComboBox}>
