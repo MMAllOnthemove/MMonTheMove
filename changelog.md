@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.7] - 2024-11-27
+
+### Added
+
+-   show checklist images
+-   store checklist image address to db and just call it
+-   picture of the disk each time checklist image are taken
+-   allow adding checklist files images as update
+-   Details of the phone in more info (hhp tasks)
+-   added license_disc_expiry, next_service_kms
+-   show the above columns in the checklist table
+-   Red when service 30 days prior license or service
+-   License disk expiration date
+
+### Fixed
+
+-   showed hhp status select input twice
+-   yup validation accept 15 mb files
+-   cors error when uploading files in production
+-   update checklists mileage after
+-   Last updated works fine
+-   add tasks hhp has a required error
+-   collected and colleted_date columns
+-   allow only admin to update checklist next_service_date and mileage_after
+-   edit row is now working when clicking edit button instead of the whole row
+
 ## [0.0.6] - 2024-11-23
 
 ### Added

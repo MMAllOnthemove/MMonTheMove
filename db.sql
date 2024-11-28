@@ -291,7 +291,10 @@ create table vehicle_checklist(
     tools FAIL_PASS_ENUM,
     tools_fail_reason text,
     created_at TIMESTAMP,
-    updated_at text
+    updated_at text,
+    license_disc_expiry text,
+    next_service_kms text;
+
 );
 
 create table vehicle_checklist_images (
@@ -300,7 +303,9 @@ create table vehicle_checklist_images (
     vehicle_checklist_id bigint REFERENCES vehicle_checklist(id),
     image_url text,
     created_at TIMESTAMP
-) -- Insert fake data into drivers table
+);
+
+-- Insert fake data into drivers table
 -- INSERT INTO drivers (driver_firstname, driver_lastname, created_at, updated_at)
 -- VALUES 
 -- ('John', 'Doe', NOW() - INTERVAL '30 days', NOW() - INTERVAL '15 days'),

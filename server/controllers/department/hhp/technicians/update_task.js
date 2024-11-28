@@ -3,7 +3,6 @@ import { pool } from "../../../../db.js";
 export const UpdateTask = async (req, res) => {
     const { id } = req.params; // Assuming the ID is passed in the URL
     const changes = req.body; // Get the changed fields from the frontend
-
     // Check if there are changes
     if (Object.keys(changes).length === 0) {
         return res.status(400).json({ error: "No changes provided" });
@@ -21,7 +20,6 @@ export const UpdateTask = async (req, res) => {
     const query = `UPDATE technician_tasks SET ${setClause} WHERE id = $${
         keys.length + 1
     } RETURNING *`;
-
     // Add the `id` to the `values` array to use for the WHERE clause
     values.push(id);
 

@@ -44,4 +44,10 @@ export const menuItems = [
             { id: 11, item: "Add driver", pageRoute: "/drivers" },
         ],
     },
+    {
+        label: "Create ticket",
+        sublinks: [
+            { id: 12, item: "Repairshopr", pageRoute: "/create_ticket/rs" },
+        ],
+    },
 ];

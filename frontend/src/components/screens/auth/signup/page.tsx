@@ -60,7 +60,6 @@ const SignupScreen = () => {
         const createdAt = datetimestamp;
         const payload = { fullName, email, repairshopr_id, password, createdAt };
         await signup(payload);
-        // console.log(repairshopr_id);
 
     }
     return (

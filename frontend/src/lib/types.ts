@@ -89,6 +89,7 @@ export type VehicleInspection = {
     safety_belts_fail_reason: string;
     engine_start_stop: string;
     engine_start_stop_fail_reason: string;
+    tail_lights_fail_reason: string;
     final_comment: string;
     next_service_date: Date;
     cost_of_service: number;

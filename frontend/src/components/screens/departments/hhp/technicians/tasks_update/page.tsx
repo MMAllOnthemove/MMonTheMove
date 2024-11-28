@@ -49,6 +49,9 @@ type TTasksUpdate = {
     hhp_tasks_loading: boolean;
     engineer: string;
     warranty: string;
+    model: string;
+    imei: string;
+    serial_number: string;
     engineersComboBox: boolean;
     setEngineer: (data: string) => void;
     setWarranty: (data: string) => void;
@@ -61,7 +64,7 @@ type TTasksUpdate = {
     setHHPFilesProp: (data: ChangeEvent<HTMLInputElement>) => void;
     submitHHPFiles: (data: React.SyntheticEvent) => void;
 }
-const TasksUpdate = ({ assessment_datetime, hhp_tasks_loading, setHHPFilesProp, submitHHPFiles, service_order_noProp, reparshoprCommentProp, unit_statusProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked_datetime, engineer, engineersComboBox, setEngineerComboBox, setUserId, setEngineer, warranty, setWarranty }: TTasksUpdate) => {
+const TasksUpdate = ({ assessment_datetime, hhp_tasks_loading, model, imei, serial_number, setHHPFilesProp, submitHHPFiles, service_order_noProp, reparshoprCommentProp, unit_statusProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked_datetime, engineer, engineersComboBox, setEngineerComboBox, setUserId, setEngineer, warranty, setWarranty }: TTasksUpdate) => {
     const { engineersList } = useFetchEngineer()
     const engineerListFomatted = engineersList?.map((user) => ({
         repairshopr_id: user?.repairshopr_id,
@@ -81,18 +84,6 @@ const TasksUpdate = ({ assessment_datetime, hhp_tasks_loading, setHHPFilesProp, 
             <div className="mb-3">
                 <Label htmlFor="reparshoprComment">Repairshopr note</Label>
                 <Textarea value={reparshoprCommentProp} name="reparshoprComment" onChange={setRepairshoprCommentProp} />
-            </div>
-            <div className="mb-3">
-                <Select name="status" value={unit_statusProp} onValueChange={setRepairshoprStatusProp}>
-                    <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {repairshopr_statuses.map((dep) => (
-                            <SelectItem key={dep.id} value={`${dep._status}`}>{dep._status}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
             </div>
             <div className="mb-3">
                 <Select name="status" value={unit_statusProp} onValueChange={setRepairshoprStatusProp}>
@@ -174,12 +165,15 @@ const TasksUpdate = ({ assessment_datetime, hhp_tasks_loading, setHHPFilesProp, 
                             <ul className="list-decimal list-inside">
                                 <li>Booked date and time: <span className="text-gray-600 font-medium">{moment(date_booked_datetime).format("YYYY-MM-DD HH:mm:ss")}</span></li>
                                 <li>Assessment date and time: <span className="text-gray-600 font-medium">{assessment_datetime ? moment(assessment_datetime).format("YYYY-MM-DD HH:mm:ss") : null}</span></li>
+                                <li>Model: <span className="text-gray-600 font-medium">{model}</span></li>
+                                <li>IMEI: <span className="text-gray-600 font-medium">{imei}</span></li>
+                                <li>Serial number: <span className="text-gray-600 font-medium">{serial_number}</span></li>
                             </ul>
                         </div>
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-2">
-                    <AccordionTrigger>Attachments</AccordionTrigger>
+                    <AccordionTrigger>Add attachments</AccordionTrigger>
                     <AccordionContent>
                         <div className="flex items-center">
                             <Input type="file" multiple className="my-3" onChange={setHHPFilesProp} />

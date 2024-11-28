@@ -3,8 +3,6 @@ import { THHPTasks } from "@/lib/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-
-
 const useHHPTasks = () => {
     const [hhpTasks, setHHPTasks] = useState<THHPTasks[]>([]);
     const [hhpTasksLoading, setHHPTasksLoading] = useState(true);
@@ -22,6 +20,7 @@ const useHHPTasks = () => {
                 if (response?.data) {
                     setHHPTasks(response.data);
                 }
+                return response?.data;
             } catch (error) {
                 if (process.env.NODE_ENV !== "production") {
                     console.error("Error fetching HHP tasks:", error);

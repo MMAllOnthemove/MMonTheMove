@@ -1,14 +1,7 @@
 import { Textarea } from '@/components/ui/textarea';
 import React, { ChangeEvent } from 'react';
 import FormWrapper from './wrapper';
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+
 interface ISectionNine {
 
     hass: string;
@@ -20,14 +13,11 @@ interface ISectionNine {
     tools_fail_reason: string;
     setToolsFailReason: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
 
-    checklist_FilesLoadingProp: boolean;
-    setChecklistFilesProp: (data: ChangeEvent<HTMLInputElement>) => void;
-    submitChecklistFiles: (data: React.SyntheticEvent) => void;
 }
 
 
 
-const SectionNine: React.FC<ISectionNine> = ({ hass, setHass, hass_fail_reason, setHassFailReason, tools, setTools, tools_fail_reason, setToolsFailReason, checklist_FilesLoadingProp, setChecklistFilesProp, submitChecklistFiles }) => {
+const SectionNine: React.FC<ISectionNine> = ({ hass, setHass, hass_fail_reason, setHassFailReason, tools, setTools, tools_fail_reason, setToolsFailReason}) => {
     return (
         <FormWrapper title='Accessories & attachments'>
 
@@ -86,17 +76,7 @@ const SectionNine: React.FC<ISectionNine> = ({ hass, setHass, hass_fail_reason, 
                 </div>
 
 
-                <Accordion type="single" collapsible>
-                    <AccordionItem value="item-1">
-                        <AccordionTrigger>Attachments</AccordionTrigger>
-                        <AccordionContent>
-                            <div className="flex items-center">
-                                <Input type="file" multiple className="my-3" onChange={setChecklistFilesProp} />
-                                <Button className="ml-3" disabled={checklist_FilesLoadingProp} onClick={submitChecklistFiles}>{checklist_FilesLoadingProp ? 'Uploading' : 'Attach'}</Button>
-                            </div>
-                        </AccordionContent>
-                    </AccordionItem>
-                </Accordion>
+                
             </div>
 
 

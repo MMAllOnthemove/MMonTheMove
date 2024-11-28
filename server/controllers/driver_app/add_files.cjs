@@ -2,8 +2,18 @@ const sftp = require("ssh2-sftp-client");
 const path = require("path");
 const fs = require("fs");
 const yup = require("yup");
-
+const pg = require("pg");
 const moment = require("moment");
+
+// create a connection to db as we cannot import a module in a common js file
+
+const pool = new pg.Pool({
+    user: process.env.NEXT_PUBLIC_DB_USER,
+    host: process.env.NEXT_PUBLIC_DB_HOST,
+    database: process.env.NEXT_PUBLIC_DB_NAME,
+    password: process.env.NEXT_PUBLIC_DB_PASSWORD,
+    port: process.env.NEXT_PUBLIC_DB_PORT,
+});
 
 const sftpConfig = {
     host: `${process.env.SFTP_HOST}`,
@@ -18,8 +28,8 @@ const fileUploadSchema = yup.object().shape({
         .required("Files are required")
         .max(15, "Maximum 15 files allowed")
         .of(
-            yup.mixed().test("fileSize", "File size exceeds 10MB", (value) => {
-                return value.size <= 10 * 1024 * 1024;
+            yup.mixed().test("fileSize", "File size exceeds 15MB", (value) => {
+                return value.size <= 15 * 1024 * 1024;
             })
         ),
 });
@@ -37,12 +47,11 @@ const date = moment(datetimestamp).format("YYYY-MM-DD");
 
 const uploadChecklistFiles = async (req, res) => {
     try {
-        const { car } = req.body;
+        const { car, vehicle_checklist_id, created_at } = req.body;
         // Check if files are present in the request
         if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
             return res.status(400).json({ error: "No files uploaded" });
         }
-        // const { files } = req.files;
         // Validate files using Yup schema
         await fileUploadSchema.validate({ files: req.files });
         // connect to server
@@ -56,7 +65,7 @@ const uploadChecklistFiles = async (req, res) => {
                 // e.g. we have a directory inside 'files' called 'driver_app_checklists'
                 // we will now reference it as https://url.com/files/driver_app_checklists/filename
 
-                const remotePath = `/root/uploads/driver_app_checklists/${car}%${date}-${file.originalname}`;
+                const remotePath = `/root/uploads/driver_app_checklists/${car}-${date}-${file.originalname}`;
                 try {
                     await sftpClient.put(file.path, remotePath);
 
@@ -70,8 +79,15 @@ const uploadChecklistFiles = async (req, res) => {
                                     err
                                 );
                     });
+                    // the file being added
+                    const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/driver_app_checklists/${car}-${date}-${file.originalname}`;
+                    // add the file url of this car into our db
+                    await pool.query(
+                        "INSERT INTO vehicle_checklist_images (vehicle_checklist_id, image_url, created_at) values ($1, $2, $3)",
+                        [vehicle_checklist_id, fileBeingAdded, created_at]
+                    );
                     // Construct URL for uploaded file
-                    return `https://repair.mmallonthemove.co.za/files/driver_app_checklists/${car}%${date}-${file.originalname}`;
+                    return `https://repair.mmallonthemove.co.za/files/driver_app_checklists/${car}-${date}-${file.originalname}`;
                 } catch (uploadError) {
                     console.error("Error uploading file:", uploadError);
                     // throw new Error(
