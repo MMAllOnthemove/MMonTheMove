@@ -22,12 +22,12 @@ const TableBody = ({ table, handleRowClick }: TTableBody) => {
             {table.getRowModel().rows.map((row: any) => (
                 <tr
                     key={row.id}
-                    onClick={() => handleRowClick(row)}
                     className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]"
                 >
                     <td className="px-4 py-3 font-medium text-sm max-w-full">
                         <Button
                             type="button"
+                            onClick={() => handleRowClick(row)}
                             role="button"
                             className="text-blue-600 dark:text-blue-500 hover:underline bg-transparent shadow-none outline-none focus:bg-transparent active:bg-transparent hover:bg-transparent"
                         >

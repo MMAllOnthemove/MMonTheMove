@@ -18,8 +18,8 @@ const fileUploadSchema = yup.object().shape({
         .required("Files are required")
         .max(15, "Maximum 15 files allowed")
         .of(
-            yup.mixed().test("fileSize", "File size exceeds 10MB", (value) => {
-                return value.size <= 10 * 1024 * 1024;
+            yup.mixed().test("fileSize", "File size exceeds 15MB", (value) => {
+                return value.size <= 15 * 1024 * 1024;
             })
         ),
 });

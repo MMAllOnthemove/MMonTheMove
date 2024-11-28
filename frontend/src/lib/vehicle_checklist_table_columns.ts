@@ -14,15 +14,23 @@ const columns: TColumns = [
         accessorKey: "formatted_created_at",
     },
     {
-        header: "Next service",
+        header: "Next service date",
         accessorKey: "formatted_next_service_date",
     },
     {
-        header: "KMs before",
+        header: "Next service kms",
+        accessorKey: "next_service_kms",
+    },
+    {
+        header: "Disc expiry",
+        accessorKey: "license_disc_expiry",
+    },
+    {
+        header: "Mileage before",
         accessorKey: "mileage",
     },
     {
-        header: "KMs after",
+        header: "Mileage after",
         accessorKey: "mileage_after",
     },
 ];

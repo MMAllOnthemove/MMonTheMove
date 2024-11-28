@@ -5,11 +5,6 @@ type TTableBody = {
     booking_agent: string | undefined,
     addAgentTaskLoading: boolean;
     addTask: (data: React.SyntheticEvent) => void;
-    // errors?: {
-    //     ticket_number?: string;
-    //     created_by?: string;
-    //     booking_agent?: string;
-    // }
 }
 const TableBody = ({ ticket_number, booking_agent, addAgentTaskLoading, addTask }: TTableBody) => {
     return (

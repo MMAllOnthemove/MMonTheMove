@@ -27,14 +27,14 @@ const { router: fileRoutes } = QCfileRoutesModule;
 app.use(
     cors({
         origin: ["http://localhost:3000"],
-        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+        credentials: true, // Allow credentials (cookies, authorization headers)
     })
 );
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet());
-
 app.use(cookieParser());
 app.use(express.json()); // Handle JSON requests
 app.use(compression());

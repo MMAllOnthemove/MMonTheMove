@@ -50,8 +50,7 @@ const useAddChecklist = () => {
                     withCredentials: true,
                 }
             );
-
-            return response;
+            if (response?.status) return response?.data;
         } catch (error: any) {
             if (error?.response?.data?.message) {
                 toast.error(`${error?.response?.data?.message}`);

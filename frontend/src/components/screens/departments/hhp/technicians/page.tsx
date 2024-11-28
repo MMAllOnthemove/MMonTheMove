@@ -110,6 +110,9 @@ const TechniciansScreen = () => {
     const [repairshoprItemCondition, setRepairshoprItemCondition] = useState<string>("")
     const [repairshoprIMEI, setRepairshoprIMEI] = useState<string>("")
 
+    const [collected, setCollected] = useState(false)
+    const [collected_date, setCollectedDate] = useState("")
+
 
     // fetch repairshopr ticket by id so we an update warranty (it requires so much parameters just for that)
     const fetchRSTicketDataById = async (repairId: string) => {
@@ -225,7 +228,6 @@ const TechniciansScreen = () => {
         setModifyTaskModal(false);
     };
     const handleDelete = async (id: string | undefined) => {
-        // console.log(id)
         await deletePart(id);
         refetch(); // Refresh the list of parts
     };
@@ -308,7 +310,6 @@ const TechniciansScreen = () => {
 
     const [qcFiles, setQCFiles] = useState([]);
     const [qcFilesUploading, setQCFilesUploading] = useState(false);
-    // const [qcFilesUrls, setQCFilesUrls] = useState([]);
 
     const handleQCFiles = (event: any) => {
         setQCFiles(event.target.files);
@@ -432,6 +433,8 @@ const TechniciansScreen = () => {
             }
         }
     }
+
+
     // Update the techs tab
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
@@ -456,30 +459,37 @@ const TechniciansScreen = () => {
         // this will be essenstial to also update the warranty in our system if user voids it
         if (repairshoprWarranty === "69476" || 69476) setWarranty('IW')
         if (repairshoprWarranty === "69477" || 69477) setWarranty('OOW')
-
+        if (unit_status === "Resolved") {
+            setCollected(true);
+            setCollectedDate(datetimestamp)
+        }
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no, unit_status, assessment_date, updated_at, repairshopr_id, warranty
+            id, service_order_no, unit_status, assessment_date, updated_at, engineer, warranty, collected, collected_date
         }
         const changes = findChanges(modifyTaskModal, updatePayload)
         const changeIdOnRepairshoprPayload = {
             "user_id": repairshopr_id,
         }
         // this will update repairshopr warranty using the imei, backup, item condition, warranty
+        // targetting both keys with whitespace and ones without
         const updateTicketWarrantyPayload = {
             "properties": {
                 "IMEI": repairshoprIMEI,
                 "Warranty": repairshoprWarranty,
+                "Warranty ": repairshoprWarranty,
                 "Backup Requires": repairshoprBackupRequires,
+                "Backup Requires ": repairshoprBackupRequires,
+                "Item Condition": repairshoprItemCondition,
                 "Item Condition ": repairshoprItemCondition
             }
         }
         try {
-            if (unit_status !== "" || unit_status !== null || unit_status !== undefined) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, statusPayload)
-            if (repairshopr_id || repairshopr_id !== null || repairshopr_id !== undefined) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, changeIdOnRepairshoprPayload)
-            if (repairshoprWarranty || repairshoprWarranty !== null || repairshoprWarranty !== undefined) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, updateTicketWarrantyPayload)
+            if (unit_status !== "" || unit_status !== null || unit_status !== undefined) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, statusPayload);
+            if (repairshopr_id || repairshopr_id !== null || repairshopr_id !== undefined) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, changeIdOnRepairshoprPayload);
+            if (repairshoprWarranty || repairshoprWarranty !== null || repairshoprWarranty !== undefined) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, updateTicketWarrantyPayload);
+            if (reparshoprComment) await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload);
 
-            if (reparshoprComment) await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
             if (Object.keys(changes).length > 0) {
                 await updateHHPTask(id, changes)
                 setServiceOrder("")
@@ -728,7 +738,7 @@ const TechniciansScreen = () => {
                                                 <TabsTrigger value="Parts">Parts</TabsTrigger>
                                             </TabsList>
                                             <TabsContent value="Techs">
-                                                <TasksUpdate assessment_datetime={modifyTaskModal?.assessment_datetime} hhp_tasks_loading={hhpFilesUploading} setHHPFilesProp={handleHHPFiles} submitHHPFiles={submitHHPFiles} date_booked_datetime={modifyTaskModal?.date_booked_datetime} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={(e) => setRepairshoprStatus(e)} submitTasksUpdate={handleSubmit} engineer={engineer} engineersComboBox={engineersComboBox} setEngineer={setEngineer} setEngineerComboBox={setEngineerComboBox} setUserId={setUserId} warranty={warranty} setWarranty={setWarranty} />
+                                                <TasksUpdate assessment_datetime={modifyTaskModal?.assessment_datetime} hhp_tasks_loading={hhpFilesUploading} setHHPFilesProp={handleHHPFiles} submitHHPFiles={submitHHPFiles} date_booked_datetime={modifyTaskModal?.date_booked_datetime} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={(e) => setRepairshoprStatus(e)} submitTasksUpdate={handleSubmit} engineer={engineer} engineersComboBox={engineersComboBox} setEngineer={setEngineer} setEngineerComboBox={setEngineerComboBox} setUserId={setUserId} warranty={warranty} setWarranty={setWarranty} imei={modifyTaskModal?.imei} serial_number={modifyTaskModal?.serial_number} model={modifyTaskModal?.model} />
                                             </TabsContent>
                                             <TabsContent value="QC">
                                                 <QC qc_fail_reasonProp={qc_comment} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} qc_FilesLoadingProp={qcFilesUploading} setQCFilesProp={handleQCFiles} submitQCFiles={submitQCFiles} submitQC={handleQCSubmit} />

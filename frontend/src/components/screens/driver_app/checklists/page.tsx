@@ -6,6 +6,7 @@ import ManagementSearchForm from '@/components/search_field/page';
 import Sidebar from '@/components/sidebar/page';
 import Pagination from '@/components/table_pagination/page';
 import Image from 'next/image';
+import Link from 'next/link';
 
 import {
     Accordion,
@@ -39,6 +40,7 @@ import {
 import useUpdateChecklist from "@/hooks/updateChecklist";
 import useFetchChecklists from '@/hooks/useGetChecklists';
 import useUserLoggedIn from '@/hooks/useGetUser';
+import openInNewTab from '@/lib/open_new_tab';
 import { VehicleInspection } from "@/lib/types";
 import columns from '@/lib/vehicle_checklist_table_columns';
 import {
@@ -52,7 +54,8 @@ import {
 } from "@tanstack/react-table";
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import CreateChecklistScreen from '../create_checklist/page';
-
+import moment from 'moment';
+import isWithinTwoMonths from '@/lib/within_two_months';
 
 const ChecklistsScreen = () => {
     const { isLoggedIn, loading } = useUserLoggedIn()
@@ -62,6 +65,7 @@ const ChecklistsScreen = () => {
     const [next_service_date, setNextService] = useState<string>('')
     const [openClickedRow, setOpenClickedRow] = useState<boolean | null | any>();
 
+    const todaysDate = moment().format('YYYY-MM-DD');
     const [openChecklistSummaryRow, setOpenChecklistSummaryRow] = useState(null); // Track which row is open
     const { updateChecklist, loadUpdateChecklist } = useUpdateChecklist()
     const [todaysCheckList, setTodaysChecklist] = useState<VehicleInspection[]>([]);
@@ -143,6 +147,7 @@ const ChecklistsScreen = () => {
         onGlobalFilterChange: setFiltering,
     });
 
+
     return (
         <>
             {
@@ -202,8 +207,28 @@ const ChecklistsScreen = () => {
                                     </thead>
 
                                     <tbody className="z-0">
-                                        {table.getRowModel().rows.map((row: any) => (
-                                            <tr
+                                        {table.getRowModel().rows.map((row: any) =>
+                                        (
+                                            isWithinTwoMonths(todaysDate, row?.original?.license_disc_expiry) ? (
+                                                <tr
+                                                    key={row.id}
+                                                    onClick={() => handleRowClick(row)}
+                                                    className="border-b cursor-pointer hover:bg-red-800 bg-red-600"
+                                                >
+
+                                                    {row.getVisibleCells().map((cell: any) => (
+                                                        <td
+                                                            key={cell.id}
+                                                            className="px-4 py-3 font-medium text-sm text-gray-100"
+                                                        >
+                                                            {flexRender(
+                                                                cell.column.columnDef.cell,
+                                                                cell.getContext()
+                                                            )}
+                                                        </td>
+                                                    ))}
+                                                </tr>
+                                            ) : <tr
                                                 key={row.id}
                                                 onClick={() => handleRowClick(row)}
                                                 className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]"
@@ -446,47 +471,19 @@ const ChecklistsScreen = () => {
                                                     )}
 
                                             </TabsContent>
-                                            <TabsContent value="images" >
-                                                {/* <Carousel>
-                                                    <CarouselContent>
-                                                        <CarouselItem>...</CarouselItem>
-                                                        <CarouselItem>...</CarouselItem>
-                                                        <CarouselItem>...</CarouselItem>
-                                                    </CarouselContent>
-                                                    <CarouselPrevious />
-                                                    <CarouselNext />
-                                                </Carousel> */}
-
-
-                                                {/* 
-                                                <Carousel className="w-full max-w-sm mx-auto">
-                                                    <CarouselContent className="-ml-1">
-                                                        {Array.from({ length: 5 }).map((_, index) => (
-                                                            <CarouselItem key={index} className="pl-1 md:basis-1/2 lg:basis-1/3">
-                                                                <div className="p-1">
-                                                                    <Card>
-                                                                        <CardContent className="flex aspect-square items-center justify-center p-6">
-                                                                            <span className="text-2xl font-semibold">{index + 1}</span>
-                                                                        </CardContent>
-                                                                    </Card>
-                                                                </div>
-                                                            </CarouselItem>
-                                                        ))}
-                                                    </CarouselContent>
-                                                    <CarouselPrevious />
-                                                    <CarouselNext />
-                                                </Carousel> */}
-
-                                                <div className="p-1">
+                                            <TabsContent value="images">
+                                                <div className="p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                                     {todaysCheckList?.length > 0 ? todaysCheckList?.flatMap((item, itemIndex) =>
                                                         item?.image_urls?.map((url: any, urlIndex: any) => (
-                                                            <Card key={`${itemIndex}-${urlIndex}`}>
-                                                                <CardContent className="flex aspect-square items-center justify-center p-6 overflow-hidden">
+                                                            <Card key={`${itemIndex}-${urlIndex}`} className="cursor-pointer" onClick={() => openInNewTab(url)}>
+                                                                <CardContent className="relative w-full pb-[100%] overflow-hidden">
                                                                     {url ?
                                                                         <Image
-                                                                            className="w-full h-full rounded-md object-contain"
                                                                             alt={`Checklist image ${urlIndex + 1}`}
                                                                             src={url}
+                                                                            layout="fill"
+                                                                            objectFit="cover"
+                                                                            className="absolute top-0 left-0"
                                                                         /> : null}
                                                                 </CardContent>
                                                             </Card>
@@ -496,17 +493,15 @@ const ChecklistsScreen = () => {
                                             </TabsContent>
 
                                             <TabsContent value="history">
-                                                {oldCheckList.length > 0 ? (
-                                                    <ul>
-                                                        {oldCheckList.map((checklist) => (
-                                                            <li key={checklist.unique_id}>
-                                                                {checklist.formatted_created_at}: {checklist.reason_for_use}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                ) : (
-                                                    <p>No previous checklists available.</p>
-                                                )}
+                                                {oldCheckList &&
+
+                                                    oldCheckList.map((checklist, index) => (
+                                                        <Link href={`/drivers/checklists/${checklist?.id}`} target="_blank" rel="noopener noreferrer" key={checklist.unique_id} className="block cursor-pointer text-gray-700 font-medium pb-2 divide-y-2">
+                                                            {index + 1}   {checklist.car}: {checklist.formatted_created_at}
+                                                        </Link>
+                                                    ))
+
+                                                }
                                             </TabsContent>
                                         </Tabs>
                                     </DialogContent>
