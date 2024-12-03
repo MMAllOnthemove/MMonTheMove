@@ -36,7 +36,8 @@ const useFetchAgent = () => {
         };
 
         fetchData();
-    }, [bookingAgentList]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return { bookingAgentList, bookingAgentListLoading };
 };

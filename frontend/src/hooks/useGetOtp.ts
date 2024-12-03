@@ -41,7 +41,8 @@ const useGetOtp = () => {
         };
 
         fetchData();
-    }, [otp]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return { otp, otpLoading };
 };

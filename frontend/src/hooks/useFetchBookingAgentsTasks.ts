@@ -28,7 +28,8 @@ const useFetchAgentTasks = () => {
         };
 
         fetchData();
-    }, [bookingAgentTasksList]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return { bookingAgentTasksList, bookingAgentTasksListLoading };
 };

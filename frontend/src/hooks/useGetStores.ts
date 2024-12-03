@@ -9,8 +9,6 @@ type TStores = {
     store_name: string;
 };
 
-
-
 const useGetStores = () => {
     const [storesList, setData] = useState<TStores[]>([]);
     const [storesListLoading, setLoading] = useState(true);
@@ -36,7 +34,8 @@ const useGetStores = () => {
         };
 
         fetchData();
-    }, [storesList]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return { storesList, storesListLoading };
 };

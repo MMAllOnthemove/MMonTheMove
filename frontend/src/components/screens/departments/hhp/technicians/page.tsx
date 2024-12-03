@@ -81,7 +81,7 @@ const TechniciansScreen = () => {
     const { addThisPart, addPartLoading, addPartErrors } = useAddPart()
     const { getSOPartsInfo } = useIpaasSOPartsInfo()
     const { deletePart, deletePartLoading } = useDeletePart()
-    const [service_order_no, setServiceOrder] = useState<string | number | undefined>("")
+    const [service_order_no, setServiceOrder] = useState<string | number | any>("")
     const [reparshoprComment, setRepairshoprComment] = useState("")
     const [unit_status, setRepairshoprStatus] = useState<string>("")
     const [assessment_date, setAssessmentDate] = useState<string | undefined>("")
@@ -93,6 +93,7 @@ const TechniciansScreen = () => {
     const [openSortTableColumnsModal, setSortTableColumns] = useState(false)
     const [parts_ordered_date, setPartsOrderedDate] = useState<string | undefined>("")
     const [parts_ordered, setPartsOrdered] = useState<CheckedState | undefined>()
+    const [compensation, setCompensation] = useState<CheckedState | undefined>()
     const [parts_requested, setPartsRequested] = useState<CheckedState | undefined>()
     const [parts_requested_date, setPartsRequestedDate] = useState<string | undefined>("")
     const [qc_complete, setQCComplete] = useState<string>('')
@@ -109,6 +110,8 @@ const TechniciansScreen = () => {
     const [repairshoprBackupRequires, setRepairshoprBackupRequires] = useState<string>("");
     const [repairshoprItemCondition, setRepairshoprItemCondition] = useState<string>("")
     const [repairshoprIMEI, setRepairshoprIMEI] = useState<string>("")
+    const [specialRequirement, setSpecialRequirement] = useState("")
+    const [job_repair_no, setJobRepairNo] = useState("")
 
     const [collected, setCollected] = useState(false)
     const [collected_date, setCollectedDate] = useState("")
@@ -149,12 +152,14 @@ const TechniciansScreen = () => {
     const [part_desc, setPartDesc] = useState("")
     const [part_quantity, setPartQuantity] = useState<number | undefined>()
     const { engineersList } = useFetchEngineer()
+
+    
     // for filtering by engineer
     const engineerListFomatted = engineersList?.map((user) => ({
         id: user?.id,
         repairshopr_id: user?.repairshopr_id,
         value: user?.engineer_firstname + " " + user?.engineer_lastname,
-        label: user?.engineer_firstname
+        label: user?.engineer_firstname + " " + user?.engineer_lastname,
     }))
 
     // search parts from ipaas
@@ -199,7 +204,7 @@ const TechniciansScreen = () => {
             const getTicketDataFromRepairshopr = await fetchRSTicketDataById(row?.original?.repairshopr_job_id);
             const properties = getTicketDataFromRepairshopr?.ticket?.properties;
             if (properties) {
-                const fieldsToExtract = ["IMEI", "Warranty", "Backup Requires", "Item Condition"];
+                const fieldsToExtract = ["IMEI", "Warranty", "Backup Requires", "Item Condition", "Special Requirement"];
                 const extractedValues: Record<string, string> = {};
                 fieldsToExtract.forEach((field: any) => {
                     // Find the correct key for the field
@@ -212,7 +217,10 @@ const TechniciansScreen = () => {
                 setRepairshoprWarranty(extractedValues["Warranty"])
                 setRepairshoprBackupRequires(extractedValues["Backup Requires"])
                 setRepairshoprItemCondition(extractedValues["Item Condition"])
+                setSpecialRequirement(extractedValues["Special Requirement"])
                 setRepairshoprIMEI(extractedValues["IMEI"])
+                if (properties["Job Repair No."]) setJobRepairNo("Job Repair No.");
+                if (properties["Job Repair No.:"]) setJobRepairNo("Job Repair No.:")
             } else {
                 // 
             }
@@ -303,9 +311,10 @@ const TechniciansScreen = () => {
         setPartsPendingDate(modifyTaskModal?.parts_pending_date)
         setQCComplete(modifyTaskModal?.qc_complete)
         setQCCompleteDate(modifyTaskModal?.qc_date)
+        setCompensation(modifyTaskModal?.compensation)
         setServiceOrder(modifyTaskModal?.service_order_no)
         setWarranty(modifyTaskModal?.warranty)
-    }, [modifyTaskModal?.warranty, modifyTaskModal?.assessment_date, modifyTaskModal?.parts_requested, modifyTaskModal?.parts_requested_date, modifyTaskModal?.unit_status, modifyTaskModal?.engineer, modifyTaskModal?.repairshopr_id, modifyTaskModal?.parts_issued, modifyTaskModal?.parts_issued_date, modifyTaskModal?.parts_pending, modifyTaskModal?.parts_pending_date, modifyTaskModal?.qc_complete, modifyTaskModal?.qc_date, modifyTaskModal?.service_order_no])
+    }, [modifyTaskModal?.compensation, modifyTaskModal?.warranty, modifyTaskModal?.assessment_date, modifyTaskModal?.parts_requested, modifyTaskModal?.parts_requested_date, modifyTaskModal?.unit_status, modifyTaskModal?.engineer, modifyTaskModal?.repairshopr_id, modifyTaskModal?.parts_issued, modifyTaskModal?.parts_issued_date, modifyTaskModal?.parts_pending, modifyTaskModal?.parts_pending_date, modifyTaskModal?.qc_complete, modifyTaskModal?.qc_date, modifyTaskModal?.service_order_no])
 
 
     const [qcFiles, setQCFiles] = useState([]);
@@ -440,7 +449,22 @@ const TechniciansScreen = () => {
         e.preventDefault();
 
         const statusPayload = {
-            "status": unit_status
+            "status": unit_status,
+            "properties": {
+                "IMEI": repairshoprIMEI,
+                "Warranty": repairshoprWarranty,
+                "Warranty ": repairshoprWarranty,
+                "Backup Requires": repairshoprBackupRequires,
+                "Backup Requires ": repairshoprBackupRequires,
+                "Item Condition": repairshoprItemCondition,
+                "Item Condition ": repairshoprItemCondition,
+                "Service Order No.": service_order_no,
+                "Service Order No. ": service_order_no,
+                "Special Requirement": specialRequirement,
+                "Special Requirement ": specialRequirement,
+                "Job Repair No.": `${job_repair_no}`,
+                "Job Repair No.:": `${job_repair_no}`,
+            }
         }
 
         const commentPayload: RepairshorTicketComment = {
@@ -465,11 +489,26 @@ const TechniciansScreen = () => {
         }
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no, unit_status, assessment_date, updated_at, engineer, warranty, collected, collected_date
+            id, service_order_no, unit_status, assessment_date, updated_at, engineer, warranty, collected, collected_date, compensation
         }
         const changes = findChanges(modifyTaskModal, updatePayload)
         const changeIdOnRepairshoprPayload = {
             "user_id": repairshopr_id,
+            "properties": {
+                "IMEI": repairshoprIMEI,
+                "Warranty": repairshoprWarranty,
+                "Warranty ": repairshoprWarranty,
+                "Backup Requires": repairshoprBackupRequires,
+                "Backup Requires ": repairshoprBackupRequires,
+                "Item Condition": repairshoprItemCondition,
+                "Item Condition ": repairshoprItemCondition,
+                "Service Order No.": service_order_no,
+                "Service Order No. ": service_order_no,
+                "Special Requirement": specialRequirement,
+                "Special Requirement ": specialRequirement,
+                "Job Repair No.": `${job_repair_no}`,
+                "Job Repair No.:": `${job_repair_no}`,
+            }
         }
         // this will update repairshopr warranty using the imei, backup, item condition, warranty
         // targetting both keys with whitespace and ones without
@@ -481,7 +520,13 @@ const TechniciansScreen = () => {
                 "Backup Requires": repairshoprBackupRequires,
                 "Backup Requires ": repairshoprBackupRequires,
                 "Item Condition": repairshoprItemCondition,
-                "Item Condition ": repairshoprItemCondition
+                "Item Condition ": repairshoprItemCondition,
+                "Service Order No.": service_order_no,
+                "Service Order No. ": service_order_no,
+                "Special Requirement": specialRequirement,
+                "Special Requirement ": specialRequirement,
+                "Job Repair No.": `${job_repair_no}`,
+                "Job Repair No.:": `${job_repair_no}`,
             }
         }
         try {
@@ -520,13 +565,58 @@ const TechniciansScreen = () => {
         const id = modifyTaskModal?.id;
         const updated_at = datetimestamp;
         const firstApprovalPayload = {
-            "status": "Parts Request 1st Approval"
+            "status": "Parts Request 1st Approval",
+            "properties": {
+                "IMEI": repairshoprIMEI,
+                "Warranty": repairshoprWarranty,
+                "Warranty ": repairshoprWarranty,
+                "Backup Requires": repairshoprBackupRequires,
+                "Backup Requires ": repairshoprBackupRequires,
+                "Item Condition": repairshoprItemCondition,
+                "Item Condition ": repairshoprItemCondition,
+                "Service Order No.": service_order_no,
+                "Service Order No. ": service_order_no,
+                "Special Requirement": specialRequirement,
+                "Special Requirement ": specialRequirement,
+                "Job Repair No.": `${job_repair_no}`,
+                "Job Repair No.:": `${job_repair_no}`,
+            }
         }
         const partsOrderedPayload = {
-            "status": "Parts to be ordered"
+            "status": "Parts to be ordered",
+            "properties": {
+                "IMEI": repairshoprIMEI,
+                "Warranty": repairshoprWarranty,
+                "Warranty ": repairshoprWarranty,
+                "Backup Requires": repairshoprBackupRequires,
+                "Backup Requires ": repairshoprBackupRequires,
+                "Item Condition": repairshoprItemCondition,
+                "Item Condition ": repairshoprItemCondition,
+                "Service Order No.": service_order_no,
+                "Service Order No. ": service_order_no,
+                "Special Requirement": specialRequirement,
+                "Special Requirement ": specialRequirement,
+                "Job Repair No.": `${job_repair_no}`,
+                "Job Repair No.:": `${job_repair_no}`,
+            }
         }
         const partsIssuedPayload = {
-            "status": "Parts Issued"
+            "status": "Parts Issued",
+            "properties": {
+                "IMEI": repairshoprIMEI,
+                "Warranty": repairshoprWarranty,
+                "Warranty ": repairshoprWarranty,
+                "Backup Requires": repairshoprBackupRequires,
+                "Backup Requires ": repairshoprBackupRequires,
+                "Item Condition": repairshoprItemCondition,
+                "Item Condition ": repairshoprItemCondition,
+                "Service Order No.": service_order_no,
+                "Service Order No. ": service_order_no,
+                "Special Requirement": specialRequirement,
+                "Special Requirement ": specialRequirement,
+                "Job Repair No.": `${job_repair_no}`,
+                "Job Repair No.:": `${job_repair_no}`,
+            }
         }
 
         const updatePayload = {
@@ -568,7 +658,7 @@ const TechniciansScreen = () => {
         const ticket_number = modifyTaskModal?.ticket_number
         const created_at = datetimestamp;
         const created_by = user?.email
-        const payload = { task_row_id, ticket_number, part_name, part_desc, part_quantity, created_at, created_by }
+        const payload = { task_row_id, ticket_number, part_name, part_desc, part_quantity, created_at, created_by, compensation }
         await addThisPart(payload);
         refetch(); // Refresh the list of parts
         setSearchPart("")
@@ -581,9 +671,14 @@ const TechniciansScreen = () => {
         setaddPartOnRepairshoprLoading(true)
         try {
             // this will send the parts as as list on repairshopr
+            // Create the parts list with a conditional "(compensation)" label
             const partsList = taskPartsList.map((part, index) => {
-                return `${index + 1}. ${part.part_name} - ${part.part_desc} (Quantity: ${part.part_quantity})`;
+                const compensationLabel = part?.compensation ? " (compensation)" : "";
+                console.log(part)
+                return `${index + 1}. ${part.part_name} - ${part.part_desc} (Quantity: ${part.part_quantity})${compensationLabel}`;
             }).join('\n');
+
+
 
             const comment = `Parts added:\n${partsList}`;
             const commentPayload: RepairshorTicketComment = {
@@ -617,7 +712,8 @@ const TechniciansScreen = () => {
 
                             {/* modal for sorting table columns */}
                             {
-                                openSortTableColumnsModal && <Dialog open={openSortTableColumnsModal} onOpenChange={() => setSortTableColumns(false)} >
+                                openSortTableColumnsModal &&
+                                <Dialog open={openSortTableColumnsModal} onOpenChange={() => setSortTableColumns(false)} >
                                     {/* <DialogTrigger>Open</DialogTrigger> */}
                                     <DialogContent>
                                         <DialogHeader>
@@ -670,6 +766,16 @@ const TechniciansScreen = () => {
                                 />
 
                                 <div className="flex justify-between items-center gap-3">
+                                    <Select name="engineerFilter" value={engineerFilter} onValueChange={(e) => setEngineerFilter(e)}>
+                                        <SelectTrigger className="w-full hidden md:flex">
+                                            <SelectValue placeholder="Filter by" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {engineerListFomatted.map((dep) => (
+                                                <SelectItem key={dep.id} value={`${dep.value}`}>{`${dep.label}`}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                     <Select name="engineerFilter" value={engineerFilter} onValueChange={(e) => setEngineerFilter(e)}>
                                         <SelectTrigger className="w-full hidden md:flex">
                                             <SelectValue placeholder="Filter by" />
@@ -744,7 +850,7 @@ const TechniciansScreen = () => {
                                                 <QC qc_fail_reasonProp={qc_comment} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} qc_FilesLoadingProp={qcFilesUploading} setQCFilesProp={handleQCFiles} submitQCFiles={submitQCFiles} submitQC={handleQCSubmit} />
                                             </TabsContent>
                                             <TabsContent value="Parts">
-                                                <Parts deletePartLoading={deletePartLoading} part_data={[...taskPartsList]} parts_requestedProp={parts_requested} setPartsRequestedProp={(e) => setPartsRequested(e)} setPartsRequestedDateProp={setPartsRequestedDate} parts_orderedProp={parts_ordered} setPartsOrderedProp={(e) => setPartsOrdered(e)} parts_pendingProp={parts_pending} setPartsPendingProp={(e) => setPartsPending(e)} parts_issuedProp={parts_issued} setPartsIssuedProp={(e) => setPartsIssued(e)} setPartsIssuedDateProp={setPartsIssuedDate} setPartsPendingDateProp={setPartsPendingDate} setPartsOrderedDateProp={setPartsOrderedDate} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} handleDelete={handleDelete} addPartOnRepairshoprLoading={addPartOnRepairshoprLoading} addPartOnRepairshopr={addPartListToRepairshoprComment} />
+                                                <Parts compensation={compensation} setCompensation={(e) => setCompensation(e)} deletePartLoading={deletePartLoading} part_data={[...taskPartsList]} parts_requestedProp={parts_requested} setPartsRequestedProp={(e) => setPartsRequested(e)} setPartsRequestedDateProp={setPartsRequestedDate} parts_orderedProp={parts_ordered} setPartsOrderedProp={(e) => setPartsOrdered(e)} parts_pendingProp={parts_pending} setPartsPendingProp={(e) => setPartsPending(e)} parts_issuedProp={parts_issued} setPartsIssuedProp={(e) => setPartsIssued(e)} setPartsIssuedDateProp={setPartsIssuedDate} setPartsPendingDateProp={setPartsPendingDate} setPartsOrderedDateProp={setPartsOrderedDate} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} handleDelete={handleDelete} addPartOnRepairshoprLoading={addPartOnRepairshoprLoading} addPartOnRepairshopr={addPartListToRepairshoprComment} />
                                             </TabsContent>
                                         </Tabs>
 

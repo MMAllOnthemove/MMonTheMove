@@ -7,7 +7,7 @@ const AddHHPTaskSchema = Yup.object({
     date_booked: Yup.string().required("This field is required"),
     model: Yup.string().required("This field is required"),
     warranty: Yup.string().required("This field is required"),
-    engineer: Yup.string().required("This field is required"),
+    engineer: Yup.string(),
     fault: Yup.string().required("This field is required"),
     imei: Yup.string().required("This field is required"),
     serial_number: Yup.string().required("This field is required"),
@@ -79,6 +79,7 @@ const AddHHPTask = async (req, res) => {
             });
         }
     } catch (error) {
+        console.log(error);
         // Handle validation or other errors
         const errors = {};
         if (error.inner) {

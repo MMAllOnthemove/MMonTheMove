@@ -6,16 +6,30 @@ const updateChecklistSchema = Yup.object({
     rowId: Yup.string(),
     mileage_after: Yup.string(),
     next_service_date: Yup.string(),
+    next_service_kms: Yup.string(),
+    license_disc_expiry: Yup.string(),
 });
 
 const updateChecklist = async (req, res) => {
-    const { rowId, mileage_after, next_service_date } = req.body;
+    const {
+        rowId,
+        mileage_after,
+        next_service_date,
+        next_service_kms,
+        license_disc_expiry,
+    } = req.body;
     try {
         // Validate request body
         await updateChecklistSchema.validate(req.body, { abortEarly: false });
         const result = await pool.query(
-            "UPDATE vehicle_checklist SET mileage_after = $1, next_service_date = $2 WHERE id = $3",
-            [mileage_after, next_service_date, rowId]
+            "UPDATE vehicle_checklist SET mileage_after = $1, next_service_date = $2, next_service_kms = $3, license_disc_expiry = $4  WHERE id = $5",
+            [
+                mileage_after,
+                next_service_date,
+                next_service_kms,
+                license_disc_expiry,
+                rowId,
+            ]
         );
 
         if (result.rowCount === 0) {
@@ -26,6 +40,7 @@ const updateChecklist = async (req, res) => {
             message: "Successfully updated",
         });
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ error: "Could not update, try again" });
     }
 };

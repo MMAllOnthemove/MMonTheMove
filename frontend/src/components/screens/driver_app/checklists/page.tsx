@@ -284,7 +284,7 @@ const ChecklistsScreen = () => {
                                             <TabsContent value="today">
 
                                                 {todaysCheckList ?
-                                                    todaysCheckList?.map((x) => (
+                                                    todaysCheckList?.map((x: any) => (
                                                         <Accordion type="single" collapsible key={x?.id}>
                                                             <AccordionItem value="item-1">
                                                                 <AccordionTrigger>External tests</AccordionTrigger>
@@ -495,7 +495,7 @@ const ChecklistsScreen = () => {
                                             <TabsContent value="history">
                                                 {oldCheckList &&
 
-                                                    oldCheckList.map((checklist, index) => (
+                                                    oldCheckList.map((checklist: any, index: any) => (
                                                         <Link href={`/drivers/checklists/${checklist?.id}`} target="_blank" rel="noopener noreferrer" key={checklist.unique_id} className="block cursor-pointer text-gray-700 font-medium pb-2 divide-y-2">
                                                             {index + 1}   {checklist.car}: {checklist.formatted_created_at}
                                                         </Link>
