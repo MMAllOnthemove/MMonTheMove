@@ -31,7 +31,8 @@ const useHHPTasks = () => {
         };
 
         fetchData();
-    }, [hhpTasks]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return { hhpTasks, hhpTasksLoading };
 };

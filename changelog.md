@@ -5,6 +5,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.9] - 2024-12-03
+
+### Added
+
+-   next_service_kms, license_disc_expiry as part of checklist update
+-   next service date and next service kms (allow this to be updated)
+-   License disk expiration date
+-   send Job repair no as well otherwise it erases the one on repairshopr
+-   loading states for creating asset, customer, ticket
+-   show searched customer result in a table
+-   can search via firstname, fullname, email or phone
+-   can edit repairshopr customer details
+-   can create repairshopr customer
+-   can create asset
+-   Allow booking agents to create tickets
+-   add jobs created to the table, thereby eliminating the need to add tasks
+-   when a ticket is created, add it to the system and omit engineer
+-   compensation boolean column
+
+### Fixed
+
+-   send every property when updating repairshopr ticket including job repair no
+
+## [0.0.8] - 2024-11-28
+
+### Added
+
+-   `server {
+    client_max_body_size 50M; # Set upload limit
+}` to the backend nginx file to increase the limit
+-   Pagination not working
+-   added columns imei, serial_number to the tanstack hhp tasks table
+
+### Fixed
+
+-   fix hooks rerender unnecessarily
+
 ## [0.0.7] - 2024-11-27
 
 ### Added

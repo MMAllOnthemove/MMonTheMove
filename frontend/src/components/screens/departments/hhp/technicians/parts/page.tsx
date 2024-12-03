@@ -18,6 +18,7 @@ type TPartsHHPUpdate = {
     parts_pendingProp: CheckedState | undefined
     parts_issuedProp: CheckedState | undefined
     parts_requestedProp: CheckedState | undefined
+    compensation: CheckedState | undefined
     search_part: string;
     setSearchPart: (data: string) => void;
     part_desc: string;
@@ -30,6 +31,8 @@ type TPartsHHPUpdate = {
     setPartsPendingDateProp: (data: string) => void;
     setPartsIssuedProp: (data: CheckedState | undefined) => void;
     setPartsRequestedProp: (data: CheckedState | undefined) => void;
+
+    setCompensation: (data: CheckedState | undefined) => void;
     setPartsRequestedDateProp: (data: string) => void;
     setPartsIssuedDateProp: (data: string) => void;
     addPartLoading: boolean;
@@ -47,7 +50,7 @@ type TPartsHHPUpdate = {
         part_quantity?: string;
     }
 }
-const Parts = ({ parts_orderedProp, parts_pendingProp, deletePartLoading, parts_issuedProp, part_data, handleDelete, parts_requestedProp, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsPendingProp, setPartsPendingDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, errors }: TPartsHHPUpdate) => {
+const Parts = ({ parts_orderedProp, parts_pendingProp, deletePartLoading, parts_issuedProp, part_data, handleDelete, parts_requestedProp, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsPendingProp, setPartsPendingDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, errors }: TPartsHHPUpdate) => {
     const handlePartsOrdered = (e: React.SyntheticEvent | any) => {
         if (!parts_orderedProp) {
             setPartsOrderedProp(e);
@@ -70,6 +73,11 @@ const Parts = ({ parts_orderedProp, parts_pendingProp, deletePartLoading, parts_
         if (!parts_requestedProp) {
             setPartsRequestedProp(e);
             setPartsRequestedDateProp(datetimestamp)
+        }
+    }
+    const handleCompensation = (e: React.SyntheticEvent | any) => {
+        if (!compensation) {
+            setCompensation(e);
         }
     }
     return (
@@ -96,6 +104,16 @@ const Parts = ({ parts_orderedProp, parts_pendingProp, deletePartLoading, parts_
                                 <Input type="number" placeholder="Quantity" name="part_quantity" size={1} minLength={1} maxLength={1} value={part_quantity || 0} onChange={(e) => setPartQuantity(parseInt(e.target.value, 10))} />
                                 {errors.part_quantity && <p className="text-sm text-red-500 font-medium">{errors.part_quantity}</p>}
 
+                            </div>
+                            <div className="flex items-center space-x-2 mb-3">
+                                <Checkbox id="compensation" checked={compensation}
+                                    onCheckedChange={handleCompensation} />
+                                <label
+                                    htmlFor="compensation"
+                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                    Compensation?
+                                </label>
                             </div>
 
                         </div>

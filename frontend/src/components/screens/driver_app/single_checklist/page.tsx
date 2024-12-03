@@ -14,7 +14,7 @@ import useFetchChecklist from '@/hooks/useGetSingleChecklist';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from "@/components/ui/input";
@@ -22,17 +22,30 @@ import useUpdateChecklist from '@/hooks/updateChecklist';
 import openInNewTab from '@/lib/open_new_tab';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { Label } from '@/components/ui/label';
 const SingleChecklistScreen = () => {
     const params = useParams(); // Fetch URL parameters
     const id = params?.id;
     const { isLoggedIn, loading } = useUserLoggedIn()
     const { checklist } = useFetchChecklist(id)
     const [mileage_after, setMileageAfter] = useState<string>('')
+    const [next_service_kms, setNextServiceKms] = useState<string>('')
     const [next_service_date, setNextService] = useState<string>('')
+    const [license_disc_expiry, setLicenseExpiryDate] = useState<string>('')
     const [openChecklistRow, setOpenChecklistRow] = useState<string | null | any>(null);
     const { updateChecklist, loadUpdateChecklist } = useUpdateChecklist()
     const [checklistFilesUploading, setChecklistFilesUploading] = useState(false);
     const [checklistFiles, setChecklistFiles] = useState([]);
+
+
+    useEffect(() => {
+        if (checklist) {
+            setMileageAfter(checklist[0]?.mileage_after)
+            setNextServiceKms(checklist[0]?.next_service_kms)
+            setNextService(checklist[0]?.next_service_date)
+            setLicenseExpiryDate(checklist[0]?.license_disc_expiry)
+        }
+    }, [checklist])
 
     // update the mileage after return
     const updateVehicleChecklist = async () => {
@@ -247,8 +260,14 @@ const SingleChecklistScreen = () => {
                                         <AccordionTrigger>Update checklist</AccordionTrigger>
                                         <AccordionContent>
                                             <div>
-                                                <Input className="mb-3" type="date" name="next_service_date" placeholder="Next service date" id="next_service_date" value={next_service_date} onChange={(e) => setNextService(e.target.value)} />
-                                                <Input className="mb-3" type="text" name="mileage_after" placeholder="Mileage when driver comes back" id="mileage_after" value={mileage_after} onChange={(e) => setMileageAfter(e.target.value)} />
+                                                <Label htmlFor="next_service_date">Next service date</Label>
+                                                <Input className="mb-3" type="date" name="next_service_date" placeholder="Next service date" id="next_service_date" value={next_service_date || ""} onChange={(e) => setNextService(e.target.value)} />
+                                                <Label htmlFor="mileage_after">Mileage after</Label>
+                                                <Input className="mb-3" type="text" name="mileage_after" placeholder="Mileage when driver comes back" id="mileage_after" value={mileage_after || ""} onChange={(e) => setMileageAfter(e.target.value)} />
+                                                <Label htmlFor="next_service_kms">Next service kms</Label>
+                                                <Input className="mb-3" type="number" name="next_service_kms" placeholder="Next service kms" id="mileage_after" value={next_service_kms || ""} onChange={(e) => setNextServiceKms(e.target.value)} />
+                                                <Label htmlFor="license_disc_expiry">Disc expiry date</Label>
+                                                <Input className="mb-3" type="date" name="license_disc_expiry" placeholder="License disc expiry date" id="license_disc_expiry" value={license_disc_expiry || ""} onChange={(e) => setLicenseExpiryDate(e.target.value)} />
                                                 <Button className="w-full" onClick={updateVehicleChecklist} disabled={loadUpdateChecklist}>{loadUpdateChecklist ? 'Updating...' : 'Update checklist'}</Button>
                                             </div>
                                         </AccordionContent>

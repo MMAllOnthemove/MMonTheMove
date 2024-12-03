@@ -38,7 +38,8 @@ const useFetchDrivers = () => {
         };
 
         fetchData();
-    }, [driversList]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return { driversList, driversListLoading };
 };

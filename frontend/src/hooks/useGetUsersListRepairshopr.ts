@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-
 const useGetUserListRepairshopr = () => {
     const [rsUsersList, setData] = useState([]);
     const [rsUsersListLoading, setLoading] = useState(true);
@@ -32,7 +31,8 @@ const useGetUserListRepairshopr = () => {
         };
 
         fetchData();
-    }, [rsUsersList]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return { rsUsersListLoading, rsUsersList };
 };

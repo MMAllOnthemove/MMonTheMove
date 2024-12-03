@@ -52,7 +52,8 @@ const useFetchHHPTaskById = (taskId: string | number) => {
             }
         };
         fetchData();
-    }, [hhpTask, taskId]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [taskId]);
     return { hhpTask };
 };
 export default useFetchHHPTaskById;

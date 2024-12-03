@@ -1,10 +1,10 @@
-import SingleChecklistScreen from '@/components/screens/driver_app/single_checklist/page'
 
+import RepairshoprAssetScreen from '@/components/screens/repairshopr_asset/page'
 import React from 'react'
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Update checklist',
+    title: 'Customer assets',
     description: '...',
     robots: {
         index: false,
@@ -12,10 +12,10 @@ export const metadata: Metadata = {
     },
 }
 
-const SingleChecklist = () => {
+const RepairshoprAsset = () => {
     return (
-        <SingleChecklistScreen />
+        <RepairshoprAssetScreen />
     )
 }
 
-export default SingleChecklist
+export default RepairshoprAsset

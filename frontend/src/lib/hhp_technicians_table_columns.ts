@@ -14,6 +14,14 @@ const columns: TColumns = [
         accessorKey: "model",
     },
     {
+        header: "Serial number",
+        accessorKey: "serial_number",
+    },
+    {
+        header: "IMEI",
+        accessorKey: "imei",
+    },
+    {
         header: "Booked",
         accessorKey: "date_booked",
         // cell: info => moment(info).format("YYYY-MM-DD")

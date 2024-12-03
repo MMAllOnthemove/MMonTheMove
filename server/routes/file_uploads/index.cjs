@@ -8,7 +8,9 @@ const {
 const {
     uploadChecklistFiles,
 } = require("../../controllers/driver_app/add_files.cjs");
-
+const {
+    uploadTicketAttachments,
+} = require("../../controllers/tickets_attachments/add_files.cjs");
 const rateLimit = require("express-rate-limit");
 
 const limiter = rateLimit({
@@ -35,6 +37,12 @@ router.post(
     upload.array("files", 15),
     limiter,
     uploadChecklistFiles
+);
+router.post(
+    "/ticket_attachments",
+    upload.array("files", 15),
+    limiter,
+    uploadTicketAttachments
 );
 // router.post("/", upload.single("file"), limiter, uploadFile);
 module.exports = { router };

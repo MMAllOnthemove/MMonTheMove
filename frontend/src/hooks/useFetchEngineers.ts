@@ -37,7 +37,8 @@ const useFetchEngineer = () => {
         };
 
         fetchData();
-    }, [engineersList]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return { engineersList, engineersListLoading };
 };

@@ -113,7 +113,8 @@ create table technician_tasks (
     parts_requested boolean,
     parts_requested_date text,
     collected boolean,
-    collected_date text
+    collected_date text,
+    compensation boolean
 );
 
 -- Create a trigger function to update the 'updated_at' field
@@ -348,5 +349,6 @@ create table parts_for_tasks (
     created_at TIMESTAMP,
     created_by text,
     updated_at TIMESTAMP,
+    compensation boolean,
     FOREIGN KEY (task_row_id) REFERENCES technician_tasks(id)
 )

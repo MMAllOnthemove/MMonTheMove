@@ -1,16 +1,8 @@
 "use client";
+import { TUser } from "@/lib/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-type TUser = {
-    user_id: number;
-    user_unique_id: string;
-    email: string;
-    full_name: string;
-    user_role: string;
-    repairshopr_id: number;
-    department: string;
-};
 
 const useUserLoggedIn = () => {
     const [user, setUser] = useState<TUser | null>(null);

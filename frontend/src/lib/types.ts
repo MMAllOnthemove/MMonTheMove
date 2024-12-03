@@ -12,6 +12,16 @@ export type SignupValues = {
 export type ForgotPasswordValues = {
     email: string;
 };
+export type TUser = {
+    user_id: number;
+    user_unique_id: string;
+    email: string;
+    full_name: string;
+    user_role: string;
+    repairshopr_id: number;
+    department: string;
+};
+
 export type StoreValues = {
     store_name: string;
 };
@@ -91,10 +101,12 @@ export type VehicleInspection = {
     engine_start_stop_fail_reason: string;
     tail_lights_fail_reason: string;
     final_comment: string;
-    next_service_date: Date;
+    next_service_date: string;
     cost_of_service: number;
     created_by: string;
     updated_by: string;
+    license_disc_expiry: string;
+    next_service_kms: string;
     mileage: number;
     license_plate: string;
     vehicle_make: string;
@@ -314,14 +326,18 @@ export type RepairshoprPutTicket = {
         IMEI?: string;
         "PO No."?: string;
         Password?: string;
-        Warranty?: string;
-        "Item Condition"?: string;
-        "Location (BIN)"?: string;
-        "Backup Requires"?: string;
-        "Job Repair No.:"?: string;
-        "Part seal number"?: string;
-        "Service Order No."?: string;
-        "Special Requirement "?: string;
+        Warranty?: string | any;
+        "Item Condition"?: string | any;
+        "Location (BIN)"?: string | any;
+        "Backup Requires"?: string | any;
+        "Job Repair No.:"?: string | any;
+        "Part seal number"?: string | any;
+        "Service Order No."?: string | any;
+        "Special Requirement "?: string | any;
+        "Warranty "?: string | any;
+        "Item Condition "?: string | any;
+        "Backup Requires "?: string | any;
+        "Service Order No. "?: string;
     };
     asset_ids?: number[];
     signature_name?: string;
@@ -492,6 +508,7 @@ export type TTaskParts = {
     unique_id: string;
     ticket_number: string;
     part_name: string;
+    compensation?: boolean | null | undefined | any;
     part_desc: string;
     seal_number: string | null;
     part_quantity: number;
@@ -505,8 +522,110 @@ export type TAddPart = {
     ticket_number?: string;
     part_name?: string;
     part_desc?: string;
+    compensation?: boolean | null | undefined | any;
     part_quantity?: number | undefined;
     created_at?: string;
     created_by?: string;
     setParts?: (data: any) => void;
+};
+export type Customer = {
+    id?: number;
+    firstname: string;
+    lastname: string;
+    fullname?: string;
+    business_name?: string;
+    email: string;
+    phone: string;
+    mobile: string;
+    created_at?: string;
+    updated_at?: string;
+    pdf_url?: string | null;
+    address: string;
+    address_2?: string;
+    city: string;
+    state: string;
+    zip: string;
+    latitude?: number | null;
+    longitude?: number | null;
+    notes?: string | null;
+    get_sms?: boolean;
+    opt_out?: boolean;
+    disabled?: boolean;
+    no_email?: boolean;
+    location_name?: string | null;
+    location_id?: number | null;
+    properties?: {
+        "Reg No.": string;
+        "Vat No.": string;
+        notification_billing: string;
+        notification_reports: string;
+        notification_marketing: string;
+    };
+    online_profile_url?: string;
+    tax_rate_id?: number | null;
+    notification_email?: string;
+    invoice_cc_emails?: string;
+    invoice_term_id?: number | null;
+    referred_by?: string;
+    ref_customer_id?: number | null;
+    business_and_full_name?: string;
+    business_then_name?: string;
+    contacts?: unknown[]; // Specify the type of contacts if more details are provided
+};
+export type CustomerResultRowClick = {
+    original: {
+        id?: number;
+        firstname: string;
+        lastname: string;
+        fullname?: string;
+        business_name?: string;
+        email: string;
+        phone: string;
+        mobile: string;
+        created_at?: string;
+        updated_at?: string;
+        pdf_url?: string | null;
+        address: string;
+        address_2?: string;
+        city: string;
+        state: string;
+        zip: string;
+        latitude?: number | null;
+        longitude?: number | null;
+        notes?: string | null;
+        get_sms?: boolean;
+        opt_out?: boolean;
+        disabled?: boolean;
+        no_email?: boolean;
+        location_name?: string | null;
+        location_id?: number | null;
+        properties?: {
+            "Reg No.": string;
+            "Vat No.": string;
+            notification_billing: string;
+            notification_reports: string;
+            notification_marketing: string;
+        };
+        online_profile_url?: string;
+        tax_rate_id?: number | null;
+        notification_email?: string;
+        invoice_cc_emails?: string;
+        invoice_term_id?: number | null;
+        referred_by?: string;
+        ref_customer_id?: number | null;
+        business_and_full_name?: string;
+        business_then_name?: string;
+        contacts?: unknown[]; // Specify the type of contacts if more details are provided
+    };
+};
+export type Meta = {
+    total_pages: number;
+    total_entries: number;
+    per_page: number;
+    page: number;
+};
+
+export type CustomerData = {
+    customers: Customer[];
+    meta: Meta;
 };
