@@ -1,13 +1,5 @@
 "use client"
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { assetTypes } from '@/lib/asset_types';
-import axios from 'axios';
-import moment from 'moment';
-import React, { useEffect, useState } from 'react';
 import {
     Dialog,
     DialogContent,
@@ -15,15 +7,22 @@ import {
     DialogHeader,
     DialogTitle
 } from "@/components/ui/dialog";
-import { Tldraw } from 'tldraw'
-import 'tldraw/tldraw.css'
-import toast from 'react-hot-toast';
-import { datetimestamp } from '@/lib/date_formats';
-import { TUser } from '@/lib/types';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import useAddHHPTask from '@/hooks/useAddHHPTask';
 import useUserLoggedIn from '@/hooks/useGetUser';
+import { assetTypes } from '@/lib/asset_types';
+import { datetimestamp } from '@/lib/date_formats';
+import axios from 'axios';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { Tldraw } from 'tldraw';
+import 'tldraw/tldraw.css';
 const HHP = () => {
-    const { addTask, addHHPTaskLoading, addHHPTaskErrors } = useAddHHPTask();
+    const { addTask } = useAddHHPTask();
     const { user } = useUserLoggedIn()
 
     // This is for repairshopr
@@ -47,12 +46,13 @@ const HHP = () => {
     const [createTicketLoading, setCreateTicketLoading] = useState(false)
     const [openModal, setOpenModal] = useState(false);
     const [openAttachmentsModal, setOpenAttachmentsModal] = useState(false);
+
+    const [serviceOrderNumber, setServiceOrder] = useState("")
     // Asset id
     const [assetId, setAssetId] = useState('')
     // these will be send to our db as soon as a ticket is booked
     // some of the values will be stored in state from the result
     const [localWarranty, setLocalWarranty] = useState("") // this is just the warranty just a different variable (I am out of variable names, lol)
-    const [ticket_status, setTicketStatus] = useState("")
     const [repairshopr_job_id, setepairshoprJobId] = useState("")
     useEffect(() => {
         const loadCustomerInfo = () => {
@@ -194,8 +194,6 @@ const HHP = () => {
     const createTicket = async (e: React.SyntheticEvent) => {
         e.preventDefault()
 
-
-
         const payload = {
             "customer_id": customerId,
             "problem_type": `${issue_type}`, // Will aways be HHP for handheld devices, no need to choose
@@ -204,8 +202,8 @@ const HHP = () => {
             "ticket_type_id": `${ticketTypeId}`,
             "user_id": `${user?.repairshopr_id}`,
             "properties": {
-                "Service Order No.": "",
-                "Service Order No. ": "",
+                "Service Order No.": `${serviceOrderNumber}`,
+                "Service Order No. ": `${serviceOrderNumber}`,
                 "Item Condition ": `${itemCondition}`,
                 "Item Condition": `${itemCondition}`,
                 "Backup Requires": `${requires_backup}`,
@@ -219,7 +217,16 @@ const HHP = () => {
                 "Special Requirement ": `${specialRequirement}`,
                 "Password": `${password}`
             },
-            "asset_ids": assetId
+            "asset_ids": assetId,
+            "comments_attributes": [
+                {
+                    "subject": "Initial Issue",
+                    "body": `${fault}`,
+                    "hidden": false,
+                    "do_not_email": true,
+                    "tech": `${user?.full_name}`
+                }
+            ]
         }
         console.log("createTicket", payload)
         setCreateTicketLoading(true)
@@ -342,10 +349,15 @@ const HHP = () => {
                 </Dialog>
             }
             <form onSubmit={createTicket}>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center mb-2">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center mb-2">
+
                     <div>
                         <Label htmlFor='fault' className='sr-only'>Fault description</Label>
                         <Input type="text" name='fault' id='fault' placeholder='Fault description' value={fault || ""} onChange={(e) => setFault(e.target.value)} />
+                    </div>
+                    <div>
+                        <Label htmlFor='serviceOrderNumber' className='sr-only'>Service order number</Label>
+                        <Input type="number" name='serviceOrderNumber' id='serviceOrderNumber' placeholder='Service order number' value={serviceOrderNumber || ""} onChange={(e) => setServiceOrder(e.target.value)} />
                     </div>
                     <div>
                         <Select

@@ -63,7 +63,8 @@ const RepairshoprAssetScreen = () => {
                 );
                 setResult(filteredAssets || [])
             } catch (error) {
-                // console.log("search repair customer error", error)
+                if (process.env.NODE_ENV !== 'production')
+                    console.error("search repair customer error", error)
             }
 
         }

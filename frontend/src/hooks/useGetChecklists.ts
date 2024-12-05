@@ -40,33 +40,32 @@ const useFetchChecklists = () => {
     const [checklistList, setchecklist] = useState<VehicleInspection[]>([]);
     const [checklistListLoading, setchecklistLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setchecklistLoading(true);
-                const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/checklists`,
-                    {
-                        withCredentials: true,
-                    }
-                );
-                if (response?.data) {
-                    setchecklist(response?.data);
+    const refetch = async () => {
+        try {
+            setchecklistLoading(true);
+            const response = await axios.get(
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/checklists`,
+                {
+                    withCredentials: true,
                 }
-            } catch (error: any) {
-                if (error?.response?.data?.error) {
-                    toast.error(`${error?.response?.data?.error}`);
-                }
-            } finally {
-                setchecklistLoading(false);
+            );
+            if (response?.data) {
+                setchecklist(response?.data);
             }
-        };
-
-        fetchData();
+        } catch (error: any) {
+            if (error?.response?.data?.error) {
+                toast.error(`${error?.response?.data?.error}`);
+            }
+        } finally {
+            setchecklistLoading(false);
+        }
+    };
+    useEffect(() => {
+        refetch();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return { checklistList, checklistListLoading };
+    return { checklistList, checklistListLoading, refetch };
 };
 
 export default useFetchChecklists;

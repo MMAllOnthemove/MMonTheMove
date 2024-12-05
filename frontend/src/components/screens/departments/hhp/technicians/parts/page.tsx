@@ -127,9 +127,11 @@ const Parts = ({ parts_orderedProp, parts_pendingProp, deletePartLoading, parts_
 
                         <div>
                             {part_data?.length > 0 ? part_data?.map((item) => (
-                                <p className="flex items-center justify-between border-b border-grey-50" key={item.id}>
-                                    {item.part_name} <button type="button" disabled={deletePartLoading} onClick={() => handleDelete(item.id)}>{deletePartLoading ? '...' : <XMarkIcon className="h-4 w-4" />}</button>
-                                </p>
+                                <div key={item.id}>
+                                    <p className="flex items-center justify-between border-b border-grey-50" >
+                                        ({item.part_name}) / <span className="text-ellipsis overflow-hidden whitespace-nowrap">{item?.part_desc} /</span> ({item?.part_quantity}) <button type="button" disabled={deletePartLoading} onClick={() => handleDelete(item.id)}>{deletePartLoading ? '...' : <XMarkIcon className="h-4 w-4" />}</button>
+                                    </p>
+                                </div>
                             )) : "No parts for this task"}
                             {part_data?.length > 0 ? (
                                 <div className="flex items-center justify-between">
@@ -197,7 +199,7 @@ const Parts = ({ parts_orderedProp, parts_pendingProp, deletePartLoading, parts_
 
             <Button className="w-full outline-none" type="button" onClick={submitPartsUpdate} disabled={submitPartsUpdateLoading}>{submitPartsUpdateLoading ? 'Loading...' : 'Update'}</Button>
 
-        </div>
+        </div >
     )
 }
 

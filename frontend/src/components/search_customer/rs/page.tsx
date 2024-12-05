@@ -1,8 +1,18 @@
 "use client"
-import axios from 'axios';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import PageTitle from '@/components/PageTitle/page';
+import ManagementSearchForm from '@/components/search_field/page';
+import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle
+} from "@/components/ui/dialog";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import columns from '@/lib/create_rs_customer_table';
+import { Customer, CustomerResultRowClick } from '@/lib/types';
 import {
     ColumnOrderState,
     getCoreRowModel,
@@ -13,23 +23,11 @@ import {
     SortingState,
     useReactTable
 } from "@tanstack/react-table";
-import columns from '@/lib/create_rs_customer_table';
-import TableHead from './tablehead';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import TableBody from './tablebody';
-import ManagementSearchForm from '@/components/search_field/page';
-import { Button } from '@/components/ui/button';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle
-} from "@/components/ui/dialog";
-import { Customer, CustomerResultRowClick } from '@/lib/types';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import toast from 'react-hot-toast';
-import PageTitle from '@/components/PageTitle/page';
+import TableHead from './tablehead';
 
 
 

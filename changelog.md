@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.11] - 2024-12-04
+
+### Added
+
+-   Store comments locally and query them
+-   add completed date and time
+-   repair complete if QC passes
+-   pull comments from repairshopr, the entire list (since we store each comment, we query along with it's parent ticket)
+
+### Fixed
+
+-
+
+## [0.0.10] - 2024-12-03
+
+### Added
+
+-   show “unassigned” jobs
+-   add the first comment on repairshopr after booking
+-   service order field when creating a ticket
+-   show description and quantity on added parts
+
+### Fixed
+
+-   send backup code and warranty as strings instead of integers!!!!!
+
 ## [0.0.9] - 2024-12-03
 
 ### Added
@@ -23,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   add jobs created to the table, thereby eliminating the need to add tasks
 -   when a ticket is created, add it to the system and omit engineer
 -   compensation boolean column
+-   can now add compensation for parts
 
 ### Fixed
 

@@ -14,31 +14,30 @@ const useFetchClaims = () => {
     const [claimsList, setData] = useState<TEngineers[]>([]);
     const [claimsLoading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/claims`,
-                    {
-                        withCredentials: true,
-                    }
-                );
-                if (response?.data) {
-                    setData(response?.data);
+    const refetch = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/claims`,
+                {
+                    withCredentials: true,
                 }
-            } catch (error: any) {
-                toast.error(error?.response?.data?.error);
-            } finally {
-                setLoading(false);
+            );
+            if (response?.data) {
+                setData(response?.data);
             }
-        };
-
-        fetchData();
+        } catch (error: any) {
+            toast.error(error?.response?.data?.error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    useEffect(() => {
+        refetch();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return { claimsList, claimsLoading };
+    return { claimsList, claimsLoading, refetch };
 };
 
 export default useFetchClaims;

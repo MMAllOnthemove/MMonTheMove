@@ -1,12 +1,8 @@
 "use client"
-import LoadingScreen from '@/components/loading_screen/page'
-import NotLoggedInScreen from '@/components/not_logged_in/page'
 import PageTitle from '@/components/PageTitle/page'
-import Sidebar from '@/components/sidebar/page'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import useUserLoggedIn from '@/hooks/useGetUser'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
@@ -18,7 +14,6 @@ type PhoneDetail = {
 
 const CreateCustomerRepairshoprScreen = () => {
     const router = useRouter()
-    const { isLoggedIn, loading } = useUserLoggedIn()
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [businessname, setBusinessName] = useState("")
