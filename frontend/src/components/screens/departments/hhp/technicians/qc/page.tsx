@@ -17,12 +17,14 @@ type TQC = {
     qc_FilesLoadingProp: boolean
     setQCCompleteProp: (data: string) => void;
     setQCCompleteDateProp: (data: string) => void;
+    setUnitCompleteProp: (data: boolean) => void;
+    setUnitCompleteDateProp: (data: string) => void;
     setQCFailReasonProp: (data: ChangeEvent<HTMLTextAreaElement>) => void;
     setQCFilesProp: (data: ChangeEvent<HTMLInputElement>) => void;
     submitQCFiles: (data: React.SyntheticEvent) => void;
     submitQC: (data: React.SyntheticEvent) => void;
 }
-const QC = ({ qc_fail_reasonProp, qc_completeProp, setQCCompleteProp, setQCCompleteDateProp, setQCFailReasonProp, qc_FilesLoadingProp, setQCFilesProp, submitQCFiles, submitQC }: TQC) => {
+const QC = ({ setUnitCompleteProp, setUnitCompleteDateProp, qc_fail_reasonProp, qc_completeProp, setQCCompleteProp, setQCCompleteDateProp, setQCFailReasonProp, qc_FilesLoadingProp, setQCFilesProp, submitQCFiles, submitQC }: TQC) => {
 
 
 
@@ -31,6 +33,8 @@ const QC = ({ qc_fail_reasonProp, qc_completeProp, setQCCompleteProp, setQCCompl
         setQCCompleteProp(value);
         if (value === 'Pass') {
             setQCCompleteDateProp(datetimestamp);
+            setUnitCompleteDateProp(datetimestamp);
+            setUnitCompleteProp(true);
         }
     };
 

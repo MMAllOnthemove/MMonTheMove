@@ -13,33 +13,32 @@ const useFetchAgent = () => {
     const [bookingAgentList, setData] = useState<TAgents>([]);
     const [bookingAgentListLoading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/booking_agents`,
-                    {
-                        withCredentials: true,
-                    }
-                );
-                if (response?.data) {
-                    setData(response?.data);
+    const refetch = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/booking_agents`,
+                {
+                    withCredentials: true,
                 }
-            } catch (error) {
-                if (process.env.NODE_ENV !== "production") {
-                    console.error("Error fetching booking agents:", error);
-                }
-            } finally {
-                setLoading(false);
+            );
+            if (response?.data) {
+                setData(response?.data);
             }
-        };
-
-        fetchData();
+        } catch (error) {
+            if (process.env.NODE_ENV !== "production") {
+                console.error("Error fetching booking agents:", error);
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+    useEffect(() => {
+        refetch();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return { bookingAgentList, bookingAgentListLoading };
+    return { bookingAgentList, bookingAgentListLoading, refetch };
 };
 
 export default useFetchAgent;

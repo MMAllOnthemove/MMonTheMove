@@ -6,12 +6,9 @@ import SearchCustomerRepairshoprScreen from '@/components/search_customer/rs/pag
 import Sidebar from '@/components/sidebar/page'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import useUserLoggedIn from '@/hooks/useGetUser'
-import { useRouter } from 'next/navigation'
-import React from 'react'
 
 const CustomersRepairshoprScreen = () => {
-    const { user, isLoggedIn, loading } = useUserLoggedIn()
-    const router = useRouter()
+    const { isLoggedIn, loading } = useUserLoggedIn()
     return (
         // <CreateCustomerRepairshoprScreen />
         <>

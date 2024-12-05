@@ -32,26 +32,26 @@ interface IHHPTask {
 const useFetchHHPTaskById = (taskId: string | number) => {
     const [hhpTask, setHHPTask] = useState<IHHPTask | null>(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const { data } = await axios.get(
-                    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/` +
-                        taskId,
-                    {
-                        withCredentials: true,
-                    }
-                );
-                if (data) {
-                    setHHPTask(data);
+    const refetch = async () => {
+        try {
+            const { data } = await axios.get(
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/` +
+                    taskId,
+                {
+                    withCredentials: true,
                 }
-            } catch (error) {
-                if (process.env.NODE_ENV !== "production") {
-                    console.error("Error fetching HHP task by id:", error);
-                }
+            );
+            if (data) {
+                setHHPTask(data);
             }
-        };
-        fetchData();
+        } catch (error) {
+            if (process.env.NODE_ENV !== "production") {
+                console.error("Error fetching HHP task by id:", error);
+            }
+        }
+    };
+    useEffect(() => {
+        refetch();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [taskId]);
     return { hhpTask };

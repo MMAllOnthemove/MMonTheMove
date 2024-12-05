@@ -50,7 +50,7 @@ const SingleChecklistScreen = () => {
     // update the mileage after return
     const updateVehicleChecklist = async () => {
         const rowId = id
-        const payload = { rowId, mileage_after, next_service_date }
+        const payload = { rowId, mileage_after, next_service_date, next_service_kms, license_disc_expiry }
         await updateChecklist(rowId, payload)
     }
 

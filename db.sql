@@ -117,6 +117,15 @@ create table technician_tasks (
     compensation boolean
 );
 
+create table technician_tasks_comments (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    task_id INTEGER REFERENCES technician_tasks(id),
+    comment text,
+    created_by text,
+    created_at TIMESTAMP
+);
+
 -- Create a trigger function to update the 'updated_at' field
 -- CREATE OR REPLACE FUNCTION update_updated_at()
 -- RETURNS TRIGGER AS $$

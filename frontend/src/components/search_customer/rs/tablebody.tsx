@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { CustomerResultRowClick, TechniciansTableData } from '@/lib/types'
+import { CustomerResultRowClick } from '@/lib/types'
 import {
     flexRender,
     Row,

@@ -29,7 +29,6 @@ import React, { useEffect, useState } from 'react';
 const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) => {
     const { user } = useUserLoggedIn()
     const { updateRepairTicket } = useRepairshoprTicket()
-
     const [searchTicket, setSearchTicket] = useState("")
     const [warranty, setWarranty] = useState("")
     const [engineer, setEngineer] = useState("")
@@ -173,8 +172,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
             "user_id": repairshopr_id,
         }
         await addTask(payload)
-        if (engineer !== "" || engineer !== null || engineer !== undefined) await updateRepairTicket(repairshopr_job_id, userIdPayload)
-
+        if (engineer) await updateRepairTicket(repairshopr_job_id, userIdPayload)
         setSearchTicket('')
         setWarranty('')
         setEngineer('')

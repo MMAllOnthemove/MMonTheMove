@@ -2,7 +2,6 @@ import axios from "axios";
 import { useState } from "react";
 
 import toast from "react-hot-toast";
-import useHHPTasks from "./useHHPTasks";
 interface ErrorMessages {
     date_booked?: string;
     model?: string;
@@ -20,15 +19,15 @@ interface ErrorMessages {
     repeat_repair?: string;
 }
 
-const useAddHHPTask = () => {
-    const [addHHPTaskLoading, setLoading] = useState(false); // Loading state
-    const [addHHPTaskErrors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
-    const addTask = async (values: any) => {
+const useAddTaskCommentLocally = () => {
+    const [addCommentLoading, setLoading] = useState(false); // Loading state
+    const [addCommentErrors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
+    const addCommentLocally = async (values: any) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
         try {
             const response = await axios.post(
-                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs`,
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/comments`,
                 values,
                 {
                     withCredentials: true,
@@ -37,6 +36,7 @@ const useAddHHPTask = () => {
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
             }
+            return response?.data;
         } catch (error: any) {
             if (error?.response?.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
@@ -49,7 +49,7 @@ const useAddHHPTask = () => {
         }
     };
 
-    return { addTask, addHHPTaskLoading, addHHPTaskErrors };
+    return { addCommentLocally, addCommentLoading, addCommentErrors };
 };
 
-export default useAddHHPTask;
+export default useAddTaskCommentLocally;

@@ -12,36 +12,36 @@ const useFetchDrivers = () => {
     const [driversList, setdrivers] = useState<Tdrivers[]>([]);
     const [driversListLoading, setdriversLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setdriversLoading(true);
-                const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/drivers`,
-                    {
-                        withCredentials: true,
-                    }
-                );
-                if (response?.data) {
-                    setdrivers(response?.data);
+    const refetch = async () => {
+        try {
+            setdriversLoading(true);
+            const response = await axios.get(
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/drivers`,
+                {
+                    withCredentials: true,
                 }
-            } catch (error: any) {
-                if (process.env.NODE_ENV !== "production") {
-                    console.error(
-                        "Error fetching drivers:",
-                        error?.response?.data?.error
-                    );
-                }
-            } finally {
-                setdriversLoading(false);
+            );
+            if (response?.data) {
+                setdrivers(response?.data);
             }
-        };
+        } catch (error: any) {
+            if (process.env.NODE_ENV !== "production") {
+                console.error(
+                    "Error fetching drivers:",
+                    error?.response?.data?.error
+                );
+            }
+        } finally {
+            setdriversLoading(false);
+        }
+    };
 
-        fetchData();
+    useEffect(() => {
+        refetch();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return { driversList, driversListLoading };
+    return { driversList, driversListLoading, refetch };
 };
 
 export default useFetchDrivers;

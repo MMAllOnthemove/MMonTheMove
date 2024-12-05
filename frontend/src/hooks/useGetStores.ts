@@ -13,31 +13,30 @@ const useGetStores = () => {
     const [storesList, setData] = useState<TStores[]>([]);
     const [storesListLoading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/stores`,
-                    {
-                        withCredentials: true,
-                    }
-                );
-                if (response?.data) {
-                    setData(response.data);
+    const refetch = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/stores`,
+                {
+                    withCredentials: true,
                 }
-            } catch (error: any) {
-                if (error) toast.error(error?.response?.data?.error);
-            } finally {
-                setLoading(false);
+            );
+            if (response?.data) {
+                setData(response.data);
             }
-        };
-
-        fetchData();
+        } catch (error: any) {
+            if (error) toast.error(error?.response?.data?.error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    useEffect(() => {
+        refetch();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return { storesList, storesListLoading };
+    return { storesList, storesListLoading, refetch };
 };
 
 export default useGetStores;
