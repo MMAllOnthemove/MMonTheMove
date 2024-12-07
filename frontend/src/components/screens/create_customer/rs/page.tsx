@@ -64,7 +64,6 @@ const CreateCustomerRepairshoprScreen = () => {
             "state": state,
             "zip": zip,
         }
-        console.log(payload)
         try {
             const { data } = await axios.post(`${process.env.NEXT_PUBLIC_REPAIRSHOPR_CREATE_CUSTOMER}`, payload, {
                 headers: {
@@ -72,7 +71,6 @@ const CreateCustomerRepairshoprScreen = () => {
                     Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`
                 },
             })
-            console.log("customer create result", data)
             const customerId = data?.customer?.id;
 
             // Convert the custInfo object to a JSON string

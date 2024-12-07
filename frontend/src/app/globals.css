@@ -25,6 +25,7 @@ body::-webkit-scrollbar-track,
     background: #dee2da;
 }
 ::-webkit-scrollbar-thumb:vertical,
+::-webkit-scrollbar-thumb:horizontal,
 body::-webkit-scrollbar-thumb {
     background-color: #6c757d;
     border-radius: 20px;

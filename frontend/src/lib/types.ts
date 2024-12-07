@@ -425,6 +425,10 @@ export type DriverAdd = {
     driver_firstname: string;
     driver_lastname: string;
 };
+export type CarAdd = {
+    plate_number: string;
+    car_model: string;
+};
 export type ClaimsAdd = {
     service_order_no?: string;
     ticket_number?: string;

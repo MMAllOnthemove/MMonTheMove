@@ -58,7 +58,6 @@ const HHP = () => {
         const loadCustomerInfo = () => {
             if (typeof window !== undefined && window.localStorage) {
                 const parsedData = JSON.parse(localStorage.getItem('custInfo') || '""');
-                // console.log(parsedData)
                 if (parsedData !== null) {
                     setCustomerId(parsedData?.customerId)
 
@@ -72,7 +71,6 @@ const HHP = () => {
         const loadCustomerAssetInfo = () => {
             if (typeof window !== undefined && window.localStorage) {
                 const parsedData = JSON.parse(localStorage.getItem('assetInfo') || '""');
-                // console.log(parsedData)
                 if (parsedData !== null) {
                     setAssetId(parsedData?.asset_id)
                     setIMEI(parsedData?.asset_imei)
@@ -96,8 +94,6 @@ const HHP = () => {
                 .replace("Z", "")).format("YYMMDDhhmmss");
 
 
-
-            // console.log(formattedDate)
             const values = {
                 "IsCommonHeader": {
                     "Company": `${process.env.NEXT_PUBLIC_COMPANY}`,
@@ -113,8 +109,6 @@ const HHP = () => {
 
             }
 
-
-            // console.log("values", values)
             const { data } = await axios.post(`${process.env.NEXT_PUBLIC_IPAAS_API_CHECK_WARRANTY}`, values, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -168,7 +162,6 @@ const HHP = () => {
 
             if (data) {
                 toast.success(`${data?.message}`)
-                console.log("file urls frontend", data)
                 const repairshopr_payload = {
                     files: data.fileUrls.map((url: any) => ({
                         url: url,
@@ -228,7 +221,6 @@ const HHP = () => {
                 }
             ]
         }
-        console.log("createTicket", payload)
         setCreateTicketLoading(true)
 
         try {
@@ -302,7 +294,6 @@ const HHP = () => {
             "repeat_repair": repeat_repair,
             "created_at": created_at
         }
-        console.log("our db create payload", payload)
         await addTask(payload)
 
     }

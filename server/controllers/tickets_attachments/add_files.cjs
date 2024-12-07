@@ -73,7 +73,6 @@ const uploadTicketAttachments = async (req, res) => {
                 }
             })
         );
-        console.log("fileUrls", fileUrls);
         return res
             .status(201)
             .json({ message: "Files uploaded", fileUrls: fileUrls });

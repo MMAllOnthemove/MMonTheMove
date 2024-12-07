@@ -122,7 +122,6 @@ const SearchCustomerRepairshoprScreen = () => {
             zip: zip
         };
         setAddCustomerLoading(true)
-        // console.log(custInfo)
         // Convert the custInfo object to a JSON string
         try {
             const custInfoString = JSON.stringify(custInfo);
@@ -159,7 +158,6 @@ const SearchCustomerRepairshoprScreen = () => {
                     Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`
                 },
             })
-            console.log("put customer data", data)
             if (data?.customer) {
                 setEditModalOpen(false);
                 // to prevent having to search again, set the resulting details to the customer details (email or fullname)

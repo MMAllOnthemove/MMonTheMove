@@ -67,6 +67,7 @@ type PropertiesType = {
     "Backup Requires"?: string;
     "Item Condition"?: string;
     "Item Condition "?: string;
+    "Location (BIN)"?: string;
 };
 
 
@@ -96,7 +97,7 @@ const TechniciansScreen = () => {
     const [openSortTableColumnsModal, setSortTableColumns] = useState(false)
     const [parts_ordered_date, setPartsOrderedDate] = useState<string | undefined>("")
     const [parts_ordered, setPartsOrdered] = useState<CheckedState | undefined>()
-    const [compensation, setCompensation] = useState<CheckedState | undefined>()
+    const [compensation, setCompensation] = useState<CheckedState | undefined | any | any>()
     const [parts_requested, setPartsRequested] = useState<CheckedState | undefined>()
     const [parts_requested_date, setPartsRequestedDate] = useState<string | undefined>("")
     const [qc_complete, setQCComplete] = useState<string>('')
@@ -117,10 +118,10 @@ const TechniciansScreen = () => {
     const [repairshoprIMEI, setRepairshoprIMEI] = useState<string>("")
     const [specialRequirement, setSpecialRequirement] = useState("")
     const [job_repair_no, setJobRepairNo] = useState("")
-
+    const [locationBin, setLocationBin] = useState("")
     const [collected, setCollected] = useState(false)
     const [collected_date, setCollectedDate] = useState("")
-
+    const [repairshoprServiceOrder, setRepairshoprServiceOrder] = useState("")
 
     // fetch repairshopr ticket by id so we an update warranty (it requires so much parameters just for that)
     const fetchRSTicketDataById = async (repairId: string) => {
@@ -219,9 +220,8 @@ const TechniciansScreen = () => {
         try {
             const getTicketDataFromRepairshopr = await fetchRSTicketDataById(row?.original?.repairshopr_job_id);
             const properties = getTicketDataFromRepairshopr?.ticket?.properties;
-            console.log("properties", properties)
             if (properties) {
-                const fieldsToExtract = ["IMEI", "Warranty", "Backup Requires", "Item Condition", "Special Requirement"];
+                const fieldsToExtract = ["IMEI", "Warranty", "Backup Requires", "Item Condition", "Special Requirement", "Location(BIN)", "Service Order No."];
                 const extractedValues: Record<string, string> = {};
                 fieldsToExtract.forEach((field: any) => {
                     // Find the correct key for the field
@@ -231,14 +231,17 @@ const TechniciansScreen = () => {
                     // Assign the value to the extractedValues object if key is found
                     extractedValues[field] = matchedKey ? properties[matchedKey as keyof PropertiesType] : null;
                 });
-                console.log('extractedValues["Warranty"]', extractedValues["Warranty"])
+                setWarranty(extractedValues["Warranty"])
                 setRepairshoprWarranty(extractedValues["Warranty"])
                 setRepairshoprBackupRequires(extractedValues["Backup Requires"])
                 setRepairshoprItemCondition(extractedValues["Item Condition"])
                 setSpecialRequirement(extractedValues["Special Requirement"])
                 setRepairshoprIMEI(extractedValues["IMEI"])
-                if (properties["Job Repair No."]) setJobRepairNo("Job Repair No.");
-                if (properties["Job Repair No.:"]) setJobRepairNo("Job Repair No.:")
+                setLocationBin(extractedValues["Location (BIN)"])
+                setRepairshoprServiceOrder(extractedValues["Service Order No."])
+                setServiceOrder(extractedValues["Service Order No."])
+                if (properties["Job Repair No."]) setJobRepairNo(extractedValues["Job Repair No."]);
+                if (properties["Job Repair No.:"]) setJobRepairNo(extractedValues["Job Repair No.:"]);
             } else {
                 // 
             }
@@ -253,9 +256,25 @@ const TechniciansScreen = () => {
     const closeModal = () => {
         setModifyTaskModal(false);
     };
-    const handleDelete = async (id: string | undefined) => {
+    const handleDelete = async (id: string | undefined, part_name: string, part_desc: string) => {
+
+        const comment = `Part ${part_name}${part_desc} deleted by ${user?.full_name}`
+        const commentPayload: RepairshorTicketComment = {
+            "subject": "Update",
+            "tech": user?.full_name,
+            "body": '*' + comment,
+            "hidden": true,
+            "do_not_email": true
+        }
         await deletePart(id);
+        try {
+            if (comment) await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
+
+        } catch (error) {
+            console.log("error commenting deleted part", error)
+        }
         refetch(); // Refresh the list of parts
+
     };
 
     // Table sorting
@@ -333,9 +352,9 @@ const TechniciansScreen = () => {
         setQCComplete(modifyTaskModal?.qc_complete)
         setQCCompleteDate(modifyTaskModal?.qc_date)
         setCompensation(modifyTaskModal?.compensation)
-        setServiceOrder(modifyTaskModal?.service_order_no)
-        setWarranty(modifyTaskModal?.warranty)
-    }, [modifyTaskModal?.compensation, modifyTaskModal?.warranty, modifyTaskModal?.assessment_date, modifyTaskModal?.parts_requested, modifyTaskModal?.parts_requested_date, modifyTaskModal?.unit_status, modifyTaskModal?.engineer, modifyTaskModal?.repairshopr_id, modifyTaskModal?.parts_issued, modifyTaskModal?.parts_issued_date, modifyTaskModal?.parts_pending, modifyTaskModal?.parts_pending_date, modifyTaskModal?.qc_complete, modifyTaskModal?.qc_date, modifyTaskModal?.service_order_no])
+
+
+    }, [modifyTaskModal?.compensation, modifyTaskModal?.assessment_date, modifyTaskModal?.parts_requested, modifyTaskModal?.parts_requested_date, modifyTaskModal?.unit_status, modifyTaskModal?.engineer, modifyTaskModal?.repairshopr_id, modifyTaskModal?.parts_issued, modifyTaskModal?.parts_issued_date, modifyTaskModal?.parts_pending, modifyTaskModal?.parts_pending_date, modifyTaskModal?.qc_complete, modifyTaskModal?.qc_date, modifyTaskModal?.service_order_no])
 
 
     const [qcFiles, setQCFiles] = useState([]);
@@ -388,9 +407,7 @@ const TechniciansScreen = () => {
         const id = modifyTaskModal?.id;
         const updated_at = datetimestamp;
         const created_at = datetimestamp;
-        if (modifyTaskModal?.service_order_no !== service_order_no) {
-            setServiceOrder(service_order_no)
-        }
+
 
         const updatePayload = {
             // This goes to our in house db
@@ -490,12 +507,13 @@ const TechniciansScreen = () => {
                 "Backup Requires ": `${repairshoprBackupRequires}`,
                 "Item Condition": repairshoprItemCondition,
                 "Item Condition ": repairshoprItemCondition,
-                "Service Order No.": service_order_no,
-                "Service Order No. ": service_order_no,
+                "Service Order No.": repairshoprServiceOrder,
+                "Service Order No. ": repairshoprServiceOrder,
                 "Special Requirement": specialRequirement,
                 "Special Requirement ": specialRequirement,
                 "Job Repair No.": `${job_repair_no}`,
                 "Job Repair No.:": `${job_repair_no}`,
+                "Location (BIN)": `${locationBin}`,
             }
         }
 
@@ -513,8 +531,8 @@ const TechniciansScreen = () => {
             setServiceOrder(service_order_no)
         }
         // this will be essenstial to also update the warranty in our system if user voids it
-        if (repairshoprWarranty === "69476" || 69476) setWarranty('IW')
-        if (repairshoprWarranty === "69477" || 69477) setWarranty('OOW')
+        // if (repairshoprWarranty === "69476" || 69476 || "21877" || 21877 || 75130 || "75130") setWarranty('IW')
+        // if (repairshoprWarranty === "21878" || 21878 || "75131" || 75131 || 69477 || "69477") setWarranty('OOW')
 
         if (unit_status === "Resolved") {
             setCollected(true);
@@ -525,8 +543,8 @@ const TechniciansScreen = () => {
             id, service_order_no, unit_status, assessment_date, updated_at, engineer, warranty, collected, collected_date, compensation
         }
         const changes = findChanges(modifyTaskModal, updatePayload)
-        if (changes?.warranty === "IW") setRepairshoprWarranty('69476')
-        if (changes?.warranty === "OOW") setRepairshoprWarranty('69477')
+
+
         const changeIdOnRepairshoprPayload = {
             "user_id": repairshopr_id,
             "properties": {
@@ -537,12 +555,13 @@ const TechniciansScreen = () => {
                 "Backup Requires ": `${repairshoprBackupRequires}`,
                 "Item Condition": repairshoprItemCondition,
                 "Item Condition ": repairshoprItemCondition,
-                "Service Order No.": service_order_no,
-                "Service Order No. ": service_order_no,
+                "Service Order No.": repairshoprServiceOrder,
+                "Service Order No. ": repairshoprServiceOrder,
                 "Special Requirement": specialRequirement,
                 "Special Requirement ": specialRequirement,
                 "Job Repair No.": `${job_repair_no}`,
                 "Job Repair No.:": `${job_repair_no}`,
+                "Location (BIN)": `${locationBin}`,
             }
         }
         // this will update repairshopr warranty using the imei, backup, item condition, warranty
@@ -550,18 +569,19 @@ const TechniciansScreen = () => {
         const updateTicketWarrantyPayload = {
             "properties": {
                 "IMEI": repairshoprIMEI,
-                "Warranty": `${repairshoprWarranty}`,
-                "Warranty ": `${repairshoprWarranty}`,
+                "Warranty": repairshoprWarranty,
+                "Warranty ": repairshoprWarranty,
                 "Backup Requires": `${repairshoprBackupRequires}`,
                 "Backup Requires ": `${repairshoprBackupRequires}`,
                 "Item Condition": repairshoprItemCondition,
                 "Item Condition ": repairshoprItemCondition,
-                "Service Order No.": service_order_no,
-                "Service Order No. ": service_order_no,
+                "Service Order No.": repairshoprServiceOrder,
+                "Service Order No. ": repairshoprServiceOrder,
                 "Special Requirement": specialRequirement,
                 "Special Requirement ": specialRequirement,
                 "Job Repair No.": `${job_repair_no}`,
                 "Job Repair No.:": `${job_repair_no}`,
+                "Location (BIN)": `${locationBin}`,
             }
         }
         const created_at = datetimestamp;
@@ -577,7 +597,6 @@ const TechniciansScreen = () => {
             if (repairshopr_id || repairshopr_id !== null || repairshopr_id !== undefined) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, changeIdOnRepairshoprPayload);
             if (repairshoprWarranty || repairshoprWarranty !== null || repairshoprWarranty !== undefined) {
                 const x = await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, updateTicketWarrantyPayload);
-                console.log("x", x)
             }
             if (reparshoprComment) {
                 await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
@@ -625,12 +644,13 @@ const TechniciansScreen = () => {
                 "Backup Requires ": `${repairshoprBackupRequires}`,
                 "Item Condition": repairshoprItemCondition,
                 "Item Condition ": repairshoprItemCondition,
-                "Service Order No.": service_order_no,
-                "Service Order No. ": service_order_no,
+                "Service Order No.": repairshoprServiceOrder,
+                "Service Order No. ": repairshoprServiceOrder,
                 "Special Requirement": specialRequirement,
                 "Special Requirement ": specialRequirement,
                 "Job Repair No.": `${job_repair_no}`,
                 "Job Repair No.:": `${job_repair_no}`,
+                "Location (BIN)": `${locationBin}`,
             }
         }
         const partsOrderedPayload = {
@@ -643,12 +663,13 @@ const TechniciansScreen = () => {
                 "Backup Requires ": `${repairshoprBackupRequires}`,
                 "Item Condition": repairshoprItemCondition,
                 "Item Condition ": repairshoprItemCondition,
-                "Service Order No.": service_order_no,
-                "Service Order No. ": service_order_no,
+                "Service Order No.": repairshoprServiceOrder,
+                "Service Order No. ": repairshoprServiceOrder,
                 "Special Requirement": specialRequirement,
                 "Special Requirement ": specialRequirement,
                 "Job Repair No.": `${job_repair_no}`,
                 "Job Repair No.:": `${job_repair_no}`,
+                "Location (BIN)": `${locationBin}`,
             }
         }
         const partsIssuedPayload = {
@@ -661,12 +682,13 @@ const TechniciansScreen = () => {
                 "Backup Requires ": `${repairshoprBackupRequires}`,
                 "Item Condition": repairshoprItemCondition,
                 "Item Condition ": repairshoprItemCondition,
-                "Service Order No.": service_order_no,
-                "Service Order No. ": service_order_no,
+                "Service Order No.": repairshoprServiceOrder,
+                "Service Order No. ": repairshoprServiceOrder,
                 "Special Requirement": specialRequirement,
                 "Special Requirement ": specialRequirement,
                 "Job Repair No.": `${job_repair_no}`,
                 "Job Repair No.:": `${job_repair_no}`,
+                "Location (BIN)": `${locationBin}`,
             }
         }
 
@@ -684,6 +706,7 @@ const TechniciansScreen = () => {
                 if (changes?.parts_issued) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, partsIssuedPayload)
                 // await updateHHPTask(id, changes)
                 toast.success(`Successfully updated`);
+                setCompensation(null)
                 setPartsIssuedDate("")
                 setPartsIssued(undefined)
                 setPartsPending(undefined)
@@ -715,6 +738,7 @@ const TechniciansScreen = () => {
         setSearchPart("")
         setPartName("")
         setPartDesc("")
+        setCompensation(false)
         setPartQuantity(0)
     }
 
@@ -725,11 +749,9 @@ const TechniciansScreen = () => {
             // Create the parts list with a conditional "(compensation)" label
             const partsList = taskPartsList.map((part, index) => {
                 const compensationLabel = part?.compensation ? " (compensation)" : "";
-                console.log(part)
+
                 return `${index + 1}. ${part.part_name} - ${part.part_desc} (Quantity: ${part.part_quantity})${compensationLabel}`;
             }).join('\n');
-
-
 
             const comment = `Parts added:\n${partsList}`;
             const commentPayload: RepairshorTicketComment = {

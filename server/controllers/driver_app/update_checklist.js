@@ -40,7 +40,6 @@ const updateChecklist = async (req, res) => {
             message: "Successfully updated",
         });
     } catch (error) {
-        console.log(error);
         return res.status(500).json({ error: "Could not update, try again" });
     }
 };
