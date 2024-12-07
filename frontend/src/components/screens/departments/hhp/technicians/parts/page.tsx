@@ -18,7 +18,7 @@ type TPartsHHPUpdate = {
     parts_pendingProp: CheckedState | undefined
     parts_issuedProp: CheckedState | undefined
     parts_requestedProp: CheckedState | undefined
-    compensation: CheckedState | undefined
+    compensation: CheckedState | undefined | any | any
     search_part: string;
     setSearchPart: (data: string) => void;
     part_desc: string;
@@ -32,7 +32,7 @@ type TPartsHHPUpdate = {
     setPartsIssuedProp: (data: CheckedState | undefined) => void;
     setPartsRequestedProp: (data: CheckedState | undefined) => void;
 
-    setCompensation: (data: CheckedState | undefined) => void;
+    setCompensation: (data: CheckedState | undefined | any | null) => void;
     setPartsRequestedDateProp: (data: string) => void;
     setPartsIssuedDateProp: (data: string) => void;
     addPartLoading: boolean;
@@ -43,7 +43,8 @@ type TPartsHHPUpdate = {
     submitPartsUpdate: (data: React.SyntheticEvent) => void;
     part_data: TTaskParts[];
     deletePartLoading: boolean;
-    handleDelete: (data: string) => void;
+    // 3 arguments so we know which part was deleted
+    handleDelete: (data: string, part_name: string, part_desc: string) => void;
     errors: {
         part_name?: string;
         part_desc?: string;
@@ -129,7 +130,7 @@ const Parts = ({ parts_orderedProp, parts_pendingProp, deletePartLoading, parts_
                             {part_data?.length > 0 ? part_data?.map((item) => (
                                 <div key={item.id}>
                                     <p className="flex items-center justify-between border-b border-grey-50" >
-                                        ({item.part_name}) / <span className="text-ellipsis overflow-hidden whitespace-nowrap">{item?.part_desc} /</span> ({item?.part_quantity}) <button type="button" disabled={deletePartLoading} onClick={() => handleDelete(item.id)}>{deletePartLoading ? '...' : <XMarkIcon className="h-4 w-4" />}</button>
+                                        ({item.part_name}) / <span className="text-ellipsis overflow-hidden whitespace-nowrap">{item?.part_desc} /</span> ({item?.part_quantity}) <button type="button" disabled={deletePartLoading} onClick={() => handleDelete(item.id, item?.part_name, item?.part_desc)}>{deletePartLoading ? '...' : <XMarkIcon className="h-4 w-4" />}</button>
                                     </p>
                                 </div>
                             )) : "No parts for this task"}

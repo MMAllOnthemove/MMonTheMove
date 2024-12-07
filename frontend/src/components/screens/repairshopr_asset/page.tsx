@@ -36,7 +36,6 @@ const RepairshoprAssetScreen = () => {
         const loadCustomerInfo = () => {
             if (typeof window !== undefined && window.localStorage) {
                 const parsedData = JSON.parse(localStorage.getItem('custInfo') || '""');
-                // console.log(parsedData)
                 if (parsedData !== null) {
                     setCustomerId(parsedData?.customerId)
                 }
@@ -84,13 +83,11 @@ const RepairshoprAssetScreen = () => {
             "asset_serial": result[0]?.asset_serial,
             "model_number": result[0]?.properties["Model No.:"]
         }
-        // console.log(assetInfo)
         const custAssetString = JSON.stringify(assetInfo);
         if (typeof window !== "undefined" && window.localStorage) {
             window.localStorage.setItem("assetInfo", custAssetString);
             toast.success(`Assets created, Continue`);
             router.push("/create_ticket/rs")
-            // console.log('Dummy object stored successfully!');
         }
     }
 
@@ -102,13 +99,11 @@ const RepairshoprAssetScreen = () => {
             "asset_imei": createIMEI,
             "model_number": createModel
         }
-        // console.log(assetInfo)
 
         const custAssetString = JSON.stringify(assetInfo);
         if (typeof window !== "undefined" && window.localStorage) {
             window.localStorage.setItem("assetInfo", custAssetString);
             router.push("/create_ticket/rs")
-            // console.log('Dummy object stored successfully!');
         }
 
     }
@@ -124,7 +119,6 @@ const RepairshoprAssetScreen = () => {
             "customer_id": customerId,
             "asset_serial": createSerial
         }
-        console.log(values)
         setCreateAssetLoading(true)
         try {
             const { data } = await axios.post(`${process.env.NEXT_PUBLIC_REPAIRSHOPR_CREATE_ASSETS}`, values, {
@@ -141,7 +135,6 @@ const RepairshoprAssetScreen = () => {
                 router.push("/create_ticket/rs")
             }
         } catch (error: any) {
-            console.log("create asset on rs error", error)
             toast.error(`${error?.response.data.message[0]}`);
         } finally {
             setCreateAssetLoading(false)

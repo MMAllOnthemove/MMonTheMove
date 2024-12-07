@@ -235,6 +235,15 @@ create TYPE reason_for_use_enum as enum (
 
 create type fail_pass_enum as enum ('Pass', 'Fail');
 
+create table cars (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    plate_number text,
+    car_model text,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
 create table vehicle_checklist(
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
@@ -305,6 +314,26 @@ create table vehicle_checklist(
     license_disc_expiry text,
     next_service_kms text;
 
+);
+
+create type tank_filled_enum as enum ('Yes', 'No');
+
+create table vehicle_fuel_consumption (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    car_name text,
+    receipt_number text,
+    odometer text,
+    filled_volume_litres numeric,
+    fuel_price_per_litre numeric,
+    tank_filled tank_filled_enum,
+    km_travelled_from_last_refill numeric,
+    litres_travelled_from_last_refill numeric,
+    total_fill_cost numeric,
+    km_consumption_per_litre numeric,
+    km_consumption_per_kilometer numeric,
+    cost_of_the_km numeric,
+    created_at TIMESTAMP
 );
 
 create table vehicle_checklist_images (

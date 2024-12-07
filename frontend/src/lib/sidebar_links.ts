@@ -42,6 +42,7 @@ export const menuItems = [
             { id: 9, item: "Add booking agent", pageRoute: "/agents" },
             { id: 10, item: "Add store", pageRoute: "/stores" },
             { id: 11, item: "Add driver", pageRoute: "/drivers" },
+            { id: 11, item: "Add car", pageRoute: "/cars" },
         ],
     },
     {
