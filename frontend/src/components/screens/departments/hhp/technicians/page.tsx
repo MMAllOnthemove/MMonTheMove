@@ -530,9 +530,6 @@ const TechniciansScreen = () => {
         if (modifyTaskModal?.service_order_no !== service_order_no) {
             setServiceOrder(service_order_no)
         }
-        // this will be essenstial to also update the warranty in our system if user voids it
-        // if (repairshoprWarranty === "69476" || 69476 || "21877" || 21877 || 75130 || "75130") setWarranty('IW')
-        // if (repairshoprWarranty === "21878" || 21878 || "75131" || 75131 || 69477 || "69477") setWarranty('OOW')
 
         if (unit_status === "Resolved") {
             setCollected(true);
@@ -543,14 +540,18 @@ const TechniciansScreen = () => {
             id, service_order_no, unit_status, assessment_date, updated_at, engineer, warranty, collected, collected_date, compensation
         }
         const changes = findChanges(modifyTaskModal, updatePayload)
-
+        // we will assign values to this variable
+        let tempWarranty;
+        if (changes?.warranty === 'OOW' && repairshoprWarranty?.includes("69476")) tempWarranty = '69477'
+        if (changes?.warranty === 'OOW' && repairshoprWarranty?.includes("21877")) tempWarranty = '21878'
+        if (changes?.warranty === 'OOW' && repairshoprWarranty?.includes("75130")) tempWarranty = '75131'
 
         const changeIdOnRepairshoprPayload = {
             "user_id": repairshopr_id,
             "properties": {
                 "IMEI": repairshoprIMEI,
-                "Warranty": `${repairshoprWarranty}`,
-                "Warranty ": `${repairshoprWarranty}`,
+                "Warranty": tempWarranty,
+                "Warranty ": tempWarranty,
                 "Backup Requires": `${repairshoprBackupRequires}`,
                 "Backup Requires ": `${repairshoprBackupRequires}`,
                 "Item Condition": repairshoprItemCondition,
