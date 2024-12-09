@@ -8,7 +8,7 @@ type TFuelConsumption = {
     unique_id: string;
     car_name?: string;
     receipt_number?: string;
-    odometer?: string;
+    odometer?: number;
     filled_volume_litres?: number;
     fuel_price_per_litre?: number;
     tank_filled?: string;
@@ -21,15 +21,16 @@ type TFuelConsumption = {
     created_at?: string;
 };
 
-const useGetFuelConsumption = () => {
-    const [fuelConsumptionList, setData] = useState<TFuelConsumption[]>([]);
-    const [fuelConsumptionListLoading, setLoading] = useState(true);
+const useGetSingleFuelConsumption = (plate_number: string | undefined) => {
+    const [fuelConsumptionCarData, setData] = useState<TFuelConsumption[]>([]);
+    const [fuelConLoading, setLoading] = useState(true);
 
     const refetch = async () => {
+        if (!plate_number) return; // Exit if plate_number is undefined
         try {
             setLoading(true);
             const response = await axios.get(
-                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/fuel`,
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/fuel/${plate_number}`,
                 {
                     withCredentials: true,
                 }
@@ -49,7 +50,7 @@ const useGetFuelConsumption = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return { fuelConsumptionList, fuelConsumptionListLoading, refetch };
+    return { fuelConsumptionCarData, fuelConLoading, refetch };
 };
 
-export default useGetFuelConsumption;
+export default useGetSingleFuelConsumption;

@@ -100,7 +100,7 @@ const TasksUpdate = ({ assessment_datetime, hhp_tasks_loading, model, imei, seri
             <div className="mb-3">
                 <Select name="warranty" value={warranty} onValueChange={setWarranty}>
                     <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Void warranty" />
+                        <SelectValue placeholder="Change warranty" />
                     </SelectTrigger>
                     <SelectContent>
                         {warranties.map((dep) => (

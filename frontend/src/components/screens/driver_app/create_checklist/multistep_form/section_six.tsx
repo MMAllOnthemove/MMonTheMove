@@ -61,7 +61,7 @@ const SectionSix: React.FC<ISectionSix> = ({ horn, setHorn, speedometer, setSpee
                     }
                 </div>
                 <div>
-                    <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Speedomter:</label>
+                    <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-3'>Speedometer:</label>
                     <div className="text-sm font-medium leading-none mb-2 text-gray-900">
                         <input
                             type="radio"

@@ -230,7 +230,6 @@ const HHP = () => {
                     Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`
                 }
             })
-            console.log("ticket created data", data)
             await sendTicketDataToOurDB(data?.ticket?.number, data?.ticket?.id)
 
             toast.success(`Ticket created, Here is your ticket: ${data?.ticket?.number}`, {

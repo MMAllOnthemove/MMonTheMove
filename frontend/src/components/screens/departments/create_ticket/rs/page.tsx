@@ -12,7 +12,6 @@ import HHP from './hhp/page'
 
 const CreateTicketRepairshoprScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
-    // console.log("user", user)
     const router = useRouter()
     return (
 
