@@ -33,22 +33,27 @@ export const menuItems = [
         label: "Driver app",
         sublinks: [
             { id: 7, item: "Checklists", pageRoute: "/drivers/checklists" },
+            {
+                id: 8,
+                item: "Fuel consumption",
+                pageRoute: "/drivers/fuel_consumption",
+            },
         ],
     },
     {
         label: "Admin",
         sublinks: [
-            { id: 8, item: "Add engineer", pageRoute: "/engineers" },
-            { id: 9, item: "Add booking agent", pageRoute: "/agents" },
-            { id: 10, item: "Add store", pageRoute: "/stores" },
-            { id: 11, item: "Add driver", pageRoute: "/drivers" },
-            { id: 12, item: "Add car", pageRoute: "/cars" },
+            { id: 9, item: "Add engineer", pageRoute: "/engineers" },
+            { id: 10, item: "Add booking agent", pageRoute: "/agents" },
+            { id: 11, item: "Add store", pageRoute: "/stores" },
+            { id: 12, item: "Add driver", pageRoute: "/drivers" },
+            { id: 13, item: "Add car", pageRoute: "/cars" },
         ],
     },
     {
         label: "Create ticket",
         sublinks: [
-            { id: 13, item: "Repairshopr", pageRoute: "/create_ticket/rs" },
+            { id: 14, item: "Repairshopr", pageRoute: "/create_ticket/rs" },
         ],
     },
 ];

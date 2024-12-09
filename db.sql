@@ -309,7 +309,7 @@ create table vehicle_checklist(
     hass_fail_reason text,
     tools FAIL_PASS_ENUM,
     tools_fail_reason text,
-    created_at TIMESTAMP,
+    created_at text,
     updated_at text,
     license_disc_expiry text,
     next_service_kms text;
@@ -322,8 +322,9 @@ create table vehicle_fuel_consumption (
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
     car_name text,
+    -- plate number
     receipt_number text,
-    odometer text,
+    odometer numeric,
     filled_volume_litres numeric,
     fuel_price_per_litre numeric,
     tank_filled tank_filled_enum,
@@ -331,7 +332,8 @@ create table vehicle_fuel_consumption (
     litres_travelled_from_last_refill numeric,
     total_fill_cost numeric,
     km_consumption_per_litre numeric,
-    km_consumption_per_kilometer numeric,
+    litres_consumption_per_100km numeric,
+    miles_gallon numeric,
     cost_of_the_km numeric,
     created_at TIMESTAMP
 );

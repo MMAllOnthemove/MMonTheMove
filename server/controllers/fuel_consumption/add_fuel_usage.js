@@ -12,7 +12,7 @@ const addFuelUsageSchema = Yup.object({
     litres_travelled_from_last_refill: Yup.number(),
     total_fill_cost: Yup.number(),
     km_consumption_per_litre: Yup.number(),
-    km_consumption_per_kilometer: Yup.number(),
+    litres_consumption_per_100km: Yup.number(),
     cost_of_the_km: Yup.number(),
     created_at: Yup.string(),
 });
@@ -29,15 +29,16 @@ const addFuelUsage = async (req, res) => {
         litres_travelled_from_last_refill,
         total_fill_cost,
         km_consumption_per_litre,
-        km_consumption_per_kilometer,
+        litres_consumption_per_100km,
         cost_of_the_km,
+        miles_gallon,
         created_at,
     } = req.body;
     try {
         await addFuelUsageSchema.validate(req.body, { abortEarly: false });
 
         const { rows } = await pool.query(
-            "INSERT INTO vehicle_fuel_consumption (car_name, receipt_number, odometer, filled_volume_litres, fuel_price_per_litre, tank_filled, km_travelled_from_last_refill, litres_travelled_from_last_refill, total_fill_cost, km_consumption_per_litre, km_consumption_per_kilometer, cost_of_the_km, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)",
+            "INSERT INTO vehicle_fuel_consumption (car_name, receipt_number,odometer, filled_volume_litres,  fuel_price_per_litre,tank_filled, km_travelled_from_last_refill,litres_travelled_from_last_refill, total_fill_cost, km_consumption_per_litre, litres_consumption_per_100km, cost_of_the_km, miles_gallon, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)",
             [
                 car_name,
                 receipt_number,
@@ -47,10 +48,11 @@ const addFuelUsage = async (req, res) => {
                 tank_filled,
                 km_travelled_from_last_refill,
                 litres_travelled_from_last_refill,
-                total_fill_cost,
                 km_consumption_per_litre,
-                km_consumption_per_kilometer,
+                total_fill_cost,
+                litres_consumption_per_100km,
                 cost_of_the_km,
+                miles_gallon,
                 created_at,
             ]
         );
