@@ -7,6 +7,7 @@ const useDeleteBookingAgent = () => {
     const [deleteAgentLoading, setLoading] = useState(false); // Loading state
 
     const deleteAgent = async (agentId: string) => {
+        if (!agentId) return;
         setLoading(true);
         try {
             const response = await axios.delete(

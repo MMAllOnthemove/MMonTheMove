@@ -1,6 +1,6 @@
 import { TColumns } from "./types";
 
-const engineerWorkColumns: TColumns = [
+const engineerWorkColumns: TColumns | any = [
     {
         header: "Engineer",
         accessorKey: "engineer",

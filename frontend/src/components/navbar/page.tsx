@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { menuItems } from "@/lib/sidebar_links"
 import React, { useState } from "react"
+import { SlashIcon, ChevronDownIcon } from "@heroicons/react/24/outline"
 
 export default function Navbar() {
     // customize open on hover
@@ -29,7 +30,7 @@ export default function Navbar() {
                             <DropdownMenu open={hoveredMenu === menu.label}>
                                 <DropdownMenuTrigger className="flex items-center gap-1 outline-none border-none">
                                     <span>{menu.label}</span>
-                                    <BreadcrumbEllipsis className="h-4 w-4" />
+                                    <ChevronDownIcon className="h-4 w-4" />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="start">
                                     {menu.sublinks.map((sublink) => (
@@ -40,7 +41,9 @@ export default function Navbar() {
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </BreadcrumbItem>
-                        <BreadcrumbSeparator className="list-none" />
+                        <BreadcrumbSeparator className="list-none" >
+                            <SlashIcon className="h-4 w-4" />
+                        </BreadcrumbSeparator>
                     </React.Fragment>
                 ))}
             </BreadcrumbList>

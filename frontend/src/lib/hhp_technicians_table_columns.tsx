@@ -1,6 +1,8 @@
+import moment from "moment";
 import { TColumns } from "./types";
 
-const columns: TColumns = [
+
+const columns: TColumns | any = [
     {
         header: "Service Order No",
         accessorKey: "service_order_no",
@@ -22,9 +24,16 @@ const columns: TColumns = [
         accessorKey: "imei",
     },
     {
+        header: "Phone name",
+        accessorKey: "phone_name",
+    },
+    {
         header: "Booked",
         accessorKey: "date_booked",
-        // cell: info => moment(info).format("YYYY-MM-DD")
+        cell: ({ row }: { row: any }) => {
+            const dateValue = row.original.date_booked; // Access raw data
+            return moment(dateValue).format("YYYY-MM-DD HH:mm:ss");
+        },
     },
     {
         header: "IW/OW",
@@ -46,6 +55,10 @@ const columns: TColumns = [
     {
         header: "Assessment date",
         accessorKey: "assessment_date",
+        cell: ({ row }: { row: any }) => {
+            const dateValue = row.original.assessment_date; // Access raw data
+            return moment(dateValue).format("YYYY-MM-DD HH:mm:ss");
+        },
     },
     {
         header: "QC complete",
@@ -67,5 +80,6 @@ const columns: TColumns = [
         header: "Completed date",
         accessorKey: "completed_date",
     },
+
 ];
 export default columns;

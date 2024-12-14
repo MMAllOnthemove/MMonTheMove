@@ -5,6 +5,7 @@ const { uploadQCFile } = require("../../controllers/qc_uploads/add_qc.cjs");
 const {
     uploadTechnicianFiles,
 } = require("../../controllers/department/hhp/technicians/add_files.cjs");
+
 const {
     uploadChecklistFiles,
 } = require("../../controllers/driver_app/add_files.cjs");
@@ -20,8 +21,26 @@ const limiter = rateLimit({
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
+
+// File filter to allow images, videos, and PDFs
+const fileFilter = (req, file, cb) => {
+  const allowedMimeTypes = [
+    'image/jpeg', 'image/png', 'image/gif',
+    'video/mp4', 'video/avi', 'video/mov',
+    'application/pdf' // Add PDF MIME type
+  ];
+  
+  if (allowedMimeTypes.includes(file.mimetype)) {
+    cb(null, true); // Accept the file
+  } else {
+    cb(new Error('Invalid file type. Only images, videos, and PDFs are allowed.'), false); // Reject the file
+  }
+};
+
+
 const upload = multer({
     dest: "./uploads/",
+    fileFilter,
     storage: multer.diskStorage({
         destination: "./uploads/",
         filename: (req, file, cb) => cb(null, file.originalname),

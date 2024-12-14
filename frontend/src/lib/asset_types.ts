@@ -84,4 +84,8 @@ export const assetTypesDTV = [
         label: "DTV(DSV)",
         value: "DTV(DSV)",
     },
+    {
+        label: "Carry In",
+        value: "Carry In",
+    },
 ];

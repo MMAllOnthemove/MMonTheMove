@@ -14,6 +14,7 @@ const useRepairshoprFile = () => {
         values: TuseRepairshoprFile
     ) => {
         try {
+            if (!ticketId) return;
             const response = await axios.post(
                 `https://allelectronics.repairshopr.com/api/v1/tickets/${ticketId}/attach_file_url`,
                 values,

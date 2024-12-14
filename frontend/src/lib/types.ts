@@ -21,7 +21,19 @@ export type TUser = {
     repairshopr_id: number;
     department: string;
 };
-
+export type TUpdateAssessmentDate = {
+    assessment_date: string;
+    units_assessed: boolean;
+};
+export type PropertiesType = {
+    IMEI?: string;
+    Warranty?: string;
+    "Warranty "?: string;
+    "Backup Requires"?: string;
+    "Item Condition"?: string;
+    "Item Condition "?: string;
+    "Location (BIN)"?: string;
+};
 export type StoreValues = {
     store_name: string;
 };
@@ -127,7 +139,6 @@ export type VehicleInspection = {
     tools: string;
     tools_fail_reason: string;
     created_at: string;
-    formatted_created_at?: string;
     updated_at: string;
     image_urls: [] | any;
 };
@@ -478,10 +489,18 @@ export type ChecklistAdd = {
     hass?: string;
     tools?: string;
 };
+export type TDevices = {
+    id: string;
+    company: string;
+    marketing_name: string;
+    device: string;
+    device_model: string;
+};
 export type THHPTasks = {
     id: string;
     unique_id: string;
     service_order_no: string | null;
+    device_name?: string;
     date_booked: string;
     created_at: string | null;
     model: string | null;
@@ -520,6 +539,8 @@ export type TTaskParts = {
     created_at: string;
     created_by: string;
     updated_at: string | null;
+    stock_availability?: string;
+    sales_status?: string;
 };
 export type TAddPart = {
     task_row_id?: string;

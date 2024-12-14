@@ -1,6 +1,7 @@
+import moment from "moment";
 import { TColumns } from "./types";
 
-const columns: TColumns = [
+const columns: TColumns | any = [
     {
         header: "Car",
         accessorKey: "car",
@@ -11,7 +12,11 @@ const columns: TColumns = [
     },
     {
         header: "Created",
-        accessorKey: "formatted_created_at",
+        accessorKey: "created_at",
+        cell: ({ row }: { row: any }) => {
+            const dateValue = row.original.created_at; // Access raw data
+            return moment(dateValue).format("YYYY-MM-DD HH:mm:ss");
+        },
     },
     {
         header: "Next service date",

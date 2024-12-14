@@ -88,6 +88,9 @@ const vehicleChecklistSchema = Yup.object().shape({
     hass_fail_reason: Yup.string(),
     tools: Yup.string().oneOf(Object.values(failPassEnum)),
     tools_fail_reason: Yup.string(),
+    next_service_date: Yup.string(),
+    next_service_kms: Yup.string(),
+    license_disc_expiry: Yup.string(),
 });
 
 const createChecklist = async (req, res) => {
@@ -148,6 +151,9 @@ const createChecklist = async (req, res) => {
         hass_fail_reason,
         tools,
         tools_fail_reason,
+        next_service_date,
+        next_service_kms,
+        license_disc_expiry,
     } = req.body;
     try {
         // Validate request body
@@ -219,8 +225,11 @@ const createChecklist = async (req, res) => {
             hass,
             hass_fail_reason,
             tools,
-            tools_fail_reason
-            ) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,$11, $12, $13, $14, $15, $16, $17, $18, $19, $20,$21, $22, $23, $24, $25, $26, $27, $28, $29, $30,$31, $32, $33, $34, $35, $36, $37, $38, $39, $40,$41, $42, $43, $44, $45, $46, $47, $48, $49, $50,$51, $52, $53, $54, $55, $56) returning *`;
+            tools_fail_reason,
+            next_service_date,
+            next_service_kms,
+            license_disc_expiry
+            ) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,$11, $12, $13, $14, $15, $16, $17, $18, $19, $20,$21, $22, $23, $24, $25, $26, $27, $28, $29, $30,$31, $32, $33, $34, $35, $36, $37, $38, $39, $40,$41, $42, $43, $44, $45, $46, $47, $48, $49, $50,$51, $52, $53, $54, $55, $56, $57, $58, $59) returning *`;
 
         const values = [
             created_at,
@@ -279,6 +288,9 @@ const createChecklist = async (req, res) => {
             hass_fail_reason,
             tools,
             tools_fail_reason,
+            next_service_date,
+            next_service_kms,
+            license_disc_expiry,
         ];
         const { rows } = await pool.query(insertVehicleChecklistQuery, values);
         return res.status(201).json({
@@ -286,6 +298,7 @@ const createChecklist = async (req, res) => {
             rows: rows,
         });
     } catch (error) {
+        console.log(error);
         // to get error for a specific field
         const errors = {};
         if (error.inner) {

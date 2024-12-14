@@ -1,11 +1,16 @@
 export const menuItems = [
     {
-        label: "HHP",
+        label: "Technicians",
         sublinks: [
             {
                 id: 1,
-                item: "Technicians",
+                item: "HHP",
                 pageRoute: "/departments/hhp/technicians",
+            },
+            {
+                id: 2,
+                item: "DTV/HA",
+                pageRoute: "/departments/dtv_ha/technicians",
             },
         ],
     },
@@ -51,9 +56,10 @@ export const menuItems = [
         ],
     },
     {
-        label: "Create ticket",
+        label: "Book ticket",
         sublinks: [
             { id: 14, item: "Repairshopr", pageRoute: "/create_ticket/rs" },
+            { id: 15, item: "Service order", pageRoute: "/create_ticket/gspn" },
         ],
     },
 ];

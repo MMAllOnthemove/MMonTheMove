@@ -315,7 +315,7 @@ const SingleChecklistScreen = () => {
                                                 ) : null}
                                             </div>
                                             <div className="flex items-center">
-                                                <Input type="file" multiple className="my-3" onChange={handleChecklistFiles} />
+                                                <Input type="file" accept="image/*,video/*, application/pdf" multiple className="my-3" onChange={handleChecklistFiles} />
                                                 <Button className="ml-3" disabled={checklistFilesUploading} onClick={submitChecklistFiles}>{checklistFilesUploading ? 'Uploading' : 'Attach'}</Button>
                                             </div>
                                         </AccordionContent>

@@ -82,13 +82,13 @@ const ChecklistsScreen = () => {
             // Filter today's checklist
             const today = checklistList?.filter(
                 (checklist) =>
-                    checklist.car === row?.original?.car && checklist.formatted_created_at === todayDate
+                    checklist.car === row?.original?.car && checklist.created_at === todayDate
             );
 
             // Filter historical checklists
             const history = checklistList?.filter(
                 (checklist) =>
-                    checklist.car === row?.original?.car && checklist.formatted_created_at !== todayDate
+                    checklist.car === row?.original?.car && checklist.created_at !== todayDate
             );
 
             setTodaysChecklist(today)
@@ -499,7 +499,7 @@ const ChecklistsScreen = () => {
 
                                                         oldCheckList.map((checklist: any, index: any) => (
                                                             <Link href={`/drivers/checklists/${checklist?.id}`} target="_blank" rel="noopener noreferrer" key={checklist.unique_id} className="block cursor-pointer text-gray-700 font-medium pb-2 divide-y-2">
-                                                                {index + 1}   {checklist.car}: {checklist.formatted_created_at}
+                                                                {index + 1}   {checklist.car}: {checklist.created_at}
                                                             </Link>
                                                         ))
 

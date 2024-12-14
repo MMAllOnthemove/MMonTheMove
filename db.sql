@@ -11,27 +11,27 @@ CREATE TABLE company_people (
     email text,
     user_password text,
     department text,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    created_at text,
+    updated_at text,
     user_role text,
     reset_token VARCHAR(255),
     repairshopr_id INTEGER,
     gspn_username varchar(30),
-    reset_token_expires_at TIMESTAMP
+    reset_token_expires_at text
 );
 
 CREATE TABLE login_history (
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
     user_id BIGSERIAL NOT NULL,
-    login_timestamp TIMESTAMP,
-    logout_timestamp TIMESTAMP,
+    login_text text,
+    logout_text text,
     login_method login_method_enum,
     login_status login_status_enum,
     FOREIGN KEY (user_id) REFERENCES company_people(user_id)
 );
 
-CREATE INDEX idx_login_timestamp ON login_history (login_timestamp);
+CREATE INDEX idx_login_text ON login_history (login_text);
 
 create table engineers (
     id BIGSERIAL PRIMARY KEY,
@@ -41,8 +41,8 @@ create table engineers (
     department departments_enum,
     repairshopr_id INTEGER,
     engineer_code varchar(30),
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at text,
+    updated_at text
 );
 
 -- INSERT INTO engineers (engineer_firstname, engineer_lastname, department, engineer_code) VALUES ('Samuel', 'Mkhadawire', 'HA', '7186005180');
@@ -70,18 +70,19 @@ create table stores (
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
     store_name text,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at text,
+    updated_at text
 );
 
 create table technician_tasks (
     id BIGSERIAL PRIMARY KEY UNIQUE,
     unique_id uuid DEFAULT gen_random_uuid(),
     service_order_no text,
-    date_booked TIMESTAMP,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    date_booked text,
+    created_at text,
+    updated_at text,
     model text,
+    device_name text,
     warranty text,
     engineer text,
     fault text,
@@ -123,14 +124,14 @@ create table technician_tasks_comments (
     task_id INTEGER REFERENCES technician_tasks(id),
     comment text,
     created_by text,
-    created_at TIMESTAMP
+    created_at text
 );
 
 -- Create a trigger function to update the 'updated_at' field
 -- CREATE OR REPLACE FUNCTION update_updated_at()
 -- RETURNS TRIGGER AS $$
 -- BEGIN
---     -- Update the 'updated_at' field with the current timestamp
+--     -- Update the 'updated_at' field with the current text
 --     NEW.updated_at = NOW();
 --     -- Return the updated row
 --     RETURN NEW;
@@ -144,8 +145,8 @@ create table technician_tasks_history (
     unique_id uuid DEFAULT gen_random_uuid(),
     service_order_no text unique,
     date_booked date,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    created_at text,
+    updated_at text,
     model text,
     warranty text,
     engineer text,
@@ -179,7 +180,7 @@ create table technician_tasks_history (
 create table claims (
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
-    created_at TIMESTAMP,
+    created_at text,
     created_by text,
     service_order_no text,
     ticket_number text unique,
@@ -193,8 +194,8 @@ create table booking_agents (
     agent_firstname text,
     agent_lastname text,
     department text,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at text,
+    updated_at text
 );
 
 create table booking_agents_tasks (
@@ -204,15 +205,15 @@ create table booking_agents_tasks (
     ticket_number text,
     created_by text,
     booking_agent text,
-    original_ticket_date timestamp,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    original_ticket_date text,
+    created_at text,
+    updated_at text
 );
 
 alter table
     booking_agents_tasks
 add
-    column original ticket_date timestamp;
+    column original ticket_date text;
 
 create TYPE reason_for_use_enum as enum (
     'Fuel',
@@ -240,8 +241,8 @@ create table cars (
     unique_id uuid DEFAULT gen_random_uuid(),
     plate_number text,
     car_model text,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at text,
+    updated_at text
 );
 
 create table vehicle_checklist(
@@ -335,7 +336,7 @@ create table vehicle_fuel_consumption (
     litres_consumption_per_100km numeric,
     miles_gallon numeric,
     cost_of_the_km numeric,
-    created_at TIMESTAMP
+    created_at text
 );
 
 create table vehicle_checklist_images (
@@ -343,7 +344,7 @@ create table vehicle_checklist_images (
     unique_id uuid DEFAULT gen_random_uuid(),
     vehicle_checklist_id bigint REFERENCES vehicle_checklist(id),
     image_url text,
-    created_at TIMESTAMP
+    created_at text
 );
 
 -- Insert fake data into drivers table
@@ -364,8 +365,8 @@ create table drivers (
     unique_id uuid DEFAULT gen_random_uuid(),
     driver_firstname text,
     driver_lastname text,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at text,
+    updated_at text
 );
 
 create table otp (
@@ -373,7 +374,7 @@ create table otp (
     unique_id uuid DEFAULT gen_random_uuid(),
     created_by varchar(255),
     otp_code text,
-    created_at TIMESTAMP
+    created_at text
 );
 
 create table parts_for_tasks (
@@ -386,9 +387,17 @@ create table parts_for_tasks (
     seal_number text,
     part_quantity integer,
     parts_status text,
-    created_at TIMESTAMP,
+    created_at text,
     created_by text,
-    updated_at TIMESTAMP,
+    updated_at text,
     compensation boolean,
-    FOREIGN KEY (task_row_id) REFERENCES technician_tasks(id)
-)
+    FOREIGN KEY (task_row_id) REFERENCES technician_tasks(id) ON DELETE CASCADE
+);
+
+CREATE TABLE devices (
+    id BIGSERIAL PRIMARY KEY UNIQUE,
+    company text,
+    marketing_name text null,
+    device text,
+    device_model text -- Add as many columns as your CSV file
+);

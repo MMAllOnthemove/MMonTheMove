@@ -67,7 +67,7 @@ const QC = ({ setUnitCompleteProp, setUnitCompleteDateProp, qc_fail_reasonProp, 
                     <AccordionTrigger>Attachments</AccordionTrigger>
                     <AccordionContent>
                         <div className="flex items-center">
-                            <Input type="file" multiple className="my-3" onChange={setQCFilesProp} />
+                            <Input type="file" accept="image/*,video/*, application/pdf" multiple className="my-3" onChange={setQCFilesProp} />
                             <Button className="ml-3" disabled={qc_FilesLoadingProp} onClick={submitQCFiles}>{qc_FilesLoadingProp ? 'Uploading' : 'Attach'}</Button>
                         </div>
                     </AccordionContent>

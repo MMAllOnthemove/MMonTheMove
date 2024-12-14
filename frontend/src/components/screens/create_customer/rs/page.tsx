@@ -3,6 +3,7 @@ import PageTitle from '@/components/PageTitle/page'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import useCreateCustomer from '@/hooks/useCreateCustomer'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
@@ -23,8 +24,9 @@ const CreateCustomerRepairshoprScreen = () => {
     const [city, setCity] = useState("")
     const [state, setState] = useState("")
     const [zip, setZip] = useState("")
-    const [createCustomerLoading, setCreateCustomerLoading] = useState(false);
     const [phoneDetails, setPhoneDetails] = useState([{ type: "mobile", number: "" }]);
+
+    const { addCustomer, createCustomerLoading } = useCreateCustomer()
     const handlePhoneChange = (
         index: number,
         field: keyof PhoneDetail, // Ensures field can only be "type" or "number"
@@ -44,7 +46,6 @@ const CreateCustomerRepairshoprScreen = () => {
 
     const createCustomer = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        setCreateCustomerLoading(true);
         const payload = {
             "firstname": firstName,
             "lastname": lastName,
@@ -64,33 +65,7 @@ const CreateCustomerRepairshoprScreen = () => {
             "state": state,
             "zip": zip,
         }
-        try {
-            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_REPAIRSHOPR_CREATE_CUSTOMER}`, payload, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`
-                },
-            })
-            const customerId = data?.customer?.id;
-
-            // Convert the custInfo object to a JSON string
-            // values['customer_id'] = `${customerId}`
-            const spreadCustomer = {
-                ...payload,
-                customerId: `${customerId}`
-            }
-            const custInfoString = JSON.stringify(spreadCustomer);
-            if (typeof window !== "undefined" && window.localStorage) {
-                window.localStorage.setItem("custInfo", custInfoString);
-                router.push("/repairshopr_asset")
-            }
-
-
-        } catch (error: any) {
-            console.log("customer create error", error)
-        } finally {
-            setCreateCustomerLoading(false)
-        }
+        await addCustomer(payload)
     }
     return (
 

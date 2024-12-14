@@ -2,6 +2,7 @@ import { pool } from "../../../../db.js";
 
 export const UpdateTask = async (req, res) => {
     const { id } = req.params; // Assuming the ID is passed in the URL
+    if (!id) return;
     const changes = req.body; // Get the changed fields from the frontend
     // Check if there are changes
     if (Object.keys(changes).length === 0) {
@@ -40,6 +41,7 @@ export const UpdateTask = async (req, res) => {
             message: "HHP task updated",
         });
     } catch (err) {
+        console.log(err);
         if (process.env.NODE_ENV !== "production") {
             console.error("Error updating record:", err);
         }

@@ -6,6 +6,7 @@ const useRepairshoprFetchAsset = (assetId: string | number) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                if (!assetId) return;
                 const { data } = await axios.get(
                     `https://allelectronics.repairshopr.com/api/v1/customer_assets/${assetId}`,
                     {
@@ -18,9 +19,12 @@ const useRepairshoprFetchAsset = (assetId: string | number) => {
 
                 if (data?.ticket?.id == assetId) setData(data);
             } catch (error) {
-           if (process.env.NODE_ENV !== "production") {
-               console.error("Error fetching adding HHP task by GSPNError fetching adding HHP task by GSPN:", error);
-           }
+                if (process.env.NODE_ENV !== "production") {
+                    console.error(
+                        "Error fetching adding HHP task by GSPNError fetching adding HHP task by GSPN:",
+                        error
+                    );
+                }
             }
         };
         fetchData();
