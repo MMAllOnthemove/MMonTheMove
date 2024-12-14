@@ -75,8 +75,8 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                 },
             });
             if (data?.tickets[0]?.number == searchTicket) {
-                if (data?.tickets[0]["properties"]["Warranty"] === '69476' || 69476) setWarranty('IW')
-                if (data?.tickets[0]["properties"]["Warranty"] === '69477' || 69477) setWarranty('OOW')
+                if (data?.tickets[0]["properties"]["Warranty"] || data?.tickets[0]["properties"]["Warranty "] === '69476' || 69476) setWarranty('IW')
+                if (data?.tickets[0]["properties"]["Warranty"] || data?.tickets[0]["properties"]["Warranty "] === '69477' || 69477) setWarranty('OOW')
                 setServiceOrderNo(data?.tickets[0]["properties"]["Service Order No."])
                 setTicketNumber(data?.tickets[0]?.number)
                 setRepairshoprJobId(data?.tickets[0]?.id)

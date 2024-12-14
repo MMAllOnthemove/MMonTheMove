@@ -24,8 +24,12 @@ const fileUploadSchema = yup.object().shape({
         ),
 });
 const sftpClient = new sftp();
-
-const datetimestamp = moment().format("YYYY-MM-DD HH:mm:ss");
+const datetimestamp = new Date(
+    Date.now() + 1000 * 60 * -new Date().getTimezoneOffset()
+)
+    .toISOString()
+    .replace("T", " ")
+    .replace("Z", "");
 
 // Format date to remove special characters for filenames
 const date = moment(datetimestamp).format("YYYY-MM-DD%HH:mm:ss");

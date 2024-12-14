@@ -67,6 +67,7 @@ const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
     const [interior_exterior_view_mirros_fail_reason, setInteriorExteriorMirrorFailReason] = useState("")
     const [safety_belts, setSafetyBelts] = useState("")
     const [safety_belts_fail_reason, setSafetyBeltsFailReason] = useState("")
+    const [spare_wheel_fail_reason, setSpareWheelFailReason] = useState("")
     const [engine_start_stop, setStartStop] = useState("")
     const [engine_start_stop_fail_reason, setStartStopFailReason] = useState("")
     const [mileage, setMileage] = useState("")
@@ -75,7 +76,9 @@ const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
     const [car_jack, setCarJack] = useState("")
     const [car_jack_fail_reason, setCarJackFailReason] = useState("")
     const [spare_wheel, setSpareWheel] = useState("")
-    const [spare_wheel_fail_reason, setSpareWheelFailReason] = useState("")
+    const [next_service_date, setNextServiceDate] = useState("")
+    const [next_service_kms, setNextServiceKms] = useState("")
+    const [license_disc_expiry, setLicenseDiscExpiry] = useState("")
 
     const [hass, setHass] = useState("")
     const [hass_fail_reason, setHassFailReason] = useState("")
@@ -107,7 +110,7 @@ const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
     // send form values to backend
     const submit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        const created_at = moment().format("YYYY-MM-DD HH:mm:ss");;
+        const created_at = moment().format("YYYY-MM-DD HH:mm:ss");
         const created_by = user?.email
         // Submit the form here
         const payload = {
@@ -167,6 +170,9 @@ const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
             hass_fail_reason,
             tools,
             tools_fail_reason,
+            next_service_date,
+            next_service_kms,
+            license_disc_expiry,
         };
         const response = await addChecklist(payload);
 
@@ -278,7 +284,7 @@ const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
                             <AccordionTrigger>Attachments</AccordionTrigger>
                             <AccordionContent>
                                 <div className="flex items-center">
-                                    <Input type="file" multiple className="my-3" onChange={handleChecklistFiles} />
+                                    <Input type="file" accept="image/*,video/*, application/pdf" multiple className="my-3" onChange={handleChecklistFiles} />
                                     <Button className="ml-3" disabled={checklistFilesUploading} onClick={submitChecklistFiles}>{checklistFilesUploading ? 'Uploading' : 'Attach'}</Button>
                                 </div>
                             </AccordionContent>
@@ -287,7 +293,7 @@ const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
                         <>
 
                             <p className='text-center text-sm text-muted-foreground'>Step {step} of 9</p>
-                            {step === 1 && <SectionOne car={car} setCar={(e) => setCar(e)} reason_for_use={reason_for_use} selectCarUseReason={(e) => selectCarUseReason(e)} driver={driver} setDriver={(e) => setDriver(e)} />}
+                            {step === 1 && <SectionOne next_service_date={next_service_date} setNextServiceDate={setNextServiceDate} next_service_kms={next_service_kms} setNextServiceKms={setNextServiceKms} license_disc_expiry={license_disc_expiry} setLicenseDiscExpiry={setLicenseDiscExpiry} car={car} setCar={(e) => setCar(e)} reason_for_use={reason_for_use} selectCarUseReason={(e) => selectCarUseReason(e)} driver={driver} setDriver={(e) => setDriver(e)} />}
                             {step === 2 && <SectionTwo windshield={windshield} setWindshield={(e) => setWindshield(e.target.value)} windshield_fail_reason={windshield_fail_reason} setWindshieldFailReason={(e) => setWindshieldFailReason(e.target.value)} windshieldWipers={windshield_wipers} setWindshieldWipers={(e) => setWindshieldWipers(e.target.value)} windshield_wipers_fail_reason={windshield_wipers_fail_reason} setWindshieldWipersFailReason={(e) => setWindshieldWipersFailReason(e.target.value)} headlights={headlights} setHeadlights={(e) => setHeadlights(e.target.value)} headlights_fail_reason={headlights_fail_reason} setHeadlightsFailReason={(e) => setHeadlightsFailReason(e.target.value)} rear_window={rear_window} setRearWindow={(e) => setRearWindow(e.target.value)} rear_window_fail_reason={rear_window_fail_reason} setRearWindowFailReason={(e) => setRearWindowFailReason(e.target.value)} />}
                             {step === 3 && <SectionThree tail_lights={tail_lights} setTaillights={(e) => setTaillights(e.target.value)} turn_indicator_lights={turn_indicator_lights} setIndicatorLights={(e) => setIndicatorLights(e.target.value)} stop_lights={stop_lights} setStopLights={(e) => setStopLights(e.target.value)} doors={doors} setDoors={(e) => setDoors(e.target.value)} tail_lights_fail_reason={tail_lights_fail_reason} setTaillightsFailReason={(e) => setTaillightsFailReason(e.target.value)} turn_indicator_lights_fail_reason={turn_indicator_lights_fail_reason} setTailIndicatorLightsFailReason={(e) => setTailIndicatorLightsFailReason(e.target.value)} stop_lights_fail_reason={stop_lights_fail_reason} setStopLightsFailReason={(e) => setStopLightsFailReason(e.target.value)} doors_fail_reason={doors_fail_reason} setDoorsFailReason={(e) => setDoorsFailReason(e.target.value)} />}
                             {step === 4 && <SectionFour bumpers={bumpers} setBumpers={(e) => setBumpers(e.target.value)} bumpers_fail_reason={bumpers_fail_reason} setBumpersFailReason={(e) => setBumpersFailReason(e.target.value)} muffler_exhaust_system={muffler_exhaust_system} setExhaust={(e) => setExhaust(e.target.value)} muffler_exhaust_system_fail_reason={muffler_exhaust_system_fail_reason} setExhaustFailReason={(e) => setExhaustFailReason(e.target.value)} tires={tires} setTires={(e) => setTires(e.target.value)} tires_fail_reason={tires_fail_reason} setTiresFailReason={(e) => setTiresFailReason(e.target.value)} />}

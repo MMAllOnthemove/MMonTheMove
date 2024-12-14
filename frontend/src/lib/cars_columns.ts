@@ -1,6 +1,6 @@
 import { TColumns } from "./types";
 
-const columns: TColumns = [
+const columns: TColumns | any = [
     {
         header: "Plate number",
         accessorKey: "plate_number",

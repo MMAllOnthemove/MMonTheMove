@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2024-12-14
+
+### Added
+
+-   next service date, next kms, disc expiry when posting checklist
+-   dtv/ha booking on app as well
+-   use serial number as imei for ha
+-   only admin can delete hhp tasks row
+-   added an ON DELETE CASCADE constraint on the parts_for_tasks, and technician_tasks_comments table, making it easy to delete
+-   'No driver' when there is no driver and just a regular checklist
+-   for update and get single row, if no id return
+-   accept="image/_,video/_, application/pdf" for file inputs and in multer (backend)
+-   only admin can delete
+-   edit the times in columns as we will be modifying in frontend (tanstack)
+-   a table called devices which collects every known samsung phone
+-   altered the technician_tasks table and added device_name column (wil not use it)
+-   instead join where phone name from devices matches model number (first 8 characters)
+-   department, model index on the hhp tasks table for faster queries, CREATE INDEX idx_tt_created_year ON technician_tasks (EXTRACT(YEAR FROM created_at));
+-   CREATE INDEX idx_tt_department_gin ON technician_tasks USING gin (department gin_trgm_ops);
+-   CREATE EXTENSION IF NOT EXISTS pg_trgm;
+-   joined devices table to hhp tasks table to get the phone_name
+-   phone_name in hhp techs table
+
+### Fixed
+
+-   add chevron down icon to indicate dropdown link
+-   slash icon to divide navbar links
+-   only fetch data per department using LIKE in postgres
+-   refactor
+-   timezone issue
+-   for update and get single row, if no id return
+-
+
 ## [0.0.13] - 2024-12-09
 
 ### Added

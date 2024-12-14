@@ -5,6 +5,7 @@ const useRepairshoprFetchTicketId = (repairId?: string | number) => {
     const [fetchRSTicketDataById, setData] = useState("");
     const refetchTicketDataById = async () => {
         try {
+            if (!repairId) return;
             const { data } = await axios.get(
                 `https://allelectronics.repairshopr.com/api/v1/tickets/${repairId}`,
                 {

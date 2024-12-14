@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import useAddHHPTask from '@/hooks/useAddHHPTask';
+import useCreateTicket from '@/hooks/useCreateTicket';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import { assetTypes } from '@/lib/asset_types';
 import { datetimestamp } from '@/lib/date_formats';
@@ -21,13 +22,15 @@ import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Tldraw } from 'tldraw';
 import 'tldraw/tldraw.css';
+import DrawScratchesModal from './draw_scratches_modal';
+import AttachmentsModal from '../attachments_modal/page';
+import useCheckWarranty from '@/hooks/useCheckHHPWarranty';
 const HHP = () => {
     const { addTask } = useAddHHPTask();
     const { user } = useUserLoggedIn()
+    const { addTicket, createTicketLoading } = useCreateTicket()
 
-    // This is for repairshopr
-    const [ticketTypeId, setTicketTypeId] = useState<number>();
-    const [warrantyCode, setWarrantyCode] = useState<number>();
+  
     const [fault, setFault] = useState("")
     const [itemCondition, setItemCondition] = useState("");
     const [specialRequirement, setSpecialRequirement] = useState("")
@@ -40,19 +43,20 @@ const HHP = () => {
     const [IMEI, setIMEI] = useState("");
     const [serialNumber, setSerialNumber] = useState("")
     const [modelNumber, setModelNumber] = useState("")
-    const [warranty, setWarranty] = useState("");
     const [issue_type, setIssueType] = useState("");
 
-    const [createTicketLoading, setCreateTicketLoading] = useState(false)
     const [openModal, setOpenModal] = useState(false);
     const [openAttachmentsModal, setOpenAttachmentsModal] = useState(false);
 
     const [serviceOrderNumber, setServiceOrder] = useState("")
+
     // Asset id
     const [assetId, setAssetId] = useState('')
     // these will be send to our db as soon as a ticket is booked
     // some of the values will be stored in state from the result
-    const [localWarranty, setLocalWarranty] = useState("") // this is just the warranty just a different variable (I am out of variable names, lol)
+
+    // this is just the warranty just a different variable (I am out of variable names, lol)
+    const { warranty, warrantyCode, ticketTypeId, localWarranty } = useCheckWarranty(modelNumber, serialNumber, IMEI)
     const [repairshopr_job_id, setepairshoprJobId] = useState("")
     useEffect(() => {
         const loadCustomerInfo = () => {
@@ -82,62 +86,6 @@ const HHP = () => {
         loadCustomerAssetInfo()
     }, [])
 
-
-
-    useEffect(() => {
-        const checkWarranty = async () => {
-            const generateTimeStampForPacCode = moment(new Date(
-                Date.now() + 1000 * 60 * -new Date().getTimezoneOffset()
-            )
-                .toISOString()
-                .replace("T", " ")
-                .replace("Z", "")).format("YYMMDDhhmmss");
-
-
-            const values = {
-                "IsCommonHeader": {
-                    "Company": `${process.env.NEXT_PUBLIC_COMPANY}`,
-                    "AscCode": `${process.env.NEXT_PUBLIC_ASC_CODE}`,
-                    "Lang": `${process.env.NEXT_PUBLIC_LANG}`,
-                    "Country": `${process.env.NEXT_PUBLIC_COUNTRY}`,
-                    "Pac": `9999999${generateTimeStampForPacCode}`
-                },
-                "IvModel": `${modelNumber}`,
-                "IvPurchaseDate": ``,
-                "IvSerialNo": `${serialNumber}`,
-                "IvIMEI": `${IMEI}`
-
-            }
-
-            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_IPAAS_API_CHECK_WARRANTY}`, values, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`
-                },
-
-            })
-            try {
-                if (data) {
-                    const warranty_type = data?.Return?.EvWtyType
-                    setWarranty(warranty_type);
-                    if (warranty_type === "LP") {
-                        setWarrantyCode(69476)
-                        setTicketTypeId(21877);
-                        setLocalWarranty("IW")
-                    } else {
-                        setWarrantyCode(69477)
-                        setTicketTypeId(21878);
-                        setLocalWarranty("OOW")
-                    }
-                }
-            } catch (error) {
-                console.log("check warranty error", error)
-            }
-
-
-        }
-        if (IMEI && modelNumber && serialNumber) checkWarranty();
-    }, [IMEI, modelNumber, serialNumber, warranty]);
 
     const [ticketFiles, setTicketFiles] = useState([]);
     const [ticketFilesUploading, setTicketFilesUploading] = useState(false);
@@ -221,33 +169,15 @@ const HHP = () => {
                 }
             ]
         }
-        setCreateTicketLoading(true)
 
-        try {
-            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_REPAIRSHOPR_CREATE_TICKET}`, payload, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`
-                }
-            })
-            await sendTicketDataToOurDB(data?.ticket?.number, data?.ticket?.id)
+        const data = await addTicket(payload)
+        await sendTicketDataToOurDB(data?.ticket?.number, data?.ticket?.id)
+        setTicketNumber(data?.ticket?.number)
+        setepairshoprJobId(data?.ticket?.id)
+        setOpenAttachmentsModal(true)
+        if (typeof window !== 'undefined' && window.localStorage) localStorage.clear();
+        window.location.reload()
 
-            toast.success(`Ticket created, Here is your ticket: ${data?.ticket?.number}`, {
-                duration: 8000,
-
-            });
-
-            setTicketNumber(data?.ticket?.number)
-            setepairshoprJobId(data?.ticket?.id)
-
-            setOpenAttachmentsModal(true)
-            if (typeof window !== 'undefined' && window.localStorage) localStorage.clear();
-
-        } catch (error: any) {
-            toast.error(`${error?.response?.error}`)
-        } finally {
-            setCreateTicketLoading(false)
-        }
     }
     const sendTicketDataToOurDB = async (ticketNumber: string | number, ticketId: string | number) => {
         const created_at = datetimestamp;
@@ -277,7 +207,7 @@ const HHP = () => {
                 setIssueType("Carry In")
         }
         const payload = {
-            "service_order_no": "",
+            "service_order_no": serviceOrderNumber,
             "date_booked": date_booked,
             "model": modelNumber,
             "warranty": localWarranty,
@@ -302,41 +232,14 @@ const HHP = () => {
     return (
         <>
             {
+
                 openModal &&
-                <Dialog open={openModal} onOpenChange={() => setOpenModal(false)} >
-                    {/* <DialogTrigger>Open</DialogTrigger> */}
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Add image and circle scratches</DialogTitle>
-                            <DialogDescription>
+                <DrawScratchesModal openModal={openModal} setOpenModal={setOpenModal} />
 
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="tldraw__editor h-[400px]" style={{ position: 'fixed', inset: 0 }}>
-                            <Tldraw persistenceKey="example" />
-                        </div>
-
-                    </DialogContent>
-                </Dialog>
             }
             {
                 openAttachmentsModal &&
-                <Dialog open={openAttachmentsModal} onOpenChange={() => setOpenAttachmentsModal(false)} >
-                    {/* <DialogTrigger>Open</DialogTrigger> */}
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Add ticket attachments</DialogTitle>
-                            <DialogDescription>
-
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="flex items-center">
-                            <Input type="file" multiple className="my-3" onChange={handleTicketFiles} />
-                            <Button className="ml-3" disabled={ticketFilesUploading} onClick={async () => await sendTicketAttachments(ticket_number)}>{ticketFilesUploading ? 'Uploading' : 'Attach'}</Button>
-                        </div>
-
-                    </DialogContent>
-                </Dialog>
+                <AttachmentsModal openModal={openAttachmentsModal} setOpenModal={setOpenAttachmentsModal} ticketFilesUploading={ticketFilesUploading} handleTicketFiles={handleTicketFiles} sendTicketAttachments={async () => await sendTicketAttachments(ticket_number)} />
             }
             <form onSubmit={createTicket}>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center mb-2">

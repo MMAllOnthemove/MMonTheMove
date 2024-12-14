@@ -33,6 +33,7 @@ const useFetchHHPTaskById = (taskId: string | number) => {
     const [hhpTask, setHHPTask] = useState<IHHPTask | null>(null);
 
     const refetch = async () => {
+        if (!taskId) return;
         try {
             const { data } = await axios.get(
                 `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/` +

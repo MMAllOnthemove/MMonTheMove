@@ -41,16 +41,18 @@ import warranties from "@/lib/warranties";
 
 
 type TTasksUpdate = {
-    assessment_datetime: string;
+    assessment_date: string;
     service_order_noProp: string | number | undefined
     reparshoprCommentProp: string
     unit_statusProp: string | undefined
-    date_booked_datetime: string;
+    date_booked: string;
     hhp_tasks_loading: boolean;
     engineer: string;
     warranty: string;
     model: string;
     imei: string;
+    job_repair_no: string;
+    location: string;
     serial_number: string;
     engineersComboBox: boolean;
     setEngineer: (data: string) => void;
@@ -64,7 +66,7 @@ type TTasksUpdate = {
     setHHPFilesProp: (data: ChangeEvent<HTMLInputElement>) => void;
     submitHHPFiles: (data: React.SyntheticEvent) => void;
 }
-const TasksUpdate = ({ assessment_datetime, hhp_tasks_loading, model, imei, serial_number, setHHPFilesProp, submitHHPFiles, service_order_noProp, reparshoprCommentProp, unit_statusProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked_datetime, engineer, engineersComboBox, setEngineerComboBox, setUserId, setEngineer, warranty, setWarranty }: TTasksUpdate) => {
+const TasksUpdate = ({ location, job_repair_no, assessment_date, hhp_tasks_loading, model, imei, serial_number, setHHPFilesProp, submitHHPFiles, service_order_noProp, reparshoprCommentProp, unit_statusProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked, engineer, engineersComboBox, setEngineerComboBox, setUserId, setEngineer, warranty, setWarranty }: TTasksUpdate) => {
     const { engineersList } = useFetchEngineer()
     const engineerListFomatted = engineersList?.map((user) => ({
         repairshopr_id: user?.repairshopr_id,
@@ -163,11 +165,13 @@ const TasksUpdate = ({ assessment_datetime, hhp_tasks_loading, model, imei, seri
                     <AccordionContent>
                         <div>
                             <ul className="list-decimal list-inside">
-                                <li>Booked date and time: <span className="text-gray-600 font-medium">{moment(date_booked_datetime).format("YYYY-MM-DD HH:mm:ss")}</span></li>
-                                <li>Assessment date and time: <span className="text-gray-600 font-medium">{assessment_datetime ? moment(assessment_datetime).format("YYYY-MM-DD HH:mm:ss") : null}</span></li>
+                                <li>Booked date and time: <span className="text-gray-600 font-medium">{moment(date_booked).format("YYYY-MM-DD HH:mm:ss")}</span></li>
+                                <li>Assessment date and time: <span className="text-gray-600 font-medium">{assessment_date ? assessment_date : null}</span></li>
                                 <li>Model: <span className="text-gray-600 font-medium">{model}</span></li>
                                 <li>IMEI: <span className="text-gray-600 font-medium">{imei}</span></li>
                                 <li>Serial number: <span className="text-gray-600 font-medium">{serial_number}</span></li>
+                                <li>Location: <span className="text-gray-600 font-medium">{location}</span></li>
+                                <li>Job repair no: <span className="text-gray-600 font-medium">{job_repair_no}</span></li>
                             </ul>
                         </div>
                     </AccordionContent>
@@ -176,7 +180,7 @@ const TasksUpdate = ({ assessment_datetime, hhp_tasks_loading, model, imei, seri
                     <AccordionTrigger>Add attachments</AccordionTrigger>
                     <AccordionContent>
                         <div className="flex items-center">
-                            <Input type="file" multiple className="my-3" onChange={setHHPFilesProp} />
+                            <Input type="file" accept="image/*,video/*, application/pdf" multiple className="my-3" onChange={setHHPFilesProp} />
                             <Button className="ml-3" disabled={hhp_tasks_loading} onClick={submitHHPFiles}>{hhp_tasks_loading ? 'Uploading' : 'Attach'}</Button>
                         </div>
                     </AccordionContent>

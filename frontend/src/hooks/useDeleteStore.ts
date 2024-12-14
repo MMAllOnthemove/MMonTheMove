@@ -6,6 +6,7 @@ const useDeleteStore = () => {
     const [deleteStoreLoading, setLoading] = useState(false); // Loading state
 
     const deleteStore = async (engineerId: string | undefined) => {
+        if (engineerId) return;
         setLoading(true);
         try {
             const response = await axios.delete(

@@ -15,6 +15,8 @@ const useUpdateChecklist = () => {
         values: TUpdateValues
     ) => {
         try {
+            if (!rowId) return;
+
             setLoading(true);
             const response = await axios.put(
                 `${process.env.NEXT_PUBLIC_API_SERVER_URL}/checklists/` + rowId,

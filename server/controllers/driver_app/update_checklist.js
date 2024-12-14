@@ -5,9 +5,6 @@ import * as Yup from "yup";
 const updateChecklistSchema = Yup.object({
     rowId: Yup.string(),
     mileage_after: Yup.string(),
-    next_service_date: Yup.string(),
-    next_service_kms: Yup.string(),
-    license_disc_expiry: Yup.string(),
 });
 
 const updateChecklist = async (req, res) => {
@@ -22,7 +19,7 @@ const updateChecklist = async (req, res) => {
         // Validate request body
         await updateChecklistSchema.validate(req.body, { abortEarly: false });
         const result = await pool.query(
-            "UPDATE vehicle_checklist SET mileage_after = $1, next_service_date = $2, next_service_kms = $3, license_disc_expiry = $4  WHERE id = $5",
+            "UPDATE vehicle_checklist SET mileage_after = $1, next_service_date = $2, next_service_kms = $3, license_disc_expiry = $4 WHERE id = $4",
             [
                 mileage_after,
                 next_service_date,
