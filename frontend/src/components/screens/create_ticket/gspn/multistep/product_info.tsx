@@ -1,6 +1,6 @@
 "use client"
 import { Input } from '@/components/ui/input';
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
     Select,
     SelectContent,
@@ -11,6 +11,8 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import warranties_gspn from '@/lib/warranty_exceptions';
+import FormWrapper from './wrapper';
+import useCheckWarranty from '@/hooks/useCheckDTVHAWarranty';
 
 type TProductInfo = {
     model: string;
@@ -32,9 +34,15 @@ type TProductInfo = {
     wtyType: string;
     setWtyType: (value: string) => void
 }
-const ProductInfoTwo = ({ model, setModel, serial_number, setSerialNumber, imei, setIMEI, purchase_date, setPurchaseDate, wtyException, setWtyException, wtyType, setWtyType, accessory, setAccessory, defectDesc, setDefectDesc, remark, setRemark }: TProductInfo) => {
+const ProductInfo = ({ model, setModel, serial_number, setSerialNumber, imei, setIMEI, purchase_date, setPurchaseDate, wtyException, setWtyException, wtyType, setWtyType, accessory, setAccessory, defectDesc, setDefectDesc, remark, setRemark }: TProductInfo) => {
+    const { warranty } = useCheckWarranty(model, serial_number)
+
+    useEffect(() => {
+        setWtyType(warranty)
+    }, [model, serial_number, setWtyType, warranty])
+
     return (
-        <>
+        <FormWrapper title="Model info">
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 items-center">
                 <div>
@@ -107,8 +115,9 @@ const ProductInfoTwo = ({ model, setModel, serial_number, setSerialNumber, imei,
                         onChange={(e) => setRemark(e.target.value)} />
                 </div>
             </div>
-        </>
+
+        </FormWrapper>
     )
 }
 
-export default ProductInfoTwo
+export default ProductInfo

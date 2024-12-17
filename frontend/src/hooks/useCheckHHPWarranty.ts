@@ -45,7 +45,7 @@ const useCheckWarranty = (
                     {
                         headers: {
                             "Content-Type": "application/json",
-                            Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
+                            Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPAAS}`,
                         },
                     }
                 );

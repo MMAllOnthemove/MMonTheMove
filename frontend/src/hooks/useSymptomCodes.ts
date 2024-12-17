@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const useIpaasGetSOInfoAll = () => {
-    const ipaasApiUrl = process.env.NEXT_PUBLIC_IPAAS_API_GETSOINFOALL;
+const useIpaasSymptomCodes = () => {
+    const ipaasApiUrl = process.env.NEXT_PUBLIC_IPAAS_API_GetCustomerSymptom;
     const bearerToken = process.env.NEXT_PUBLIC_BEARER_IPAAS;
     const company = process.env.NEXT_PUBLIC_COMPANY;
     const ascCode = process.env.NEXT_PUBLIC_ASC_CODE;
@@ -9,9 +9,9 @@ const useIpaasGetSOInfoAll = () => {
     const country = process.env.NEXT_PUBLIC_COUNTRY;
     const pac = process.env.NEXT_PUBLIC_PAC;
 
-    const getSOInfoAllTookan = async (serviceOrder: string | number) => {
+    const getCustomerCodes = async (modelNumber: string) => {
         const options = {
-            IvSvcOrderNo: serviceOrder,
+            IvModel: modelNumber,
             IsCommonHeader: {
                 Company: `${company}`,
                 AscCode: `${ascCode}`,
@@ -29,15 +29,15 @@ const useIpaasGetSOInfoAll = () => {
                 },
             });
 
-            return response.data;
+            return response.data?.EtSymptomData?.results;
         } catch (error) {
             if (process.env.NODE_ENV !== "production") {
-                console.error("Error fetching GSPN Info api:", error);
+                console.error("Error fetching GSPN customer codes api:", error);
             }
         }
     };
 
-    return { getSOInfoAllTookan };
+    return { getCustomerCodes };
 };
 
-export default useIpaasGetSOInfoAll;
+export default useIpaasSymptomCodes;

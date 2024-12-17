@@ -2,10 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
 
-const useCheckWarranty = (
-    modelNumber: string,
-    serialNumber: string
-) => {
+const useCheckWarranty = (modelNumber: string, serialNumber: string) => {
     const [warranty, setWarranty] = useState("");
     const [ticketTypeId, setTicketTypeId] = useState<number>();
     const [warrantyCode, setWarrantyCode] = useState<number>();
@@ -44,7 +41,7 @@ const useCheckWarranty = (
                     {
                         headers: {
                             "Content-Type": "application/json",
-                            Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPASS}`,
+                            Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_IPAAS}`,
                         },
                     }
                 );
@@ -69,7 +66,7 @@ const useCheckWarranty = (
         };
 
         checkWarranty();
-    }, [ modelNumber, serialNumber]);
+    }, [modelNumber, serialNumber]);
 
     return { warranty, warrantyCode, ticketTypeId, localWarranty };
 };
