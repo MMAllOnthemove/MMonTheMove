@@ -176,7 +176,7 @@ const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
         };
         const response = await addChecklist(payload);
 
-        toast.success(`${response?.data?.message}`);
+   
         setResultingRows(response?.rows)
         setCar('')
         selectCarUseReason('')

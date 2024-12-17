@@ -2,7 +2,7 @@ import axios from "axios";
 
 const useIpaasSOPartsInfo = () => {
     const ipaasApiUrl = process.env.NEXT_PUBLIC_IPAAS_API_SEARCH_PARTS;
-    const bearerToken = process.env.NEXT_PUBLIC_BEARER_IPASS;
+    const bearerToken = process.env.NEXT_PUBLIC_BEARER_IPAAS;
     const company = process.env.NEXT_PUBLIC_COMPANY;
     const ascCode = process.env.NEXT_PUBLIC_ASC_CODE;
     const lang = process.env.NEXT_PUBLIC_LANG;

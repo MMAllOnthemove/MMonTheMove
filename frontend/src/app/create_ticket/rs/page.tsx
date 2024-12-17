@@ -1,4 +1,4 @@
-import CreateTicketRepairshoprScreen from '@/components/screens/departments/create_ticket/rs/page'
+import CreateTicketRepairshoprScreen from '@/components/screens/create_ticket/rs/page'
 import React from 'react'
 import type { Metadata } from 'next';
 

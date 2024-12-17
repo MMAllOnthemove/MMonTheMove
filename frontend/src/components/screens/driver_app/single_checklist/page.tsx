@@ -40,7 +40,6 @@ const SingleChecklistScreen = () => {
 
     useEffect(() => {
         if (checklist) {
-            setMileageAfter(checklist[0]?.mileage_after)
             setNextServiceKms(checklist[0]?.next_service_kms)
             setNextService(checklist[0]?.next_service_date)
             setLicenseExpiryDate(checklist[0]?.license_disc_expiry)
@@ -263,7 +262,7 @@ const SingleChecklistScreen = () => {
                                                 <Label htmlFor="next_service_date">Next service date</Label>
                                                 <Input className="mb-3" type="date" name="next_service_date" placeholder="Next service date" id="next_service_date" value={next_service_date || ""} onChange={(e) => setNextService(e.target.value)} />
                                                 <Label htmlFor="mileage_after">Mileage after</Label>
-                                                <Input className="mb-3" type="text" name="mileage_after" placeholder="Mileage when driver comes back" id="mileage_after" value={mileage_after || ""} onChange={(e) => setMileageAfter(e.target.value)} />
+                                                <Input className="mb-3" type="text" name="mileage_after" placeholder="Mileage when driver comes back" id="mileage_after" value={mileage_after} onChange={(e) => setMileageAfter(e.target.value)} />
                                                 <Label htmlFor="next_service_kms">Next service kms</Label>
                                                 <Input className="mb-3" type="number" name="next_service_kms" placeholder="Next service kms" id="mileage_after" value={next_service_kms || ""} onChange={(e) => setNextServiceKms(e.target.value)} />
                                                 <Label htmlFor="license_disc_expiry">Disc expiry date</Label>
