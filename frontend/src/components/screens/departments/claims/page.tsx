@@ -1,26 +1,35 @@
 "use client"
-import LoadingScreen from '@/components/loading_screen/page';
-import NotLoggedInScreen from '@/components/not_logged_in/page';
-import PageTitle from '@/components/PageTitle/page';
-import Sidebar from '@/components/sidebar/page';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import useAddClaims from '@/hooks/useAddClaims';
-import useUserLoggedIn from '@/hooks/useGetUser';
-import useIpaasGetSOInfoAll from '@/hooks/useIpaasGetSoInfoAll';
-import React, { useEffect, useState } from 'react';
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import useAddClaims from '@/hooks/useAddClaims'
+import useUserLoggedIn from '@/hooks/useGetUser'
+import useIpaasGetSOInfoAll from '@/hooks/useIpaasGetSoInfoAll'
+import dynamic from 'next/dynamic'
+import React, { useEffect, useState } from 'react'
+const LoadingScreen = dynamic(() =>
+    import('@/components/loading_screen/page')
+)
+const NotLoggedInScreen = dynamic(() =>
+    import('@/components/not_logged_in/page')
+)
+const PageTitle = dynamic(() =>
+    import('@/components/PageTitle/page')
+)
+const Sidebar = dynamic(() =>
+    import('@/components/sidebar/page')
+)
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
-import departments from '@/lib/departments';
-import { getSOInfoAllLogInfoSection } from '@/lib/types';
-import { datetimestamp } from '@/lib/date_formats';
+} from "@/components/ui/select"
+import { datetimestamp } from '@/lib/date_formats'
+import departments from '@/lib/departments'
+import { getSOInfoAllLogInfoSection } from '@/lib/types'
 
 const ClaimsScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()

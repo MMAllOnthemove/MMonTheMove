@@ -1,18 +1,18 @@
 "use client"
-import { Checkbox } from '@/components/ui/checkbox';
-import React from 'react'
-import { CheckedState } from '@radix-ui/react-checkbox';
-import { datetimestamp } from '@/lib/date_formats';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { XMarkIcon } from '@heroicons/react/24/outline';
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { datetimestamp } from '@/lib/date_formats';
 import { TTaskParts } from '@/lib/types';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import { CheckedState } from '@radix-ui/react-checkbox';
+import React from 'react';
 type TPartsHHPUpdate = {
     parts_orderedProp: CheckedState | undefined
     parts_pendingProp: CheckedState | undefined
@@ -141,61 +141,62 @@ const Parts = ({ parts_orderedProp, parts_pendingProp, deletePartLoading, parts_
                                 </div>
                             ) : null}
                         </div>
+
+                        <div>
+                            <h3>Select status</h3>
+                            <p className="text-sm font-medium">Ensure you select part status when adding parts</p>
+                            <div className="mb-3 pt-4">
+
+                                <div className="flex items-center space-x-2 mb-3">
+                                    <Checkbox id="parts_pending" checked={parts_pendingProp}
+                                        onCheckedChange={handlePartsPending} />
+                                    <label
+                                        htmlFor="parts_pending"
+                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                    >
+                                        Parts pending?
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="mb-3">
+                                <div className="flex items-center space-x-2 mb-3">
+                                    <Checkbox id="parts_ordered" checked={parts_requestedProp}
+                                        onCheckedChange={handlePartsRequested} />
+                                    <label
+                                        htmlFor="parts_ordered"
+                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                    >
+                                        Parts requested 1st approval?
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="mb-3">
+                                <div className="flex items-center space-x-2 mb-3">
+                                    <Checkbox id="parts_ordered" checked={parts_orderedProp}
+                                        onCheckedChange={handlePartsOrdered} />
+                                    <label
+                                        htmlFor="parts_ordered"
+                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                    >
+                                        Parts ordered?
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="flex items-center space-x-2 mb-3">
+                                <Checkbox id="parts_issued" checked={parts_issuedProp}
+                                    onCheckedChange={handlePartsIssued} />
+                                <label
+                                    htmlFor="parts_issued"
+                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                    Parts issued?
+                                </label>
+                            </div>
+                        </div>
                     </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="item-3">
-                    <AccordionTrigger>Status</AccordionTrigger>
-                    <AccordionContent>
-                        <div className="mb-3">
 
-                            <div className="flex items-center space-x-2 mb-3">
-                                <Checkbox id="parts_pending" checked={parts_pendingProp}
-                                    onCheckedChange={handlePartsPending} />
-                                <label
-                                    htmlFor="parts_pending"
-                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                >
-                                    Parts pending?
-                                </label>
-                            </div>
-                        </div>
-                        <div className="mb-3">
-                            <div className="flex items-center space-x-2 mb-3">
-                                <Checkbox id="parts_ordered" checked={parts_requestedProp}
-                                    onCheckedChange={handlePartsRequested} />
-                                <label
-                                    htmlFor="parts_ordered"
-                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                >
-                                    Parts requested 1st approval?
-                                </label>
-                            </div>
-                        </div>
-                        <div className="mb-3">
-                            <div className="flex items-center space-x-2 mb-3">
-                                <Checkbox id="parts_ordered" checked={parts_orderedProp}
-                                    onCheckedChange={handlePartsOrdered} />
-                                <label
-                                    htmlFor="parts_ordered"
-                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                >
-                                    Parts ordered?
-                                </label>
-                            </div>
-                        </div>
-                        <div className="flex items-center space-x-2 mb-3">
-                            <Checkbox id="parts_issued" checked={parts_issuedProp}
-                                onCheckedChange={handlePartsIssued} />
-                            <label
-                                htmlFor="parts_issued"
-                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                            >
-                                Parts issued?
-                            </label>
-                        </div>
-                    </AccordionContent>
-                </AccordionItem>
             </Accordion>
 
             <Button className="w-full outline-none" type="button" onClick={submitPartsUpdate} disabled={submitPartsUpdateLoading}>{submitPartsUpdateLoading ? 'Loading...' : 'Update'}</Button>

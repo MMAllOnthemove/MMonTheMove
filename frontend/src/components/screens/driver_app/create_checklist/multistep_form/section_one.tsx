@@ -8,6 +8,7 @@ import {
     CommandItem,
     CommandList,
 } from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
 import {
     Popover,
     PopoverContent,
@@ -20,7 +21,6 @@ import { cn } from "@/lib/utils";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import React, { useState } from 'react';
 import FormWrapper from './wrapper';
-import { Input } from "@/components/ui/input";
 
 interface ISectionOne {
     car: string;

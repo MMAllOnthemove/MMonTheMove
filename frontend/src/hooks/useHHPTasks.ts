@@ -30,7 +30,7 @@ const useHHPTasks = () => {
     };
     useEffect(() => {
         refetchHhpTasks();
-    }, [hhpTasks, hhpTasksLoading]);
+    }, []);
 
     return { hhpTasks, hhpTasksLoading, refetchHhpTasks };
 };

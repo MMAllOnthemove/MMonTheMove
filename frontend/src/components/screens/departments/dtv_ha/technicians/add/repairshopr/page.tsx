@@ -92,6 +92,7 @@ const AddRepairshoprDTVHATask = ({ onChange }: { onChange: (value: boolean) => v
 
     useEffect(() => {
         const fetchRSByIdData = async () => {
+            if (!repairshopr_job_id) return;
             try {
                 const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/tickets/${repairshopr_job_id}`, {
                     headers: {
@@ -118,7 +119,7 @@ const AddRepairshoprDTVHATask = ({ onChange }: { onChange: (value: boolean) => v
         const fetchRSByAssetData = async () => {
             setLoadpi(true)
             try {
-
+                if (!assetId) return;
                 const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/customer_assets/${assetId}`, {
                     headers: {
                         "Content-Type": "application/json",

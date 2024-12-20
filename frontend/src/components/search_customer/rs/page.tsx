@@ -167,7 +167,8 @@ const SearchCustomerRepairshoprScreen = () => {
 
             }
         } catch (error) {
-            console.log("update customer rs error", error)
+            if (process.env.NODE_ENV !== "production")
+                console.log("update customer rs error", error)
         }
     }
 

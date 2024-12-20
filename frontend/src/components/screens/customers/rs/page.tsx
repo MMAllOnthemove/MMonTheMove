@@ -1,11 +1,22 @@
 "use client"
-import LoadingScreen from '@/components/loading_screen/page'
-import NotLoggedInScreen from '@/components/not_logged_in/page'
-import CreateCustomerRepairshoprScreen from '@/components/screens/create_customer/rs/page'
-import SearchCustomerRepairshoprScreen from '@/components/search_customer/rs/page'
-import Sidebar from '@/components/sidebar/page'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import useUserLoggedIn from '@/hooks/useGetUser'
+import dynamic from 'next/dynamic'
+const LoadingScreen = dynamic(() =>
+    import('@/components/loading_screen/page')
+)
+const NotLoggedInScreen = dynamic(() =>
+    import('@/components/not_logged_in/page')
+)
+const CreateCustomerRepairshoprScreen = dynamic(() =>
+    import('@/components/screens/create_customer/rs/page')
+)
+const SearchCustomerRepairshoprScreen = dynamic(() =>
+    import('@/components/search_customer/rs/page')
+)
+const Sidebar = dynamic(() =>
+    import('@/components/sidebar/page')
+)
 
 const CustomersRepairshoprScreen = () => {
     const { isLoggedIn, loading } = useUserLoggedIn()

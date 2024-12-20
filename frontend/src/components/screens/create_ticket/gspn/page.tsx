@@ -1,17 +1,33 @@
 "use client"
+import dynamic from 'next/dynamic'
 
-import React, { useState } from 'react'
-import Sidebar from "@/components/sidebar/page"
-import LoadingScreen from "@/components/loading_screen/page"
-import NotLoggedInScreen from "@/components/not_logged_in/page"
-import useUserLoggedIn from "@/hooks/useGetUser"
-import PageTitle from "@/components/PageTitle/page"
+import { useEffect, useState } from 'react'
+const Sidebar = dynamic(() =>
+    import('@/components/sidebar/page')
+)
+const LoadingScreen = dynamic(() =>
+    import('@/components/loading_screen/page')
+)
+const NotLoggedInScreen = dynamic(() =>
+    import('@/components/not_logged_in/page')
+)
+const PageTitle = dynamic(() =>
+    import('@/components/PageTitle/page')
+)
+const ProductInfo = dynamic(() =>
+    import('./multistep/product_info')
+)
+const ProductInfoTwo = dynamic(() =>
+    import('./multistep/product_info_two')
+)
+const CustomerInfoScreen = dynamic(() =>
+    import('./multistep/customer_info')
+)
+
 import { Button } from '@/components/ui/button'
-import ProductInfo from './multistep/product_info'
-import ProductInfoTwo from './multistep/product_info_two'
-import CustomerInfoScreen from './multistep/customer_info'
+import useUserLoggedIn from "@/hooks/useGetUser"
+
 import useCreateServiceOrder from '@/hooks/useCreateServiceOrder'
-import useCheckWarranty from '@/hooks/useCheckDTVHAWarranty'
 import { datetimestamp } from '@/lib/date_formats'
 import moment from 'moment'
 
@@ -64,6 +80,43 @@ const GSPNScreen = () => {
     const [state, setState] = useState("")
     const [zip, setZip] = useState("")
     const [country, setCountry] = useState("RSA")
+
+    useEffect(() => {
+        const loadCustomerInfo = () => {
+            if (typeof window !== undefined && window.localStorage) {
+                const parsedData = JSON.parse(localStorage.getItem('custInfo') || '""');
+                // console.log(parsedData)
+                if (parsedData !== null) {
+                    setFirstName(parsedData?.firstname);
+                    setLastName(parsedData?.lastname);
+                    setEmail(parsedData?.email);
+                    setMobilePhone(parsedData?.mobile);
+                    setHomePhone(parsedData?.phone);
+                    setAddress(parsedData?.address);
+                    setAddress_2(parsedData?.address2)
+                    setCity(parsedData?.city);
+                    setState(parsedData?.state);
+                    setZip(parsedData?.zip);
+                }
+            }
+        };
+        loadCustomerInfo()
+    }, [])
+    useEffect(() => {
+        const loadCustomerAssetInfo = () => {
+            if (typeof window !== undefined && window.localStorage) {
+                const parsedData = JSON.parse(localStorage.getItem('assetInfo') || '""');
+                // console.log(parsedData)
+                if (parsedData !== null) {
+                    setSerialNumber(parsedData?.asset_serial)
+                    setModel(parsedData?.model_number)
+                    setIMEI(parsedData?.asset_imei)
+
+                }
+            }
+        };
+        loadCustomerAssetInfo()
+    }, [])
 
 
     const handleSubmit = async () => {
@@ -137,6 +190,39 @@ const GSPNScreen = () => {
             }
         }
         await addServiceOrder(values)
+        setModel("")
+        setSerialNumber("")
+        setIMEI("")
+        setPurchaseDate("")
+        setWtyException("")
+        setWtyType("")
+        setDefectDesc("")
+        setRemark("")
+        setSymCode1("")
+        setSymCode2("")
+        setSymCode3("")
+        setServiceType("")
+        setTokenNo("")
+        setRequestDate("")
+        setRequestTime("")
+        setUnitReceieveDate("")
+        setUnitReceieveTime("")
+        setFirstAppDate("")
+        setFirstAppTime("")
+        setRepairReceiveDate("")
+        setRepairReceiveTime("")
+        setFirstName("")
+        setLastName("")
+        setHomePhone("")
+        setOfficePhone("")
+        setMobilePhone("")
+        setEmail("")
+        setAddress("")
+        setAddress_2("")
+        setCity("")
+        setState("")
+        setZip("")
+        setCountry("")
     }
     return (
         <>

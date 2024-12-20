@@ -1,18 +1,30 @@
 "use client"
-import LoadingScreen from '@/components/loading_screen/page';
-import NotLoggedInScreen from '@/components/not_logged_in/page';
-import PageTitle from '@/components/PageTitle/page';
-import ManagementSearchForm from '@/components/search_field/page';
-import Sidebar from '@/components/sidebar/page';
-import Pagination from '@/components/table_pagination/page';
-import { Button } from "@/components/ui/button";
+import dynamic from 'next/dynamic'
+const LoadingScreen = dynamic(() =>
+    import('@/components/loading_screen/page')
+)
+const NotLoggedInScreen = dynamic(() =>
+    import('@/components/not_logged_in/page')
+)
+const PageTitle = dynamic(() =>
+    import('@/components/PageTitle/page')
+)
+
+const Sidebar = dynamic(() =>
+    import('@/components/sidebar/page')
+)
+const Pagination = dynamic(() =>
+    import('@/components/table_pagination/page')
+)
+
+import { Button } from "@/components/ui/button"
 import {
     Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogTitle
-} from "@/components/ui/dialog";
+} from "@/components/ui/dialog"
 import {
     Select,
     SelectContent,
@@ -21,28 +33,29 @@ import {
     SelectLabel,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import useUpdateHHPTask from '@/hooks/updateHHPTask';
-import useAddTaskCommentLocally from '@/hooks/useAddCommentLocally';
-import useAddPart from '@/hooks/useAddPart';
-import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
-import useDeletePart from '@/hooks/useDeleteTaskPart';
-import useFetchEngineer from '@/hooks/useFetchEngineers';
-import useFetchPartsForTask from '@/hooks/useGetPartsForTask';
-import useUserLoggedIn from '@/hooks/useGetUser';
-import useHHPTasks from '@/hooks/useHHPTasks';
-import useIpaasSOPartsInfo from '@/hooks/useIpaasGetSOPartsInfo';
-import useRepairshoprComment from '@/hooks/useRepairshoprComment';
-import useRepairshoprTicket from '@/hooks/useRepairshoprTicket';
-import useUpdateAssessmentDate from '@/hooks/useUpdateAssessmentDate';
-import { datetimestamp } from '@/lib/date_formats';
-import { fetchRSTicketDataById } from '@/lib/fetch_ticket_by_id';
-import { fieldsToExtract } from '@/lib/fields_to_extract';
-import findChanges from '@/lib/find_changes';
+} from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-import { ModifyTaskModalTechnicians, PropertiesType, RepairshorTicketComment, TechniciansTableData } from '@/lib/types';
-import { CheckedState } from '@radix-ui/react-checkbox';
+import useUpdateHHPTask from '@/hooks/updateHHPTask'
+import useAddTaskCommentLocally from '@/hooks/useAddCommentLocally'
+import useAddPart from '@/hooks/useAddPart'
+import useRepairshoprFile from '@/hooks/useAddRepairshoprFile'
+import useDeletePart from '@/hooks/useDeleteTaskPart'
+import useFetchEngineer from '@/hooks/useFetchEngineers'
+import useFetchPartsForTask from '@/hooks/useGetPartsForTask'
+import useUserLoggedIn from '@/hooks/useGetUser'
+import useHHPTasks from '@/hooks/useHHPTasks'
+import useIpaasSOPartsInfo from '@/hooks/useIpaasGetSOPartsInfo'
+import useRepairshoprComment from '@/hooks/useRepairshoprComment'
+import useRepairshoprTicket from '@/hooks/useRepairshoprTicket'
+import useUpdateAssessmentDate from '@/hooks/useUpdateAssessmentDate'
+import { datetimestamp } from '@/lib/date_formats'
+import { fetchRSTicketDataById } from '@/lib/fetch_ticket_by_id'
+import { fieldsToExtract } from '@/lib/fields_to_extract'
+import findChanges from '@/lib/find_changes'
+
+import { ModifyTaskModalTechnicians, PropertiesType, RepairshorTicketComment, TechniciansTableData } from '@/lib/types'
+import { CheckedState } from '@radix-ui/react-checkbox'
 import {
     ColumnOrderState,
     getCoreRowModel,
@@ -52,19 +65,42 @@ import {
     PaginationState,
     SortingState,
     useReactTable
-} from "@tanstack/react-table";
-import axios from 'axios';
-import React, { useEffect, useMemo, useState } from "react";
-import toast from 'react-hot-toast';
-import AddgspnHHPTask from './add/gspn/page';
-import AddRepairshoprHHPTask from './add/repairshopr/page';
-import Parts from './parts/page';
-import QC from './qc/page';
-import TableBody from './tablebody';
-import TableHead from './tablehead';
-import TasksUpdate from './tasks_update/page';
-import columns from '@/lib/hhp_technicians_table_columns';
-import useDeleteHHPTask from '@/hooks/useDeleteHHPTask';
+} from "@tanstack/react-table"
+import axios from 'axios'
+import React, { useEffect, useMemo, useState } from "react"
+import toast from 'react-hot-toast'
+const AddgspnHHPTask = dynamic(() =>
+    import('./add/gspn/page')
+)
+const AddRepairshoprHHPTask = dynamic(() =>
+    import('./add/repairshopr/page')
+)
+const Parts = dynamic(() =>
+    import('./parts/page')
+)
+const QC = dynamic(() =>
+    import('./qc/page')
+)
+const TableBody = dynamic(() =>
+    import('./tablebody')
+)
+const TableHead = dynamic(() =>
+    import('./tablehead')
+)
+const TasksUpdate = dynamic(() =>
+    import('./tasks_update/page')
+)
+const ManagementSearchForm = dynamic(() =>
+    import('@/components/search_field/page')
+)
+
+// import ManagementSearchForm from "@/components/search_field/page"
+import useDeleteHHPTask from '@/hooks/useDeleteHHPTask'
+import columns from '@/lib/hhp_technicians_table_columns'
+const DateCalculationsScreen = dynamic(() =>
+    import('./date_calculations/page')
+)
+
 
 
 
@@ -188,7 +224,6 @@ const TechniciansScreen = () => {
         try {
             const getTicketDataFromRepairshopr = await fetchRSTicketDataById(row?.original?.repairshopr_job_id);
             const properties = getTicketDataFromRepairshopr?.ticket?.properties;
-            console.log("properties", properties)
             if (properties) {
 
                 const extractedValues: Record<string, string> = {};
@@ -518,10 +553,6 @@ const TechniciansScreen = () => {
         }
 
         const changes = findChanges(modifyTaskModal, updatePayload)
-        console.log("changes", changes)
-
-
-
 
         const created_at = datetimestamp;
 
@@ -533,7 +564,6 @@ const TechniciansScreen = () => {
         }
         try {
             const res = await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, repairshopr_payload);
-            console.log("res", res)
             if (reparshoprComment) {
                 await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
                 await addCommentLocally(addCommentLocallyPayload)
@@ -809,6 +839,7 @@ const TechniciansScreen = () => {
                                                 <TabsTrigger value="Techs">Techs</TabsTrigger>
                                                 <TabsTrigger value="QC">QC</TabsTrigger>
                                                 <TabsTrigger value="Parts">Parts</TabsTrigger>
+                                                <TabsTrigger value="Time">Time summary</TabsTrigger>
                                             </TabsList>
                                             <TabsContent value="Techs">
                                                 <TasksUpdate job_repair_no={job_repair_no} location={locationBin} assessment_date={modifyTaskModal?.assessment_date} hhp_tasks_loading={hhpFilesUploading} setHHPFilesProp={handleHHPFiles} submitHHPFiles={submitHHPFiles} date_booked={modifyTaskModal?.date_booked} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={(e) => setRepairshoprStatus(e)} submitTasksUpdate={handleSubmit} engineer={engineer} engineersComboBox={engineersComboBox} setEngineer={setEngineer} setEngineerComboBox={setEngineerComboBox} setUserId={setUserId} warranty={warranty} setWarranty={(e) => setWarranty(e)} imei={modifyTaskModal?.imei} serial_number={modifyTaskModal?.serial_number} model={modifyTaskModal?.model} />
@@ -818,6 +849,9 @@ const TechniciansScreen = () => {
                                             </TabsContent>
                                             <TabsContent value="Parts">
                                                 <Parts compensation={compensation} setCompensation={(e) => setCompensation(e)} deletePartLoading={deletePartLoading} part_data={[...taskPartsList]} parts_requestedProp={parts_requested} setPartsRequestedProp={(e) => setPartsRequested(e)} setPartsRequestedDateProp={setPartsRequestedDate} parts_orderedProp={parts_ordered} setPartsOrderedProp={(e) => setPartsOrdered(e)} parts_pendingProp={parts_pending} setPartsPendingProp={(e) => setPartsPending(e)} parts_issuedProp={parts_issued} setPartsIssuedProp={(e) => setPartsIssued(e)} setPartsIssuedDateProp={setPartsIssuedDate} setPartsPendingDateProp={setPartsPendingDate} setPartsOrderedDateProp={setPartsOrderedDate} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} handleDelete={handleDeletePart} addPartOnRepairshoprLoading={addPartOnRepairshoprLoading} addPartOnRepairshopr={addPartListToRepairshoprComment} />
+                                            </TabsContent>
+                                            <TabsContent value="Time">
+                                                <DateCalculationsScreen data={hhpTasks} openTaskId={modifyTaskModal?.id} />
                                             </TabsContent>
                                         </Tabs>
 

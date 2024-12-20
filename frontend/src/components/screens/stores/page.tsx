@@ -1,27 +1,42 @@
 "use client"
-import LoadingScreen from '@/components/loading_screen/page';
-import NotLoggedInScreen from '@/components/not_logged_in/page';
-import PageTitle from '@/components/PageTitle/page';
-import ManagementSearchForm from '@/components/search_field/page';
-import Sidebar from '@/components/sidebar/page';
-import Pagination from '@/components/table_pagination/page';
-import { Button } from '@/components/ui/button';
+import dynamic from 'next/dynamic'
+const LoadingScreen = dynamic(() =>
+    import('@/components/loading_screen/page')
+)
+const NotLoggedInScreen = dynamic(() =>
+    import('@/components/not_logged_in/page')
+)
+const PageTitle = dynamic(() =>
+    import('@/components/PageTitle/page')
+)
+const ManagementSearchForm = dynamic(() =>
+    import('@/components/search_field/page')
+)
+const Sidebar = dynamic(() =>
+    import('@/components/sidebar/page')
+)
+
+const Pagination = dynamic(() =>
+    import('@/components/table_pagination/page')
+)
+
+import { Button } from '@/components/ui/button'
 import {
     Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogTitle
-} from "@/components/ui/dialog";
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import useAddStore from '@/hooks/useAddStore';
-import useDeleteStore from '@/hooks/useDeleteStore';
-import useGetStores from '@/hooks/useGetStores';
-import useUserLoggedIn from '@/hooks/useGetUser';
-import { datetimestamp } from '@/lib/date_formats';
-import columns from '@/lib/stores_columns';
-import { TStoresList, TStoresListTable } from '@/lib/types';
+} from "@/components/ui/dialog"
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import useAddStore from '@/hooks/useAddStore'
+import useDeleteStore from '@/hooks/useDeleteStore'
+import useGetStores from '@/hooks/useGetStores'
+import useUserLoggedIn from '@/hooks/useGetUser'
+import { datetimestamp } from '@/lib/date_formats'
+import columns from '@/lib/stores_columns'
+import { TStoresList, TStoresListTable } from '@/lib/types'
 
 import {
     SortingState,
@@ -31,8 +46,8 @@ import {
     getPaginationRowModel,
     getSortedRowModel,
     useReactTable,
-} from "@tanstack/react-table";
-import React, { useState } from 'react';
+} from "@tanstack/react-table"
+import React, { useState } from 'react'
 
 
 const StoresScreen = () => {

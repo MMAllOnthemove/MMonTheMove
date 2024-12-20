@@ -1,7 +1,15 @@
 "use client"
-import LoadingScreen from '@/components/loading_screen/page'
-import NotLoggedInScreen from '@/components/not_logged_in/page'
-import Sidebar from '@/components/sidebar/page'
+import dynamic from 'next/dynamic'
+const LoadingScreen = dynamic(() =>
+    import('@/components/loading_screen/page')
+)
+const NotLoggedInScreen = dynamic(() =>
+    import('@/components/not_logged_in/page')
+)
+const Sidebar = dynamic(() =>
+    import('@/components/sidebar/page')
+)
+
 import { Button } from '@/components/ui/button'
 import {
     Card,

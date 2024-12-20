@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import { Button } from '@/components/ui/button'
 import {
     Card,
     CardContent,
@@ -10,11 +10,18 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import useAddOtp from '@/hooks/useAddOtp'
-import Sidebar from '@/components/sidebar/page'
 import useUserLoggedIn from '@/hooks/useGetUser'
-import LoadingScreen from '@/components/loading_screen/page'
-import { Button } from '@/components/ui/button'
-import NotLoggedInScreen from '@/components/not_logged_in/page'
+import dynamic from 'next/dynamic'
+import React, { useState } from 'react'
+const Sidebar = dynamic(() =>
+    import('@/components/sidebar/page')
+)
+const LoadingScreen = dynamic(() =>
+    import('@/components/loading_screen/page')
+)
+const NotLoggedInScreen = dynamic(() =>
+    import('@/components/not_logged_in/page')
+)
 const CreateOtpScreen = () => {
 
     const { user, isLoggedIn, loading } = useUserLoggedIn()

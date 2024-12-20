@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import { Button } from '@/components/ui/button'
 import {
     Dialog,
     DialogContent,
@@ -7,12 +7,10 @@ import {
     DialogHeader,
     DialogTitle
 } from "@/components/ui/dialog"
-import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import useCars from '@/hooks/useGetCars'
-import useGetSingleFuelConsumption from '@/hooks/useGetSingleFuelConsumption'
 
 type TFuelModal = {
     openAddModal: boolean;

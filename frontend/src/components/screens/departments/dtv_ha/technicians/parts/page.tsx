@@ -1,19 +1,18 @@
 "use client"
-import { Checkbox } from '@/components/ui/checkbox';
-import React, { useEffect, useState } from 'react'
-import { CheckedState } from '@radix-ui/react-checkbox';
-import { datetimestamp } from '@/lib/date_formats';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { XMarkIcon } from '@heroicons/react/24/outline';
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { datetimestamp } from '@/lib/date_formats';
 import { TTaskParts } from '@/lib/types';
-import useIpaasSOPartsInfo from '@/hooks/useIpaasGetSOPartsInfo';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import { CheckedState } from '@radix-ui/react-checkbox';
+import React from 'react';
 type TPartsDTVHAUpdate = {
     parts_orderedProp: CheckedState | undefined
     parts_pendingProp: CheckedState | undefined
@@ -52,10 +51,8 @@ type TPartsDTVHAUpdate = {
         part_quantity?: string;
     }
 }
-const Parts = ({parts_orderedProp, parts_pendingProp, deletePartLoading, parts_issuedProp, part_data, handleDelete, parts_requestedProp, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsPendingProp, setPartsPendingDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, errors }: TPartsDTVHAUpdate) => {
-    const { getSOPartsInfo } = useIpaasSOPartsInfo()
+const Parts = ({ parts_orderedProp, parts_pendingProp, deletePartLoading, parts_issuedProp, part_data, handleDelete, parts_requestedProp, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsPendingProp, setPartsPendingDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, errors }: TPartsDTVHAUpdate) => {
 
-  
 
     const handlePartsOrdered = (e: React.SyntheticEvent | any) => {
         if (!parts_orderedProp) {

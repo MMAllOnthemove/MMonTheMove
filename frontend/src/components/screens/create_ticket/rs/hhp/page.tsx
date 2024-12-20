@@ -1,36 +1,35 @@
 "use client"
 import { Button } from '@/components/ui/button';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle
-} from "@/components/ui/dialog";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import useAddHHPTask from '@/hooks/useAddHHPTask';
+import useCheckWarranty from '@/hooks/useCheckHHPWarranty';
 import useCreateTicket from '@/hooks/useCreateTicket';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import { assetTypes } from '@/lib/asset_types';
 import { datetimestamp } from '@/lib/date_formats';
 import axios from 'axios';
-import moment from 'moment';
+import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { Tldraw } from 'tldraw';
 import 'tldraw/tldraw.css';
-import DrawScratchesModal from './draw_scratches_modal';
-import AttachmentsModal from '../attachments_modal/page';
-import useCheckWarranty from '@/hooks/useCheckHHPWarranty';
+import AlertDialogServiceOrder from './alert_dialog';
+
+const AttachmentsModal = dynamic(() =>
+    import('../attachments_modal/page')
+)
+const DrawScratchesModal = dynamic(() =>
+    import('./draw_scratches_modal')
+)
+
 const HHP = () => {
     const { addTask } = useAddHHPTask();
     const { user } = useUserLoggedIn()
     const { addTicket, createTicketLoading } = useCreateTicket()
 
-  
+
     const [fault, setFault] = useState("")
     const [itemCondition, setItemCondition] = useState("");
     const [specialRequirement, setSpecialRequirement] = useState("")
@@ -47,7 +46,7 @@ const HHP = () => {
 
     const [openModal, setOpenModal] = useState(false);
     const [openAttachmentsModal, setOpenAttachmentsModal] = useState(false);
-
+    const [openDialog, setOpenDialog] = useState(false)
     const [serviceOrderNumber, setServiceOrder] = useState("")
 
     // Asset id
@@ -174,10 +173,11 @@ const HHP = () => {
         await sendTicketDataToOurDB(data?.ticket?.number, data?.ticket?.id)
         setTicketNumber(data?.ticket?.number)
         setepairshoprJobId(data?.ticket?.id)
-        setOpenAttachmentsModal(true)
-        if (typeof window !== 'undefined' && window.localStorage) localStorage.clear();
-        window.location.reload()
-
+        // todo: trial and error, user will add attachments in the table 
+        // we will now show the alert dialog to ask user if the wanna create an so or not
+        // so we can make way for the alert dialog
+        // setOpenAttachmentsModal(true)
+        setOpenDialog(true)
     }
     const sendTicketDataToOurDB = async (ticketNumber: string | number, ticketId: string | number) => {
         const created_at = datetimestamp;
@@ -235,6 +235,11 @@ const HHP = () => {
 
                 openModal &&
                 <DrawScratchesModal openModal={openModal} setOpenModal={setOpenModal} />
+
+            }
+            {
+                openDialog &&
+                <AlertDialogServiceOrder openModal={openDialog} setOpenModal={setOpenDialog} />
 
             }
             {

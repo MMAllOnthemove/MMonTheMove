@@ -1,11 +1,10 @@
 "use client"
 import { Button } from '@/components/ui/button'
-import useAddAgent from '@/hooks/useAddBookingAgent'
-import useDeleteBookingAgent from '@/hooks/useDeleteBookingAgent'
-import useFetchAgent from '@/hooks/useFetchBookingAgents'
+import useAddCar from '@/hooks/useAddCar'
+import useCars from '@/hooks/useGetCars'
 import useUserLoggedIn from '@/hooks/useGetUser'
+import columns from '@/lib/cars_columns'
 import { datetimestamp } from '@/lib/date_formats'
-import { TBookingAgentData } from '@/lib/types'
 import {
     SortingState,
     getCoreRowModel,
@@ -20,11 +19,7 @@ const Tablehead = dynamic(() => import('./tablehead'))
 const TableBody = dynamic(() => import('./tablebody'))
 const LoadingScreen = dynamic(() => import('@/components/loading_screen/page'))
 const NotLoggedInScreen = dynamic(() => import('@/components/not_logged_in/page'))
-// const PageTitle = dynamic(() => import('@/components/PageTitle/page'))
-import PageTitle from '@/components/PageTitle/page'
-import useAddCar from '@/hooks/useAddCar'
-import useCars from '@/hooks/useGetCars'
-import columns from '@/lib/cars_columns'
+const PageTitle = dynamic(() => import('@/components/PageTitle/page'))
 const CarsModal = dynamic(() => import('./modal'))
 
 const ManagementSearchForm = dynamic(() => import('@/components/search_field/page'))

@@ -38,7 +38,7 @@ const ProductInfo = ({ model, setModel, serial_number, setSerialNumber, imei, se
     const { warranty } = useCheckWarranty(model, serial_number)
 
     useEffect(() => {
-        setWtyType(warranty)
+        if (warranty) setWtyType(warranty)
     }, [model, serial_number, setWtyType, warranty])
 
     return (
@@ -47,19 +47,19 @@ const ProductInfo = ({ model, setModel, serial_number, setSerialNumber, imei, se
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 items-center">
                 <div>
                     <label htmlFor='model' className='text-sm font-medium text-gray-900 '>Model</label>
-                    <Input type="text" id='model' name='model' value={model}
+                    <Input type="text" id='model' name='model' defaultValue={model || ""}
                         maxLength={18}
                         onChange={(e) => setModel(e.target.value)} />
 
                 </div>
                 <div>
                     <label htmlFor='serial_number' className='text-sm font-medium text-gray-900 '>Serial number</label>
-                    <Input type="text" id='serial_number' name='serial_number' value={serial_number} maxLength={16}
+                    <Input type="text" id='serial_number' name='serial_number' defaultValue={serial_number || ""} maxLength={16}
                         onChange={(e) => setSerialNumber(e.target.value)} />
                 </div>
                 <div>
                     <label htmlFor='imei' className='text-sm font-medium text-gray-900 '>IMEI</label>
-                    <Input type="text" id='imei' name='imei' value={imei} maxLength={16}
+                    <Input type="text" id='imei' name='imei' defaultValue={imei || ""} maxLength={16}
                         onChange={(e) => setIMEI(e.target.value)} />
                 </div>
             </div>
