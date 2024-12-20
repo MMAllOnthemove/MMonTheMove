@@ -7,6 +7,7 @@ const useRepairshoprFetchTicket = (searchTicket: string | undefined) => {
     useEffect(() => {
         const fetchRSTicketData = async () => {
             try {
+                if (!searchTicket) return;
                 const { data } = await axios.get(
                     `https://allelectronics.repairshopr.com/api/v1/tickets?query=${searchTicket}`,
                     {

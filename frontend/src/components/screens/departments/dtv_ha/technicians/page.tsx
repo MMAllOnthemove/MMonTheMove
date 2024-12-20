@@ -56,12 +56,12 @@ import {
 import axios from 'axios';
 import React, { useEffect, useMemo, useState } from "react";
 import toast from 'react-hot-toast';
-import TableHead from './tablehead';
-import TableBody from './tablebody';
-import AddRepairshoprDTVHATask from './add/repairshopr/page';
 import AddgspnDTVHATask from './add/gspn/page';
-import TasksUpdate from './tasks_update/page';
+import AddRepairshoprDTVHATask from './add/repairshopr/page';
 import Parts from './parts/page';
+import TableBody from './tablebody';
+import TableHead from './tablehead';
+import TasksUpdate from './tasks_update/page';
 
 const DTVHATechniciansScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()

@@ -1,24 +1,18 @@
 "use client"
-import LoadingScreen from '@/components/loading_screen/page';
-import NotLoggedInScreen from '@/components/not_logged_in/page';
-import PageTitle from '@/components/PageTitle/page';
-import ManagementSearchForm from '@/components/search_field/page';
-import Sidebar from '@/components/sidebar/page';
-import Pagination from '@/components/table_pagination/page';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle
-} from "@/components/ui/dialog";
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import useAddDriver from '@/hooks/useAddDriver';
-import useFetchDrivers from '@/hooks/useFetchDrivers';
-import useUserLoggedIn from '@/hooks/useGetUser';
-import { datetimestamp } from '@/lib/date_formats';
-import columns from '@/lib/drivers_table_columns';
+} from "@/components/ui/dialog"
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import useAddDriver from '@/hooks/useAddDriver'
+import useFetchDrivers from '@/hooks/useFetchDrivers'
+import useUserLoggedIn from '@/hooks/useGetUser'
+import { datetimestamp } from '@/lib/date_formats'
+import columns from '@/lib/drivers_table_columns'
 import {
     SortingState,
     flexRender,
@@ -27,8 +21,27 @@ import {
     getPaginationRowModel,
     getSortedRowModel,
     useReactTable,
-} from "@tanstack/react-table";
-import React, { useState } from 'react';
+} from "@tanstack/react-table"
+import dynamic from 'next/dynamic'
+import React, { useState } from 'react'
+const LoadingScreen = dynamic(() =>
+    import('@/components/loading_screen/page')
+)
+const NotLoggedInScreen = dynamic(() =>
+    import('@/components/not_logged_in/page')
+)
+const PageTitle = dynamic(() =>
+    import('@/components/PageTitle/page')
+)
+const ManagementSearchForm = dynamic(() =>
+    import('@/components/search_field/page')
+)
+const Sidebar = dynamic(() =>
+    import('@/components/sidebar/page')
+)
+const Pagination = dynamic(() =>
+    import('@/components/table_pagination/page')
+)
 
 
 const DriversScreen = () => {

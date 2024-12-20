@@ -16,6 +16,7 @@ CREATE TABLE company_people (
     user_role text,
     reset_token VARCHAR(255),
     repairshopr_id INTEGER,
+    permissions text,
     gspn_username varchar(30),
     reset_token_expires_at text
 );
@@ -401,3 +402,18 @@ CREATE TABLE devices (
     device text,
     device_model text -- Add as many columns as your CSV file
 );
+
+create table customers (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    first_name text,
+    last_name text,
+    email text UNIQUE,
+    phone_number text,
+    home_number text,
+    office_number text,
+    address text,
+    address_2 text,
+    created_at text,
+    updated_at text
+)

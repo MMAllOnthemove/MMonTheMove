@@ -1,48 +1,62 @@
 "use client"
-import LoadingScreen from '@/components/loading_screen/page';
-import NotLoggedInScreen from '@/components/not_logged_in/page';
-import PageTitle from '@/components/PageTitle/page';
-import ManagementSearchForm from '@/components/search_field/page';
-import Sidebar from '@/components/sidebar/page';
-import Pagination from '@/components/table_pagination/page';
-import Image from 'next/image';
-import Link from 'next/link';
+import dynamic from 'next/dynamic'
+import Image from 'next/image'
+import Link from 'next/link'
+const LoadingScreen = dynamic(() =>
+    import('@/components/loading_screen/page')
+)
+const NotLoggedInScreen = dynamic(() =>
+    import('@/components/not_logged_in/page')
+)
+const PageTitle = dynamic(() =>
+    import('@/components/PageTitle/page')
+)
+const ManagementSearchForm = dynamic(() =>
+    import('@/components/search_field/page')
+)
+const Sidebar = dynamic(() =>
+    import('@/components/sidebar/page')
+)
+const Pagination = dynamic(() =>
+    import('@/components/table_pagination/page')
+)
 
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/accordion"
+import { Button } from '@/components/ui/button'
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
 // Import Swiper React components
 
 // Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/navigation';
+import 'swiper/css'
+import 'swiper/css/navigation'
 
 
 // import required modules
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card'
 import {
     Tabs,
     TabsContent,
     TabsList,
     TabsTrigger,
-} from "@/components/ui/tabs";
-import useUpdateChecklist from "@/hooks/updateChecklist";
-import useFetchChecklists from '@/hooks/useGetChecklists';
-import useUserLoggedIn from '@/hooks/useGetUser';
-import openInNewTab from '@/lib/open_new_tab';
-import { VehicleInspection } from "@/lib/types";
-import columns from '@/lib/vehicle_checklist_table_columns';
+} from "@/components/ui/tabs"
+import useUpdateChecklist from "@/hooks/updateChecklist"
+import useFetchChecklists from '@/hooks/useGetChecklists'
+import useUserLoggedIn from '@/hooks/useGetUser'
+import openInNewTab from '@/lib/open_new_tab'
+import { VehicleInspection } from "@/lib/types"
+import columns from '@/lib/vehicle_checklist_table_columns'
+import isWithinTwoMonths from '@/lib/within_two_months'
 import {
     SortingState,
     flexRender,
@@ -51,11 +65,12 @@ import {
     getPaginationRowModel,
     getSortedRowModel,
     useReactTable,
-} from "@tanstack/react-table";
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import CreateChecklistScreen from '../create_checklist/page';
-import moment from 'moment';
-import isWithinTwoMonths from '@/lib/within_two_months';
+} from "@tanstack/react-table"
+import moment from 'moment'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+const CreateChecklistScreen = dynamic(() =>
+    import('../create_checklist/page')
+)
 
 const ChecklistsScreen = () => {
     const { isLoggedIn, loading } = useUserLoggedIn()

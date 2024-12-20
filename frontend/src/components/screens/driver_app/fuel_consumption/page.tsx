@@ -1,8 +1,11 @@
 "use client"
-import dynamic from 'next/dynamic'
-import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import useAddFuelConsumption from '@/hooks/useAddFuelConsumption'
+import useGetFuelConsumption from '@/hooks/useGetFuelConsumption'
+import useGetSingleFuelConsumption from '@/hooks/useGetSingleFuelConsumption'
+import useUserLoggedIn from '@/hooks/useGetUser'
+import { datetimestamp } from '@/lib/date_formats'
+import columns from '@/lib/fuel_consumption_columns'
 import {
     SortingState,
     getCoreRowModel,
@@ -11,18 +14,16 @@ import {
     getSortedRowModel,
     useReactTable
 } from "@tanstack/react-table"
+import dynamic from 'next/dynamic'
+import React, { useState } from 'react'
 const Tablehead = dynamic(() => import('./tablehead'))
 const TableBody = dynamic(() => import('./tablebody'))
 const AddFuelConsumptionModal = dynamic(() => import('./modal'))
 const LoadingScreen = dynamic(() => import('@/components/loading_screen/page'))
 const NotLoggedInScreen = dynamic(() => import('@/components/not_logged_in/page'))
-import PageTitle from '@/components/PageTitle/page'
-import useUserLoggedIn from '@/hooks/useGetUser'
-import columns from '@/lib/fuel_consumption_columns'
-import useCars from '@/hooks/useGetCars'
-import useGetSingleFuelConsumption from '@/hooks/useGetSingleFuelConsumption'
-import useGetFuelConsumption from '@/hooks/useGetFuelConsumption'
-import { datetimestamp } from '@/lib/date_formats'
+const PageTitle = dynamic(() =>
+    import('@/components/PageTitle/page')
+)
 const ManagementSearchForm = dynamic(() => import('@/components/search_field/page'))
 const Sidebar = dynamic(() => import('@/components/sidebar/page'))
 const Pagination = dynamic(() => import('@/components/table_pagination/page'))
@@ -103,7 +104,8 @@ const FuelConsumptionScreen = () => {
             setOpenAddModal(false)
             refetch()
         } catch (error) {
-            console.error("error", error)
+            if (process.env.NODE_ENV !== 'production')
+                console.error("error", error)
         }
     }
 

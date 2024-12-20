@@ -1,43 +1,39 @@
 import { Button } from '@/components/ui/button';
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import useAddHHPTask from '@/hooks/useAddHHPTask';
 import useFetchEngineer from '@/hooks/useFetchEngineers';
 import useGetStores from '@/hooks/useGetStores';
 import useUserLoggedIn from '@/hooks/useGetUser';
+import useHHPTasks from '@/hooks/useHHPTasks';
 import useRepairshoprTicket from '@/hooks/useRepairshoprTicket';
 import { datetimestamp } from '@/lib/date_formats';
-import { cn } from "@/lib/utils";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-
 
 const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) => {
     const { user } = useUserLoggedIn()
     const { updateRepairTicket } = useRepairshoprTicket()
     const [searchTicket, setSearchTicket] = useState("")
     const [warranty, setWarranty] = useState("")
-    const [engineer, setEngineer] = useState("")
+    const [engineer, setEngineer] = useState({ repairshopr_id: '', value: '' });
     const [status, setStatus] = useState("")
-    const [stores, setStore] = useState("")
+    const [stores, setStore] = useState("");
+
     const [repeat_repair, setRepeatRepair] = useState("")
     const { engineersList } = useFetchEngineer()
     const { storesList } = useGetStores()
     const { addTask, addHHPTaskLoading, addHHPTaskErrors } = useAddHHPTask();
+    const { refetchHhpTasks } = useHHPTasks()
     const [repairshopr_id, setUserId] = useState<number | undefined>(); // To store the selected repairshopr user ID
 
     const engineerListFomatted = engineersList?.map((user) => ({
@@ -46,10 +42,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
         value: user?.engineer_firstname + " " + user?.engineer_lastname,
         label: user?.engineer_firstname
     }))
-    const storeListFomatted = storesList?.map((user) => ({
-        value: user?.store_name,
-        label: user?.store_name
-    }))
+
 
     const [imei, setIMEI] = useState("")
     const [repairshopr_job_id, setRepairshoprJobId] = useState('')
@@ -60,10 +53,19 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
     const [date_booked, setDateBooked] = useState("")
     const [model, setModel] = useState("")
     const [serial_number, setSerialNumber] = useState("")
-    const [storeComboBox, setStoreComboBox] = useState(false)
-    const [engineersComboBox, setEngineerComboBox] = useState(false)
     const [department] = useState("HHP")
     const [loadApi, setLoadpi] = useState(false)
+
+
+    const handleEngineer = (value: string) => {
+        // Find the selected engineer by full name (value)
+        const selected = engineerListFomatted.find((engineer) => engineer.value === value);
+        if (selected) {
+            setEngineer({ repairshopr_id: `${selected.repairshopr_id}`, value: selected.value });
+        }
+    };
+
+
 
     // Fetch ticket info
     useEffect(() => {
@@ -94,6 +96,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
     useEffect(() => {
         const fetchRSByIdData = async () => {
             try {
+                if (!repairshopr_job_id) return;
                 const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/tickets/${repairshopr_job_id}`, {
                     headers: {
                         "Content-Type": "application/json",
@@ -119,7 +122,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
         const fetchRSByAssetData = async () => {
             setLoadpi(true)
             try {
-
+                if (!assetId) return
                 const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/customer_assets/${assetId}`, {
                     headers: {
                         "Content-Type": "application/json",
@@ -155,7 +158,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
             date_booked,
             model,
             warranty,
-            engineer,
+            engineer: engineer?.value,
             fault,
             imei,
             serial_number,
@@ -169,13 +172,13 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
             created_at
         }
         const userIdPayload = {
-            "user_id": repairshopr_id,
+            "user_id": Number(engineer?.repairshopr_id),
         }
         await addTask(payload)
-        if (engineer) await updateRepairTicket(repairshopr_job_id, userIdPayload)
+        if (engineer?.value) await updateRepairTicket(repairshopr_job_id, userIdPayload)
         setSearchTicket('')
         setWarranty('')
-        setEngineer('')
+        setEngineer({ repairshopr_id: '', value: '' })
         setStatus('')
         setStore('')
         setRepeatRepair('')
@@ -188,6 +191,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
         setDateBooked('')
         setModel('')
         setSerialNumber('')
+        refetchHhpTasks()
         if (addHHPTaskErrors) {
             onChange(false)
         }
@@ -207,106 +211,49 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                     <Input type="text" name="imei" defaultValue={loadApi ? 'Loading...' : imei} disabled aria-disabled />
                 </div>
                 <div className="mb-3">
-                    <Popover open={engineersComboBox} onOpenChange={setEngineerComboBox}>
-                        <PopoverTrigger asChild>
-                            <Button
-                                variant="outline"
-                                role="combobox"
-                                aria-expanded={engineersComboBox}
-                                className="w-full justify-between"
-                            >
-                                {engineer
-                                    ? engineerListFomatted?.find((framework) => framework.value === engineer)?.label
-                                    : "Select engineer..."}
-                                <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-full p-0">
-                            <Command>
-                                <CommandInput placeholder="Search engineer..." className="h-9" />
-                                <CommandList>
-                                    <CommandEmpty>No engineer found.</CommandEmpty>
-                                    <CommandGroup>
-                                        {engineerListFomatted?.map((framework) => (
-                                            <CommandItem
+                    <Select onValueChange={handleEngineer}>
+                        <SelectTrigger >
+                            <SelectValue placeholder="Select an engineer" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel>Technicians</SelectLabel>
+                                {engineerListFomatted.map((x) => (
+                                    <SelectItem key={x.repairshopr_id} value={x.value}>
+                                        {x.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
 
-                                                key={framework.id}
-                                                value={framework.value}
-                                                onSelect={(currentValue) => {
-                                                    setEngineer(currentValue === engineer ? "" : currentValue)
-                                                    setUserId(framework?.repairshopr_id); // Store the corresponding repairshopr ID
-                                                    setEngineerComboBox(false)
-                                                }}
-                                            >
-                                                {framework.label}
-                                                <CheckIcon
-                                                    className={cn(
-                                                        "ml-auto h-4 w-4",
-                                                        engineer === framework.value ? "opacity-100" : "opacity-0"
-                                                    )}
-                                                />
-                                            </CommandItem>
-                                        ))}
-                                    </CommandGroup>
-                                </CommandList>
-                            </Command>
-                        </PopoverContent>
-                    </Popover>
                     {addHHPTaskErrors.engineer && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.engineer}</p>}
 
                 </div>
 
                 <div className="mb-3">
-                    <Popover open={storeComboBox} onOpenChange={setStoreComboBox}>
-                        <PopoverTrigger asChild>
-                            <Button
-                                variant="outline"
-                                role="combobox"
-                                aria-expanded={storeComboBox}
-                                className="w-full justify-between"
-                            >
-                                {stores
-                                    ? storeListFomatted?.find((framework) => framework.value === stores)?.label
-                                    : "Select store or customer..."}
-                                <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-full p-0">
-                            <Command>
-                                <CommandInput placeholder="Search type of customer..." className="h-9" />
-                                <CommandList>
-                                    <CommandEmpty>No customer type found.</CommandEmpty>
-                                    <CommandGroup>
-                                        {storeListFomatted?.map((framework) => (
-                                            <CommandItem
+                    <Select value={stores} onValueChange={(e) => setStore(e)}>
+                        <SelectTrigger >
+                            <SelectValue placeholder="Select store" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel>Service types</SelectLabel>
+                                {storesList.map((store) => (
+                                    <SelectItem key={store.id} value={store.store_name}>
+                                        {store.store_name}
+                                    </SelectItem>
+                                ))}
 
-                                                key={framework.value}
-                                                value={framework.value}
-                                                onSelect={(currentValue) => {
-                                                    setStore(currentValue === stores ? "" : currentValue)
-                                                    setStoreComboBox(false)
-                                                }}
-                                            >
-                                                {framework.label}
-                                                <CheckIcon
-                                                    className={cn(
-                                                        "ml-auto h-4 w-4",
-                                                        stores === framework.value ? "opacity-100" : "opacity-0"
-                                                    )}
-                                                />
-                                            </CommandItem>
-                                        ))}
-                                    </CommandGroup>
-                                </CommandList>
-                            </Command>
-                        </PopoverContent>
-                    </Popover>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
                     {addHHPTaskErrors.stores && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.stores}</p>}
 
                 </div>
                 <Button className="w-full outline-none" type="submit" onClick={handleSubmit} disabled={addHHPTaskLoading}> {addHHPTaskLoading ? 'Adding...' : 'Add task'}</Button>
-            </form>
-        </div>
+            </form >
+        </div >
     )
 }
 

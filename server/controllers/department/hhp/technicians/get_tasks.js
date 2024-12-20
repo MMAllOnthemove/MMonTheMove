@@ -9,6 +9,7 @@ const GetAllTasks = async (req, res) => {
         );
         return res.status(200).json(rows); // Explicit 200 OK status
     } catch (err) {
+        console.log("GetAllTasks err", err);
         return res.status(500).json({
             message: "Internal server error",
             error:
@@ -27,6 +28,7 @@ const GetTaskById = async (req, res) => {
         );
         return res.status(200).json(rows); // Explicit 200 OK status
     } catch (err) {
+        console.log("GetTaskById err", err);
         return res.status(500).json({
             message: "Internal server error",
             error:

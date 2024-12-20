@@ -1,27 +1,22 @@
 "use client"
 import { Button } from '@/components/ui/button';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle
-} from "@/components/ui/dialog";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import useAddDTVHATask from '@/hooks/useAddDTVHATask';
+import useCheckWarranty from '@/hooks/useCheckDTVHAWarranty';
 import useCreateTicket from '@/hooks/useCreateTicket';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import { assetTypesDTV } from '@/lib/asset_types';
 import { datetimestamp } from '@/lib/date_formats';
 import axios from 'axios';
-import moment from 'moment';
+import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import AttachmentsModal from '../attachments_modal/page';
-import useCheckWarranty from '@/hooks/useCheckDTVHAWarranty';
+const AttachmentsModal = dynamic(() =>
+    import('../attachments_modal/page')
+)
 
 const DTVHA = () => {
     const { addTask } = useAddDTVHATask()

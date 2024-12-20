@@ -5,13 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] - 2024-12-20
+
+### Added
+
+-   an extra column in users table called 'permissions'
+-   dynamic imports
+-   removed rerendering from hooks
+-   phone name under model
+-   refetch data as soon as it is added or deleted or updated (hhp tasks)
+-   add date calculations tab in time summary (hhp tasks)
+-   after creating ticket, ask user if they want to create ticket
+-   so/ warranty shares cell
+-   serial number / imei shares cell
+
+### Fixed
+
+-   update checklist now working
+-   not changing engineer name on rs from app sometimes
+-   clear fields after creating service order
+-   not working add task
+-   flag empty cells
+
 ## [0.1.2] - 2024-12-17
 
 ### Added
 
 -   "target": "ES5",
     "downlevelIteration": true to compilerOptions Object in the tsconfig.json
-- can create service order
+-   can create service order
 
 ### Fixed
 

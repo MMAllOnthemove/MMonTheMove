@@ -1,20 +1,19 @@
 import { Button } from '@/components/ui/button'
-import { TechniciansTableData } from '@/lib/types'
-import {
-    flexRender,
-    Row,
-} from "@tanstack/react-table"
-import { EllipsisHorizontalIcon } from '@heroicons/react/24/outline'
 import {
     DropdownMenu,
-    DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
-    DropdownMenuTrigger,
+    DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import useUserLoggedIn from '@/hooks/useGetUser'
+import { TechniciansTableData } from '@/lib/types'
+import { EllipsisHorizontalIcon } from '@heroicons/react/24/outline'
+import {
+    flexRender,
+    Row,
+} from "@tanstack/react-table"
 
 
 type TTableBody = {

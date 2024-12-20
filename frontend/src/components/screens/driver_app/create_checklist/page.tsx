@@ -1,4 +1,7 @@
 "use client"
+import dynamic from 'next/dynamic'
+
+
 import { Button } from '@/components/ui/button'
 import useAddChecklist from '@/hooks/useAddChecklist'
 import useUserLoggedIn from '@/hooks/useGetUser'
@@ -7,22 +10,41 @@ import axios from 'axios'
 import moment from 'moment'
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
-import SectionEight from './multistep_form/section_eight'
-import SectionFive from './multistep_form/section_five'
-import SectionFour from './multistep_form/section_four'
-import SectionNine from './multistep_form/section_nine'
-import SectionOne from './multistep_form/section_one'
-import SectionSeven from './multistep_form/section_seven'
-import SectionSix from './multistep_form/section_six'
-import SectionThree from './multistep_form/section_three'
-import SectionTwo from './multistep_form/section_two'
+const SectionEight = dynamic(() =>
+    import('./multistep_form/section_eight')
+)
+const SectionFive = dynamic(() =>
+    import('./multistep_form/section_five')
+)
+const SectionFour = dynamic(() =>
+    import('./multistep_form/section_four')
+)
+const SectionNine = dynamic(() =>
+    import('./multistep_form/section_nine')
+)
+const SectionOne = dynamic(() =>
+    import('./multistep_form/section_one')
+)
+const SectionSeven = dynamic(() =>
+    import('./multistep_form/section_seven')
+)
+const SectionSix = dynamic(() =>
+    import('./multistep_form/section_six')
+)
+const SectionThree = dynamic(() =>
+    import('./multistep_form/section_three')
+)
+const SectionTwo = dynamic(() =>
+    import('./multistep_form/section_two')
+)
+
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/accordion"
+import { Input } from "@/components/ui/input"
 const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
     const { user } = useUserLoggedIn()
     const { addChecklist, addChecklistLoading } = useAddChecklist()

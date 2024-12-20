@@ -500,6 +500,7 @@ export type THHPTasks = {
     id: string;
     unique_id: string;
     service_order_no: string | null;
+    qc_date?: string;
     device_name?: string;
     date_booked: string;
     created_at: string | null;

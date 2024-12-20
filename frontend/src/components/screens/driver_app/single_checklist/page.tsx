@@ -1,28 +1,38 @@
 "use client"
-import LoadingScreen from '@/components/loading_screen/page';
-import NotLoggedInScreen from '@/components/not_logged_in/page';
-import PageTitle from '@/components/PageTitle/page';
-import Sidebar from '@/components/sidebar/page';
+import dynamic from 'next/dynamic'
+const LoadingScreen = dynamic(() =>
+    import('@/components/loading_screen/page')
+)
+const NotLoggedInScreen = dynamic(() =>
+    import('@/components/not_logged_in/page')
+)
+const PageTitle = dynamic(() =>
+    import('@/components/PageTitle/page')
+)
+const Sidebar = dynamic(() =>
+    import('@/components/sidebar/page')
+)
+
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from '@/components/ui/button';
-import useFetchChecklist from '@/hooks/useGetSingleChecklist';
-import useUserLoggedIn from '@/hooks/useGetUser';
-import Image from 'next/image';
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+} from "@/components/ui/accordion"
+import { Button } from '@/components/ui/button'
+import useFetchChecklist from '@/hooks/useGetSingleChecklist'
+import useUserLoggedIn from '@/hooks/useGetUser'
+import Image from 'next/image'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from "@/components/ui/input";
-import useUpdateChecklist from '@/hooks/updateChecklist';
-import openInNewTab from '@/lib/open_new_tab';
-import axios from 'axios';
-import toast from 'react-hot-toast';
-import { Label } from '@/components/ui/label';
+import { Card, CardContent } from '@/components/ui/card'
+import { Input } from "@/components/ui/input"
+import { Label } from '@/components/ui/label'
+import useUpdateChecklist from '@/hooks/updateChecklist'
+import openInNewTab from '@/lib/open_new_tab'
+import axios from 'axios'
+import toast from 'react-hot-toast'
 const SingleChecklistScreen = () => {
     const params = useParams(); // Fetch URL parameters
     const id = params?.id;
@@ -97,9 +107,6 @@ const SingleChecklistScreen = () => {
     }
     return (
         <>
-            {/* <h1>Checklist Detail</h1>
-            <p>Checklist ID: {id}</p> */}
-
             {
                 loading ? (<LoadingScreen />) : isLoggedIn ? (<>
                     <Sidebar />

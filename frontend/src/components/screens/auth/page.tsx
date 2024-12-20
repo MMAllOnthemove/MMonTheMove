@@ -1,5 +1,4 @@
 "use client"
-
 import {
     Tabs,
     TabsContent,
@@ -7,10 +6,15 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs"
 import axios from "axios"
+import dynamic from 'next/dynamic'
 import { useEffect } from "react"
-import LoginScreen from "./login/page"
-import SignupScreen from "./signup/page"
 
+const LoginScreen = dynamic(() =>
+    import('./login/page')
+)
+const SignupScreen = dynamic(() =>
+    import('./signup/page')
+)
 
 export default function AuthScreen() {
     // const { user, isLoggedIn } = useUserLoggedIn()

@@ -1,30 +1,47 @@
 "use client"
-import LoadingScreen from '@/components/loading_screen/page';
-import NotLoggedInScreen from '@/components/not_logged_in/page';
-import PageTitle from '@/components/PageTitle/page';
-import Sidebar from '@/components/sidebar/page';
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle
-} from "@/components/ui/dialog";
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import useAddAgentTask from '@/hooks/useAddBookingAgentTask';
-import useUserLoggedIn from '@/hooks/useGetUser';
-import useRepairshoprFetchTicket from '@/hooks/useRepairshoprFetchTicket';
-import React, { useEffect, useMemo, useState } from 'react';
+} from "@/components/ui/dialog"
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import useAddAgentTask from '@/hooks/useAddBookingAgentTask'
+import useUserLoggedIn from '@/hooks/useGetUser'
+import useRepairshoprFetchTicket from '@/hooks/useRepairshoprFetchTicket'
+import dynamic from 'next/dynamic'
+import React, { useEffect, useMemo, useState } from 'react'
+const LoadingScreen = dynamic(() =>
+    import('@/components/loading_screen/page')
+)
+const NotLoggedInScreen = dynamic(() =>
+    import('@/components/not_logged_in/page')
+)
+const PageTitle = dynamic(() =>
+    import('@/components/PageTitle/page')
+)
+const Sidebar = dynamic(() =>
+    import('@/components/sidebar/page')
+)
+const ReportTableHead = dynamic(() =>
+    import('./report_tablehead')
+)
+const ReportTableBody = dynamic(() =>
+    import('./report_tablebody')
+)
+const TableBody = dynamic(() =>
+    import('./tablebody')
+)
+const TableHead = dynamic(() =>
+    import('./tablehead')
+)
 
 
-import useFetchAgentTasks from '@/hooks/useFetchBookingAgentsTasks';
-import { datetimestamp } from '@/lib/date_formats';
-import { TBookingAgentsTasksViewIndieList } from '@/lib/types';
-import moment from 'moment';
-import ReportTableBody from './report_tablebody';
-import ReportTableHead from './report_tablehead';
-import TableBody from './tablebody';
-import TableHead from './tablehead';
+import useFetchAgentTasks from '@/hooks/useFetchBookingAgentsTasks'
+import { datetimestamp } from '@/lib/date_formats'
+import { TBookingAgentsTasksViewIndieList } from '@/lib/types'
+import moment from 'moment'
 
 interface GroupedData {
     booking_agent: string;
