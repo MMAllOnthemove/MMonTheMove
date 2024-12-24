@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4] - 2024-12-24
+
+### Added
+
+-   provinces dropdown instead of typing in repairshopr create customer form
+-   customers table and visits table
+-   customers list in the navbar
+-   booking agent fills in unit details
+-   be able to attach assets from the table while booking (repairshopr purposes)
+-   customer will fill in their details and signature
+-   booking agent fills in unit details
+-   include encodeURIComponent in the url for any screen that fetches single data and decodeURIComponent to decode
+-   For the booking app/dashboard, show common faults and models, names of units
+-   dashboard for hhp
+-   navbar has to have a higher z index
+-   so number and ticket number in same cell and column 
+-   oow (red) in the hhp tasks
+-   first comment after creating ticket should had a * to show booked from the app
+-   move from combobox to full on select shadcn ui component on certain screens
+
+### Fixed
+
+-   update loading state for QC and HHP task
+
 ## [0.1.3] - 2024-12-20
 
 ### Added

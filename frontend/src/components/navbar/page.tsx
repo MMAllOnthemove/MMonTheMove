@@ -1,6 +1,5 @@
 import {
     Breadcrumb,
-    BreadcrumbEllipsis,
     BreadcrumbItem,
     BreadcrumbList,
     BreadcrumbSeparator
@@ -12,8 +11,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { menuItems } from "@/lib/sidebar_links"
+import { ChevronDownIcon, SlashIcon } from "@heroicons/react/24/outline"
 import React, { useState } from "react"
-import { SlashIcon, ChevronDownIcon } from "@heroicons/react/24/outline"
 
 export default function Navbar() {
     // customize open on hover

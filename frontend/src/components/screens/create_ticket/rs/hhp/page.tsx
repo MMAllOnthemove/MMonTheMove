@@ -10,35 +10,27 @@ import useCreateTicket from '@/hooks/useCreateTicket';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import { assetTypes } from '@/lib/asset_types';
 import { datetimestamp } from '@/lib/date_formats';
-import axios from 'axios';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
 import 'tldraw/tldraw.css';
 import AlertDialogServiceOrder from './alert_dialog';
 
-const AttachmentsModal = dynamic(() =>
-    import('../attachments_modal/page')
-)
 const DrawScratchesModal = dynamic(() =>
     import('./draw_scratches_modal')
 )
 
-const HHP = () => {
+const HHP = (customerProps: string | string[] | any) => {
+    const { customerId, email } = customerProps?.customerProps;
     const { addTask } = useAddHHPTask();
     const { user } = useUserLoggedIn()
     const { addTicket, createTicketLoading } = useCreateTicket()
-
-
     const [fault, setFault] = useState("")
     const [itemCondition, setItemCondition] = useState("");
     const [specialRequirement, setSpecialRequirement] = useState("")
     const [password, setPassword] = useState("")
-    const [customerId, setCustomerId] = useState<any>("")
     const [requires_backup, setRequiresBackup] = useState("")
     const [job_repair_no, setJobRepairNo] = useState("")
     const [ticket_number, setTicketNumber] = useState<string | number>("")
-
     const [IMEI, setIMEI] = useState("");
     const [serialNumber, setSerialNumber] = useState("")
     const [modelNumber, setModelNumber] = useState("")
@@ -48,28 +40,13 @@ const HHP = () => {
     const [openAttachmentsModal, setOpenAttachmentsModal] = useState(false);
     const [openDialog, setOpenDialog] = useState(false)
     const [serviceOrderNumber, setServiceOrder] = useState("")
-
     // Asset id
     const [assetId, setAssetId] = useState('')
     // these will be send to our db as soon as a ticket is booked
     // some of the values will be stored in state from the result
-
     // this is just the warranty just a different variable (I am out of variable names, lol)
     const { warranty, warrantyCode, ticketTypeId, localWarranty } = useCheckWarranty(modelNumber, serialNumber, IMEI)
     const [repairshopr_job_id, setepairshoprJobId] = useState("")
-    useEffect(() => {
-        const loadCustomerInfo = () => {
-            if (typeof window !== undefined && window.localStorage) {
-                const parsedData = JSON.parse(localStorage.getItem('custInfo') || '""');
-                if (parsedData !== null) {
-                    setCustomerId(parsedData?.customerId)
-
-                }
-            }
-        };
-        loadCustomerInfo()
-    }, [])
-
     useEffect(() => {
         const loadCustomerAssetInfo = () => {
             if (typeof window !== undefined && window.localStorage) {
@@ -86,56 +63,11 @@ const HHP = () => {
     }, [])
 
 
-    const [ticketFiles, setTicketFiles] = useState([]);
-    const [ticketFilesUploading, setTicketFilesUploading] = useState(false);
-
-    const handleTicketFiles = (event: any) => {
-        setTicketFiles(event.target.files);
-    };
-
-    const sendTicketAttachments = async (ticketNumber: string | number) => {
-        setTicketFilesUploading(true);
-        try {
-            const formData = new FormData();
-
-            Array.from(ticketFiles).forEach((file) => {
-                formData.append('files', file);
-            });
-            // Append ticket_number once
-            formData.append('ticket_number', `${ticketNumber}`);
-            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/files/ticket_attachments`, formData, {
-                withCredentials: true,
-            })
-
-            if (data) {
-                toast.success(`${data?.message}`)
-                const repairshopr_payload = {
-                    files: data.fileUrls.map((url: any) => ({
-                        url: url,
-                        filename: url.split('/').pop(), // Extract filename from URL
-                    })),
-                };
-                // send them to repairshopr
-                await axios.post(`${process.env.NEXT_PUBLIC_REPAIRSHOPR_ATTACHMENTS}/${repairshopr_job_id}/attach_file_url`, repairshopr_payload, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`
-                    }
-                })
-                setTicketFiles(data?.fileUrls)
-            }
-            // setQCFilesUrls(data?.fileUrls)
-            setTicketFilesUploading(false)
-        } catch (error) {
-            console.error("add ticket attachments error", error)
-        }
-    }
-
     const createTicket = async (e: React.SyntheticEvent) => {
         e.preventDefault()
 
         const payload = {
-            "customer_id": customerId,
+            "customer_id": customerId, // only need this for creating a ticket on rs
             "problem_type": `${issue_type}`, // Will aways be HHP for handheld devices, no need to choose
             "subject": `${fault}`,
             "status": "New", //  will always be 'New' for a recently created ticket
@@ -155,13 +87,14 @@ const HHP = () => {
                 "Job Repair No.:": `${job_repair_no}`,
                 "Special Requirement": `${specialRequirement}`,
                 "Special Requirement ": `${specialRequirement}`,
-                "Password": `${password}`
+                "Password": `${password}`,
+                "Location (BIN)": "",
             },
             "asset_ids": assetId,
             "comments_attributes": [
                 {
                     "subject": "Initial Issue",
-                    "body": `${fault}`,
+                    "body": `*${fault}`,
                     "hidden": false,
                     "do_not_email": true,
                     "tech": `${user?.full_name}`
@@ -231,6 +164,7 @@ const HHP = () => {
     const hhp_issue_types = assetTypes.filter(asset => asset.value.includes("HHP"));
     return (
         <>
+
             {
 
                 openModal &&
@@ -239,12 +173,8 @@ const HHP = () => {
             }
             {
                 openDialog &&
-                <AlertDialogServiceOrder openModal={openDialog} setOpenModal={setOpenDialog} />
+                <AlertDialogServiceOrder openModal={openDialog} setOpenModal={setOpenDialog} customerEmail={email} />
 
-            }
-            {
-                openAttachmentsModal &&
-                <AttachmentsModal openModal={openAttachmentsModal} setOpenModal={setOpenAttachmentsModal} ticketFilesUploading={ticketFilesUploading} handleTicketFiles={handleTicketFiles} sendTicketAttachments={async () => await sendTicketAttachments(ticket_number)} />
             }
             <form onSubmit={createTicket}>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center mb-2">

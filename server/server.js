@@ -27,6 +27,7 @@ import { router as parts } from "./routes/parts/index.js";
 import { router as cars } from "./routes/cars/index.js";
 import { router as fuel } from "./routes/fuel_consumption/index.js";
 import { router as devices } from "./routes/devices/index.js";
+import { router as customer_visits } from "./routes/customer_visits/index.js";
 
 const { router: fileRoutes } = QCfileRoutesModule;
 const { router: dtvFiles } = dtvhaFiles;
@@ -67,6 +68,7 @@ app.use("/api/v1/dtv_ha/files", dtvFiles);
 app.use("/api/v1/parts", parts);
 app.use("/api/v1/cars", cars);
 app.use("/api/v1/comments", ticketComments);
+app.use("/api/v1/customer_visits", customer_visits);
 app.use("/api/v1/fuel", fuel);
 app.use("/api/v1/devices", devices);
 app.use("/tools/dev/add_images_checklist", add_images_checklist);

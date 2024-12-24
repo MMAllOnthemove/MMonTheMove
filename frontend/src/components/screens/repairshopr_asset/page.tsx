@@ -9,20 +9,27 @@ import {
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { asset_names } from '@/lib/asset_names';
+import useGetCustomerLocally from "@/hooks/useGetCustomerLocally";
 
 const RepairshoprAssetScreen = () => {
     const [searchAssets, setSearchAssets] = useState("");
-    const [customerId, setCustomerId] = useState("")
     const [selectedAsset, setSelectedAsset] = useState("")
     const [result, setResult] = useState<any>([]);
     const [createAssetLoading, setCreateAssetLoading] = useState(false)
+    const params = useParams()
+    const { customer_email } = params;
+    const { singleCustomer, singleCustomerLoading, refetch } = useGetCustomerLocally(
+        decodeURIComponent(Array.isArray(customer_email) ? customer_email[0] : customer_email)
+    );
+    const customerId = singleCustomer[0]?.repairshopr_customer_id
+    const customerEmail = singleCustomer[0]?.email || ""
 
     // creating asset
     const [createModel, setCreateModel] = useState("")
@@ -32,17 +39,6 @@ const RepairshoprAssetScreen = () => {
     const [openModal, setOpenModal] = useState(false)
 
     const router = useRouter()
-    useEffect(() => {
-        const loadCustomerInfo = () => {
-            if (typeof window !== undefined && window.localStorage) {
-                const parsedData = JSON.parse(localStorage.getItem('custInfo') || '""');
-                if (parsedData !== null) {
-                    setCustomerId(parsedData?.customerId)
-                }
-            }
-        };
-        loadCustomerInfo()
-    }, [])
 
     // Check if the customer has booked this unit before
     useEffect(() => {
@@ -87,7 +83,7 @@ const RepairshoprAssetScreen = () => {
         if (typeof window !== "undefined" && window.localStorage) {
             window.localStorage.setItem("assetInfo", custAssetString);
             toast.success(`Assets created, Continue`);
-            router.push("/create_ticket/rs")
+            router.push(`/create_ticket/rs/${encodeURIComponent(customerEmail)}`)
         }
     }
 
@@ -103,7 +99,7 @@ const RepairshoprAssetScreen = () => {
         const custAssetString = JSON.stringify(assetInfo);
         if (typeof window !== "undefined" && window.localStorage) {
             window.localStorage.setItem("assetInfo", custAssetString);
-            router.push("/create_ticket/rs")
+            router.push(`/create_ticket/rs/${encodeURIComponent(customerEmail)}`)
         }
 
     }
@@ -132,7 +128,7 @@ const RepairshoprAssetScreen = () => {
                 storeCreatedAssetsToLocalStorage(assetId);
 
                 toast.success(`Assets created, Continue`);
-                router.push("/create_ticket/rs")
+                router.push(`/create_ticket/rs/${encodeURIComponent(customerEmail)}`)
             }
         } catch (error: any) {
             toast.error(`${error?.response.data.message[0]}`);

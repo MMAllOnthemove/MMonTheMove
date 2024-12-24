@@ -6,36 +6,36 @@ const columns: TColumns | any = [
     {
         header: "Service Order No",
         accessorKey: "service_order_no",
-        cell: ({ cell, getValue }: any) => {
+        cell: ({ row, getValue }: any) => {
             const value = getValue();
             const isEmpty = value === null || value === undefined || value === 0 || value === "" || value?.toLowerCase() === "tbc";
 
             return (
                 <div
-                    style={{
-                        backgroundColor: isEmpty ? "#ffcccc" : "transparent",
-                        color: isEmpty ? "red" : "inherit",
-                        padding: "0.5rem",
-                        borderRadius: "4px",
-                        textAlign: "center",
-                    }}
                 >
+                    <p> {isEmpty ? <span className="text-red-500 font-medium">No SO number</span> : value}</p>
 
-                    {isEmpty ? "No SO number" : value}
+                    <small style={{ color: "gray" }}>{row.original.ticket_number}</small>
                 </div>
             );
         },
     },
     {
-        header: "Ticket",
-        accessorKey: "ticket_number",
-        cell: ({ row }: { row: any }) => (
-            <div>
-                <span>{row.original.ticket_number}</span>
-                <br />
-                <small style={{ color: "gray" }}>{row.original.warranty}</small>
-            </div>
-        ),
+        header: "IW/OOW",
+        accessorKey: "warranty",
+        cell: ({ getValue }: any) => {
+            const value = getValue(); // Get the cell value
+
+            return (
+                <>
+                    {
+                        value === "IW" || value === "ADH/IW" ? <small className="text-green-700">{value}</small> : <small className="text-red-500">{value}</small>
+                    }
+
+                </>
+            );
+
+        },
     },
     {
         header: "Model",

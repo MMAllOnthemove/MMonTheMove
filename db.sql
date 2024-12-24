@@ -83,7 +83,6 @@ create table technician_tasks (
     created_at text,
     updated_at text,
     model text,
-    device_name text,
     warranty text,
     engineer text,
     fault text,
@@ -412,8 +411,21 @@ create table customers (
     phone_number text,
     home_number text,
     office_number text,
+    repairshopr_customer_id numeric,
     address text,
+    city text,
+    state text,
+    zip text,
+    business_name text,
     address_2 text,
     created_at text,
     updated_at text
+);
+
+create table customer_visits (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    customer_id integer REFERENCES customers(id) ON DELETE CASCADE,
+    visit_date text,
+    visit_notes text
 )

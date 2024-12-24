@@ -3,7 +3,7 @@ import React from 'react'
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Create ticket',
+    title: 'Create repairshopr ticket',
     description: '...',
     robots: {
         index: false,

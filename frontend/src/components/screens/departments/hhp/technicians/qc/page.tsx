@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { datetimestamp } from '@/lib/date_formats';
 import React, { ChangeEvent } from "react";
 type TQC = {
+    qcUpdateLoading: boolean;
     qc_fail_reasonProp: string
     qc_completeProp: string
     qc_FilesLoadingProp: boolean
@@ -24,7 +25,7 @@ type TQC = {
     submitQCFiles: (data: React.SyntheticEvent) => void;
     submitQC: (data: React.SyntheticEvent) => void;
 }
-const QC = ({ setUnitCompleteProp, setUnitCompleteDateProp, qc_fail_reasonProp, qc_completeProp, setQCCompleteProp, setQCCompleteDateProp, setQCFailReasonProp, qc_FilesLoadingProp, setQCFilesProp, submitQCFiles, submitQC }: TQC) => {
+const QC = ({ qcUpdateLoading, setUnitCompleteProp, setUnitCompleteDateProp, qc_fail_reasonProp, qc_completeProp, setQCCompleteProp, setQCCompleteDateProp, setQCFailReasonProp, qc_FilesLoadingProp, setQCFilesProp, submitQCFiles, submitQC }: TQC) => {
 
 
 
@@ -74,7 +75,7 @@ const QC = ({ setUnitCompleteProp, setUnitCompleteDateProp, qc_fail_reasonProp, 
                 </AccordionItem>
             </Accordion>
 
-            <Button className="w-full outline-none" type="submit" onClick={submitQC}> Update</Button>
+            <Button className="w-full outline-none" type="submit" onClick={submitQC} disabled={qcUpdateLoading}>{qcUpdateLoading ? 'Updating...' : 'Update QC'}</Button>
         </form>
 
     )

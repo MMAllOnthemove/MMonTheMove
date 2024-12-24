@@ -53,6 +53,7 @@ const uploadTechnicianFiles = async (req, res) => {
         const fileUrls = await Promise.all(
             req.files.map(async (file) => {
                 const remotePath = `/root/uploads/hhp/${ticket_number}-hhp-${file.originalname}`;
+               
 
                 try {
                     // Upload the file to SFTP

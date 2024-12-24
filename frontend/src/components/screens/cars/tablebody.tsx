@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button'
 import { TBookingAgentData } from '@/lib/types'
 import {
     flexRender,
@@ -15,7 +14,7 @@ type TTableBody = {
     }
     handleRowClick?: (data: TBookingAgentData) => void;
 }
-const TableBody = ({ table, handleRowClick }: TTableBody) => {
+const TableBody = ({ table }: TTableBody) => {
     return (
         <tbody className="z-0">
             {table.getRowModel().rows?.map((row: any) => (

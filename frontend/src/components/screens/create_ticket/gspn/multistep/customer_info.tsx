@@ -15,7 +15,7 @@ import provinces from '@/lib/provinces';
 
 
 type TCustomerInfo = {
-    firstName: string;
+    firstName: string | undefined;
     setFirstName: (value: string) => void
     lastName: string;
     setLastName: (value: string) => void

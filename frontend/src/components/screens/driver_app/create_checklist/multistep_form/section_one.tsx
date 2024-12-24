@@ -21,6 +21,15 @@ import { cn } from "@/lib/utils";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import React, { useState } from 'react';
 import FormWrapper from './wrapper';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 interface ISectionOne {
     car: string;
@@ -61,50 +70,24 @@ const SectionOne: React.FC<ISectionOne> = ({ next_service_date, setNextServiceDa
         <FormWrapper title='Pick car'>
 
             <div className="space-y-1 mb-2">
-                <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger asChild>
-                        <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={open}
-                            className="w-full justify-between"
-                        >
-                            {car
-                                ? formattedData?.find((framework) => framework.value === car)?.label
-                                : "Select car..."}
-                            <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-full p-0">
-                        <Command>
-                            <CommandInput placeholder="Search car..." className="h-9" />
-                            <CommandList>
-                                <CommandEmpty>No car found.</CommandEmpty>
-                                <CommandGroup>
-                                    {formattedData?.map((framework) => (
-                                        <CommandItem
 
-                                            key={framework.value}
-                                            value={framework.value}
-                                            onSelect={(currentValue) => {
-                                                setCar(currentValue === car ? "" : currentValue)
-                                                setOpen(false)
-                                            }}
-                                        >
-                                            {framework.label}
-                                            <CheckIcon
-                                                className={cn(
-                                                    "ml-auto h-4 w-4",
-                                                    car === framework.value ? "opacity-100" : "opacity-0"
-                                                )}
-                                            />
-                                        </CommandItem>
-                                    ))}
-                                </CommandGroup>
-                            </CommandList>
-                        </Command>
-                    </PopoverContent>
-                </Popover>
+                <Select value={car} onValueChange={(e) => setCar(e)}>
+                    <SelectTrigger >
+                        <SelectValue placeholder="Select a car" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectLabel>Cars</SelectLabel>
+                            {formattedData.map((x) => (
+                                <SelectItem key={x.label} value={x.value}>
+                                    {x.label}
+                                </SelectItem>
+                            ))}
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+
+
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 items-center">
                 <div>
@@ -124,98 +107,38 @@ const SectionOne: React.FC<ISectionOne> = ({ next_service_date, setNextServiceDa
                     onChange={(e) => setLicenseDiscExpiry(e.target.value)} className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm block w-full" />
             </div>
             <div className="space-y-1 mb-2">
-
-                <Popover open={reasonOpen} onOpenChange={setReasonOpen}>
-                    <PopoverTrigger asChild>
-                        <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={reasonOpen}
-                            className="w-full justify-between"
-                        >
-                            {reason_for_use
-                                ? reasons?.find((framework) => framework.value === reason_for_use)?.label
-                                : "Select reason for use..."}
-                            <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-full p-0">
-                        <Command>
-                            <CommandInput placeholder="Search reasons..." className="h-9" />
-                            <CommandList>
-                                <CommandEmpty>No reasons found.</CommandEmpty>
-                                <CommandGroup>
-                                    {reasons?.map((framework) => (
-                                        <CommandItem
-
-                                            key={framework.value}
-                                            value={framework.value}
-                                            onSelect={(currentValue) => {
-                                                selectCarUseReason(currentValue === reason_for_use ? "" : currentValue)
-                                                setReasonOpen(false)
-                                            }}
-                                        >
-                                            {framework.label}
-                                            <CheckIcon
-                                                className={cn(
-                                                    "ml-auto h-4 w-4",
-                                                    reason_for_use === framework.value ? "opacity-100" : "opacity-0"
-                                                )}
-                                            />
-                                        </CommandItem>
-                                    ))}
-                                </CommandGroup>
-                            </CommandList>
-                        </Command>
-                    </PopoverContent>
-                </Popover>
+                <Select value={reason_for_use} onValueChange={(e) => selectCarUseReason(e)}>
+                    <SelectTrigger >
+                        <SelectValue placeholder="Select a reason for use" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectLabel>Reasons</SelectLabel>
+                            {reasons.map((x) => (
+                                <SelectItem key={x.label} value={x.value}>
+                                    {x.label}
+                                </SelectItem>
+                            ))}
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
             </div>
             <div className="space-y-1 mb-2">
-
-                <Popover open={driversOpen} onOpenChange={setDriversOpen}>
-                    <PopoverTrigger asChild>
-                        <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={driversOpen}
-                            className="w-full justify-between"
-                        >
-                            {driver
-                                ? drivers?.find((framework) => framework.value === driver)?.label
-                                : "Select driver..."}
-                            <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-full p-0">
-                        <Command>
-                            <CommandInput placeholder="Search drivers..." className="h-9" />
-                            <CommandList>
-                                <CommandEmpty>No driver found.</CommandEmpty>
-                                <CommandGroup>
-                                    {drivers?.map((framework) => (
-                                        <CommandItem
-
-                                            key={framework.value}
-                                            value={framework.value}
-                                            onSelect={(currentValue) => {
-                                                setDriver(currentValue === driver ? "" : currentValue)
-                                                setDriversOpen(false)
-                                            }}
-                                        >
-                                            {framework.value}
-                                            <CheckIcon
-                                                className={cn(
-                                                    "ml-auto h-4 w-4",
-                                                    driver === framework.value ? "opacity-100" : "opacity-0"
-                                                )}
-                                            />
-                                        </CommandItem>
-                                    ))}
-                                </CommandGroup>
-                            </CommandList>
-                        </Command>
-                    </PopoverContent>
-                </Popover>
+                <Select value={driver} onValueChange={(e) => setDriver(e)}>
+                    <SelectTrigger >
+                        <SelectValue placeholder="Select a driver" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectLabel>Drivers</SelectLabel>
+                            {drivers.map((x) => (
+                                <SelectItem key={x.label} value={x.value}>
+                                    {x.value}
+                                </SelectItem>
+                            ))}
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
             </div>
 
         </FormWrapper>

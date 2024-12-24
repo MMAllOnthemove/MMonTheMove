@@ -29,7 +29,7 @@ const Pagination = dynamic(() => import('@/components/table_pagination/page'))
 
 const CarsScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
-    const { carsList, carsListLoading, refetch } = useCars()
+    const { carsList, refetch } = useCars()
 
     const { addCar, addCarLoading, errors } = useAddCar()
     const [plate_number, setPlateNumber] = useState("")
