@@ -4,8 +4,8 @@ import moment from "moment";
 
 const useCheckWarranty = (modelNumber: string, serialNumber: string) => {
     const [warranty, setWarranty] = useState("");
-    const [ticketTypeId, setTicketTypeId] = useState<number>();
-    const [warrantyCode, setWarrantyCode] = useState<number>();
+    const [ticketTypeId, setTicketTypeId] = useState<number | any>();
+    const [warrantyCode, setWarrantyCode] = useState<number | any>();
     const [localWarranty, setLocalWarranty] = useState("");
 
     useEffect(() => {
@@ -51,12 +51,12 @@ const useCheckWarranty = (modelNumber: string, serialNumber: string) => {
                     setWarranty(warranty_type);
 
                     if (warranty_type === "LP") {
-                        setWarrantyCode(69476);
-                        setTicketTypeId(21877);
+                        setWarrantyCode("69476");
+                        setTicketTypeId("21877");
                         setLocalWarranty("IW");
                     } else {
-                        setWarrantyCode(69477);
-                        setTicketTypeId(21878);
+                        setWarrantyCode("69477");
+                        setTicketTypeId("21878");
                         setLocalWarranty("OOW");
                     }
                 }

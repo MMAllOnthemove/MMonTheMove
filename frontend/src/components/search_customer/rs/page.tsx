@@ -28,6 +28,9 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import TableBody from './tablebody';
 import TableHead from './tablehead';
+import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
+import useUpdateRepairshoprCustomer from '@/hooks/useUpdateRepairshoprCustomer';
+import { datetimestamp } from '@/lib/date_formats';
 
 
 
@@ -48,9 +51,8 @@ const SearchCustomerRepairshoprScreen = () => {
     const [city, setCity] = useState("");
     const [state, setState] = useState("");
     const [zip, setZip] = useState("")
-
-    const [addCustomerLoading, setAddCustomerLoading] = useState(false)
-
+    const { addCustomerLocally, createCustomerLocallyLoading } = useCreateCustomerLocally()
+    const { updateCustomer, updateCustomerRepairshoprLoading } = useUpdateRepairshoprCustomer()
     // this is the modal for editing customer details
     const [editModalOpen, setEditModalOpen] = useState<CustomerResultRowClick | any>();
 
@@ -58,6 +60,7 @@ const SearchCustomerRepairshoprScreen = () => {
 
     useEffect(() => {
         const checkIfCustomerWasHere = async () => {
+            if (!searchCustomer) return;
             try {
                 const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/customers?query=${searchCustomer}`, {
                     headers: {
@@ -65,6 +68,7 @@ const SearchCustomerRepairshoprScreen = () => {
                         Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`
                     },
                 })
+
                 if (data?.customers?.length > 0) {
                     const filteredCustomers = data.customers.filter((customer: any) => {
                         const searchLower = searchCustomer.toLowerCase();
@@ -107,34 +111,24 @@ const SearchCustomerRepairshoprScreen = () => {
     }, [searchCustomer])
 
     const addExistingCustomer = async () => {
+        const visit_date = datetimestamp
         const custInfo = {
-            customerId: customerId,
+            repairshopr_customer_id: customerId,
             email: email,
             firstname: firstname,
             lastname: lastname,
             businessname: businessname,
-            phoneNumber: phoneNumber,
-            phoneNumber2: phoneNumber2,
+            phone: phoneNumber,
+            mobile: phoneNumber2,
             address: address,
             address2: address2,
             city: city,
             state: state,
-            zip: zip
+            zip: zip,
+            visit_date: visit_date
         };
-        setAddCustomerLoading(true)
-        // Convert the custInfo object to a JSON string
-        try {
-            const custInfoString = JSON.stringify(custInfo);
-            if (typeof window !== "undefined" && window.localStorage) {
-                window.localStorage.setItem("custInfo", custInfoString);
-                router.push("/repairshopr_asset")
-            }
-        } catch (error) {
-            console.log("failed to add customer to local storage", error)
-        } finally {
-            setAddCustomerLoading(false)
+        await addCustomerLocally(custInfo)
 
-        }
     }
     const updateCustomerDetailsOnRepairshopr = async () => {
         const payload = {
@@ -150,26 +144,15 @@ const SearchCustomerRepairshoprScreen = () => {
             "state": state,
             "zip": zip,
         }
-        try {
-
-            const { data } = await axios.put(`${process.env.NEXT_PUBLIC_REPAIRSHOPR_CREATE_CUSTOMER}/${customerId}`, payload, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`
-                },
-            })
-            if (data?.customer) {
-                setEditModalOpen(false);
-                // to prevent having to search again, set the resulting details to the customer details (email or fullname)
-                if (data?.customer?.email !== "" || data?.customer?.email !== null)
-                    setSearchCustomer(data?.customer?.email);
-                else setSearchCustomer(data?.customer?.fullname);
-
-            }
-        } catch (error) {
-            if (process.env.NODE_ENV !== "production")
-                console.log("update customer rs error", error)
+        const data = await updateCustomer(customerId, payload)
+        if (data) {
+            setEditModalOpen(false);
+            // to prevent having to search again, set the resulting details to the customer details (email or fullname)
+            if (data?.email !== "" || data?.email !== null)
+                setSearchCustomer(data?.email);
+            else setSearchCustomer(data?.fullname);
         }
+
     }
 
     // Table sorting
@@ -224,17 +207,17 @@ const SearchCustomerRepairshoprScreen = () => {
                     setFiltering={(e) => setSearchCustomer(e.target.value)}
                 />
 
-                <Button type="button" onClick={addExistingCustomer} disabled={addCustomerLoading}> {addCustomerLoading ? 'Adding...' : 'Add customer'}</Button>
+                <Button type="button" onClick={addExistingCustomer} disabled={createCustomerLocallyLoading}> {createCustomerLocallyLoading ? 'Adding...' : 'Add customer'}</Button>
 
             </section>
-            {/* modal for sorting table columns */}
+            {/* modal for updating customer details */}
             {
                 editModalOpen &&
                 <Dialog open={editModalOpen} onOpenChange={() => setEditModalOpen(false)} >
                     {/* <DialogTrigger>Open</DialogTrigger> */}
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>Edit customer { }</DialogTitle>
+                            <DialogTitle>Edit customer</DialogTitle>
                             <DialogDescription>
                                 Verify with the customer that these are their details
                             </DialogDescription>
@@ -285,7 +268,7 @@ const SearchCustomerRepairshoprScreen = () => {
                                     autoComplete='false'
                                 />
                             </div>
-                            <Button type="button" onClick={updateCustomerDetailsOnRepairshopr}>Update details</Button>
+                            <Button type="button" onClick={updateCustomerDetailsOnRepairshopr} disabled={updateCustomerRepairshoprLoading}>{updateCustomerRepairshoprLoading ? 'Updating...' : 'Update details'}</Button>
                         </div>
 
                     </DialogContent>

@@ -10,15 +10,15 @@ import useCreateTicket from '@/hooks/useCreateTicket';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import { assetTypesDTV } from '@/lib/asset_types';
 import { datetimestamp } from '@/lib/date_formats';
-import axios from 'axios';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
+import AlertDialogServiceOrder from './alert_dialog';
 const AttachmentsModal = dynamic(() =>
     import('../attachments_modal/page')
 )
 
-const DTVHA = () => {
+const DTVHA = (customerProps: string | string[] | any) => {
+    const { customerId, email } = customerProps?.customerProps;
     const { addTask } = useAddDTVHATask()
     const { user } = useUserLoggedIn()
     const { addTicket, createTicketLoading } = useCreateTicket()
@@ -27,7 +27,6 @@ const DTVHA = () => {
     const [fault, setFault] = useState("")
     const [itemCondition, setItemCondition] = useState("");
     const [specialRequirement, setSpecialRequirement] = useState("")
-    const [customerId, setCustomerId] = useState<any>("")
     const [job_repair_no, setJobRepairNo] = useState("")
     const [ticket_number, setTicketNumber] = useState<string | number>("")
 
@@ -38,7 +37,7 @@ const DTVHA = () => {
 
     const [issue_type, setIssueType] = useState("");
 
-    const [openAttachmentsModal, setOpenAttachmentsModal] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false)
 
     const [serviceOrderNumber, setServiceOrder] = useState("")
     // Asset id
@@ -46,18 +45,6 @@ const DTVHA = () => {
     // these will be send to our db as soon as a ticket is booked
     // some of the values will be stored in state from the result
     const [repairshopr_job_id, setepairshoprJobId] = useState("")
-    useEffect(() => {
-        const loadCustomerInfo = () => {
-            if (typeof window !== undefined && window.localStorage) {
-                const parsedData = JSON.parse(localStorage.getItem('custInfo') || '""');
-                if (parsedData !== null) {
-                    setCustomerId(parsedData?.customerId)
-
-                }
-            }
-        };
-        loadCustomerInfo()
-    }, [])
 
     useEffect(() => {
         const loadCustomerAssetInfo = () => {
@@ -73,60 +60,11 @@ const DTVHA = () => {
         loadCustomerAssetInfo()
     }, [])
 
-
-
-
-
-    const [ticketFiles, setTicketFiles] = useState([]);
-    const [ticketFilesUploading, setTicketFilesUploading] = useState(false);
-
-    const handleTicketFiles = (event: any) => {
-        setTicketFiles(event.target.files);
-    };
-
-    const sendTicketAttachments = async (ticketNumber: string | number) => {
-        setTicketFilesUploading(true);
-        try {
-            const formData = new FormData();
-
-            Array.from(ticketFiles).forEach((file) => {
-                formData.append('files', file);
-            });
-            // Append ticket_number once
-            formData.append('ticket_number', `${ticketNumber}`);
-            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/dtv_ha/files/ticket_attachments`, formData, {
-                withCredentials: true,
-            })
-
-            if (data) {
-                toast.success(`${data?.message}`)
-                const repairshopr_payload = {
-                    files: data.fileUrls.map((url: any) => ({
-                        url: url,
-                        filename: url.split('/').pop(), // Extract filename from URL
-                    })),
-                };
-                // send them to repairshopr
-                await axios.post(`${process.env.NEXT_PUBLIC_REPAIRSHOPR_ATTACHMENTS}/${repairshopr_job_id}/attach_file_url`, repairshopr_payload, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`
-                    }
-                })
-                setTicketFiles(data?.fileUrls)
-            }
-            // setQCFilesUrls(data?.fileUrls)
-            setTicketFilesUploading(false)
-        } catch (error) {
-            console.error("add ticket attachments error", error)
-        }
-    }
-
     const createTicket = async (e: React.SyntheticEvent) => {
         e.preventDefault()
 
         const payload = {
-            "customer_id": customerId,
+            "customer_id": customerId,// only need this for creating a ticket on rs
             "problem_type": `${issue_type}`,
             "subject": `${fault}`,
             "status": "New", //  will always be 'New' for a recently created ticket
@@ -146,13 +84,14 @@ const DTVHA = () => {
                 "Job Repair No.:": `${job_repair_no}`,
                 "Special Requirement": `${specialRequirement}`,
                 "Special Requirement ": `${specialRequirement}`,
-                "Password": ""
+                "Password": "",
+                "Location (BIN)": "",
             },
             "asset_ids": assetId,
             "comments_attributes": [
                 {
                     "subject": "Initial Issue",
-                    "body": `${fault}`,
+                    "body": `*${fault}`,
                     "hidden": false,
                     "do_not_email": false,
                     "tech": `${user?.full_name}`
@@ -164,10 +103,11 @@ const DTVHA = () => {
         await sendTicketDataToOurDB(data?.ticket?.number, data?.ticket?.id)
         setTicketNumber(data?.ticket?.number)
         setepairshoprJobId(data?.ticket?.id)
-
-        setOpenAttachmentsModal(true)
-        if (typeof window !== 'undefined' && window.localStorage) localStorage.clear();
-
+        // todo: trial and error, user will add attachments in the table 
+        // we will now show the alert dialog to ask user if the wanna create an so or not
+        // so we can make way for the alert dialog
+        // setOpenAttachmentsModal(true)
+        setOpenDialog(true)
 
     }
     const sendTicketDataToOurDB = async (ticketNumber: string | number, ticketId: string | number) => {
@@ -225,10 +165,9 @@ const DTVHA = () => {
 
     return (
         <>
-
             {
-                openAttachmentsModal &&
-                <AttachmentsModal openModal={openAttachmentsModal} setOpenModal={setOpenAttachmentsModal} ticketFilesUploading={ticketFilesUploading} handleTicketFiles={handleTicketFiles} sendTicketAttachments={async () => await sendTicketAttachments(ticket_number)} />
+                openDialog &&
+                <AlertDialogServiceOrder openModal={openDialog} setOpenModal={setOpenDialog} customerEmail={email} />
 
             }
             <form onSubmit={createTicket}>

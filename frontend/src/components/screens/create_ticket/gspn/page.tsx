@@ -30,12 +30,18 @@ import useUserLoggedIn from "@/hooks/useGetUser"
 import useCreateServiceOrder from '@/hooks/useCreateServiceOrder'
 import { datetimestamp } from '@/lib/date_formats'
 import moment from 'moment'
+import useGetCustomerLocally from '@/hooks/useGetCustomerLocally'
+import { useParams } from 'next/navigation'
 
 const GSPNScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { addServiceOrder, addServiceOrderLoading } = useCreateServiceOrder()
     const [step, setStep] = useState(1);
-
+    const params = useParams()
+    const { customer_email } = params;
+    const { singleCustomer, singleCustomerLoading, refetch } = useGetCustomerLocally(
+        decodeURIComponent(Array.isArray(customer_email) ? customer_email[0] : customer_email)
+    );
     const nextStep = () => {
         setStep((prev) => Math.min(prev + 1, 3)); // Adjust this if you add more steps
     };
@@ -68,7 +74,7 @@ const GSPNScreen = () => {
     const [firstAppTime, setFirstAppTime] = useState("")
     const [repairReceiveDate, setRepairReceiveDate] = useState("")
     const [repairReceiveTime, setRepairReceiveTime] = useState("")
-    const [firstName, setFirstName] = useState("")
+    const [firstName, setFirstName] = useState<string | undefined>("")
     const [lastName, setLastName] = useState("")
     const [homePhone, setHomePhone] = useState("")
     const [officePhone, setOfficePhone] = useState("")
@@ -82,26 +88,19 @@ const GSPNScreen = () => {
     const [country, setCountry] = useState("RSA")
 
     useEffect(() => {
-        const loadCustomerInfo = () => {
-            if (typeof window !== undefined && window.localStorage) {
-                const parsedData = JSON.parse(localStorage.getItem('custInfo') || '""');
-                // console.log(parsedData)
-                if (parsedData !== null) {
-                    setFirstName(parsedData?.firstname);
-                    setLastName(parsedData?.lastname);
-                    setEmail(parsedData?.email);
-                    setMobilePhone(parsedData?.mobile);
-                    setHomePhone(parsedData?.phone);
-                    setAddress(parsedData?.address);
-                    setAddress_2(parsedData?.address2)
-                    setCity(parsedData?.city);
-                    setState(parsedData?.state);
-                    setZip(parsedData?.zip);
-                }
-            }
-        };
-        loadCustomerInfo()
-    }, [])
+        if (customer_email && singleCustomer) {
+            setFirstName(singleCustomer[0]?.first_name || "");
+            setLastName(singleCustomer[0]?.last_name || "");
+            setEmail(singleCustomer[0]?.email || "");
+            setMobilePhone(singleCustomer[0]?.phone_number || "");
+            setHomePhone(singleCustomer[0]?.home_number || "");
+            setAddress(singleCustomer[0]?.address || "");
+            setAddress_2(singleCustomer[0]?.address_2 || "");
+            setCity(singleCustomer[0]?.city || "");
+            setZip(singleCustomer[0]?.zip || "");
+        }
+    }, [customer_email, singleCustomer]);
+
     useEffect(() => {
         const loadCustomerAssetInfo = () => {
             if (typeof window !== undefined && window.localStorage) {
@@ -120,13 +119,6 @@ const GSPNScreen = () => {
 
 
     const handleSubmit = async () => {
-        // const payload = {
-        //     model, serial_number, imei, purchase_date, wtyException, wtyType, accessory, defectDesc,
-        //     remark, symCode1, symCode2, symCode3, serviceType, tokenNo, requestDate, requestTime,
-        //     unitReceiveDate, firstAppDate, firstAppTime, repairReceiveDate, repairReceiveTime,
-        //     firstName, lastName, homePhone, officePhone, mobilePhone, email, address,
-        //     address_2, city, state, zip, country
-        // }
         const generateTimeStampForPacCode = datetimestamp;
         const todaysDate = moment(datetimestamp).format("YYYYMMDD");
         const modifiedPurchaseDate = moment(purchase_date).format("YYYYMMDD")
@@ -190,6 +182,8 @@ const GSPNScreen = () => {
             }
         }
         await addServiceOrder(values)
+        // now we can clear assets from local storage
+        if (typeof window !== 'undefined' && window.localStorage) localStorage.clear();
         setModel("")
         setSerialNumber("")
         setIMEI("")

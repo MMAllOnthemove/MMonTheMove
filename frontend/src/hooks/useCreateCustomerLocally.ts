@@ -16,48 +16,39 @@ type TPayload = {
     city?: string;
     state?: string;
     repairshopr_customer_id?: string | number;
+    visit_date: string;
     zip?: string | number;
 };
 // useCreateCustomer
 
-const useCreateCustomerOnRepairshopr = () => {
-    const [createCustomerLoading, setLoading] = useState(false); // Loading state
+const useCreateCustomerLocally = () => {
+    const [createCustomerLocallyLoading, setLoading] = useState(false); // Loading state
     const router = useRouter();
-    const addCustomer = async (values: TPayload) => {
+    const addCustomerLocally = async (values: TPayload) => {
         setLoading(true);
         try {
             const { data } = await axios.post(
-                `${process.env.NEXT_PUBLIC_REPAIRSHOPR_CREATE_CUSTOMER}`,
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/customer_visits`,
                 values,
                 {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
                     },
+                    // withCredentials: true, // no need as we do not require the token, we have a rate limit
+                    // customer will handle this section
                 }
             );
-            const customerId = data?.customer?.id;
-            return customerId;
-            // Convert the custInfo object to a JSON string
-            // values['customer_id'] = `${customerId}`
-            // const spreadCustomer = {
-            //     ...values,
-            //     customerId: `${customerId}`,
-            // };
-            // const custInfoString = JSON.stringify(spreadCustomer);
-            // if (typeof window !== "undefined" && window.localStorage) {
-            //     window.localStorage.setItem("custInfo", custInfoString);
-            //     router.push("/repairshopr_asset");
-            // }
+            if (data) toast.success(`${data?.message}`);
         } catch (error: any) {
-            toast.error(`${error?.response?.data?.message}`);
+            toast.error(`${error?.response.data?.message}`);
             console.log("customer create error", error);
         } finally {
             setLoading(false);
         }
     };
 
-    return { addCustomer, createCustomerLoading };
+    return { addCustomerLocally, createCustomerLocallyLoading };
 };
 
-export default useCreateCustomerOnRepairshopr;
+export default useCreateCustomerLocally;

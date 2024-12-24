@@ -41,7 +41,7 @@ const uploadQCFile = async (req, res) => {
         if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
             return res.status(400).json({ error: "No files uploaded" });
         }
-        const { files } = req.files;
+        // const { files } = req.files;
         // Validate files using Yup schema
         await fileUploadSchema.validate({ files: req.files });
         // connect to server

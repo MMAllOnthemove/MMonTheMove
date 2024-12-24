@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 type TUpdateValues = {
@@ -16,10 +17,12 @@ type TUpdateValues = {
 };
 
 const useUpdateHHPTask = () => {
+    const [updateHHPTaskLoading, setLoading] = useState(false); // Loading state
     const updateHHPTask = async (
         taskId: string | number | undefined,
         values: TUpdateValues
     ) => {
+        setLoading(true);
         try {
             if (!taskId) return;
 
@@ -31,15 +34,15 @@ const useUpdateHHPTask = () => {
                     withCredentials: true,
                 }
             );
-            // todo: uncomment
-            // window.location.reload();
             return response.data;
         } catch (error: any) {
             if (error) toast.error(error?.response?.data?.error);
+        } finally {
+            setLoading(false); // Stop loading
         }
     };
 
-    return { updateHHPTask };
+    return { updateHHPTask, updateHHPTaskLoading };
 };
 
 export default useUpdateHHPTask;

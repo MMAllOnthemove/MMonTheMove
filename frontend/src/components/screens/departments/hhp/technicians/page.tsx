@@ -110,7 +110,7 @@ const TechniciansScreen = () => {
     const { deleteTask, deleteHHPTaskLoading } = useDeleteHHPTask()
     const { updateRepairTicket } = useRepairshoprTicket()
     const { updateRepairTicketComment } = useRepairshoprComment()
-    const { updateHHPTask } = useUpdateHHPTask()
+    const { updateHHPTask, updateHHPTaskLoading } = useUpdateHHPTask()
     const { addRepairTicketFile } = useRepairshoprFile()
     const { addCommentLocally } = useAddTaskCommentLocally()
     const [modifyTaskModal, setModifyTaskModal] = useState<ModifyTaskModalTechnicians | any>();
@@ -139,9 +139,8 @@ const TechniciansScreen = () => {
     const [qc_date, setQCCompleteDate] = useState<string | undefined>("")
     const [unit_complete, setUnitComplete] = useState<boolean>(false)
     const [completed_date, setUnitCompleteDate] = useState<string | undefined>("")
-    const [engineer, setEngineer] = useState<string>("")
+    const [engineer, setEngineer] = useState({ repairshopr_id: '', value: '' });
     const [submitPartsUpdateLoading, setSubmitPartsUpdateLoading] = useState(false)
-    const [repairshopr_id, setUserId] = useState<number | undefined>(); // To store the selected repairshopr user ID
     const [engineersComboBox, setEngineerComboBox] = useState(false)
     const [warranty, setWarranty] = useState("")
     const [addPartOnRepairshoprLoading, setaddPartOnRepairshoprLoading] = useState(false)
@@ -158,7 +157,13 @@ const TechniciansScreen = () => {
     const [repairshoprServiceOrder, setRepairshoprServiceOrder] = useState("")
     const { updateAssessmentDate } = useUpdateAssessmentDate()
 
-
+    const handleEngineer = (value: string) => {
+        // Find the selected engineer by full name (value)
+        const selected = engineerListFomatted.find((engineer) => engineer.value === value);
+        if (selected) {
+            setEngineer({ repairshopr_id: `${selected.repairshopr_id}`, value: selected.value });
+        }
+    };
     // engineer filters
     const [engineerFilter, setEngineerFilter] = useState<string>("")
     const [unassisgnedFilter, setUnassignedFilter] = useState<string>("")
@@ -352,8 +357,7 @@ const TechniciansScreen = () => {
         // store values from db but still allow user to update those same fields
         // this helps when comparing
         setRepairshoprStatus(modifyTaskModal?.unit_status)
-        setUserId(modifyTaskModal?.repairshopr_id)
-        setEngineer(modifyTaskModal?.engineer)
+        setEngineer({ repairshopr_id: modifyTaskModal?.repairshopr_id, value: modifyTaskModal?.engineer })
         setAssessmentDate(modifyTaskModal?.assessment_date)
         setPartsIssued(modifyTaskModal?.parts_issued)
         setPartsIssuedDate(modifyTaskModal?.parts_issued_date)
@@ -505,7 +509,7 @@ const TechniciansScreen = () => {
     }
 
     const repairshopr_payload = {
-        "user_id": repairshopr_id,
+        "user_id": Number(engineer?.repairshopr_id),
         "status": unit_status,
         "properties": {
             "IMEI": repairshoprIMEI,
@@ -549,13 +553,11 @@ const TechniciansScreen = () => {
         }
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no, unit_status, assessment_date, updated_at, engineer, warranty, collected, collected_date, compensation
+            id, service_order_no, unit_status, assessment_date, updated_at, engineer: engineer?.value, warranty, collected, collected_date, compensation
         }
 
         const changes = findChanges(modifyTaskModal, updatePayload)
-
         const created_at = datetimestamp;
-
         const addCommentLocallyPayload = {
             "task_id": id,
             "comment": '*' + reparshoprComment,
@@ -577,7 +579,7 @@ const TechniciansScreen = () => {
                 setRepairshoprStatus("")
                 setAssessmentDate("")
                 setQCFailReason("")
-                setEngineer("")
+                setEngineer({ repairshopr_id: '', value: '' })
                 setWarranty("")
                 setRepairshoprWarranty("")
                 setRepairshoprBackupRequires("")
@@ -842,10 +844,10 @@ const TechniciansScreen = () => {
                                                 <TabsTrigger value="Time">Time summary</TabsTrigger>
                                             </TabsList>
                                             <TabsContent value="Techs">
-                                                <TasksUpdate job_repair_no={job_repair_no} location={locationBin} assessment_date={modifyTaskModal?.assessment_date} hhp_tasks_loading={hhpFilesUploading} setHHPFilesProp={handleHHPFiles} submitHHPFiles={submitHHPFiles} date_booked={modifyTaskModal?.date_booked} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={(e) => setRepairshoprStatus(e)} submitTasksUpdate={handleSubmit} engineer={engineer} engineersComboBox={engineersComboBox} setEngineer={setEngineer} setEngineerComboBox={setEngineerComboBox} setUserId={setUserId} warranty={warranty} setWarranty={(e) => setWarranty(e)} imei={modifyTaskModal?.imei} serial_number={modifyTaskModal?.serial_number} model={modifyTaskModal?.model} />
+                                                <TasksUpdate updateTask={updateHHPTaskLoading} job_repair_no={job_repair_no} location={locationBin} assessment_date={modifyTaskModal?.assessment_date} hhp_tasks_loading={hhpFilesUploading} setHHPFilesProp={handleHHPFiles} submitHHPFiles={submitHHPFiles} date_booked={modifyTaskModal?.date_booked} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={(e) => setRepairshoprStatus(e)} submitTasksUpdate={handleSubmit} engineer={engineer?.value} handleEngineer={handleEngineer} warranty={warranty} setWarranty={(e) => setWarranty(e)} imei={modifyTaskModal?.imei} serial_number={modifyTaskModal?.serial_number} model={modifyTaskModal?.model} />
                                             </TabsContent>
                                             <TabsContent value="QC">
-                                                <QC qc_fail_reasonProp={qc_comment} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} qc_FilesLoadingProp={qcFilesUploading} setQCFilesProp={handleQCFiles} submitQCFiles={submitQCFiles} setUnitCompleteDateProp={setUnitCompleteDate} setUnitCompleteProp={setUnitComplete} submitQC={handleQCSubmit} />
+                                                <QC qcUpdateLoading={updateHHPTaskLoading} qc_fail_reasonProp={qc_comment} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} qc_FilesLoadingProp={qcFilesUploading} setQCFilesProp={handleQCFiles} submitQCFiles={submitQCFiles} setUnitCompleteDateProp={setUnitCompleteDate} setUnitCompleteProp={setUnitComplete} submitQC={handleQCSubmit} />
                                             </TabsContent>
                                             <TabsContent value="Parts">
                                                 <Parts compensation={compensation} setCompensation={(e) => setCompensation(e)} deletePartLoading={deletePartLoading} part_data={[...taskPartsList]} parts_requestedProp={parts_requested} setPartsRequestedProp={(e) => setPartsRequested(e)} setPartsRequestedDateProp={setPartsRequestedDate} parts_orderedProp={parts_ordered} setPartsOrderedProp={(e) => setPartsOrdered(e)} parts_pendingProp={parts_pending} setPartsPendingProp={(e) => setPartsPending(e)} parts_issuedProp={parts_issued} setPartsIssuedProp={(e) => setPartsIssued(e)} setPartsIssuedDateProp={setPartsIssuedDate} setPartsPendingDateProp={setPartsPendingDate} setPartsOrderedDateProp={setPartsOrderedDate} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} handleDelete={handleDeletePart} addPartOnRepairshoprLoading={addPartOnRepairshoprLoading} addPartOnRepairshopr={addPartListToRepairshoprComment} />

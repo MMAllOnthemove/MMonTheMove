@@ -24,6 +24,15 @@ import { calculateAverageRepairTime, getAveragePartsPendingTime, getCompletionRa
 import { unitsBookedInMonthlyChartConfig, warrantyBreakdownChartConfig } from '@/lib/chart_configs'
 import engineerWorkColumns from '@/lib/engineer_workload_table_columns'
 import columns from '@/lib/frequent_faults__table_columns'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 
 import {
     SortingState,
@@ -43,7 +52,7 @@ const DashboardScreen = () => {
     const { isLoggedIn, loading } = useUserLoggedIn()
     const [dateFrom, setDateFrom] = useState("")
     const [dateTo, setDateTo] = useState("")
-
+    const [selectedEngineerTasks, setSelectedEngineerTasks] = useState<boolean | null | any>(false);
 
     const averageRepairTime = useMemo(() => calculateAverageRepairTime(hhpTasks), [hhpTasks])
 
@@ -58,23 +67,51 @@ const DashboardScreen = () => {
     const [frequentFaultsTableFilter, setFiltering] = useState("");
 
 
-    const freqFaults = useMemo(() => Object.entries(getFrequentFaults(hhpTasks, dateFrom, dateTo)).map(([fault]) => ({
-        fault,
-    })), [hhpTasks, dateFrom, dateTo])
+    const freqFaults = useMemo(() =>
+        Object.entries(getFrequentFaults(hhpTasks, dateFrom, dateTo)).flatMap(
+            ([phoneName, faults]) =>
+                Object.entries(faults).map(([fault, count]) => ({
+                    phoneName,
+                    fault,
+                    count,
+                }))
+        ),
+        [hhpTasks, dateFrom, dateTo]
+    );
 
-    const warrantyBreakdown = useMemo(() => Object.entries(getWarrantyStatusBreakdown(hhpTasks, dateFrom, dateTo)).map(([warranty, count]) => ({
-        warranty, count
-    })), [hhpTasks, dateFrom, dateTo])
+    const warrantyBreakdown = useMemo(
+        () =>
+            Object.entries(
+                getWarrantyStatusBreakdown(hhpTasks, dateFrom, dateTo)
+            ).map(([warranty, count]) => ({
+                warranty,
+                count,
+            })),
+        [hhpTasks, dateFrom, dateTo]
+    );
+
 
     const unitsBookedInMonthly = useMemo(() => Object.entries(getUnitsBookedOverTime(hhpTasks, dateFrom, dateTo)).map(([yearMonth, count]) => {
         return { yearMonth: moment(yearMonth).format('MMMM'), count };
     }), [hhpTasks, dateFrom, dateTo]);
 
 
-    const engineerWorkload = useMemo(() => Object.entries(getRepairByEngineer(hhpTasks, dateFrom, dateTo)).map(([engineer, count]) => ({
-        engineer, count
-    })), [hhpTasks, dateFrom, dateTo])
+    const engineerWorkload = useMemo(() =>
+        Object.entries(getRepairByEngineer(hhpTasks, dateFrom, dateTo)).map(([engineer, { count, completedTasks }]) => ({
+            engineer,
+            count,
+            completedTasks, // Include the list of completed ticket numbers
+        })).sort((a, b) => b.count - a.count), // Sort by count in descending order,
+        [hhpTasks, dateFrom, dateTo]
+    );
 
+    // show tasks by engineer which are complete
+    const handleEngineerTasksTable = (row: any) => {
+        const list = row?.original;
+        // console.log(list)
+        setSelectedEngineerTasks(list);
+    }
+    // console.log("engineerWorkload", engineerWorkload)
 
     const frequentFaultsTable = useReactTable({
         data: freqFaults,
@@ -148,7 +185,6 @@ const DashboardScreen = () => {
                                     />
                                 </span>
                             </div>
-
                             <div className="grid grid-cols-1 lg:grid-cols-4 items-center gap-3 py-3">
                                 <Card className='text-center'>
                                     <CardHeader>
@@ -288,11 +324,8 @@ const DashboardScreen = () => {
                                         {frequentFaultsTable.getRowModel().rows.map((row: any) => (
                                             <tr
                                                 key={row.id}
-
                                                 className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]"
                                             >
-
-
                                                 {row.getVisibleCells().map((cell: any) => (
                                                     <td
                                                         key={cell.id}
@@ -311,8 +344,29 @@ const DashboardScreen = () => {
                             </div>
                             <div className="h-2" />
                             <Pagination table={frequentFaultsTable} />
+                            {
+                                selectedEngineerTasks &&
+                                <Dialog open={selectedEngineerTasks} onOpenChange={() => setSelectedEngineerTasks(false)} >
+                                    {/* <DialogTrigger>Open</DialogTrigger> */}
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>{selectedEngineerTasks.engineer}&apos;s Completed jobs</DialogTitle>
+                                            <DialogDescription>
+                                                Counting from Nov 13 2024
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <div className=" gap-4 divide-y-1 overflow-auto h-[200px]">
+                                            <ol>
+                                                {selectedEngineerTasks.completedTasks.map((ticket: string | number, index: string | number) => (
+                                                    <li key={index}>{ticket}</li>
+                                                ))}
+                                            </ol>
+                                        </div>
+                                    </DialogContent>
+                                </Dialog>
+                            }
                             {/* engineerWorkloadTable table */}
-                            <h4 className="font-semibold leading-none tracking-tight text-md text-gray-950 my-3">Units worked on</h4>
+                            <h4 className="font-semibold leading-none tracking-tight text-md text-gray-950 my-3">Units completed by engineer</h4>
                             <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg mt-4">
                                 <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
 
@@ -358,7 +412,7 @@ const DashboardScreen = () => {
                                         {engineerWorkloadTable.getRowModel().rows.map((row: any) => (
                                             <tr
                                                 key={row.id}
-
+                                                onClick={() => handleEngineerTasksTable(row)}
                                                 className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]"
                                             >
 
@@ -383,6 +437,8 @@ const DashboardScreen = () => {
                             <Pagination table={engineerWorkloadTable} />
 
                         </main>
+
+
                     </>
                 ) : (<NotLoggedInScreen />)
             }

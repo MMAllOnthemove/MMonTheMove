@@ -2,12 +2,14 @@
 import PageTitle from '@/components/PageTitle/page'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import useCreateCustomer from '@/hooks/useCreateCustomer'
-import axios from 'axios'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
+import useCreateCustomerOnRepairshopr from '@/hooks/useCreateCustomer'
+import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally'
+import { datetimestamp } from '@/lib/date_formats'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 
+import provinces from '@/lib/provinces'
 type PhoneDetail = {
     type: string;
     number: string;
@@ -26,7 +28,8 @@ const CreateCustomerRepairshoprScreen = () => {
     const [zip, setZip] = useState("")
     const [phoneDetails, setPhoneDetails] = useState([{ type: "mobile", number: "" }]);
 
-    const { addCustomer, createCustomerLoading } = useCreateCustomer()
+    const { addCustomer, createCustomerLoading } = useCreateCustomerOnRepairshopr()
+    const { addCustomerLocally } = useCreateCustomerLocally()
     const handlePhoneChange = (
         index: number,
         field: keyof PhoneDetail, // Ensures field can only be "type" or "number"
@@ -46,6 +49,8 @@ const CreateCustomerRepairshoprScreen = () => {
 
     const createCustomer = async (e: React.SyntheticEvent) => {
         e.preventDefault();
+        const visit_date = datetimestamp
+        const created_at = datetimestamp
         const payload = {
             "firstname": firstName,
             "lastname": lastName,
@@ -65,7 +70,15 @@ const CreateCustomerRepairshoprScreen = () => {
             "state": state,
             "zip": zip,
         }
-        await addCustomer(payload)
+        const data = await addCustomer(payload);
+        const spreadPayload = {
+            ...payload,
+            "repairshopr_customer_id": data,
+            created_at: created_at,
+            visit_date: visit_date
+
+        }
+        await addCustomerLocally(spreadPayload)
     }
     return (
 
@@ -149,9 +162,27 @@ const CreateCustomerRepairshoprScreen = () => {
                             onChange={(e) => setCity(e.target.value)} className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm block w-full" />
                     </div>
                     <div>
-                        <label htmlFor='state' className='text-sm font-medium text-gray-900 mb-2'>State</label>
-                        <Input type="text" id='state' name='state' value={state}
-                            onChange={(e) => setState(e.target.value)} className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm block w-full" />
+                        <label htmlFor='state' className='text-sm font-medium text-gray-900'>Province</label>
+
+                        <Select defaultValue={state || ""}
+                            name="state"
+                            onValueChange={(e) =>
+                                setState(e)
+                            }>
+                            <SelectTrigger>
+                                <SelectValue placeholder="List of provinces" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectLabel>Provinces</SelectLabel>
+                                    {
+                                        provinces?.map((x) => (
+                                            <SelectItem key={x.label} value={`${x.label}`}>{x?.label}</SelectItem>
+                                        ))
+                                    }
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
                     </div>
                     <div>
                         <label htmlFor='zip' className='text-sm font-medium text-gray-900 mb-2'>Zip/Postal code</label>

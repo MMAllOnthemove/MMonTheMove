@@ -56,10 +56,13 @@ export const menuItems = [
         ],
     },
     {
-        label: "Book ticket",
+        label: "Bookings",
         sublinks: [
-            { id: 14, item: "Repairshopr", pageRoute: "/create_ticket/rs" },
-            { id: 15, item: "Service order", pageRoute: "/create_ticket/gspn" },
+            { id: 16, item: "Create customer", pageRoute: "/create_customer" },
         ],
+    },
+    {
+        label: "Customer list",
+        sublinks: [{ id: 17, item: "Customers", pageRoute: "/customers" }],
     },
 ];

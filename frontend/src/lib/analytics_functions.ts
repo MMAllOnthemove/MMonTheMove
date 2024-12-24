@@ -26,42 +26,118 @@ export function getRepairsByStore(
 // Identify the most common faults across all repairs.
 // used
 export function getFrequentFaults(
-    data: any,
-    startDate: string,
-    endDate: string
-) {
-    return data.reduce((acc: any, repair: any) => {
-        // If both dates are provided, filter by date range
-        if (startDate && endDate) {
-            if (isDateInRange(repair.date_booked, startDate, endDate)) {
-                acc[repair.fault] = (acc[repair.fault] || 0) + 1;
+    data: any[],
+    startDate?: string,
+    endDate?: string
+): Record<string, Record<string, number>> {
+    return data.reduce(
+        (acc: Record<string, Record<string, number>>, repair: any) => {
+            const { phone_name, fault, date_booked } = repair;
+
+            // Check if the repair falls within the specified date range, if provided
+            const isWithinRange =
+                startDate && endDate
+                    ? isDateInRange(date_booked, startDate, endDate)
+                    : true;
+
+            if (isWithinRange) {
+                const phoneName = phone_name || "Unknown device";
+                const faultName = fault || "Unknown Fault";
+
+                // Initialize the phone name if it doesn't exist
+                if (!acc[phoneName]) {
+                    acc[phoneName] = {};
+                }
+
+                // Increment the fault count for the phone
+                acc[phoneName][faultName] =
+                    (acc[phoneName][faultName] || 0) + 1;
             }
-        }
-        // If only one or neither date is provided, include all repairs
-        else {
-            acc[repair.fault] = (acc[repair.fault] || 0) + 1;
-        }
-        return acc;
-    }, {});
+
+            return acc;
+        },
+        {}
+    );
 }
 
 // 3. Repairs by Engineer
 // Count how many repairs each engineer has worked on.
+// export function getRepairByEngineer(
+//     data: any,
+//     startDate: string,
+//     endDate: string
+// ) {
+//     return data.reduce((acc: any, repair: any) => {
+//         if (startDate && endDate) {
+//             if (isDateInRange(repair.date_booked, startDate, endDate)) {
+//                 acc[repair.engineer] = (acc[repair.engineer] || 0) + 1;
+//             }
+//         }
+//         // If only one or neither date is provided, include all repairs
+//         else {
+//             acc[repair.engineer] = (acc[repair.engineer] || 0) + 1;
+//         }
+//         return acc;
+//     }, {});
+// }
+
+interface EngineerWorkload {
+    count: number;
+    completedTasks: string[]; // List of completed ticket numbers
+}
+
+type RepairData = {
+    engineer: string;
+    count: number;
+    completedTasks: string[];
+};
 export function getRepairByEngineer(
-    data: any,
+    data: any[],
     startDate: string,
     endDate: string
-) {
-    return data.reduce((acc: any, repair: any) => {
+): Record<string, EngineerWorkload> {
+    return data.reduce((acc: Record<string, EngineerWorkload>, repair: any) => {
+        // Check if the repair falls within the date range
         if (startDate && endDate) {
             if (isDateInRange(repair.date_booked, startDate, endDate)) {
-                acc[repair.engineer] = (acc[repair.engineer] || 0) + 1;
+                // Initialize the engineer if not already present in the accumulator
+                if (!acc[repair.engineer]) {
+                    acc[repair.engineer] = {
+                        count: 0,
+                        completedTasks: [], // Store completed tasks for the engineer
+                    };
+                }
+
+                // Increment the count of repairs
+                acc[repair.engineer].count += 1;
+
+                // If the repair is completed (unit_complete is true), add its ticket number to the list
+                if (repair.unit_complete === true) {
+                    acc[repair.engineer].completedTasks.push(
+                        repair.ticket_number
+                    );
+                }
             }
         }
-        // If only one or neither date is provided, include all repairs
+        // If no date range is provided, include all completed tasks only
         else {
-            acc[repair.engineer] = (acc[repair.engineer] || 0) + 1;
+            if (repair.unit_complete === true) {
+                // Initialize the engineer if not already present in the accumulator
+                if (!acc[repair.engineer]) {
+                    acc[repair.engineer] = {
+                        count: 0,
+                        completedTasks: [], // Store completed tasks for the engineer
+                    };
+                }
+
+                // Increment the count of completed repairs
+                acc[repair.engineer].count += 1;
+
+                // Add the completed ticket number to the list of completed tasks
+                acc[repair.engineer].completedTasks.push(repair.ticket_number);
+            }
         }
+
         return acc;
     }, {});
 }
@@ -149,21 +225,23 @@ export function getUnitsRepeatRepairAnalytics(
 // Count how many repairs are under warranty vs. out of warranty.
 // used
 export function getWarrantyStatusBreakdown(
-    data: any,
+    data: any[],
     startDate: string,
     endDate: string
 ) {
-    return data.reduce((acc: any, repair: any) => {
-        // If both dates are provided, filter by date range
-        if (startDate && endDate) {
-            if (isDateInRange(repair.date_booked, startDate, endDate)) {
-                acc[repair.warranty] = (acc[repair.warranty] || 0) + 1;
-            }
+    return data.reduce((acc: Record<string, number>, repair: any) => {
+        const warrantyType = repair.warranty || "Unknown Warranty";
+
+        // Filter by date range if both dates are provided
+        const isWithinRange =
+            startDate && endDate
+                ? isDateInRange(repair.date_booked, startDate, endDate)
+                : true;
+
+        if (isWithinRange) {
+            acc[warrantyType] = (acc[warrantyType] || 0) + 1;
         }
-        // If only one or neither date is provided, include all repairs
-        else {
-            acc[repair.warranty] = (acc[repair.warranty] || 0) + 1;
-        }
+
         return acc;
     }, {});
 }

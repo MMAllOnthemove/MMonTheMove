@@ -6,7 +6,7 @@ const engineerWorkColumns: TColumns | any = [
         accessorKey: "engineer",
     },
     {
-        header: "Units worked on",
+        header: "Units completed",
         accessorKey: "count",
     },
 ];

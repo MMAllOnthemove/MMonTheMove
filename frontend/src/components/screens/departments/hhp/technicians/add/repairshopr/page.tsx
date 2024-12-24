@@ -219,7 +219,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                             <SelectGroup>
                                 <SelectLabel>Technicians</SelectLabel>
                                 {engineerListFomatted.map((x) => (
-                                    <SelectItem key={x.repairshopr_id} value={x.value}>
+                                    <SelectItem key={x.label} value={x.value}>
                                         {x.label}
                                     </SelectItem>
                                 ))}

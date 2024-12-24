@@ -7,58 +7,43 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import {
     Select,
     SelectContent,
+    SelectGroup,
     SelectItem,
+    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import moment from "moment";
 import React, { ChangeEvent } from "react";
 
 import useFetchEngineer from "@/hooks/useFetchEngineers";
 import repairshopr_statuses from "@/lib/repairshopr_status";
-import { cn } from "@/lib/utils";
 import warranties from "@/lib/warranties";
 
 
 type TTasksUpdate = {
+    updateTask: boolean;
     assessment_date: string;
     service_order_noProp: string | number | undefined
     reparshoprCommentProp: string
     unit_statusProp: string | undefined
     date_booked: string;
     hhp_tasks_loading: boolean;
-    engineer: string;
     warranty: string;
+    serial_number: string;
+    engineer: string;
     model: string;
     imei: string;
     job_repair_no: string;
     location: string;
-    serial_number: string;
-    engineersComboBox: boolean;
-    setEngineer: (data: string) => void;
+    handleEngineer: (data: any) => void;
     setWarranty: (data: string) => void;
-    setEngineerComboBox: (data: boolean) => void;
-    setUserId: (data: number | undefined) => void;
     setServiceOrderProp: (data: ChangeEvent<HTMLInputElement>) => void;
     setRepairshoprCommentProp: (data: ChangeEvent<HTMLTextAreaElement>) => void;
     setRepairshoprStatusProp: (data: string) => void;
@@ -66,7 +51,7 @@ type TTasksUpdate = {
     setHHPFilesProp: (data: ChangeEvent<HTMLInputElement>) => void;
     submitHHPFiles: (data: React.SyntheticEvent) => void;
 }
-const TasksUpdate = ({ location, job_repair_no, assessment_date, hhp_tasks_loading, model, imei, serial_number, setHHPFilesProp, submitHHPFiles, service_order_noProp, reparshoprCommentProp, unit_statusProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked, engineer, engineersComboBox, setEngineerComboBox, setUserId, setEngineer, warranty, setWarranty }: TTasksUpdate) => {
+const TasksUpdate = ({ handleEngineer, updateTask, engineer, location, job_repair_no, assessment_date, hhp_tasks_loading, model, imei, serial_number, setHHPFilesProp, submitHHPFiles, service_order_noProp, reparshoprCommentProp, unit_statusProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked, warranty, setWarranty }: TTasksUpdate) => {
     const { engineersList } = useFetchEngineer()
     const engineerListFomatted = engineersList?.map((user) => ({
         repairshopr_id: user?.repairshopr_id,
@@ -112,51 +97,22 @@ const TasksUpdate = ({ location, job_repair_no, assessment_date, hhp_tasks_loadi
                 </Select>
             </div>
             <div className="mb-3">
-                <Popover open={engineersComboBox} onOpenChange={setEngineerComboBox}>
-                    <PopoverTrigger asChild>
-                        <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={engineersComboBox}
-                            className="w-full justify-between"
-                        >
-                            {engineer
-                                ? engineerListFomatted?.find((framework) => framework.value === engineer)?.label
-                                : "Select engineer..."}
-                            <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-full p-0">
-                        <Command>
-                            <CommandInput placeholder="Search engineer..." className="h-9" />
-                            <CommandList>
-                                <CommandEmpty>No engineer found.</CommandEmpty>
-                                <CommandGroup>
-                                    {engineerListFomatted?.map((framework) => (
-                                        <CommandItem
+                <Select value={engineer} onValueChange={handleEngineer}>
+                    <SelectTrigger >
+                        <SelectValue placeholder="Select an engineer" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectLabel>Technicians</SelectLabel>
+                            {engineerListFomatted.map((x) => (
+                                <SelectItem key={x.label} value={x.value}>
+                                    {x.label}
+                                </SelectItem>
+                            ))}
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
 
-                                            key={framework.value}
-                                            value={framework.value}
-                                            onSelect={(currentValue) => {
-                                                setEngineer(currentValue === engineer ? "" : currentValue)
-                                                setUserId(framework?.repairshopr_id); // Store the corresponding repairshopr ID
-                                                setEngineerComboBox(false)
-                                            }}
-                                        >
-                                            {framework.label}
-                                            <CheckIcon
-                                                className={cn(
-                                                    "ml-auto h-4 w-4",
-                                                    engineer === framework.value ? "opacity-100" : "opacity-0"
-                                                )}
-                                            />
-                                        </CommandItem>
-                                    ))}
-                                </CommandGroup>
-                            </CommandList>
-                        </Command>
-                    </PopoverContent>
-                </Popover>
 
             </div>
             <Accordion type="single" collapsible>
@@ -186,7 +142,7 @@ const TasksUpdate = ({ location, job_repair_no, assessment_date, hhp_tasks_loadi
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>
-            <Button className="w-full outline-none" type="submit" onClick={submitTasksUpdate}> Update</Button>
+            <Button className="w-full outline-none" type="submit" disabled={updateTask} onClick={submitTasksUpdate}>{updateTask ? 'Updating...' : 'Update'}</Button>
 
         </form >
     )

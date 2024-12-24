@@ -40,7 +40,7 @@ const Sidebar = () => {
     };
 
     return (
-        <div className="flex justify-between items-center navbar border px-2">
+        <div className="flex justify-between items-center navbar border px-2 z-10">
             <Sheet>
                 <SheetTrigger asChild>
                     <Button className="outline-none bg-white border shadow-none hover:bg-white active:bg-white focus:bg-white border-none">
