@@ -41,8 +41,8 @@ const useFetchChecklist = (id: string | string[] | any) => {
     const [checklistLoading, setchecklistLoading] = useState(true);
 
     const refetch = async () => {
+        if (!id) return;
         try {
-            if (!id) return;
             setchecklistLoading(true);
             const response = await axios.get(
                 `${process.env.NEXT_PUBLIC_API_SERVER_URL}/checklists/${id}`,

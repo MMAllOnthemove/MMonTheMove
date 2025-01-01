@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.5] - 2024-12-30
+
+### Added
+
+-   custom dialog (modal) for opening table row and attaching data (shadcn ui one froze for this)
+-   view page for hhp task in full
+-   adding parts, add title and body(parts)
+
+### Fixed
+
+-   combobox, removed: data-[disabled]:pointer-events-none from it's class
+-   ui in the parts section (hhp tasks)
+-   time summary not accurate
+
 ## [0.1.4] - 2024-12-24
 
 ### Added
@@ -20,9 +34,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   For the booking app/dashboard, show common faults and models, names of units
 -   dashboard for hhp
 -   navbar has to have a higher z index
--   so number and ticket number in same cell and column 
+-   so number and ticket number in same cell and column
 -   oow (red) in the hhp tasks
--   first comment after creating ticket should had a * to show booked from the app
+-   first comment after creating ticket should had a \* to show booked from the app
 -   move from combobox to full on select shadcn ui component on certain screens
 
 ### Fixed

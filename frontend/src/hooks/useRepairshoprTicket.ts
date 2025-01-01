@@ -6,8 +6,8 @@ const useRepairshoprTicket = () => {
         ticketId: string | number | undefined,
         values: RepairshoprPutTicket
     ) => {
+        if (!ticketId) return;
         try {
-            if (!ticketId) return;
             const response = await axios.put(
                 `https://allelectronics.repairshopr.com/api/v1/tickets/${ticketId}`,
                 values,

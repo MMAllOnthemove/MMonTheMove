@@ -77,7 +77,6 @@ const AddDTVHATask = async (req, res) => {
             });
         }
     } catch (error) {
-        console.log(error);
         // Handle validation or other errors
         const errors = {};
         if (error.inner) {

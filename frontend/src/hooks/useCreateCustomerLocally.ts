@@ -42,7 +42,6 @@ const useCreateCustomerLocally = () => {
             if (data) toast.success(`${data?.message}`);
         } catch (error: any) {
             toast.error(`${error?.response.data?.message}`);
-            console.log("customer create error", error);
         } finally {
             setLoading(false);
         }

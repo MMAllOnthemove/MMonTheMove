@@ -20,7 +20,7 @@ const useIpaasGetSOInfoAll = () => {
                 Pac: `${pac}`,
             },
         };
-
+        if (!serviceOrder) return;
         try {
             const response = await axios.post(`${ipaasApiUrl}`, options, {
                 headers: {

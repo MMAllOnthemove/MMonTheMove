@@ -25,9 +25,10 @@ type TTableBody = {
         }
     }
     handleRowClick: (data: TechniciansTableData) => void;
+    handleOpenSinglePage: (data: TechniciansTableData) => void;
     deleteRow: (data: TechniciansTableData) => void;
 }
-const TableBody = ({ table, handleRowClick, deleteRow }: TTableBody) => {
+const TableBody = ({ table, handleRowClick, deleteRow, handleOpenSinglePage }: TTableBody) => {
     const { user, isLoggedIn } = useUserLoggedIn()
     return (
         <tbody className="z-0">
@@ -48,10 +49,10 @@ const TableBody = ({ table, handleRowClick, deleteRow }: TTableBody) => {
                                 <DropdownMenuItem className='cursor-pointer'
                                     onClick={() => handleRowClick(row)}
                                 >
-                                    Open summary
+                                    View summary
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem disabled>Open in full</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleOpenSinglePage(row)} className='cursor-pointer'>View in full</DropdownMenuItem>
                                 {isLoggedIn && user?.user_role === "admin" &&
                                     <DropdownMenuItem onClick={() => deleteRow(row)} className='cursor-pointer'>Delete</DropdownMenuItem>}
                             </DropdownMenuContent>

@@ -70,24 +70,29 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
     // Fetch ticket info
     useEffect(() => {
         const fetchRSData = async () => {
-            const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/tickets?query=${searchTicket}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
-                },
-            });
-            if (data?.tickets[0]?.number == searchTicket) {
-                if (data?.tickets[0]["properties"]["Warranty"] || data?.tickets[0]["properties"]["Warranty "] === '69476' || 69476) setWarranty('IW')
-                if (data?.tickets[0]["properties"]["Warranty"] || data?.tickets[0]["properties"]["Warranty "] === '69477' || 69477) setWarranty('OOW')
-                setServiceOrderNo(data?.tickets[0]["properties"]["Service Order No."])
-                setTicketNumber(data?.tickets[0]?.number)
-                setRepairshoprJobId(data?.tickets[0]?.id)
-                setStatus(data?.tickets[0]?.status)
-                setDateBooked(data?.tickets[0]?.created_at
-                )
-                setFault(data?.tickets[0]?.subject)
-                if (data?.tickets[0]?.subject.startsWith('Rework')) setRepeatRepair('Yes')
-                if (!data?.tickets[0]?.subject.startsWith('Rework')) setRepeatRepair('No')
+            if (!searchTicket) return
+            try {
+                const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/tickets?query=${searchTicket}`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
+                    },
+                });
+                if (data?.tickets[0]?.number == searchTicket) {
+                    if (data?.tickets[0]["properties"]["Warranty"] || data?.tickets[0]["properties"]["Warranty "] === '69476' || 69476) setWarranty('IW')
+                    if (data?.tickets[0]["properties"]["Warranty"] || data?.tickets[0]["properties"]["Warranty "] === '69477' || 69477) setWarranty('OOW')
+                    setServiceOrderNo(data?.tickets[0]["properties"]["Service Order No."])
+                    setTicketNumber(data?.tickets[0]?.number)
+                    setRepairshoprJobId(data?.tickets[0]?.id)
+                    setStatus(data?.tickets[0]?.status)
+                    setDateBooked(data?.tickets[0]?.created_at
+                    )
+                    setFault(data?.tickets[0]?.subject)
+                    if (data?.tickets[0]?.subject.startsWith('Rework')) setRepeatRepair('Yes')
+                    if (!data?.tickets[0]?.subject.startsWith('Rework')) setRepeatRepair('No')
+                }
+            } catch (error) {
+                if (process.env.NODE_ENV !== "production") console.error(error)
             }
         };
         fetchRSData();
@@ -121,8 +126,8 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
     useEffect(() => {
         const fetchRSByAssetData = async () => {
             setLoadpi(true)
+            if (!assetId) return
             try {
-                if (!assetId) return
                 const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/customer_assets/${assetId}`, {
                     headers: {
                         "Content-Type": "application/json",

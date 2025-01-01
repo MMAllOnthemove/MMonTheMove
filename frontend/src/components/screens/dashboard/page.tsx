@@ -108,10 +108,8 @@ const DashboardScreen = () => {
     // show tasks by engineer which are complete
     const handleEngineerTasksTable = (row: any) => {
         const list = row?.original;
-        // console.log(list)
         setSelectedEngineerTasks(list);
     }
-    // console.log("engineerWorkload", engineerWorkload)
 
     const frequentFaultsTable = useReactTable({
         data: freqFaults,

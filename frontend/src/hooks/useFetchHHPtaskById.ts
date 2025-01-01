@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-interface IHHPTask {
+type IHHPTask = {
     id: string;
     unique_id: string;
     service_order_no: string;
@@ -23,13 +23,41 @@ interface IHHPTask {
     parts_issued_date: string;
     stores: boolean | null;
     parts_ordered_date: string | null;
+    completed_date: string | null;
+    collected_date: string | null;
     qc_complete: string | null;
-    qc_complete_date: string | null;
+    qc_date: string | null;
     repair_completed: string | null;
+    unit_status: string;
+    unit_complete: boolean;
+    collected: string | boolean;
+    parts_pending: string | boolean;
+    parts_issued: string | boolean;
+    compensation: string | boolean;
+    comments: {
+        comment_id: number;
+        comment_text: string;
+        comment_created_at: string;
+        created_by: string;
+    };
+    parts: {
+        part_id: number;
+        unique_id: string;
+        ticket_number: string;
+        part_name: string;
+        part_desc: string;
+        seal_number: null | string;
+        part_quantity: number;
+        parts_status: null | string;
+        created_at: string;
+        created_by: string;
+        updated_at: null | string;
+        compensation: boolean;
+    };
     repairshopr_job_id: string;
-}
+};
 
-const useFetchHHPTaskById = (taskId: string | number) => {
+const useFetchHHPTaskById = (taskId: string | string[] | any) => {
     const [hhpTask, setHHPTask] = useState<IHHPTask | null>(null);
 
     const refetch = async () => {
@@ -43,7 +71,7 @@ const useFetchHHPTaskById = (taskId: string | number) => {
                 }
             );
             if (data) {
-                setHHPTask(data);
+                setHHPTask(data[0]);
             }
         } catch (error) {
             if (process.env.NODE_ENV !== "production") {

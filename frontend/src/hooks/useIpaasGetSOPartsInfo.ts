@@ -20,7 +20,7 @@ const useIpaasSOPartsInfo = () => {
             },
             IvPartsNo: partNumber,
         };
-
+        if (!partNumber) return;
         try {
             const response = await axios.post(`${ipaasApiUrl}`, options, {
                 headers: {

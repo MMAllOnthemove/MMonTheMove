@@ -15,9 +15,7 @@ const useDeleteHHPTask = () => {
                     withCredentials: true,
                 }
             );
-            if (response.status === 204) {
-                toast.success(`${response?.data?.message}`);
-            }
+            toast.success(`${response?.data?.message}`);
         } catch (error: any) {
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);

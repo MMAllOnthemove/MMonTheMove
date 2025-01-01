@@ -148,6 +148,7 @@ export type TechniciansTableData = {
         unique_id: string;
         service_order_no: string;
         date_booked: string;
+        unit_complete: boolean | undefined | any;
         updated_at: string;
         stores: string;
         model: string;
@@ -166,6 +167,7 @@ export type TechniciansTableData = {
         parts_issued_date: string;
         parts_pending: boolean;
         parts_ordered_date: string;
+        parts_requested_date?: string;
         repairshopr_job_id: string;
         qc_complete: null | boolean;
         qc_date: string;
@@ -184,6 +186,8 @@ export type ModifyTaskModalTechnicians = {
     model: string;
     warranty: string;
     engineer: string;
+    created_at?: string;
+    completed_date?: string;
     fault: string;
     imei: string;
     serial_number: string;
@@ -196,14 +200,14 @@ export type ModifyTaskModalTechnicians = {
     parts_pending_date: string;
     parts_issued_date: string;
     parts_pending: boolean;
+    unit_complete: boolean;
     parts_ordered_date: string;
-    parts_requested_date: string;
+    parts_requested_date?: string;
     repairshopr_job_id: string | number | undefined;
     qc_complete: null | boolean;
     qc_date: string;
     parts_issued: null | boolean;
     repeat_repair: string;
-    completed_date: string;
 };
 export type TAgentTasks = {
     id?: number;

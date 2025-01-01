@@ -75,6 +75,7 @@ const ProductInfoTwo = ({ model, symCode1, setSymCode1, symCode2, setSymCode2, s
     // const [selectedSymCode3, setSelectedSymCode3] = useState("");
     useEffect(() => {
         const handleSymptomCodes = async (model: string) => {
+            if (!model) return;
             try {
                 const data = await getCustomerCodes(model);
                 setData(data)
