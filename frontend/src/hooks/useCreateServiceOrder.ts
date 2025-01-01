@@ -89,7 +89,6 @@ const useCreateServiceOrder = () => {
             return data;
         } catch (error: any) {
             toast.error(`${error}`);
-            console.log("customer create error", error);
         } finally {
             setLoading(false);
         }

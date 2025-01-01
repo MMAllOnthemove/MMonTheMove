@@ -76,6 +76,7 @@ const TookanScreen = () => {
 
     useEffect(() => {
         const handleGetSOInfo = async (serviceOrder: string) => {
+            if (!serviceOrder) return
             try {
                 const data = await getSOInfoAllTookan(serviceOrder);
                 const fullAddress = `${data.Return.EsBpInfo.CustAddrStreet1} ${data.Return.EsBpInfo.CustAddrStreet2} ${data.Return.EsBpInfo.CustCity} ${data.Return.EsBpInfo.CustCountry}`;

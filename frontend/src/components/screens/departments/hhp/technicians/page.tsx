@@ -97,6 +97,8 @@ const ManagementSearchForm = dynamic(() =>
 // import ManagementSearchForm from "@/components/search_field/page"
 import useDeleteHHPTask from '@/hooks/useDeleteHHPTask'
 import columns from '@/lib/hhp_technicians_table_columns'
+import Modal from '@/components/modal/page'
+import { useRouter } from 'next/navigation'
 const DateCalculationsScreen = dynamic(() =>
     import('./date_calculations/page')
 )
@@ -114,6 +116,7 @@ const TechniciansScreen = () => {
     const { addRepairTicketFile } = useRepairshoprFile()
     const { addCommentLocally } = useAddTaskCommentLocally()
     const [modifyTaskModal, setModifyTaskModal] = useState<ModifyTaskModalTechnicians | any>();
+    const [modifyTaskModalOpen, setModifyTaskModalOpen] = useState(false);
     // parts for row clicked
     const { taskPartsList, refetch } = useFetchPartsForTask(modifyTaskModal?.id)
     const { addThisPart, addPartLoading, addPartErrors } = useAddPart()
@@ -135,6 +138,7 @@ const TechniciansScreen = () => {
     const [parts_requested, setPartsRequested] = useState<CheckedState | undefined>()
     const [parts_requested_date, setPartsRequestedDate] = useState<string | undefined>("")
     const [qc_complete, setQCComplete] = useState<string>('')
+    const [partsExtraText, setPartsExtraText] = useState<string>('')
     const [qc_comment, setQCFailReason] = useState('')
     const [qc_date, setQCCompleteDate] = useState<string | undefined>("")
     const [unit_complete, setUnitComplete] = useState<boolean>(false)
@@ -212,9 +216,14 @@ const TechniciansScreen = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [search_part])
 
+    const router = useRouter()
+    const handleOpenSinglePage = async (row: TechniciansTableData) => {
+        const data = row.original?.id
+        router.push(`/departments/hhp/technicians/${encodeURIComponent(data)}`)
+    }
     const handleRowClick = async (row: TechniciansTableData) => {
         setModifyTaskModal(row?.original);
-
+        setModifyTaskModalOpen(true);
         // by opening the modal, that will be the assessment_date and assessed_true
         // check if logged in user matches the engineer name, so only engineer can set auto assess
         if (row?.original?.engineer === user?.full_name) {
@@ -267,7 +276,8 @@ const TechniciansScreen = () => {
     };
 
     const closeModal = () => {
-        setModifyTaskModal(false);
+        setModifyTaskModalOpen(false);
+        setModifyTaskModal(null);
     };
     const handleDeletePart = async (id: string | undefined, part_name: string, part_desc: string) => {
 
@@ -531,8 +541,6 @@ const TechniciansScreen = () => {
     // Update the techs tab
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-
-
         const commentPayload: RepairshorTicketComment = {
             "subject": "Update",
             "tech": user?.full_name,
@@ -678,7 +686,7 @@ const TechniciansScreen = () => {
                 return `${index + 1}. ${part.part_name} - ${part.part_desc} (Quantity: ${part.part_quantity})${compensationLabel}`;
             }).join('\n');
 
-            const comment = `Parts added:\n${partsList}`;
+            const comment = `${partsExtraText}\n\nParts added:\n${partsList}`;
             const commentPayload: RepairshorTicketComment = {
                 "subject": "Update",
                 "tech": user?.full_name,
@@ -793,7 +801,7 @@ const TechniciansScreen = () => {
                             <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg">
                                 <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
                                     <TableHead table={table} />
-                                    <TableBody table={table} handleRowClick={handleRowClick} deleteRow={handleDeleteRow} />
+                                    <TableBody table={table} handleRowClick={handleRowClick} deleteRow={handleDeleteRow} handleOpenSinglePage={handleOpenSinglePage} />
                                 </table>
                             </div>
                             <div className="h-2" />
@@ -827,38 +835,38 @@ const TechniciansScreen = () => {
                             }
                             {/* modal for updating task */}
                             {
-                                modifyTaskModal && <Dialog open={modifyTaskModal} onOpenChange={closeModal} >
-                                    {/* <DialogTrigger>Open</DialogTrigger> */}
-                                    <DialogContent>
-                                        <DialogHeader>
-                                            <DialogTitle>{modifyTaskModal?.ticket_number}</DialogTitle>
-                                            <DialogDescription>
+                                modifyTaskModal &&
+                                <Modal
+                                    isVisible={modifyTaskModalOpen}
+                                    onClose={closeModal}
+                                    title={modifyTaskModal?.ticket_number}
+                                    content={
 
-                                            </DialogDescription>
-                                        </DialogHeader>
-                                        <Tabs defaultValue="Techs" className='w-full'>
-                                            <TabsList>
-                                                <TabsTrigger value="Techs">Techs</TabsTrigger>
-                                                <TabsTrigger value="QC">QC</TabsTrigger>
-                                                <TabsTrigger value="Parts">Parts</TabsTrigger>
-                                                <TabsTrigger value="Time">Time summary</TabsTrigger>
-                                            </TabsList>
-                                            <TabsContent value="Techs">
-                                                <TasksUpdate updateTask={updateHHPTaskLoading} job_repair_no={job_repair_no} location={locationBin} assessment_date={modifyTaskModal?.assessment_date} hhp_tasks_loading={hhpFilesUploading} setHHPFilesProp={handleHHPFiles} submitHHPFiles={submitHHPFiles} date_booked={modifyTaskModal?.date_booked} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={(e) => setRepairshoprStatus(e)} submitTasksUpdate={handleSubmit} engineer={engineer?.value} handleEngineer={handleEngineer} warranty={warranty} setWarranty={(e) => setWarranty(e)} imei={modifyTaskModal?.imei} serial_number={modifyTaskModal?.serial_number} model={modifyTaskModal?.model} />
-                                            </TabsContent>
-                                            <TabsContent value="QC">
-                                                <QC qcUpdateLoading={updateHHPTaskLoading} qc_fail_reasonProp={qc_comment} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} qc_FilesLoadingProp={qcFilesUploading} setQCFilesProp={handleQCFiles} submitQCFiles={submitQCFiles} setUnitCompleteDateProp={setUnitCompleteDate} setUnitCompleteProp={setUnitComplete} submitQC={handleQCSubmit} />
-                                            </TabsContent>
-                                            <TabsContent value="Parts">
-                                                <Parts compensation={compensation} setCompensation={(e) => setCompensation(e)} deletePartLoading={deletePartLoading} part_data={[...taskPartsList]} parts_requestedProp={parts_requested} setPartsRequestedProp={(e) => setPartsRequested(e)} setPartsRequestedDateProp={setPartsRequestedDate} parts_orderedProp={parts_ordered} setPartsOrderedProp={(e) => setPartsOrdered(e)} parts_pendingProp={parts_pending} setPartsPendingProp={(e) => setPartsPending(e)} parts_issuedProp={parts_issued} setPartsIssuedProp={(e) => setPartsIssued(e)} setPartsIssuedDateProp={setPartsIssuedDate} setPartsPendingDateProp={setPartsPendingDate} setPartsOrderedDateProp={setPartsOrderedDate} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} handleDelete={handleDeletePart} addPartOnRepairshoprLoading={addPartOnRepairshoprLoading} addPartOnRepairshopr={addPartListToRepairshoprComment} />
-                                            </TabsContent>
-                                            <TabsContent value="Time">
-                                                <DateCalculationsScreen data={hhpTasks} openTaskId={modifyTaskModal?.id} />
-                                            </TabsContent>
-                                        </Tabs>
+                                        <>
 
-                                    </DialogContent>
-                                </Dialog>
+                                            <Tabs defaultValue="Techs" className='w-full'>
+                                                <TabsList>
+                                                    <TabsTrigger value="Techs">Techs</TabsTrigger>
+                                                    <TabsTrigger value="QC">QC</TabsTrigger>
+                                                    <TabsTrigger value="Parts">Parts</TabsTrigger>
+                                                    <TabsTrigger value="Time">Time summary</TabsTrigger>
+                                                </TabsList>
+                                                <TabsContent value="Techs">
+                                                    <TasksUpdate updateTask={updateHHPTaskLoading} job_repair_no={job_repair_no} location={locationBin} assessment_date={modifyTaskModal?.assessment_date} hhp_tasks_loading={hhpFilesUploading} setHHPFilesProp={handleHHPFiles} submitHHPFiles={submitHHPFiles} date_booked={modifyTaskModal?.date_booked} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={(e) => setRepairshoprStatus(e)} submitTasksUpdate={handleSubmit} engineer={engineer?.value} handleEngineer={handleEngineer} warranty={warranty} setWarranty={(e) => setWarranty(e)} imei={modifyTaskModal?.imei} serial_number={modifyTaskModal?.serial_number} model={modifyTaskModal?.model} />
+                                                </TabsContent>
+                                                <TabsContent value="QC">
+                                                    <QC qcUpdateLoading={updateHHPTaskLoading} qc_fail_reasonProp={qc_comment} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} qc_FilesLoadingProp={qcFilesUploading} setQCFilesProp={handleQCFiles} submitQCFiles={submitQCFiles} setUnitCompleteDateProp={setUnitCompleteDate} setUnitCompleteProp={setUnitComplete} submitQC={handleQCSubmit} />
+                                                </TabsContent>
+                                                <TabsContent value="Parts">
+                                                    <Parts partsExtraText={partsExtraText} setPartsExtraText={setPartsExtraText} compensation={compensation} setCompensation={(e) => setCompensation(e)} deletePartLoading={deletePartLoading} part_data={[...taskPartsList]} parts_requestedProp={parts_requested} setPartsRequestedProp={(e) => setPartsRequested(e)} setPartsRequestedDateProp={setPartsRequestedDate} parts_orderedProp={parts_ordered} setPartsOrderedProp={(e) => setPartsOrdered(e)} parts_pendingProp={parts_pending} setPartsPendingProp={(e) => setPartsPending(e)} parts_issuedProp={parts_issued} setPartsIssuedProp={(e) => setPartsIssued(e)} setPartsIssuedDateProp={setPartsIssuedDate} setPartsPendingDateProp={setPartsPendingDate} setPartsOrderedDateProp={setPartsOrderedDate} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} handleDelete={handleDeletePart} addPartOnRepairshoprLoading={addPartOnRepairshoprLoading} addPartOnRepairshopr={addPartListToRepairshoprComment} />
+                                                </TabsContent>
+                                                <TabsContent value="Time">
+                                                    <DateCalculationsScreen data={hhpTasks} openTaskId={modifyTaskModal?.id} />
+                                                </TabsContent>
+                                            </Tabs>
+                                        </>
+                                    }
+                                />
                             }
 
                         </main>

@@ -20,7 +20,7 @@ const useIpaasSymptomCodes = () => {
                 Pac: `${pac}`,
             },
         };
-
+        if (!modelNumber) return;
         try {
             const response = await axios.post(`${ipaasApiUrl}`, options, {
                 headers: {

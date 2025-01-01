@@ -42,8 +42,6 @@ const CarsScreen = () => {
 
     const [openAddModal, setOpenAddModal] = useState(false)
 
-    // const { hhpTask } = useFetchHHPTaskById(modifyTaskModal?.id)
-
 
 
 

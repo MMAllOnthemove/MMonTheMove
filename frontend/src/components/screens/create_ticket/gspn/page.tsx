@@ -105,7 +105,6 @@ const GSPNScreen = () => {
         const loadCustomerAssetInfo = () => {
             if (typeof window !== undefined && window.localStorage) {
                 const parsedData = JSON.parse(localStorage.getItem('assetInfo') || '""');
-                // console.log(parsedData)
                 if (parsedData !== null) {
                     setSerialNumber(parsedData?.asset_serial)
                     setModel(parsedData?.model_number)

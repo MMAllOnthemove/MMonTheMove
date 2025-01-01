@@ -7,6 +7,7 @@ const useDeleteEngineer = () => {
 
     const deleteEngineer = async (engineerId: string) => {
         setLoading(true);
+        if (!engineerId) return;
         try {
             const response = await axios.delete(
                 `${process.env.NEXT_PUBLIC_API_SERVER_URL}/engineers/${engineerId}`,

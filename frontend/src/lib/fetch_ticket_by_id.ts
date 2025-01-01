@@ -3,6 +3,7 @@
 import axios from "axios";
 
 export const fetchRSTicketDataById = async (repairId: string) => {
+    if (!repairId) return;
     try {
         const { data } = await axios.get(
             `https://allelectronics.repairshopr.com/api/v1/tickets/${repairId}`,

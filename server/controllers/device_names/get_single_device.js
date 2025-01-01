@@ -6,7 +6,6 @@ const getDeviceName = async (req, res) => {
 
         return res.status(200).json(rows);
     } catch (error) {
-        console.log(error);
         return res.status(500).json({ error: "Could not fetch devices" });
     }
 };

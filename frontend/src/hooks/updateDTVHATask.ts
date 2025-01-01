@@ -19,9 +19,8 @@ const useUpdateDTVHATask = () => {
         taskId: string | number | undefined,
         values: TUpdateValues
     ) => {
+        if (!taskId) return;
         try {
-            if (!taskId) return;
-
             const response = await axios.patch(
                 `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/dtv_ha/jobs/` +
                     taskId,

@@ -65,7 +65,8 @@ const useCheckWarranty = (
                     }
                 }
             } catch (error) {
-                console.log("check warranty error", error);
+                if (process.env.NODE_ENV !== "production")
+                    console.log("check warranty error", error);
             }
         };
 

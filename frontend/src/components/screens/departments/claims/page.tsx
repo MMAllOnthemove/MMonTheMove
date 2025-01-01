@@ -44,6 +44,7 @@ const ClaimsScreen = () => {
 
     useEffect(() => {
         const handleGetSOInfo = async (serviceOrder: string | number) => {
+            if (!serviceOrder) return
             try {
                 const data = await getSOInfoAllTookan(serviceOrder);
                 const statusDescs = data?.EtLogInfo?.results?.map((result: getSOInfoAllLogInfoSection) => result?.StatusDesc);

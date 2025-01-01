@@ -8,6 +8,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
+import { Textarea } from "@/components/ui/textarea";
 import { datetimestamp } from '@/lib/date_formats';
 import { TTaskParts } from '@/lib/types';
 import { XMarkIcon } from '@heroicons/react/24/outline';
@@ -21,6 +22,8 @@ type TPartsHHPUpdate = {
     compensation: CheckedState | undefined | any | any
     search_part: string;
     setSearchPart: (data: string) => void;
+    partsExtraText: string;
+    setPartsExtraText: (data: string) => void;
     part_desc: string;
     setPartDesc: (data: string) => void;
     part_quantity: number | undefined;
@@ -51,7 +54,7 @@ type TPartsHHPUpdate = {
         part_quantity?: string;
     }
 }
-const Parts = ({ parts_orderedProp, parts_pendingProp, deletePartLoading, parts_issuedProp, part_data, handleDelete, parts_requestedProp, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsPendingProp, setPartsPendingDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, errors }: TPartsHHPUpdate) => {
+const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, parts_pendingProp, deletePartLoading, parts_issuedProp, part_data, handleDelete, parts_requestedProp, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsPendingProp, setPartsPendingDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, errors }: TPartsHHPUpdate) => {
     const handlePartsOrdered = (e: React.SyntheticEvent | any) => {
         if (!parts_orderedProp) {
             setPartsOrderedProp(e);
@@ -118,6 +121,18 @@ const Parts = ({ parts_orderedProp, parts_pendingProp, deletePartLoading, parts_
                             </div>
 
                         </div>
+                        <div>
+                            {part_data?.length > 0 && (
+                                <div className="my-3">
+                                    <Textarea
+                                        placeholder="e.g. I need these parts..."
+                                        name="partsExtraText"
+                                        value={partsExtraText}
+                                        onChange={(e) => setPartsExtraText(e.target.value)}
+                                    />
+                                </div>
+                            )}
+                        </div>
                         <Button className="w-full outline-none bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985]" type="button" onClick={addPart} disabled={addPartLoading}>{addPartLoading ? 'Adding...' : 'Add part'} </Button>
 
                     </AccordionContent>
@@ -135,15 +150,16 @@ const Parts = ({ parts_orderedProp, parts_pendingProp, deletePartLoading, parts_
                                 </div>
                             )) : "No parts for this task"}
                             {part_data?.length > 0 ? (
-                                <div className="flex items-center justify-between">
-                                    <Button type="button" className="outline-none mt-3 text-xs bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985]" onClick={addPartOnRepairshopr} disabled={addPartOnRepairshoprLoading}>{addPartOnRepairshoprLoading ? 'Loading...' : 'Comment these parts'}</Button>
-                                    <p className="text-sm font-medium text-gray-800">Total: {part_data?.length}</p>
+                                <div className="">
+                                    {/* addPartOnRepairshopr */}
+                                    <Button className="w-full outline-none bg-[#082f49] my-2 hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985]" type="button" onClick={addPartOnRepairshopr} disabled={addPartOnRepairshoprLoading}>{addPartOnRepairshoprLoading ? 'Adding...' : 'Send to ticket'} </Button>
+
+                                    <p className="text-sm font-medium text-gray-800 mb-2">Total parts: {part_data?.length}</p>
                                 </div>
                             ) : null}
                         </div>
 
                         <div>
-                            <h3>Select status</h3>
                             <p className="text-sm font-medium">Ensure you select part status when adding parts</p>
                             <div className="mb-3 pt-4">
 

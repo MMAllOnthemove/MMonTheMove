@@ -9,9 +9,8 @@ const getSingleCarFuelUsage = async (req, res) => {
             [id]
         );
 
-        return res.json(rows);
+        return res.status(200).json(rows);
     } catch (error) {
-        console.log(error);
         return res.status(500).json({ error: "Could not find previous data" });
     }
 };

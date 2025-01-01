@@ -13,7 +13,7 @@ type TUpdateValues = {
     parts_issued?: boolean;
     parts_pending?: boolean;
     qc_date?: string;
-    qc_complete?: boolean;
+    qc_complete?: string;
 };
 
 const useUpdateHHPTask = () => {
@@ -23,9 +23,8 @@ const useUpdateHHPTask = () => {
         values: TUpdateValues
     ) => {
         setLoading(true);
+        if (!taskId) return;
         try {
-            if (!taskId) return;
-
             const response = await axios.patch(
                 `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/` +
                     taskId,

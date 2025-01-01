@@ -83,6 +83,7 @@ const AddgspnDTVHATask = ({ onChange }: { onChange: (value: boolean) => void }) 
     useEffect(() => {
         const handleGetSOInfo = async (serviceOrder: string) => {
             setLoadGSPNApiData(true)
+            if (!serviceOrder) return;
             try {
                 const data = await getSOInfoAllTookan(serviceOrder);
                 if (data?.Return?.EsModelInfo?.WtyType === "OW") setWarranty('OOW')

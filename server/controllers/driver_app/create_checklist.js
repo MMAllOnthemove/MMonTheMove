@@ -298,7 +298,6 @@ const createChecklist = async (req, res) => {
             rows: rows,
         });
     } catch (error) {
-        console.log(error);
         // to get error for a specific field
         const errors = {};
         if (error.inner) {

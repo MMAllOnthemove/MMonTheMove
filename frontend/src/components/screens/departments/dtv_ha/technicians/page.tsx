@@ -230,7 +230,7 @@ const DTVHATechniciansScreen = () => {
             if (comment) await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
 
         } catch (error) {
-            console.log("error commenting deleted part", error)
+            if (process.env.NODE_ENV !== 'production') console.log("error commenting deleted part", error)
         }
         refetch(); // Refresh the list of parts
 
@@ -410,7 +410,6 @@ const DTVHATechniciansScreen = () => {
 
         try {
             const res = await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, repairshopr_payload);
-            console.log("res", res)
             if (reparshoprComment?.length > 0) {
                 await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
                 await addCommentLocally(addCommentLocallyPayload)
