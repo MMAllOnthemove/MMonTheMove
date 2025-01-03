@@ -20,6 +20,7 @@ const TicketUpdaterScreen: React.FC = () => {
 
             return () => clearInterval(interval); // Cleanup on component unmount
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isRunning]);
 
     const fetchAndUpdateTickets = async () => {
@@ -86,7 +87,7 @@ const TicketUpdaterScreen: React.FC = () => {
             // Compare changes before updating
             if (
                 serviceOrderNumber !==
-                changes.service_order_no||
+                changes.service_order_no ||
                 ticket.engineer !== changes.engineer ||
                 ticket.warranty !== changes.warranty ||
                 ticket.date_booked !== changes.date_booked ||

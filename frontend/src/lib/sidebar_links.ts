@@ -58,7 +58,8 @@ export const menuItems = [
     {
         label: "Bookings",
         sublinks: [
-            { id: 16, item: "Create customer", pageRoute: "/create_customer" },
+            // { id: 16, item: "Create customer", pageRoute: "/create_customer" },
+            { id: 16, item: "Create customer", pageRoute: "/welcome" },
         ],
     },
     {

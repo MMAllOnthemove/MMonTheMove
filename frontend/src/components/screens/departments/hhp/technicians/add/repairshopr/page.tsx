@@ -45,6 +45,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
 
 
     const [imei, setIMEI] = useState("")
+    const [repairshoprIMEI, setRepairshoprIMEI] = useState<string>("")
     const [repairshopr_job_id, setRepairshoprJobId] = useState('')
     const [service_order_no, setServiceOrderNo] = useState("")
     const [fault, setFault] = useState("")
@@ -82,6 +83,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                     if (data?.tickets[0]["properties"]["Warranty"] || data?.tickets[0]["properties"]["Warranty "] === '69476' || 69476) setWarranty('IW')
                     if (data?.tickets[0]["properties"]["Warranty"] || data?.tickets[0]["properties"]["Warranty "] === '69477' || 69477) setWarranty('OOW')
                     setServiceOrderNo(data?.tickets[0]["properties"]["Service Order No."])
+                    setRepairshoprIMEI(data?.tickets[0]["properties"]["IMEI"])
                     setTicketNumber(data?.tickets[0]?.number)
                     setRepairshoprJobId(data?.tickets[0]?.id)
                     setStatus(data?.tickets[0]?.status)
@@ -165,7 +167,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
             warranty,
             engineer: engineer?.value,
             fault,
-            imei,
+            imei: imei ?? repairshoprIMEI,
             serial_number,
             status,
             ticket_number,
@@ -200,8 +202,6 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
         if (addHHPTaskErrors) {
             onChange(false)
         }
-
-
     }
     return (
         <div>

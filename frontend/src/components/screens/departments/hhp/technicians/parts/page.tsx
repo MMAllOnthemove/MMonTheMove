@@ -34,7 +34,6 @@ type TPartsHHPUpdate = {
     setPartsPendingDateProp: (data: string) => void;
     setPartsIssuedProp: (data: CheckedState | undefined) => void;
     setPartsRequestedProp: (data: CheckedState | undefined) => void;
-
     setCompensation: (data: CheckedState | undefined | any | null) => void;
     setPartsRequestedDateProp: (data: string) => void;
     setPartsIssuedDateProp: (data: string) => void;
@@ -44,6 +43,9 @@ type TPartsHHPUpdate = {
     addPartOnRepairshopr: (data: React.SyntheticEvent) => void;
     addPart: (data: React.SyntheticEvent) => void;
     submitPartsUpdate: (data: React.SyntheticEvent) => void;
+    serial_number: string;
+    model: string;
+    imei: string;
     part_data: TTaskParts[];
     deletePartLoading: boolean;
     // 3 arguments so we know which part was deleted
@@ -54,7 +56,7 @@ type TPartsHHPUpdate = {
         part_quantity?: string;
     }
 }
-const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, parts_pendingProp, deletePartLoading, parts_issuedProp, part_data, handleDelete, parts_requestedProp, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsPendingProp, setPartsPendingDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, errors }: TPartsHHPUpdate) => {
+const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, parts_pendingProp, deletePartLoading, parts_issuedProp, part_data, handleDelete, parts_requestedProp, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsPendingProp, setPartsPendingDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, model, imei, serial_number,errors }: TPartsHHPUpdate) => {
     const handlePartsOrdered = (e: React.SyntheticEvent | any) => {
         if (!parts_orderedProp) {
             setPartsOrderedProp(e);
@@ -212,7 +214,19 @@ const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, parts_pen
                     </AccordionContent>
                 </AccordionItem>
 
-
+                <AccordionItem value="item-3">
+                    <AccordionTrigger>More info</AccordionTrigger>
+                    <AccordionContent>
+                        <div>
+                            <ul className="list-decimal list-inside">
+                               
+                                <li>Model: <span className="text-gray-600 font-medium">{model}</span></li>
+                                <li>IMEI: <span className="text-gray-600 font-medium">{imei}</span></li>
+                                <li>Serial number: <span className="text-gray-600 font-medium">{serial_number}</span></li>
+                            </ul>
+                        </div>
+                    </AccordionContent>
+                </AccordionItem>
             </Accordion>
 
             <Button className="w-full outline-none" type="button" onClick={submitPartsUpdate} disabled={submitPartsUpdateLoading}>{submitPartsUpdateLoading ? 'Loading...' : 'Update'}</Button>
