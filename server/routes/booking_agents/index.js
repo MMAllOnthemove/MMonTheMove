@@ -1,0 +1,16 @@
+import express from "express";
+import getAgents from "../../controllers/booking_agents/get_agents.js";
+import { authenticateAdmin } from "../../middleware/verify_admin.js";
+import { authenticateToken } from "../../middleware/verify.js";
+import addAgent from "../../controllers/booking_agents/create_agents.js";
+import deleteAgent from "../../controllers/booking_agents/delete_agents.js";
+import { limiter } from "../../middleware/rateLimiter.js";
+import addBookingAgentTask from "../../controllers/booking_agents_tasks/create_task.js";
+import getBookingAgentsTasks from "../../controllers/booking_agents_tasks/get_tasks.js";
+const router = express.Router();
+router.get("/", authenticateToken, getAgents);
+router.post("/", limiter, authenticateAdmin, addAgent);
+router.delete("/:id", authenticateAdmin, deleteAgent);
+router.get("/tasks", authenticateToken, getBookingAgentsTasks);
+router.post("/tasks", limiter, authenticateToken, addBookingAgentTask);
+export { router };
