@@ -1,15 +1,16 @@
 import moment from "moment";
-import { TColumns } from "./types";
+import { TColumns, THHPTasks } from "./types";
+import { ColumnDef } from "@tanstack/react-table";
 
 
-const columns: TColumns | any =
+const columns: ColumnDef<THHPTasks>[] =
     [
         {
             header: "Service Order No",
             accessorKey: "service_order_no",
             cell: ({ row, getValue }: any) => {
-                const value = getValue();
-                const isEmpty = value === null || value === undefined || value === 0 || value === "" || value?.toLowerCase() === "tbc";
+                const value = getValue() as string;
+                const isEmpty = value === null || value === undefined || value === "" || value?.toLowerCase() === "tbc";
 
                 return (
                     <div
@@ -71,7 +72,6 @@ const columns: TColumns | any =
         {
             header: "Stores",
             accessorKey: "stores",
-            // cell: info => moment(info).format("YYYY-MM-DD")
         },
         {
             header: "Engineer",

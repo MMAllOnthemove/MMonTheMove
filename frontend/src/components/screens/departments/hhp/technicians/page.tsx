@@ -54,9 +54,10 @@ import { fetchRSTicketDataById } from '@/lib/fetch_ticket_by_id'
 import { fieldsToExtract } from '@/lib/fields_to_extract'
 import findChanges from '@/lib/find_changes'
 
-import { ModifyTaskModalTechnicians, PropertiesType, RepairshorTicketComment, TechniciansTableData } from '@/lib/types'
+import { ModifyTaskModalTechnicians, PropertiesType, RepairshorTicketComment, TechniciansTableData, THHPTasks } from '@/lib/types'
 import { CheckedState } from '@radix-ui/react-checkbox'
 import {
+    ColumnFiltersState,
     ColumnOrderState,
     getCoreRowModel,
     getFilteredRowModel,
@@ -99,6 +100,7 @@ import useDeleteHHPTask from '@/hooks/useDeleteHHPTask'
 import columns from '@/lib/hhp_technicians_table_columns'
 import Modal from '@/components/modal/page'
 import { useRouter } from 'next/navigation'
+import { globalFilterFn } from '@/lib/tanstack_global_filter'
 const DateCalculationsScreen = dynamic(() =>
     import('./date_calculations/page')
 )
@@ -316,6 +318,7 @@ const TechniciansScreen = () => {
 
     // Table column order
     const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>([])
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
 
     // Data for the table, so we can filter it
@@ -354,14 +357,16 @@ const TechniciansScreen = () => {
             pagination,
             columnVisibility,
             columnOrder,
+            columnFilters
         },
         onColumnVisibilityChange: setColumnVisibility,
         onColumnOrderChange: setColumnOrder,
         onSortingChange: setSorting,
         onGlobalFilterChange: setFiltering,
         onPaginationChange: setPagination,
+        globalFilterFn, // Use the typed global filter function
+        onColumnFiltersChange: setColumnFilters,
     });
-
 
     useEffect(() => {
         // store values from db but still allow user to update those same fields
@@ -858,7 +863,7 @@ const TechniciansScreen = () => {
                                                     <QC qcUpdateLoading={updateHHPTaskLoading} qc_fail_reasonProp={qc_comment} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} qc_FilesLoadingProp={qcFilesUploading} setQCFilesProp={handleQCFiles} submitQCFiles={submitQCFiles} setUnitCompleteDateProp={setUnitCompleteDate} setUnitCompleteProp={setUnitComplete} submitQC={handleQCSubmit} />
                                                 </TabsContent>
                                                 <TabsContent value="Parts">
-                                                    <Parts partsExtraText={partsExtraText} setPartsExtraText={setPartsExtraText} compensation={compensation} setCompensation={(e) => setCompensation(e)} deletePartLoading={deletePartLoading} part_data={[...taskPartsList]} parts_requestedProp={parts_requested} setPartsRequestedProp={(e) => setPartsRequested(e)} setPartsRequestedDateProp={setPartsRequestedDate} parts_orderedProp={parts_ordered} setPartsOrderedProp={(e) => setPartsOrdered(e)} parts_pendingProp={parts_pending} setPartsPendingProp={(e) => setPartsPending(e)} parts_issuedProp={parts_issued} setPartsIssuedProp={(e) => setPartsIssued(e)} setPartsIssuedDateProp={setPartsIssuedDate} setPartsPendingDateProp={setPartsPendingDate} setPartsOrderedDateProp={setPartsOrderedDate} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} handleDelete={handleDeletePart} addPartOnRepairshoprLoading={addPartOnRepairshoprLoading} addPartOnRepairshopr={addPartListToRepairshoprComment} />
+                                                    <Parts partsExtraText={partsExtraText} setPartsExtraText={setPartsExtraText} compensation={compensation} setCompensation={(e) => setCompensation(e)} deletePartLoading={deletePartLoading} part_data={[...taskPartsList]} parts_requestedProp={parts_requested} setPartsRequestedProp={(e) => setPartsRequested(e)} setPartsRequestedDateProp={setPartsRequestedDate} parts_orderedProp={parts_ordered} setPartsOrderedProp={(e) => setPartsOrdered(e)} parts_pendingProp={parts_pending} setPartsPendingProp={(e) => setPartsPending(e)} parts_issuedProp={parts_issued} setPartsIssuedProp={(e) => setPartsIssued(e)} setPartsIssuedDateProp={setPartsIssuedDate} setPartsPendingDateProp={setPartsPendingDate} setPartsOrderedDateProp={setPartsOrderedDate} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} handleDelete={handleDeletePart} addPartOnRepairshoprLoading={addPartOnRepairshoprLoading} addPartOnRepairshopr={addPartListToRepairshoprComment} imei={modifyTaskModal?.imei} serial_number={modifyTaskModal?.serial_number} model={modifyTaskModal?.model} />
                                                 </TabsContent>
                                                 <TabsContent value="Time">
                                                     <DateCalculationsScreen data={hhpTasks} openTaskId={modifyTaskModal?.id} />

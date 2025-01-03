@@ -1,12 +1,10 @@
 import { Metadata } from 'next'
 import dynamic from 'next/dynamic'
-const CreateCustomerScreen = dynamic(() =>
-    import('@/components/screens/create_customer/page')
-)
 
+const CreateCustomerRepairshoprScreen = dynamic(() => import('@/components/screens/create_customer/rs/page'))
 
 export const metadata: Metadata = {
-    title: "Customers | create or search",
+    title: "Customers | create",
     description: "",
     robots: {
         index: false,
@@ -16,7 +14,7 @@ export const metadata: Metadata = {
 
 const CreateCustomer = () => {
     return (
-        <CreateCustomerScreen />
+        <CreateCustomerRepairshoprScreen />
     )
 }
 

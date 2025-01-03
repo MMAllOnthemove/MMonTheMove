@@ -76,6 +76,7 @@ const addCustomer = async (req, res) => {
             message: "Successfully added as visit",
         });
     } catch (error) {
+        console.log(error);
         // Handle validation or other errors
         const errors = {};
         if (error.inner) {

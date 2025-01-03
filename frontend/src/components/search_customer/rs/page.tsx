@@ -2,13 +2,7 @@
 import PageTitle from '@/components/PageTitle/page';
 import ManagementSearchForm from '@/components/search_field/page';
 import { Button } from '@/components/ui/button';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle
-} from "@/components/ui/dialog";
+
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import columns from '@/lib/create_rs_customer_table';
@@ -25,16 +19,28 @@ import {
 } from "@tanstack/react-table";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { MouseEventHandler, useEffect, useState } from 'react';
 import TableBody from './tablebody';
 import TableHead from './tablehead';
 import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
 import useUpdateRepairshoprCustomer from '@/hooks/useUpdateRepairshoprCustomer';
 import { datetimestamp } from '@/lib/date_formats';
 
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 
-
-
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle
+} from "@/components/ui/dialog";
 
 const SearchCustomerRepairshoprScreen = () => {
     const [searchCustomer, setSearchCustomer] = useState("");
@@ -54,61 +60,66 @@ const SearchCustomerRepairshoprScreen = () => {
     const { addCustomerLocally, createCustomerLocallyLoading } = useCreateCustomerLocally()
     const { updateCustomer, updateCustomerRepairshoprLoading } = useUpdateRepairshoprCustomer()
     // this is the modal for editing customer details
-    const [editModalOpen, setEditModalOpen] = useState<CustomerResultRowClick | any>();
-
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [selectedCustomer, setSelectedCustomer] = useState<any>(null); // Customer being edited
+    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter()
 
-    useEffect(() => {
-        const checkIfCustomerWasHere = async () => {
-            if (!searchCustomer) return;
-            try {
-                const { data } = await axios.get(`https://allelectronics.repairshopr.com/api/v1/customers?query=${searchCustomer}`, {
+
+    const checkIfCustomerWasHere = async () => {
+        const trimmedSearch = searchCustomer.trim(); // Remove leading and trailing spaces
+        if (!trimmedSearch) return; // Do nothing if the input is empty after trimming
+
+        try {
+            const { data } = await axios.get(
+                `https://allelectronics.repairshopr.com/api/v1/customers?query=${searchCustomer}`,
+                {
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`
-                    },
-                })
-
-                if (data?.customers?.length > 0) {
-                    const filteredCustomers = data.customers.filter((customer: any) => {
-                        const searchLower = searchCustomer.toLowerCase();
-                        const firstNameMatch = customer.firstname?.toLowerCase().includes(searchLower);
-                        const lastNameMatch = customer.lastname?.toLowerCase().includes(searchLower);
-                        const emailMatch = customer.email?.toLowerCase().includes(searchLower);
-                        const fullNameMatch = `${customer.firstname} ${customer.lastname}`.toLowerCase().includes(searchLower);
-
-                        return firstNameMatch || lastNameMatch || emailMatch || fullNameMatch;
-                    });
-                    if (filteredCustomers.length > 0) {
-                        const customer = filteredCustomers[0]; // Pick the first match
-                        setResult(filteredCustomers);
-                        setCustomerId(customer.id);
-                        setFirstname(customer.firstname);
-                        setLastname(customer.lastname);
-                        setBusinessname(customer.business_name);
-                        setEmail(customer.email);
-                        setPhoneNumber(customer.mobile);
-                        setPhoneNumber2(customer.phone);
-                        setAddress(customer.address);
-                        setAddress2(customer.address_2);
-                        setCity(customer.city);
-                        setState(customer.state);
-                        setZip(customer.zip);
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
                     }
                 }
-            } catch (error) {
-                // console.log("search repair customer error", error)
-            }
+            );
 
+            if (data?.customers?.length > 0) {
+                const searchLower = searchCustomer.toLowerCase();
+
+                const exactMatchCustomer = data.customers.find((customer: any) => {
+                    const firstNameExact = customer.firstname?.toLowerCase() === searchLower;
+                    const lastNameExact = customer.lastname?.toLowerCase() === searchLower;
+                    const emailExact = customer.email?.toLowerCase() === searchLower;
+                    const mobileExact = customer.mobile?.toLowerCase() === searchLower;
+                    const phoneExact = customer.phone?.toLowerCase() === searchLower;
+                    const fullNameExact =
+                        `${customer.firstname} ${customer.lastname}`.toLowerCase() === searchLower;
+
+                    return firstNameExact || lastNameExact || emailExact || fullNameExact || mobileExact || phoneExact;
+                });
+
+                if (exactMatchCustomer) {
+                    setResult([exactMatchCustomer]); // Display only the exact match
+                    setSearchCustomer(trimmedSearch);
+                    setCustomerId(exactMatchCustomer.id);
+                    setFirstname(exactMatchCustomer.firstname);
+                    setLastname(exactMatchCustomer.lastname);
+                    setBusinessname(exactMatchCustomer.business_name);
+                    setEmail(exactMatchCustomer.email);
+                    setPhoneNumber(exactMatchCustomer.mobile);
+                    setPhoneNumber2(exactMatchCustomer.phone);
+                    setAddress(exactMatchCustomer.address);
+                    setAddress2(exactMatchCustomer.address_2);
+                    setCity(exactMatchCustomer.city);
+                    setState(exactMatchCustomer.state);
+                    setZip(exactMatchCustomer.zip);
+                } else {
+                    setResult([]); // No exact match found
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching customer data:", error);
         }
-        const delayDebounce = setTimeout(() => {
-            if (searchCustomer) {
-                checkIfCustomerWasHere();
-            }
-        }, 300); // Debounce delay
+    };
 
-        return () => clearTimeout(delayDebounce);
-    }, [searchCustomer])
 
     const addExistingCustomer = async () => {
         const visit_date = datetimestamp
@@ -154,7 +165,15 @@ const SearchCustomerRepairshoprScreen = () => {
         }
 
     }
+    const openEditModal = (customer: any) => {
+        setSelectedCustomer(customer);
+        setEditModalOpen(true);
+    };
 
+    const closeModal = () => {
+        setEditModalOpen(false);
+        setSelectedCustomer(null);
+    };
     // Table sorting
     const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -193,27 +212,16 @@ const SearchCustomerRepairshoprScreen = () => {
         onPaginationChange: setPagination,
     });
 
-    // clicking a row to open that row's modal
-    const handleRowClick = async (row: CustomerResultRowClick) => {
-        setEditModalOpen(row?.original);
-    };
+
+
+
 
     return (
-        <>
-            <PageTitle title="customer" hasSpan={true} spanText={"Search"} />
-            <section className="flex justify-between items-center py-5">
-                <ManagementSearchForm
-                    filtering={searchCustomer}
-                    setFiltering={(e) => setSearchCustomer(e.target.value)}
-                />
+        <main className="flex justify-center items-center h-screen bg-orange-100">
 
-                <Button type="button" onClick={addExistingCustomer} disabled={createCustomerLocallyLoading}> {createCustomerLocallyLoading ? 'Adding...' : 'Add customer'}</Button>
-
-            </section>
-            {/* modal for updating customer details */}
             {
                 editModalOpen &&
-                <Dialog open={editModalOpen} onOpenChange={() => setEditModalOpen(false)} >
+                <Dialog open={editModalOpen} onOpenChange={closeModal} >
                     {/* <DialogTrigger>Open</DialogTrigger> */}
                     <DialogContent>
                         <DialogHeader>
@@ -223,23 +231,25 @@ const SearchCustomerRepairshoprScreen = () => {
                             </DialogDescription>
                         </DialogHeader>
                         <div>
-                            <div className='mb-1'>
-                                <Label htmlFor="firstname">First name</Label>
-                                <Input
-                                    value={firstname || ''}
-                                    onChange={(e) => setFirstname(e.target.value)}
-                                    autoComplete='false'
-                                    type="text"
-                                />
-                            </div>
-                            <div className='mb-1'>
-                                <Label htmlFor="lastname">Last name</Label>
-                                <Input
-                                    value={lastname || ''}
-                                    onChange={(e) => setLastname(e.target.value)}
-                                    autoComplete='false'
-                                    type="text"
-                                />
+                            <div className="flex gap-2 items-center justify-between">
+                                <div className='mb-1'>
+                                    <Label htmlFor="firstname">First name</Label>
+                                    <Input
+                                        value={firstname || ''}
+                                        onChange={(e) => setFirstname(e.target.value)}
+                                        autoComplete='false'
+                                        type="text"
+                                    />
+                                </div>
+                                <div className='mb-1'>
+                                    <Label htmlFor="lastname">Last name</Label>
+                                    <Input
+                                        value={lastname || ''}
+                                        onChange={(e) => setLastname(e.target.value)}
+                                        autoComplete='false'
+                                        type="text"
+                                    />
+                                </div>
                             </div>
                             <div className='mb-1'>
                                 <Label htmlFor="email">Email</Label>
@@ -250,39 +260,138 @@ const SearchCustomerRepairshoprScreen = () => {
                                     autoComplete='false'
                                 />
                             </div>
-                            <div className='mb-1'>
-                                <Label htmlFor="phoneNumber">Phone number</Label>
-                                <Input
-                                    type="phoneNumber"
-                                    value={phoneNumber || ''}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
-                                    autoComplete='false'
-                                />
+                            <div className="flex gap-2 items-center justify-between">
+                                <div className='mb-1'>
+                                    <Label htmlFor="phoneNumber">Phone number</Label>
+                                    <Input
+                                        type="phoneNumber"
+                                        value={phoneNumber || ''}
+                                        onChange={(e) => setPhoneNumber(e.target.value)}
+                                        autoComplete='false'
+                                    />
+                                </div>
+                                <div className='mb-1'>
+                                    <Label htmlFor="phoneNumber2">Phone number 2</Label>
+                                    <Input
+                                        type="phoneNumber2"
+                                        value={phoneNumber2 || ''}
+                                        onChange={(e) => setPhoneNumber2(e.target.value)}
+                                        autoComplete='false'
+                                    />
+                                </div>
                             </div>
-                            <div className='mb-1'>
-                                <Label htmlFor="phoneNumber2">Phone number 2</Label>
-                                <Input
-                                    type="phoneNumber2"
-                                    value={phoneNumber2 || ''}
-                                    onChange={(e) => setPhoneNumber2(e.target.value)}
-                                    autoComplete='false'
-                                />
+                            <div className="flex gap-2 items-center justify-between">
+                                <div className='mb-1'>
+                                    <Label htmlFor="address">Address</Label>
+                                    <Input
+                                        type="address"
+                                        value={address || ''}
+                                        onChange={(e) => setAddress(e.target.value)}
+                                        autoComplete='false'
+                                    />
+                                </div>
+                                <div className='mb-1'>
+                                    <Label htmlFor="address2">Address 2</Label>
+                                    <Input
+                                        type="address2"
+                                        value={address2 || ''}
+                                        onChange={(e) => setAddress2(e.target.value)}
+                                        autoComplete='false'
+                                    />
+                                </div>
                             </div>
-                            <Button type="button" onClick={updateCustomerDetailsOnRepairshopr} disabled={updateCustomerRepairshoprLoading}>{updateCustomerRepairshoprLoading ? 'Updating...' : 'Update details'}</Button>
+                            <Button className='mt-2' type="button" onClick={updateCustomerDetailsOnRepairshopr} disabled={updateCustomerRepairshoprLoading}>{updateCustomerRepairshoprLoading ? 'Updating...' : 'Update details'}</Button>
                         </div>
 
                     </DialogContent>
                 </Dialog>
             }
+            <Card className="max-w-md mx-auto p-1">
+                <CardHeader>
+                    <CardTitle className="text-center text-xl font-bold">
+                        Welcome back
+                    </CardTitle>
+                    <CardDescription className='text-center'>
+                        Search using firstname, lastname, fullname, or email
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    {/* Search Input */}
+                    <div className="space-y-2">
+                        <Input
+                            type="text"
+                            placeholder="Enter your name or phone number"
+                            value={searchCustomer}
+                            onChange={(e) => setSearchCustomer(e.target.value)}
+                            className="w-full"
+                        />
+                        <Button
+                            onClick={checkIfCustomerWasHere}
+                            className="bg-blue-500 hover:bg-blue-600 text-white w-full"
+                            disabled={isLoading || !searchCustomer.trim()} // Disable if input is empty after trimming
+                        >
+                            {isLoading ? "Searching..." : "Search"}
+                        </Button>
+                    </div>
 
+                    {/* Result Section */}
+                    <div className="mt-6">
+                        {result.length > 0 ? (
+                            result.map((customer: any) => (
+                                <Card
+                                    key={customer.id}
+                                    className="bg-white shadow-md rounded-md"
+                                >
+                                    <CardHeader>
+                                        <CardTitle className="text-lg font-bold">
+                                            {customer.firstname} {customer.lastname}
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <p>
+                                            <strong>Email:</strong> {customer.email}
+                                        </p>
+                                        <p>
+                                            <strong>Mobile:</strong> {customer.mobile}
+                                        </p>
+                                        <p>
+                                            <strong>Phone:</strong> {customer.phone}
+                                        </p>
+                                        <p>
+                                            <strong>Address:</strong> {customer.address} {customer.address_2} {customer.city} {customer.state} {customer.zip}
+                                        </p>
 
-            <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg">
-                <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-                    <TableHead table={table} />
-                    {!result ? null : <TableBody table={table} handleRowClick={handleRowClick} />}
-                </table>
-            </div>
-        </>
+                                        <div className='flex flex-col lg:flex-row justify-between gap-4 mt-3'>
+                                            <Button
+                                                onClick={openEditModal}
+                                                className=''
+                                            >
+                                                Edit details
+                                            </Button>
+                                            <Button
+                                                onClick={addExistingCustomer}
+                                                className='bg-blue-500 hover:bg-blue-600'
+                                                disabled={createCustomerLocallyLoading}
+                                            > {
+                                                    createCustomerLocallyLoading ? 'Adding...' : 'Continue'
+                                                }
+
+                                            </Button>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))
+                        ) : (
+                            <p className="text-gray-600 text-center">
+                                No matching customer found. Please try again or create a new
+                                account.
+                            </p>
+                        )}
+                    </div>
+                </CardContent>
+            </Card>
+
+        </main>
     )
 }
 

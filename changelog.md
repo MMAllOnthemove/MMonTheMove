@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.6] - 2025-01-02
+
+### Added
+
+-   ‘more info’ in parts tab as well
+
+### Fixed
+
+-   pull all data and not limited to a specific year
+-   if imei from assets does not work, use one from assets (adding hhp task using repairshopr api)
+-   search in table now works even for cells that share values e.g (service order  no / ticket number)
+-   add customer button sometimes not working
+-   change ‘add customer’ button text to just ‘Next’
+-   not searching table properly
+
 ## [0.1.5] - 2024-12-30
 
 ### Added
