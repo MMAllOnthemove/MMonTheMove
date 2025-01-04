@@ -1,12 +1,13 @@
 "use client"
-import PageTitle from '@/components/PageTitle/page';
-import ManagementSearchForm from '@/components/search_field/page';
 import { Button } from '@/components/ui/button';
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
+import useUpdateRepairshoprCustomer from '@/hooks/useUpdateRepairshoprCustomer';
 import columns from '@/lib/create_rs_customer_table';
-import { Customer, CustomerResultRowClick } from '@/lib/types';
+import { datetimestamp } from '@/lib/date_formats';
+import { Customer } from '@/lib/types';
 import {
     ColumnOrderState,
     getCoreRowModel,
@@ -19,12 +20,7 @@ import {
 } from "@tanstack/react-table";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import React, { MouseEventHandler, useEffect, useState } from 'react';
-import TableBody from './tablebody';
-import TableHead from './tablehead';
-import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
-import useUpdateRepairshoprCustomer from '@/hooks/useUpdateRepairshoprCustomer';
-import { datetimestamp } from '@/lib/date_formats';
+import React, { useState } from 'react';
 
 import {
     Card,
@@ -41,6 +37,7 @@ import {
     DialogHeader,
     DialogTitle
 } from "@/components/ui/dialog";
+import { capitalizeText } from '@/lib/capitalize';
 
 const SearchCustomerRepairshoprScreen = () => {
     const [searchCustomer, setSearchCustomer] = useState("");
@@ -126,8 +123,8 @@ const SearchCustomerRepairshoprScreen = () => {
         const custInfo = {
             repairshopr_customer_id: customerId,
             email: email,
-            firstname: firstname,
-            lastname: lastname,
+            firstname: capitalizeText(firstname),
+            lastname: capitalizeText(lastname),
             businessname: businessname,
             phone: phoneNumber,
             mobile: phoneNumber2,
@@ -139,6 +136,20 @@ const SearchCustomerRepairshoprScreen = () => {
             visit_date: visit_date
         };
         await addCustomerLocally(custInfo)
+        setResult([]); // Display only the exact match
+        setSearchCustomer('');
+        setCustomerId('');
+        setFirstname("")
+        setLastname("")
+        setBusinessname("")
+        setEmail("")
+        setPhoneNumber("")
+        setPhoneNumber2("")
+        setAddress("")
+        setAddress2("")
+        setCity("")
+        setState("")
+        setZip("")
 
     }
     const updateCustomerDetailsOnRepairshopr = async () => {
@@ -383,8 +394,7 @@ const SearchCustomerRepairshoprScreen = () => {
                             ))
                         ) : (
                             <p className="text-gray-600 text-center">
-                                No matching customer found. Please try again or create a new
-                                account.
+                                No matching customer found. Please try again.
                             </p>
                         )}
                     </div>

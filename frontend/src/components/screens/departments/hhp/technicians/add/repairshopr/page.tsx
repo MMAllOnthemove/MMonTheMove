@@ -84,6 +84,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                     if (data?.tickets[0]["properties"]["Warranty"] || data?.tickets[0]["properties"]["Warranty "] === '69477' || 69477) setWarranty('OOW')
                     setServiceOrderNo(data?.tickets[0]["properties"]["Service Order No."])
                     setRepairshoprIMEI(data?.tickets[0]["properties"]["IMEI"])
+                    setIMEI(data?.tickets[0]["properties"]["IMEI"])
                     setTicketNumber(data?.tickets[0]?.number)
                     setRepairshoprJobId(data?.tickets[0]?.id)
                     setStatus(data?.tickets[0]?.status)
@@ -138,7 +139,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                 });
 
                 if (data?.asset?.id == assetId) {
-                    setIMEI(data?.asset?.properties["IMEI No."])
+                    // setIMEI(data?.asset?.properties["IMEI No."])
                     setModel(data?.asset?.properties["Model No.:"])
                     setSerialNumber(data?.asset?.asset_serial)
 

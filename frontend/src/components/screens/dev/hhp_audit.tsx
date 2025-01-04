@@ -55,6 +55,10 @@ const columns: TColumns | any = [
         accessorKey: "service_order_no",
     },
     {
+        header: "warranty",
+        accessorKey: "warranty",
+    },
+    {
         header: "date_booked",
         accessorKey: "date_booked",
     },
@@ -203,6 +207,7 @@ const HHPAuditScreen = () => {
     };
     const changes = {
         "service_order_no": service_order_no,
+        "warranty": service_order_no,
         "ticket_number": ticket_number,
         "date_booked": date_booked ? moment(date_booked).format("YYYY-MM-DD HH:mm:ss") : date_booked,
         "unit_status": unit_status,

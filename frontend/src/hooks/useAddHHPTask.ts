@@ -17,6 +17,7 @@ interface ErrorMessages {
     stores?: string;
     repairshopr_job_id?: string;
     repeat_repair?: string;
+    additional_info?: string;
 }
 
 const useAddHHPTask = () => {

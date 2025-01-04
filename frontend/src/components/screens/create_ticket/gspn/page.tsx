@@ -85,7 +85,7 @@ const GSPNScreen = () => {
     const [city, setCity] = useState("")
     const [state, setState] = useState("")
     const [zip, setZip] = useState("")
-    const [country, setCountry] = useState("RSA")
+    const [country, setCountry] = useState("ZA")
 
     useEffect(() => {
         if (customer_email && singleCustomer) {
@@ -181,8 +181,7 @@ const GSPNScreen = () => {
             }
         }
         await addServiceOrder(values)
-        // now we can clear assets from local storage
-        if (typeof window !== 'undefined' && window.localStorage) localStorage.clear();
+
         setModel("")
         setSerialNumber("")
         setIMEI("")
@@ -216,6 +215,8 @@ const GSPNScreen = () => {
         setState("")
         setZip("")
         setCountry("")
+        // now we can clear assets from local storage
+        if (typeof window !== 'undefined' && window.localStorage) localStorage.clear();
     }
     return (
         <>

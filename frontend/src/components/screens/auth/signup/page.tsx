@@ -30,9 +30,6 @@ import { CheckIcon, ChevronUpDownIcon, EyeIcon, EyeSlashIcon } from "@heroicons/
 const SignupScreen = () => {
     const { rsUsersList } = useGetUserListRepairshopr()
 
-
-
-
     const formattedData = rsUsersList?.map((user) => ({
         repairshopr_id: user[0],
         value: user[1],

@@ -64,10 +64,10 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
 
 
     useEffect(() => {
-        if (fetchRSTicketData) {
-            setTicketNumber(fetchRSTicketData?.tickets[0]?.number)
-            setRepairshoprJobId(fetchRSTicketData?.tickets[0]?.id)
-        }
+        if (!ticket_number) return;
+        // setTicketNumber(fetchRSTicketData?.tickets[0]?.number)
+        setRepairshoprJobId(fetchRSTicketData?.tickets[0]?.id)
+
     }, [fetchRSTicketData])
 
     useEffect(() => {
