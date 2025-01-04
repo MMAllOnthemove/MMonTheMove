@@ -15,6 +15,7 @@ const AddHHPTaskSchema = Yup.object({
     ticket_number: Yup.string().required("Ticket number is required"),
     department: Yup.string().required("Department is required"),
     job_added_by: Yup.string().required("Please log in"),
+    additional_info: Yup.string(),
     stores: Yup.string().required("Select service type"),
     repairshopr_job_id: Yup.string().required("Repairshopr job id is missing"),
     repeat_repair: Yup.string().required("This field is required"),
@@ -40,6 +41,7 @@ const AddHHPTask = async (req, res) => {
         repairshopr_job_id,
         repeat_repair,
         created_at,
+        additional_info,
     } = req.body;
 
     try {
@@ -54,7 +56,7 @@ const AddHHPTask = async (req, res) => {
             });
         } else {
             const { rows } = await pool.query(
-                "INSERT INTO technician_tasks (service_order_no, date_booked, model, warranty, engineer, fault, imei, serial_number, unit_status, ticket_number, department, job_added_by, stores, repairshopr_job_id, repeat_repair, created_at) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) returning *",
+                "INSERT INTO technician_tasks (service_order_no, date_booked, model, warranty, engineer, fault, imei, serial_number, unit_status, ticket_number, department, job_added_by, stores, repairshopr_job_id, repeat_repair, created_at, additional_info) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) returning *",
                 [
                     service_order_no,
                     date_booked,
@@ -72,6 +74,7 @@ const AddHHPTask = async (req, res) => {
                     repairshopr_job_id,
                     repeat_repair,
                     created_at,
+                    additional_info,
                 ]
             );
             return res.status(201).json({

@@ -16,7 +16,7 @@ const TicketUpdaterScreen: React.FC = () => {
             setIsRunning(true);
             const interval = setInterval(() => {
                 fetchAndUpdateTickets();
-            }, 30000);
+            }, 3000);
 
             return () => clearInterval(interval); // Cleanup on component unmount
         }
@@ -36,6 +36,7 @@ const TicketUpdaterScreen: React.FC = () => {
                     withCredentials: true,
                 }
             );
+            console.log(data)
             for (const ticket of data) {
                 if (ticket.ticket_number.toString().length < 6) {
                     setLogs((prevLogs) => [...prevLogs, `Skipping ticket number: ${ticket.ticket_number} (Invalid ticket number)`]);
@@ -113,7 +114,7 @@ const TicketUpdaterScreen: React.FC = () => {
     return (
         <div>
             <h1>Ticket Updater</h1>
-            <p>Total {hhpTasks?.length}</p>
+            {/* <p>Total {hhpTasks?.length}</p> */}
             <ul>
                 {logs.map((log, index) => (
                     <li key={index}>{index + 1}. {log}</li>

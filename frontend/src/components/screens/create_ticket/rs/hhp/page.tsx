@@ -35,7 +35,6 @@ const HHP = (customerProps: string | string[] | any) => {
     const [serialNumber, setSerialNumber] = useState("")
     const [modelNumber, setModelNumber] = useState("")
     const [issue_type, setIssueType] = useState("");
-
     const [openModal, setOpenModal] = useState(false);
     const [openAttachmentsModal, setOpenAttachmentsModal] = useState(false);
     const [openDialog, setOpenDialog] = useState(false)
@@ -148,6 +147,7 @@ const HHP = (customerProps: string | string[] | any) => {
             "imei": IMEI,
             "serial_number": serialNumber,
             "status": "New",
+            "additional_info": specialRequirement,
             "ticket_number": `${ticketNumber}`,
             "department": department,
             "job_added_by": user?.email,

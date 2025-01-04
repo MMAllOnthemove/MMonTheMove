@@ -1,5 +1,7 @@
 "use client"
-import React, { useMemo, useState } from 'react'
+import useGetCustomerVisits from '@/hooks/useGetCustomerVisits';
+import columns from '@/lib/customer_visit_table';
+import { datetimestamp } from '@/lib/date_formats';
 import {
     ColumnOrderState,
     getCoreRowModel,
@@ -9,22 +11,38 @@ import {
     PaginationState,
     SortingState,
     useReactTable
-} from "@tanstack/react-table"
-import columns from '@/lib/customer_visit_table';
-import useGetCustomerVisits from '@/hooks/useGetCustomerVisits';
-import { datetimestamp } from '@/lib/date_formats';
+} from "@tanstack/react-table";
 import moment from 'moment';
+import dynamic from 'next/dynamic';
+import React, { useEffect, useMemo, useState } from 'react';
+
+import ManagementSearchForm from '@/components/search_field/page';
 import useUserLoggedIn from '@/hooks/useGetUser';
-import LoadingScreen from '@/components/loading_screen/page';
-import NotLoggedInScreen from '@/components/not_logged_in/page';
-import Sidebar from '@/components/sidebar/page';
-import PageTitle from '@/components/PageTitle/page';
-import TableHead from './tablehead';
-import TableBody from './tablebody';
 import { useRouter } from 'next/navigation';
+import TableBody from './tablebody';
+import TableHead from './tablehead';
+const LoadingScreen = dynamic(() =>
+    import('@/components/loading_screen/page')
+)
+const NotLoggedInScreen = dynamic(() =>
+    import('@/components/not_logged_in/page')
+)
+const PageTitle = dynamic(() =>
+    import('@/components/PageTitle/page')
+)
+
+const Sidebar = dynamic(() =>
+    import('@/components/sidebar/page')
+)
+const Pagination = dynamic(() =>
+    import('@/components/table_pagination/page')
+)
 const CustomerVistListScreen = () => {
     const today = moment(datetimestamp).format('YYYY-MM-DD');
     const { customerVisitList, customerVisitListLoading, refetch } = useGetCustomerVisits(today)
+
+
+
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const router = useRouter()
     // Table sorting
@@ -91,12 +109,21 @@ const CustomerVistListScreen = () => {
                     <Sidebar />
                     <main className='container p-1'>
                         <PageTitle title="list" hasSpan={true} spanText={"Customer"} />
+                        <section className="flex justify-between items-center py-5">
+                            <ManagementSearchForm
+                                filtering={filtering}
+                                setFiltering={(e) => setFiltering(e.target.value)}
+                            />
+                        </section>
+
                         <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg">
                             <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
                                 <TableHead table={table} />
                                 <TableBody table={table} handleCreateTicket={handleCreateTicket} handleCreateSO={handleCreateSO} totalJobs={totalJobsCount} />
                             </table>
                         </div>
+                        <div className="h-2" />
+                        <Pagination table={table} />
                     </main>
 
                 </>) : (

@@ -39,7 +39,10 @@ const useCreateCustomerLocally = () => {
                     // customer will handle this section
                 }
             );
-            if (data) toast.success(`${data?.message}`);
+            if (data)
+                toast.success(`${data?.message}`, {
+                    duration: 8000,
+                });
         } catch (error: any) {
             toast.error(`${error?.response.data?.message}`);
         } finally {

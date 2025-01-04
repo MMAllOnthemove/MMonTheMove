@@ -78,8 +78,9 @@ const useCreateServiceOrder = () => {
                     },
                 }
             );
-            if (data?.Return?.EsCommonResult?.EvSvcOrderNo) {
-                toast.success(`${data?.Return?.EsCommonResult?.EvSvcOrderNo}`, {
+            console.log("service order data", data);
+            if (data?.Return?.EvSvcOrderNo) {
+                toast.success(`${data?.Return?.EvSvcOrderNo}`, {
                     duration: 8000,
                 });
             } else {
@@ -88,7 +89,9 @@ const useCreateServiceOrder = () => {
 
             return data;
         } catch (error: any) {
-            toast.error(`${error}`);
+            if (process.env.NODE_ENV !== "production")
+                console.error("service order error", error);
+            // toast.error(`${error}`);
         } finally {
             setLoading(false);
         }

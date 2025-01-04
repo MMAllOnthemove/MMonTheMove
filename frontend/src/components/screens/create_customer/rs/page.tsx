@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 
 import provinces from '@/lib/provinces'
+import { capitalizeText } from '@/lib/capitalize'
 type PhoneDetail = {
     type: string;
     number: string;
@@ -52,8 +53,8 @@ const CreateCustomerRepairshoprScreen = () => {
         const visit_date = datetimestamp
         const created_at = datetimestamp
         const payload = {
-            "firstname": firstName,
-            "lastname": lastName,
+            "firstname": capitalizeText(firstName),
+            "lastname": capitalizeText(lastName),
             "businessname": businessname,
             "email": email,
             "phone": phoneDetails
