@@ -71,7 +71,8 @@ const uploadQCFile = async (req, res) => {
                     // Construct URL for uploaded file
                     return `https://repair.mmallonthemove.co.za/files/hhp/qc/${ticket_number}-qc-${file.originalname}`;
                 } catch (error) {
-                    console.error("Error uploading file:", error);
+                 if (process.env.NODE_ENV !== "production")
+                     console.error("Error uploading file:", error);
                     // throw new Error(
                     //     `Failed to upload file: ${file.originalname}`
                     // );

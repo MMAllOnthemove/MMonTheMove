@@ -41,7 +41,7 @@ const useAddHHPTask = () => {
             if (error?.response?.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {
-                toast.error("Fill in all fields");
+                toast(error.response.data.errors);
                 setErrors(error.response.data.errors); // Set validation errors to state
             }
         } finally {

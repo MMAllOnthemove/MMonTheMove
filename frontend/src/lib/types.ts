@@ -336,7 +336,7 @@ export type RepairshoprPutTicket = {
     location_id?: number;
     problem_type?: string;
     status?: string;
-    user_id?: number;
+    user_id?: string | number | undefined;
     properties?: {
         IMEI?: string;
         "PO No."?: string;

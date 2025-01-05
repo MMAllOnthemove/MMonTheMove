@@ -36,7 +36,6 @@ const HHP = (customerProps: string | string[] | any) => {
     const [modelNumber, setModelNumber] = useState("")
     const [issue_type, setIssueType] = useState("");
     const [openModal, setOpenModal] = useState(false);
-    const [openAttachmentsModal, setOpenAttachmentsModal] = useState(false);
     const [openDialog, setOpenDialog] = useState(false)
     const [serviceOrderNumber, setServiceOrder] = useState("")
     // Asset id
@@ -151,6 +150,7 @@ const HHP = (customerProps: string | string[] | any) => {
             "ticket_number": `${ticketNumber}`,
             "department": department,
             "job_added_by": user?.email,
+            // "customer_email": email,
             "stores": issue_type,
             "repairshopr_job_id": `${ticketId}`,
             "repeat_repair": repeat_repair,

@@ -22,8 +22,8 @@ const useUpdateHHPTask = () => {
         taskId: string | number | undefined,
         values: TUpdateValues
     ) => {
-        setLoading(true);
         if (!taskId) return;
+        setLoading(true);
         try {
             const response = await axios.patch(
                 `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/` +

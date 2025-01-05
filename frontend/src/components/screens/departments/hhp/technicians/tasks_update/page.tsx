@@ -6,7 +6,7 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Button, Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -56,12 +56,12 @@ type TTasksUpdate = {
     // setWarranty: (data: string) => void;
     setServiceOrderProp: (data: ChangeEvent<HTMLInputElement>) => void;
     setRepairshoprCommentProp: (data: ChangeEvent<HTMLTextAreaElement>) => void;
-    setRepairshoprStatusProp: (e: React.ChangeEvent<HTMLInputElement> | any) => void;
+    setRepairshoprStatusProp: (e: string) => void;
     submitTasksUpdate: (data: React.SyntheticEvent) => void;
     setHHPFilesProp: (data: ChangeEvent<HTMLInputElement>) => void;
     submitHHPFiles: (data: React.SyntheticEvent) => void;
 }
-const TasksUpdate = ({ setEngineer, setEngineerUserId,updateTask, engineer, engineerCombobox, setEngineerCombobox, location, job_repair_no, assessment_date, additional_info, hhp_tasks_loading, model, imei, serial_number, setHHPFilesProp, submitHHPFiles, service_order_noProp, reparshoprCommentProp, unit_statusProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked }: TTasksUpdate) => {
+const TasksUpdate = ({ setEngineer, setEngineerUserId, updateTask, engineer, engineerCombobox, setEngineerCombobox, location, job_repair_no, assessment_date, additional_info, hhp_tasks_loading, model, imei, serial_number, setHHPFilesProp, submitHHPFiles, service_order_noProp, reparshoprCommentProp, unit_statusProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked }: TTasksUpdate) => {
     const { engineersList } = useFetchEngineer()
     const engineerListFomatted = engineersList?.map((user) => ({
         repairshopr_id: user?.repairshopr_id,
@@ -81,7 +81,7 @@ const TasksUpdate = ({ setEngineer, setEngineerUserId,updateTask, engineer, engi
             </div>
             <div className="mb-3">
                 <div className="relative">
-                    <select className="block w-full appearance-none rounded-md border border-gray-300 bg-white px-4 py-2 pr-8 text-sm shadow-sm focus:outline-none cursor-pointer [&>span]:line-clamp-1" name="status" value={unit_statusProp} onChange={setRepairshoprStatusProp}>
+                    <select className="block w-full appearance-none rounded-md border border-gray-300 bg-white px-4 py-2 pr-8 text-sm shadow-sm focus:outline-none cursor-pointer [&>span]:line-clamp-1" name="status" value={unit_statusProp} onChange={(e) => setRepairshoprStatusProp(e.target.value)}>
                         <option disabled value="">
                             Choose status
                         </option>
@@ -103,7 +103,7 @@ const TasksUpdate = ({ setEngineer, setEngineerUserId,updateTask, engineer, engi
                             <path
                                 fill-rule="evenodd"
                                 d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.72-3.72a.75.75 0 111.06 1.06l-4 4a.75.75 0 01-1.06 0l-4-4a.75.75 0 01.02-1.06z"
-                                clip-rule="evenodd"
+                                clipRule="evenodd"
                             />
                         </svg>
                     </span>
@@ -133,7 +133,6 @@ const TasksUpdate = ({ setEngineer, setEngineerUserId,updateTask, engineer, engi
                                 <CommandGroup>
                                     {engineerListFomatted?.map((framework) => (
                                         <CommandItem
-
                                             key={framework.value}
                                             value={framework.value}
                                             onSelect={(currentValue) => {

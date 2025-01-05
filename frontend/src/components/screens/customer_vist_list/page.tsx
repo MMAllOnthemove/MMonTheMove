@@ -14,7 +14,7 @@ import {
 } from "@tanstack/react-table";
 import moment from 'moment';
 import dynamic from 'next/dynamic';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import ManagementSearchForm from '@/components/search_field/page';
 import useUserLoggedIn from '@/hooks/useGetUser';

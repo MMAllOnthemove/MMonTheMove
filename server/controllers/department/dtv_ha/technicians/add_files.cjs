@@ -71,7 +71,8 @@ const uploadDTVHAFiles = async (req, res) => {
                     // Construct and return the file URL
                     return `https://repair.mmallonthemove.co.za/files/dtv_ha/${ticket_number}-dtv_ha-${file.originalname}`;
                 } catch (uploadError) {
-                    console.error("Error uploading file:", uploadError);
+                    if (process.env.NODE_ENV !== "production")
+                        console.error("Error uploading file:", uploadError);
                     // throw new Error(
                     //     `Failed to upload file: ${file.originalname}`
                     // );

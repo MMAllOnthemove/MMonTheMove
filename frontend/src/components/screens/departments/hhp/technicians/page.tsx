@@ -101,6 +101,7 @@ import useDeleteHHPTask from '@/hooks/useDeleteHHPTask'
 import columns from '@/lib/hhp_technicians_table_columns'
 import { globalFilterFn } from '@/lib/tanstack_global_filter'
 import { useRouter } from 'next/navigation'
+import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud'
 const DateCalculationsScreen = dynamic(() =>
     import('./date_calculations/page')
 )
@@ -110,11 +111,16 @@ const DateCalculationsScreen = dynamic(() =>
 
 const TechniciansScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
-    const { hhpTasks } = useHHPTasks()
-    const { deleteTask, deleteHHPTaskLoading } = useDeleteHHPTask()
+    const { hhpTasks, fetchTasks, updateHHPTaskLoading, updateTask, deleteTask } = useHHPTasksCrud()
+
+    useEffect(() => {
+        fetchTasks();
+    }, []);
+    // const { hhpTasks } = useHHPTasks()
+    // const { deleteTask, deleteHHPTaskLoading } = useDeleteHHPTask()
     const { updateRepairTicket } = useRepairshoprTicket()
     const { updateRepairTicketComment } = useRepairshoprComment()
-    const { updateHHPTask, updateHHPTaskLoading } = useUpdateHHPTask()
+    // const { updateHHPTask, updateHHPTaskLoading } = useUpdateHHPTask()
     const { addRepairTicketFile } = useRepairshoprFile()
     const { addCommentLocally } = useAddTaskCommentLocally()
     const [modifyTaskModal, setModifyTaskModal] = useState<ModifyTaskModalTechnicians | any>();
@@ -145,7 +151,9 @@ const TechniciansScreen = () => {
     const [qc_date, setQCCompleteDate] = useState<string | undefined>("")
     const [unit_complete, setUnitComplete] = useState<boolean>(false)
     const [completed_date, setUnitCompleteDate] = useState<string | undefined>("")
-    const [engineer, setEngineer] = useState({ repairshopr_id: '', value: '' });
+    const [engineer, setEngineer] = useState("");
+    const [engineerUserId, setEngineerUserId] = useState<string | number | undefined>("");
+    const [engineerCombobox, setEngineerCombobox] = useState(false);
     const [submitPartsUpdateLoading, setSubmitPartsUpdateLoading] = useState(false)
     const [addPartOnRepairshoprLoading, setaddPartOnRepairshoprLoading] = useState(false)
     // for purpose of updating
@@ -359,12 +367,8 @@ const TechniciansScreen = () => {
     useEffect(() => {
         // store values from db but still allow user to update those same fields
         // this helps when comparing
-        const assignedEngineer = modifyTaskModal?.find(
-            (engineer: string | any) => engineer.value === modifyTaskModal?.engineer
-        );
-        console.log("assignedEngineer", assignedEngineer)
         setRepairshoprStatus(modifyTaskModal?.unit_status)
-        setEngineer({ repairshopr_id: modifyTaskModal?.repairshopr_id, value: modifyTaskModal?.engineer })
+        setEngineer(modifyTaskModal?.engineer)
         setAssessmentDate(modifyTaskModal?.assessment_date)
         setPartsIssued(modifyTaskModal?.parts_issued)
         setPartsIssuedDate(modifyTaskModal?.parts_issued_date)
@@ -375,9 +379,20 @@ const TechniciansScreen = () => {
         setQCComplete(modifyTaskModal?.qc_complete)
         setQCCompleteDate(modifyTaskModal?.qc_date)
         setCompensation(modifyTaskModal?.compensation)
-
-
     }, [modifyTaskModal?.compensation, modifyTaskModal?.assessment_date, modifyTaskModal?.parts_requested, modifyTaskModal?.parts_requested_date, modifyTaskModal?.unit_status, modifyTaskModal?.engineer, modifyTaskModal?.repairshopr_id, modifyTaskModal?.parts_issued, modifyTaskModal?.parts_issued_date, modifyTaskModal?.parts_pending, modifyTaskModal?.parts_pending_date, modifyTaskModal?.qc_complete, modifyTaskModal?.qc_date, modifyTaskModal?.service_order_no])
+
+    // in case user does not select a new techincian, attach the user id to the current matching technician
+    useEffect(() => {
+        if (engineer && engineerListFomatted) {
+            const existingTech = engineerListFomatted.find(
+                (tech) => tech.value === engineer
+            );
+            if (existingTech) {
+                setEngineerUserId(existingTech.repairshopr_id);
+            }
+        }
+    }, [engineer, engineerListFomatted]);
+
 
 
     const [qcFiles, setQCFiles] = useState([]);
@@ -454,7 +469,7 @@ const TechniciansScreen = () => {
         try {
 
             if (Object.keys(changes).length > 0) {
-                await updateHHPTask(id, changes)
+                await updateTask(id, changes)
                 if (qc_comment?.length > 0) {
                     await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
                     await addCommentLocally(addCommentLocallyPayload)
@@ -465,7 +480,7 @@ const TechniciansScreen = () => {
             }
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') {
-                console.log("error in qc techincians screen", error)
+                console.error("error in qc techincians screen", error)
             }
         }
     }
@@ -517,7 +532,7 @@ const TechniciansScreen = () => {
 
 
     const repairshopr_payload = {
-        "user_id": Number(engineer?.repairshopr_id),
+        "user_id": engineerUserId,
         "status": unit_status,
         "properties": {
             "IMEI": repairshoprIMEI,
@@ -559,7 +574,7 @@ const TechniciansScreen = () => {
         }
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no, unit_status, assessment_date, updated_at, engineer: engineer?.value, collected, collected_date, compensation
+            id, service_order_no, unit_status, assessment_date, updated_at, engineer, collected, collected_date, compensation
         }
         const changes = findChanges(modifyTaskModal, updatePayload)
         const created_at = datetimestamp;
@@ -569,35 +584,35 @@ const TechniciansScreen = () => {
             "created_at": created_at,
             "created_by": user?.full_name,
         }
-        // todo: uncomment
-        // try {
-        //     const res = await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, repairshopr_payload);
-        //     if (reparshoprComment) {
-        //         await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
-        //         await addCommentLocally(addCommentLocallyPayload)
 
-        //     };
+        try {
+            const res = await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, repairshopr_payload);
+            if (reparshoprComment) {
+                await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
+                await addCommentLocally(addCommentLocallyPayload)
 
-        //     if (Object.keys(changes).length > 0) {
-        //         await updateHHPTask(id, changes)
-        //         setServiceOrder("")
-        //         setRepairshoprComment("")
-        //         setRepairshoprStatus("")
-        //         setAssessmentDate("")
-        //         setQCFailReason("")
-        //         setEngineer({ repairshopr_id: '', value: '' })
-        //         setRepairshoprWarranty("")
-        //         setRepairshoprBackupRequires("")
-        //         setRepairshoprItemCondition("")
-        //         setRepairshoprIMEI("")
-        //         toast.success(`Successfully updated`);
-        //         closeModal()
-        //     }
-        // } catch (error) {
-        //     if (process.env.NODE_ENV !== 'production') {
-        //         console.log("error in hhp techincians screen", error)
-        //     }
-        // }
+            };
+
+            if (Object.keys(changes).length > 0) {
+                await updateTask(id, changes)
+                setServiceOrder("")
+                setRepairshoprComment("")
+                setRepairshoprStatus("")
+                setAssessmentDate("")
+                setQCFailReason("")
+                setEngineer('')
+                setRepairshoprWarranty("")
+                setRepairshoprBackupRequires("")
+                setRepairshoprItemCondition("")
+                setRepairshoprIMEI("")
+                toast.success(`Successfully updated`);
+                closeModal()
+            }
+        } catch (error) {
+            if (process.env.NODE_ENV !== 'production') {
+                console.error("error in hhp techincians screen", error)
+            }
+        }
 
     }
 
@@ -634,7 +649,7 @@ const TechniciansScreen = () => {
                 if (changes?.parts_requested) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, firstApprovalPayload)
                 if (changes?.parts_ordered) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, partsOrderedPayload)
                 if (changes?.parts_issued) await updateRepairTicket(modifyTaskModal?.repairshopr_job_id, partsIssuedPayload)
-                await updateHHPTask(id, changes)
+                await updateTask(id, changes)
                 toast.success(`Successfully updated`);
                 setCompensation(null)
                 setPartsIssuedDate("")
@@ -648,7 +663,7 @@ const TechniciansScreen = () => {
             setSubmitPartsUpdateLoading(false)
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') {
-                console.log("error in hhp parts screen", error)
+                console.error("error in hhp parts screen", error)
             }
         } finally {
             setSubmitPartsUpdateLoading(false)
@@ -693,14 +708,13 @@ const TechniciansScreen = () => {
             if (comment) await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') {
-                console.log("comment part", error)
+                console.error("comment part", error)
             }
         } finally {
             setaddPartOnRepairshoprLoading(false); // Stop loading
         }
     }
-    // todo remove this
-    const handleEngineer = () => { }
+
     return (
         <>
             {
@@ -807,16 +821,12 @@ const TechniciansScreen = () => {
 
                             {/* modal for adding task */}
                             {
-                                openAddTaskModal && <Dialog open={openAddTaskModal} onOpenChange={() => setOpenAddTaskModal(false)} >
-                                    {/* <DialogTrigger>Open</DialogTrigger> */}
-                                    <DialogContent>
-                                        <DialogHeader>
-                                            <DialogTitle>Add task</DialogTitle>
-                                            <DialogDescription>
-                                                Please note you can add tasks based on system
-                                            </DialogDescription>
-                                        </DialogHeader>
-
+                                openAddTaskModal &&
+                                <Modal
+                                    isVisible={openAddTaskModal}
+                                    onClose={() => setOpenAddTaskModal(false)}
+                                    title={"Add task"}
+                                    content={
                                         <Tabs defaultValue="gspn">
                                             <TabsList>
                                                 <TabsTrigger value="gspn">GSPN</TabsTrigger>
@@ -826,9 +836,8 @@ const TechniciansScreen = () => {
                                             <TabsContent value="repairshopr"><AddRepairshoprHHPTask onChange={() => setOpenAddTaskModal(false)} /></TabsContent>
                                         </Tabs>
 
-
-                                    </DialogContent>
-                                </Dialog>
+                                    }
+                                />
                             }
                             {/* modal for updating task */}
                             {
@@ -838,9 +847,7 @@ const TechniciansScreen = () => {
                                     onClose={closeModal}
                                     title={modifyTaskModal?.ticket_number}
                                     content={
-
                                         <>
-
                                             <Tabs defaultValue="Techs" className='w-full'>
                                                 <TabsList>
                                                     <TabsTrigger value="Techs">Techs</TabsTrigger>
@@ -849,7 +856,7 @@ const TechniciansScreen = () => {
                                                     <TabsTrigger value="Time">Time summary</TabsTrigger>
                                                 </TabsList>
                                                 <TabsContent value="Techs">
-                                                    <TasksUpdate updateTask={updateHHPTaskLoading} job_repair_no={job_repair_no} location={locationBin} assessment_date={modifyTaskModal?.assessment_date} hhp_tasks_loading={hhpFilesUploading} setHHPFilesProp={handleHHPFiles} submitHHPFiles={submitHHPFiles} date_booked={modifyTaskModal?.date_booked} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={(e) => setRepairshoprStatus(e)} submitTasksUpdate={handleSubmit} engineer={engineer?.value} handleEngineer={handleEngineer} imei={modifyTaskModal?.imei} serial_number={modifyTaskModal?.serial_number} model={modifyTaskModal?.model} additional_info={specialRequirement} />
+                                                    <TasksUpdate updateTask={updateHHPTaskLoading} job_repair_no={job_repair_no} location={locationBin} assessment_date={modifyTaskModal?.assessment_date} hhp_tasks_loading={hhpFilesUploading} setHHPFilesProp={handleHHPFiles} submitHHPFiles={submitHHPFiles} date_booked={modifyTaskModal?.date_booked} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={setRepairshoprStatus} submitTasksUpdate={handleSubmit} engineer={engineer} setEngineer={setEngineer} engineerCombobox={engineerCombobox} setEngineerUserId={setEngineerUserId} setEngineerCombobox={setEngineerCombobox} imei={modifyTaskModal?.imei} serial_number={modifyTaskModal?.serial_number} model={modifyTaskModal?.model} additional_info={specialRequirement} />
                                                 </TabsContent>
                                                 <TabsContent value="QC">
                                                     <QC qcUpdateLoading={updateHHPTaskLoading} qc_fail_reasonProp={qc_comment} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} qc_FilesLoadingProp={qcFilesUploading} setQCFilesProp={handleQCFiles} submitQCFiles={submitQCFiles} setUnitCompleteDateProp={setUnitCompleteDate} setUnitCompleteProp={setUnitComplete} submitQC={handleQCSubmit} />

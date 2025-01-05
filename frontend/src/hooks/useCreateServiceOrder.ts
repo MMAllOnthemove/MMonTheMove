@@ -78,7 +78,6 @@ const useCreateServiceOrder = () => {
                     },
                 }
             );
-            console.log("service order data", data);
             if (data?.Return?.EvSvcOrderNo) {
                 toast.success(`${data?.Return?.EvSvcOrderNo}`, {
                     duration: 8000,

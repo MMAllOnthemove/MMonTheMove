@@ -8,6 +8,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { datetimestamp } from '@/lib/date_formats';
 import { TTaskParts } from '@/lib/types';
@@ -56,7 +57,7 @@ type TPartsHHPUpdate = {
         part_quantity?: string;
     }
 }
-const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, parts_pendingProp, deletePartLoading, parts_issuedProp, part_data, handleDelete, parts_requestedProp, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsPendingProp, setPartsPendingDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, model, imei, serial_number,errors }: TPartsHHPUpdate) => {
+const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, parts_pendingProp, deletePartLoading, parts_issuedProp, part_data, handleDelete, parts_requestedProp, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsPendingProp, setPartsPendingDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, model, imei, serial_number, errors }: TPartsHHPUpdate) => {
     const handlePartsOrdered = (e: React.SyntheticEvent | any) => {
         if (!parts_orderedProp) {
             setPartsOrderedProp(e);
@@ -123,9 +124,18 @@ const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, parts_pen
                             </div>
 
                         </div>
-                        <div>
+
+                        <Button className="w-full outline-none bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985]" type="button" onClick={addPart} disabled={addPartLoading}>{addPartLoading ? 'Adding...' : 'Add part'} </Button>
+
+                    </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-2">
+                    <AccordionTrigger>Added parts</AccordionTrigger>
+                    <AccordionContent>
+                        <div className="my-3">
                             {part_data?.length > 0 && (
                                 <div className="my-3">
+                                    <Label htmlFor="partsExtraText">Add comment to go with these parts</Label>
                                     <Textarea
                                         placeholder="e.g. I need these parts..."
                                         name="partsExtraText"
@@ -135,19 +145,11 @@ const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, parts_pen
                                 </div>
                             )}
                         </div>
-                        <Button className="w-full outline-none bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985]" type="button" onClick={addPart} disabled={addPartLoading}>{addPartLoading ? 'Adding...' : 'Add part'} </Button>
-
-                    </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-2">
-                    <AccordionTrigger>Added parts</AccordionTrigger>
-                    <AccordionContent>
-
                         <div>
                             {part_data?.length > 0 ? part_data?.map((item) => (
                                 <div key={item.id}>
-                                    <p className="flex items-center justify-between border-b border-grey-50" >
-                                        ({item.part_name}) / <span className="text-ellipsis overflow-hidden whitespace-nowrap">{item?.part_desc} /</span> ({item?.part_quantity}) <button type="button" disabled={deletePartLoading} onClick={() => handleDelete(item.id, item?.part_name, item?.part_desc)}>{deletePartLoading ? '...' : <XMarkIcon className="h-4 w-4" />}</button>
+                                    <p className="flex items-center justify-between border-b border-grey-50 text-xs leading-3" >
+                                        ({item.part_name}) / <span className="text-ellipsis overflow-hidden whitespace-nowrap">{item?.part_desc} /</span>({item?.part_quantity}) <button type="button" disabled={deletePartLoading} onClick={() => handleDelete(item.id, item?.part_name, item?.part_desc)}>{deletePartLoading ? '...' : <XMarkIcon className="h-4 w-4" />}</button>
                                     </p>
                                 </div>
                             )) : "No parts for this task"}
@@ -161,7 +163,7 @@ const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, parts_pen
                             ) : null}
                         </div>
 
-                        <div>
+                        <div className="mt-4">
                             <p className="text-sm font-medium">Ensure you select part status when adding parts</p>
                             <div className="mb-3 pt-4">
 
@@ -219,7 +221,7 @@ const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, parts_pen
                     <AccordionContent>
                         <div>
                             <ul className="list-decimal list-inside">
-                               
+
                                 <li>Model: <span className="text-gray-600 font-medium">{model}</span></li>
                                 <li>IMEI: <span className="text-gray-600 font-medium">{imei}</span></li>
                                 <li>Serial number: <span className="text-gray-600 font-medium">{serial_number}</span></li>

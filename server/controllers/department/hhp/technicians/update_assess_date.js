@@ -20,7 +20,6 @@ export const UpdateAssessmentDate = async (req, res) => {
             message: "HHP task updated",
         });
     } catch (error) {
-        console.error("Error updating record:", error);
         return res.status(500).json({ error: "Could not update, try again" });
     }
 };

@@ -11,7 +11,8 @@ export const globalFilterFn = <TData extends Record<string, any>>(
         row.original.model,
         row.original.phone_name,
         row.original.serial_number,
-        row.original.imei
+        row.original.imei,
+        row.original.status
     ]; // Add all fields you want to search
     const combinedValue = searchableFields.join(" ").toLowerCase();
 

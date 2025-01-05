@@ -9,7 +9,7 @@ const deleteHHPTask = async (req, res) => {
             "DELETE FROM technician_tasks WHERE id = $1 returning *",
             [id]
         );
-        res.status(204).json({ message: "Successfully deleted!" });
+        return res.status(204).json({ message: "Successfully deleted!" });
     } catch (error) {
         return res.status(500).json({ error: "Internal server error" });
     }
