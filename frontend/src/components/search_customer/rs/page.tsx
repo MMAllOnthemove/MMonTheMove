@@ -5,22 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
 import useUpdateRepairshoprCustomer from '@/hooks/useUpdateRepairshoprCustomer';
-import columns from '@/lib/create_rs_customer_table';
 import { datetimestamp } from '@/lib/date_formats';
 import { Customer } from '@/lib/types';
-import {
-    ColumnOrderState,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    PaginationState,
-    SortingState,
-    useReactTable
-} from "@tanstack/react-table";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import {
     Card,
@@ -66,7 +55,7 @@ const SearchCustomerRepairshoprScreen = () => {
     const checkIfCustomerWasHere = async () => {
         const trimmedSearch = searchCustomer.trim(); // Remove leading and trailing spaces
         if (!trimmedSearch) return; // Do nothing if the input is empty after trimming
-
+        setIsLoading(true)
         try {
             const { data } = await axios.get(
                 `https://allelectronics.repairshopr.com/api/v1/customers?query=${searchCustomer}`,
@@ -113,7 +102,9 @@ const SearchCustomerRepairshoprScreen = () => {
                 }
             }
         } catch (error) {
-            console.error("Error fetching customer data:", error);
+            if (process.env.NODE_ENV !== 'production') console.error("Error fetching customer data:", error);
+        } finally {
+            setIsLoading(false)
         }
     };
 
@@ -185,43 +176,7 @@ const SearchCustomerRepairshoprScreen = () => {
         setEditModalOpen(false);
         setSelectedCustomer(null);
     };
-    // Table sorting
-    const [sorting, setSorting] = useState<SortingState>([]);
 
-    // Table filtering
-    const [filtering, setFiltering] = useState("");
-
-
-    // Table column visibility 
-    const [columnVisibility, setColumnVisibility] = useState({})
-
-    // Table column order
-    const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>([])
-
-    const [pagination, setPagination] = useState<PaginationState>({
-        pageIndex: 0,
-        pageSize: 10,
-    })
-    const table = useReactTable({
-        data: result,
-        columns,
-        getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        state: {
-            sorting: sorting,
-            globalFilter: filtering,
-            pagination,
-            columnVisibility,
-            columnOrder,
-        },
-        onColumnVisibilityChange: setColumnVisibility,
-        onColumnOrderChange: setColumnOrder,
-        onSortingChange: setSorting,
-        onGlobalFilterChange: setFiltering,
-        onPaginationChange: setPagination,
-    });
 
 
 

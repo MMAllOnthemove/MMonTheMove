@@ -47,7 +47,8 @@ const useSendTicketAttachmentsWithTicketNumber = async (
             return fileUrls;
         }
     } catch (error) {
-        console.error("add ticket attachments error", error);
+        if (process.env.NODE_ENV !== "production")
+            console.error("add ticket attachments error", error);
     }
 };
 

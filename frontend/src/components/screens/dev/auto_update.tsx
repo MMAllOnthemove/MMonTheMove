@@ -12,23 +12,19 @@ const TicketUpdaterScreen: React.FC = () => {
     const { updateHHPTask, updateHHPTaskLoading } = useUpdateHHPTask()
     const [isRunning, setIsRunning] = useState(false);
     useEffect(() => {
-        if (!isRunning) {
-            setIsRunning(true);
-            const interval = setInterval(() => {
-                fetchAndUpdateTickets();
-            }, 3000);
 
-            return () => clearInterval(interval); // Cleanup on component unmount
-        }
+        const interval = setInterval(() => {
+            fetchAndUpdateTickets();
+        }, 3000);
+
+        return () => clearInterval(interval); // Cleanup on component unmount
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isRunning]);
+    }, []);
 
     const fetchAndUpdateTickets = async () => {
         try {
-            if (hhpTasks.length === 0) {
-                setIsRunning(false);
-                return;
-            }
+
 
             const { data } = await axios.get(
                 `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs`,
@@ -36,7 +32,6 @@ const TicketUpdaterScreen: React.FC = () => {
                     withCredentials: true,
                 }
             );
-            console.log(data)
             for (const ticket of data) {
                 if (ticket.ticket_number.toString().length < 6) {
                     setLogs((prevLogs) => [...prevLogs, `Skipping ticket number: ${ticket.ticket_number} (Invalid ticket number)`]);

@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   pagination on customer visits table
 -   searchable as well
 -   add field for special requirements called (additional_info)
+-   highlist entire row on clicked
+-   move the comment in parts tab to added parts section (makes logical sense)
 
 ### Fixed
 
@@ -24,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   creating and searching existing customer now capitalizes first letter of the first and last name
 -   find out why units are added without warranty available
 -   assessment date is not being set properly
+-   not attaching user id if the technician is not reassigned (was only setting current tech)
 
 ## [0.1.6] - 2025-01-02
 

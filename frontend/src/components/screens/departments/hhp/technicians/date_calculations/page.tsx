@@ -74,9 +74,9 @@ const DateCalculationsScreen = ({ data, openTaskId }: { data: DeviceData[], open
                     <h2>Device Metrics</h2>
                     <p>Booking to Assessment Time: {metrics.bookingToAssessmentTime} hours</p>
                     <p>Assessment to Completed Time(QC Pass): {metrics.assessmentToCompletedTime} hours</p>
-                    <p>Assessment to Parts Ordered Time: {metrics.assessmentToPartsOrderedTime} hours</p>
+                    {/* <p>Assessment to Parts Ordered Time: {metrics.assessmentToPartsOrderedTime} hours</p>
                     <p>Assessment to Parts Pending Time: {metrics.assessmentToPartsPendingTime} hours</p>
-                    <p>Assessment to Parts Issued Time: {metrics.assessmentToPartsIssuedTime} hours</p>
+                    <p>Assessment to Parts Issued Time: {metrics.assessmentToPartsIssuedTime} hours</p> */}
                 </>
             )}
         </div>

@@ -50,7 +50,6 @@ const useCreateCustomerOnRepairshopr = () => {
             //     router.push("/repairshopr_asset");
             // }
         } catch (error: any) {
-            console.error("rs create customer error", error);
             toast.error(`${error?.response?.data?.message}`);
         } finally {
             setLoading(false);

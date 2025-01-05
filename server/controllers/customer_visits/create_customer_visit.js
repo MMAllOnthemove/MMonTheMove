@@ -77,7 +77,6 @@ const addCustomer = async (req, res) => {
                 "Successfully added as visit\nBooking agent will now book you in",
         });
     } catch (error) {
-        console.log(error);
         // Handle validation or other errors
         const errors = {};
         if (error.inner) {
