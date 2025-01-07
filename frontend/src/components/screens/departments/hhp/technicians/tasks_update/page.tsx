@@ -7,8 +7,6 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
     Command,
     CommandEmpty,
@@ -16,20 +14,21 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
-import moment from "moment";
-import React, { ChangeEvent, ChangeEventHandler } from "react";
 import useFetchEngineer from "@/hooks/useFetchEngineers";
 import repairshopr_statuses from "@/lib/repairshopr_status";
-import warranties from "@/lib/warranties";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { cn } from "@/lib/utils";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
+import moment from "moment";
+import React, { ChangeEvent } from "react";
 
 
 type TTasksUpdate = {
@@ -41,7 +40,6 @@ type TTasksUpdate = {
     date_booked: string;
     additional_info: string;
     hhp_tasks_loading: boolean;
-    // warranty: string;
     serial_number: string;
     engineer: string;
     model: string;
@@ -49,11 +47,9 @@ type TTasksUpdate = {
     job_repair_no: string;
     engineerCombobox: boolean;
     location: string;
-
     setEngineer: (data: any) => void;
     setEngineerUserId: (data: any) => void;
     setEngineerCombobox: (data: boolean) => void;
-    // setWarranty: (data: string) => void;
     setServiceOrderProp: (data: ChangeEvent<HTMLInputElement>) => void;
     setRepairshoprCommentProp: (data: ChangeEvent<HTMLTextAreaElement>) => void;
     setRepairshoprStatusProp: (e: string) => void;

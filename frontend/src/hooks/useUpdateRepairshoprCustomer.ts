@@ -40,8 +40,8 @@ const useUpdateRepairshoprCustomer = () => {
                 }
             );
             if (data?.customer) {
-                return data?.customer;
                 toast.success("Customer updated successfully!");
+                return data?.customer;
             }
         } catch (error: any) {
             if (error) toast.error(error?.response?.data?.error);
