@@ -181,7 +181,7 @@ const RepairshoprAssetScreen = () => {
                 {searchAssets !== result[0]?.asset_serial || result[0]?.asset_serial === "" || searchAssets === "" ?
                     <>
                         <p className="my-2 text-sm font-medium text-slate-800">Nothing showing? Create it</p>
-                        <Button type="button" onClick={() => setOpenModal(true)}>Create</Button>
+                        <Button type="button" onClick={() => setOpenModal(true)}>Create new asset</Button>
 
                         {
                             openModal &&

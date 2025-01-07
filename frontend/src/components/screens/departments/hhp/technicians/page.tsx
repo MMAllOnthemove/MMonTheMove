@@ -36,7 +36,6 @@ import {
 } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-import useUpdateHHPTask from '@/hooks/updateHHPTask'
 import useAddTaskCommentLocally from '@/hooks/useAddCommentLocally'
 import useAddPart from '@/hooks/useAddPart'
 import useRepairshoprFile from '@/hooks/useAddRepairshoprFile'
@@ -44,7 +43,6 @@ import useDeletePart from '@/hooks/useDeleteTaskPart'
 import useFetchEngineer from '@/hooks/useFetchEngineers'
 import useFetchPartsForTask from '@/hooks/useGetPartsForTask'
 import useUserLoggedIn from '@/hooks/useGetUser'
-import useHHPTasks from '@/hooks/useHHPTasks'
 import useIpaasSOPartsInfo from '@/hooks/useIpaasGetSOPartsInfo'
 import useRepairshoprComment from '@/hooks/useRepairshoprComment'
 import useRepairshoprTicket from '@/hooks/useRepairshoprTicket'
@@ -95,13 +93,11 @@ const ManagementSearchForm = dynamic(() =>
     import('@/components/search_field/page')
 )
 
-// import ManagementSearchForm from "@/components/search_field/page"
 import Modal from '@/components/modal/page'
-import useDeleteHHPTask from '@/hooks/useDeleteHHPTask'
+import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud'
 import columns from '@/lib/hhp_technicians_table_columns'
 import { globalFilterFn } from '@/lib/tanstack_global_filter'
 import { useRouter } from 'next/navigation'
-import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud'
 const DateCalculationsScreen = dynamic(() =>
     import('./date_calculations/page')
 )
@@ -116,11 +112,9 @@ const TechniciansScreen = () => {
     useEffect(() => {
         fetchTasks();
     }, []);
-    // const { hhpTasks } = useHHPTasks()
-    // const { deleteTask, deleteHHPTaskLoading } = useDeleteHHPTask()
+
     const { updateRepairTicket } = useRepairshoprTicket()
     const { updateRepairTicketComment } = useRepairshoprComment()
-    // const { updateHHPTask, updateHHPTaskLoading } = useUpdateHHPTask()
     const { addRepairTicketFile } = useRepairshoprFile()
     const { addCommentLocally } = useAddTaskCommentLocally()
     const [modifyTaskModal, setModifyTaskModal] = useState<ModifyTaskModalTechnicians | any>();

@@ -11,7 +11,7 @@ type TPayload = {
     email: string;
     phone: string | number;
     mobile: string | number;
-    address: string;
+    address?: string;
     address_2?: string;
     city?: string;
     state?: string;

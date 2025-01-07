@@ -18,5 +18,5 @@ const getCustomer = async (req, res) => {
         });
     }
 };
- 
+
 export default getCustomer;
