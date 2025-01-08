@@ -61,7 +61,8 @@ const useCheckWarranty = (modelNumber: string, serialNumber: string) => {
                     }
                 }
             } catch (error) {
-                console.log("check warranty error", error);
+                if (process.env.NODE_ENV !== "production")
+                    console.error("check warranty error", error);
             }
         };
 

@@ -50,7 +50,7 @@ const useCreateTicket = () => {
             toast.success(
                 `Ticket created, Here is your ticket: ${data?.ticket?.number}`,
                 {
-                    duration: 8000,
+                    duration: 86400000, // 24 hours
                 }
             );
             return data;

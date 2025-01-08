@@ -13,5 +13,9 @@ const columns: TColumns | any = [
         header: "Department",
         accessorKey: "department",
     },
+    {
+        header: "Engineer code",
+        accessorKey: "engineer_code",
+    },
 ];
 export default columns;

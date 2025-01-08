@@ -4,7 +4,7 @@ const getCustomerVisits = async (req, res) => {
     const { id } = req.params;
     try {
         const { rows } = await pool.query(
-            "SELECT v.customer_id, v.visit_date, c.* FROM customer_visits v JOIN customers c ON v.customer_id = c.id WHERE v.visit_date::date = $1 order by v.visit_date desc",
+            "SELECT v.customer_id, v.visit_date, c.* FROM customer_visits v JOIN customers c ON v.customer_id = c.id WHERE v.visit_date = $1 order by v.visit_date desc",
             [id]
         );
         return res.status(200).json(rows); // Explicit 200 OK status

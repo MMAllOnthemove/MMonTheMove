@@ -286,7 +286,7 @@ const TechniciansScreen = () => {
             if (comment) await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
 
         } catch (error) {
-            console.log("error commenting deleted part", error)
+            if (process.env.NODE_ENV !== 'production') console.error("error commenting deleted part", error)
         }
         refetch(); // Refresh the list of parts
 

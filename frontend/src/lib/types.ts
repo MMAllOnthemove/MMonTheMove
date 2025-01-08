@@ -380,8 +380,20 @@ export type TEngineersListTable = {
         unique_id: string;
         engineer_firstname: string;
         engineer_lastname: string;
+        engineer_code?: string;
+        repairshopr_id?: string;
         department?: string;
     };
+};
+
+export type TUpdateEngineer = {
+    id?: string;
+    unique_id?: string;
+    engineer_firstname?: string;
+    engineer_lastname?: string;
+    engineer_code?: string;
+    repairshopr_id?: string;
+    department?: string;
 };
 export type TEngineersList = {
     id: string;
@@ -432,9 +444,21 @@ export type HHPTaskAdd = {
     repeat_repair: string;
 };
 export type EngineerAdd = {
-    engineer_firstname: string;
-    engineer_lastname: string;
-    department: string;
+    names: {
+        AscCode?: string;
+        AscEngineer?: string;
+        Capacity?: string;
+        EngType?: string;
+        Engineer?: string;
+        EngineerName?: string;
+        GspnId?: string;
+        GspnIdStatus?: string;
+        HieredDay?: string;
+        RepairTime?: string;
+        TelNo?: string;
+        UniqueId?: string;
+        WorkStatus?: string;
+    };
 };
 export type DriverAdd = {
     driver_firstname: string;
