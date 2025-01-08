@@ -9,9 +9,9 @@ import { datetimestamp } from '@/lib/date_formats'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 
-import provinces from '@/lib/provinces'
-import { capitalizeText } from '@/lib/capitalize'
 import { Label } from '@/components/ui/label'
+import { capitalizeText } from '@/lib/capitalize'
+import provinces from '@/lib/provinces'
 type PhoneDetail = {
     type: string;
     number: string;
@@ -81,6 +81,17 @@ const CreateCustomerRepairshoprScreen = () => {
 
         }
         await addCustomerLocally(spreadPayload)
+        setFirstName("")
+        setLastName("")
+        setBusinessName("")
+        setEmail("")
+        setAddress("")
+        setAddress_2("")
+        setCity("")
+        setState("")
+        setZip("")
+        setPhoneDetails([{ type: "mobile", number: "" }])
+        router.back()
 
     }
     return (
@@ -93,7 +104,7 @@ const CreateCustomerRepairshoprScreen = () => {
                     <div>
                         <Label htmlFor='firstname'>First Name</Label>
                         <Input type="text" name='firstname' id='firstname' value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}  />
+                            onChange={(e) => setFirstName(e.target.value)} />
                     </div>
                     <div>
                         <Label htmlFor='lastname'>Last Name</Label>
@@ -103,7 +114,7 @@ const CreateCustomerRepairshoprScreen = () => {
                     <div>
                         <Label htmlFor='business_name'>Business Name <small>(only if you have. Leave blank otherwise)</small></Label>
                         <Input type="text" id='business_name' name='business_name' value={businessname}
-                            onChange={(e) => setBusinessName(e.target.value)}  />
+                            onChange={(e) => setBusinessName(e.target.value)} />
                     </div>
 
                     <div>

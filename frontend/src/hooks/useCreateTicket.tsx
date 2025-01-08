@@ -46,9 +46,13 @@ const useCreateTicket = () => {
                     },
                 }
             );
-
             toast.success(
-                `Ticket created, Here is your ticket: ${data?.ticket?.number}`,
+                (t) => (
+                    <span className='flex gap-2 justify-between'>
+                        Ticket created, Here is your ticket: ${data?.ticket?.number}
+                        <button className='outline-none border-none bg-transparent cursor-pointer' onClick={() => toast.dismiss(t.id)}>&#10006;</button>
+                    </span>
+                ),
                 {
                     duration: 86400000, // 24 hours
                 }
