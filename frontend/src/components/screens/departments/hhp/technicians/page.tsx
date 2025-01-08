@@ -361,19 +361,22 @@ const TechniciansScreen = () => {
     useEffect(() => {
         // store values from db but still allow user to update those same fields
         // this helps when comparing
-        setRepairshoprStatus(modifyTaskModal?.unit_status)
-        setEngineer(modifyTaskModal?.engineer)
-        setAssessmentDate(modifyTaskModal?.assessment_date)
-        setPartsIssued(modifyTaskModal?.parts_issued)
-        setPartsIssuedDate(modifyTaskModal?.parts_issued_date)
-        setPartsRequestedDate(modifyTaskModal?.parts_requested_date)
-        setPartsRequested(modifyTaskModal?.parts_requested)
-        setPartsPending(modifyTaskModal?.parts_pending)
-        setPartsPendingDate(modifyTaskModal?.parts_pending_date)
-        setQCComplete(modifyTaskModal?.qc_complete)
-        setQCCompleteDate(modifyTaskModal?.qc_date)
-        setCompensation(modifyTaskModal?.compensation)
-    }, [modifyTaskModal?.compensation, modifyTaskModal?.assessment_date, modifyTaskModal?.parts_requested, modifyTaskModal?.parts_requested_date, modifyTaskModal?.unit_status, modifyTaskModal?.engineer, modifyTaskModal?.repairshopr_id, modifyTaskModal?.parts_issued, modifyTaskModal?.parts_issued_date, modifyTaskModal?.parts_pending, modifyTaskModal?.parts_pending_date, modifyTaskModal?.qc_complete, modifyTaskModal?.qc_date, modifyTaskModal?.service_order_no])
+        if (modifyTaskModal) {
+            setRepairshoprStatus(modifyTaskModal?.unit_status)
+            setEngineer(modifyTaskModal?.engineer)
+            setAssessmentDate(modifyTaskModal?.assessment_date)
+            setPartsIssued(modifyTaskModal?.parts_issued)
+            setPartsIssuedDate(modifyTaskModal?.parts_issued_date)
+            setPartsRequestedDate(modifyTaskModal?.parts_requested_date)
+            setPartsRequested(modifyTaskModal?.parts_requested)
+            setPartsPending(modifyTaskModal?.parts_pending)
+            setPartsPendingDate(modifyTaskModal?.parts_pending_date)
+            setQCComplete(modifyTaskModal?.qc_complete)
+            setQCCompleteDate(modifyTaskModal?.qc_date)
+            setCompensation(modifyTaskModal?.compensation)
+        }
+
+    }, [modifyTaskModal])
 
     // in case user does not select a new techincian, attach the user id to the current matching technician
     useEffect(() => {
