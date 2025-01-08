@@ -6,31 +6,46 @@ const Sidebar = dynamic(() =>
     import('@/components/sidebar/page')
 )
 const LoadingScreen = dynamic(() =>
-    import('@/components/loading_screen/page')
+    import('@/components/loading_screen/page'),
+    {
+        loading: () => <p>Loading...</p>,
+    }
 )
 const NotLoggedInScreen = dynamic(() =>
-    import('@/components/not_logged_in/page')
+    import('@/components/not_logged_in/page'),
+    {
+        loading: () => <p>Loading...</p>,
+    }
 )
 const PageTitle = dynamic(() =>
     import('@/components/PageTitle/page')
 )
 const ProductInfo = dynamic(() =>
-    import('./multistep/product_info')
+    import('./multistep/product_info'),
+    {
+        loading: () => <p>Loading...</p>,
+    }
 )
 const ProductInfoTwo = dynamic(() =>
-    import('./multistep/product_info_two')
+    import('./multistep/product_info_two'),
+    {
+        loading: () => <p>Loading...</p>,
+    }
 )
 const CustomerInfoScreen = dynamic(() =>
-    import('./multistep/customer_info')
+    import('./multistep/customer_info'),
+    {
+        loading: () => <p>Loading...</p>,
+    }
 )
 
 import { Button } from '@/components/ui/button'
 import useUserLoggedIn from "@/hooks/useGetUser"
 
 import useCreateServiceOrder from '@/hooks/useCreateServiceOrder'
+import useGetCustomerLocally from '@/hooks/useGetCustomerLocally'
 import { datetimestamp } from '@/lib/date_formats'
 import moment from 'moment'
-import useGetCustomerLocally from '@/hooks/useGetCustomerLocally'
 import { useParams } from 'next/navigation'
 
 const GSPNScreen = () => {

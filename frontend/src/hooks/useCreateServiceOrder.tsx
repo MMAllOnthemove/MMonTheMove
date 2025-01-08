@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -79,9 +78,17 @@ const useCreateServiceOrder = () => {
                 }
             );
             if (data?.Return?.EvSvcOrderNo) {
-                toast.success(`${data?.Return?.EvSvcOrderNo}`, {
-                    duration: 86400000, // 24 hours
-                });
+                toast.success(
+                    (t) => (
+                        <span className='flex gap-2 justify-between'>
+                            Service order no: {data?.Return?.EvSvcOrderNo}
+                            <button className='outline-none border-none bg-transparent cursor-pointer' onClick={() => toast.dismiss(t.id)}>&#10006;</button>
+                        </span>
+                    ),
+                    {
+                        duration: 86400000, // 24 hours
+                    }
+                );
             } else {
                 toast.error(data?.EtEhnErrInfo?.GspnWMsgCode);
             }

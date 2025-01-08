@@ -19,6 +19,7 @@ import React, { useMemo, useState } from 'react';
 import ManagementSearchForm from '@/components/search_field/page';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import { useRouter } from 'next/navigation';
+import { useTransition } from 'react';
 import TableBody from './tablebody';
 import TableHead from './tablehead';
 const LoadingScreen = dynamic(() =>
@@ -40,7 +41,7 @@ const Pagination = dynamic(() =>
 const CustomerVistListScreen = () => {
     const today = moment(datetimestamp).format('YYYY-MM-DD');
     const { customerVisitList, customerVisitListLoading, refetch } = useGetCustomerVisits(today)
-
+    const [isPending, startTransition] = useTransition()
 
 
     const { user, isLoggedIn, loading } = useUserLoggedIn()
@@ -64,13 +65,17 @@ const CustomerVistListScreen = () => {
     })
     const handleCreateTicket = async (row: any) => {
         const originalData = row?.original;
-        // to be able to grab customer id from rs on this page
-        router.push(`/repairshopr_asset/${encodeURIComponent(originalData?.email)}`)
+        startTransition(() => {
+            // to be able to grab customer id from rs on this page
+            router.push(`/repairshopr_asset/${encodeURIComponent(originalData?.email)}`)
+        })
     }
     const handleCreateSO = async (row: any) => {
         const originalData = row?.original;
-        // for gspn, user can type
-        router.push(`/create_ticket/gspn/${encodeURIComponent(originalData?.email)}`)
+        startTransition(() => {
+            // for gspn, user can type
+            router.push(`/create_ticket/gspn/${encodeURIComponent(originalData?.email)}`)
+        })
     }
     const table = useReactTable({
         data: customerVisitList,
@@ -115,6 +120,7 @@ const CustomerVistListScreen = () => {
                                 setFiltering={(e) => setFiltering(e.target.value)}
                             />
                         </section>
+                        {isPending && <p className="text-gray-800 font-semibold text-center mb-2">Loading...</p>}
 
                         <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg">
                             <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">

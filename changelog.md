@@ -5,7 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.9] - 2025-01-08
 
+### Added
+
+-   dismissible toast in create ticket and create service order
+-   router.back() after creating customer (this works since we are using router.push())
+-   show ticket number or service order for an hour at least after creation
+-   loading effect on dynamic imports on create service order
+-   useTransition() in welcome, customers list screens
+
+### Fixed
+
+-   clear fields after creating customer
 
 ## [0.1.8] - 2025-01-07
 
@@ -20,7 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   button text - ‘create new asset’ instead of just ‘create’ on assets screen
 -   create ticket is writing numbers instead of words (rs) and backup requires (rs changed it's codes, again!)
 -   make the customer search field only show that customer (fixed in version [0.1.7])
--   
 
 ## [0.1.7] - 2025-01-06
 
@@ -34,8 +45,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   button text - ‘create new asset’ instead of just ‘create’ on assets screen
 -   create ticket is writing numbers instead of words (rs) and backup requires (rs changed it's codes, again!)
 -   make the customer search field only show that customer (fixed in version [0.1.7])
-
-
 
 ## [0.1.7] - 2025-01-04
 
