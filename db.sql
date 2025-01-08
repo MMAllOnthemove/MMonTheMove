@@ -429,4 +429,13 @@ create table customer_visits (
     customer_id integer REFERENCES customers(id) ON DELETE CASCADE,
     visit_date text,
     visit_notes text
+);
+
+create table engineer_ra_status (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    -- did not want to link the main table for the purpose of the said feature to work properly
+    engineer_code varchar(30),
+    valid_from text,
+    valid_to text
 )

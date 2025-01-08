@@ -80,7 +80,7 @@ const useCreateServiceOrder = () => {
             );
             if (data?.Return?.EvSvcOrderNo) {
                 toast.success(`${data?.Return?.EvSvcOrderNo}`, {
-                    duration: 8000,
+                    duration: 86400000, // 24 hours
                 });
             } else {
                 toast.error(data?.EtEhnErrInfo?.GspnWMsgCode);

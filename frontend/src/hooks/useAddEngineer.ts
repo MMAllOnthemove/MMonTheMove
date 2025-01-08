@@ -18,17 +18,16 @@ const useAddEngineer = () => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt
         try {
-            const response = await axios.post(
+            const { data } = await axios.post(
                 `${process.env.NEXT_PUBLIC_API_SERVER_URL}/engineers`,
                 values,
                 {
                     withCredentials: true,
                 }
             );
-            if (response.status === 201) {
-                toast.success(`${response?.data?.message}`);
+            if (data) {
+                toast.success(`${data?.message}`);
             }
-            return response;
         } catch (error: any) {
             if (error?.response?.data?.message) {
                 toast.error(`${error?.response?.data?.message}`);

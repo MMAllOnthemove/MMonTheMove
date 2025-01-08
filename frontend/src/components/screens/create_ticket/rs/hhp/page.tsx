@@ -164,17 +164,13 @@ const HHP = (customerProps: string | string[] | any) => {
     const hhp_issue_types = assetTypes.filter(asset => asset.value.includes("HHP"));
     return (
         <>
-
             {
-
                 openModal &&
                 <DrawScratchesModal openModal={openModal} setOpenModal={setOpenModal} />
-
             }
             {
                 openDialog &&
                 <AlertDialogServiceOrder openModal={openDialog} setOpenModal={setOpenDialog} customerEmail={email} />
-
             }
             <form onSubmit={createTicket}>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center mb-2">
