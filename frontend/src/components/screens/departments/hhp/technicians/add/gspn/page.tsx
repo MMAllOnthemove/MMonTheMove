@@ -81,7 +81,7 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
         // setTicketNumber(fetchRSTicketData?.tickets[0]?.number)
         setRepairshoprJobId(fetchRSTicketData?.tickets[0]?.id)
 
-    }, [fetchRSTicketData])
+    }, [fetchRSTicketData, ticket_number])
 
     useEffect(() => {
         const handleGetSOInfo = async (serviceOrder: string) => {

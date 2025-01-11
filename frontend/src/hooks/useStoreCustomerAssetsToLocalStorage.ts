@@ -19,14 +19,10 @@ export const useStoreAvailableAssetsLocalStorage = () => {
         }
     };
 
-<<<<<<< HEAD
     return {
         storeAvailableAssetsLocalStorage,
         isPendingAvailableAssetsLocalStorage,
     };
-=======
-    return { storeAvailableAssetsLocalStorage };
->>>>>>> cda49505c2bb905ef8a2eac300c6cb24c9f9daee
 };
 export const useStoreCreatedAssetsToLocalStorage = () => {
     const router = useRouter();
@@ -45,12 +41,8 @@ export const useStoreCreatedAssetsToLocalStorage = () => {
         }
     };
 
-<<<<<<< HEAD
     return {
         storeNewAssetsToLocalStorage,
         isPendingCreatedAssetsToLocalStorage,
     };
-=======
-    return { storeNewAssetsToLocalStorage };
->>>>>>> cda49505c2bb905ef8a2eac300c6cb24c9f9daee
 };

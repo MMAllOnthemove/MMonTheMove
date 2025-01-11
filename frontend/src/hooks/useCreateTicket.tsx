@@ -49,7 +49,7 @@ const useCreateTicket = () => {
             toast.success(
                 (t) => (
                     <span className='flex gap-2 justify-between'>
-                        Ticket created, Here is your ticket: ${data?.ticket?.number}
+                        Ticket created, Here is your ticket: {data?.ticket?.number}
                         <button className='outline-none border-none bg-transparent cursor-pointer' onClick={() => toast.dismiss(t.id)}>&#10006;</button>
                     </span>
                 ),

@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.10] - 2025-01-10
+
+### Added
+
+-   status dropdown in parts section
+-   parts_order_id in the technician_tasks table
+-   checkbox in create ticket (rs) to specify if unit is ADH (still needs work)
+
+### Fixed
+
+-   remove comment after commenting on parts tab
+-   clear part search input field after closing modal or after searching
+
 ## [0.1.9] - 2025-01-08
 
 ### Added

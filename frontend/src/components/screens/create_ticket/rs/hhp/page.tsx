@@ -44,6 +44,7 @@ const HHP = (customerProps: string | string[] | any) => {
     // some of the values will be stored in state from the result
     // this is just the warranty just a different variable (I am out of variable names, lol)
     const { warranty, warrantyCode, ticketTypeId, localWarranty } = useCheckWarranty(modelNumber, serialNumber, IMEI)
+    const [adh, setADH] = useState("")
     const [repairshopr_job_id, setepairshoprJobId] = useState("")
     useEffect(() => {
         const loadCustomerAssetInfo = () => {
@@ -78,8 +79,8 @@ const HHP = (customerProps: string | string[] | any) => {
                 "Item Condition": `${itemCondition}`,
                 "Backup Requires": `${requires_backup}`,
                 "Backup Requires ": `${requires_backup}`,
-                "Warranty ": `${warrantyCode}`,
-                "Warranty": `${warrantyCode}`,
+                "Warranty ": adh === 'ADH' ? 75132 : warrantyCode, // ADH RS code
+                "Warranty": adh === 'ADH' ? 75132 : warrantyCode, // ADH RS code
                 "IMEI": `${IMEI}`,
                 "Job Repair No.": `${job_repair_no}`,
                 "Job Repair No.:": `${job_repair_no}`,
@@ -99,7 +100,6 @@ const HHP = (customerProps: string | string[] | any) => {
                 }
             ]
         }
-
         const data = await addTicket(payload)
         await sendTicketDataToOurDB(data?.ticket?.number, data?.ticket?.id)
         setTicketNumber(data?.ticket?.number)
@@ -137,7 +137,7 @@ const HHP = (customerProps: string | string[] | any) => {
             "service_order_no": serviceOrderNumber,
             "date_booked": date_booked,
             "model": modelNumber,
-            "warranty": localWarranty,
+            "warranty": adh === 'ADH' ? adh : localWarranty,
             "fault": fault,
             "imei": IMEI,
             "serial_number": serialNumber,
@@ -156,7 +156,9 @@ const HHP = (customerProps: string | string[] | any) => {
 
     }
 
-
+    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setADH(e.target.checked ? 'ADH' : 'IW');
+    };
     const hhp_issue_types = assetTypes.filter(asset => asset.value.includes("HHP"));
     return (
         <>
@@ -242,7 +244,7 @@ const HHP = (customerProps: string | string[] | any) => {
                     <Textarea placeholder='Special requirement' value={specialRequirement} onChange={(e) => setSpecialRequirement(e.target.value)}></Textarea>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-2">
                     <div>
                         <Label htmlFor='IMEI' className='sr-only'>IMEI</Label>
                         <Input type="text" value={IMEI || ""} onChange={(e) => setIMEI(e.target.value)} name='IMEI number' id='IMEI' placeholder='IMEI' />
@@ -254,6 +256,17 @@ const HHP = (customerProps: string | string[] | any) => {
                     <div>
                         <Label htmlFor='serialNumber' className='sr-only'>Serial number</Label>
                         <Input type="text" value={serialNumber || ""} placeholder='Serial number' onChange={(e) => setSerialNumber(e.target.value)} name='serialNumber' id='serialNumber' />
+                    </div>
+                    <div className="flex gap-2 items-center justify-between cursor-pointer">
+                        <label htmlFor='adh'>
+
+                            <input
+                                type="checkbox"
+                                checked={adh === 'ADH'}
+                                onChange={handleCheckboxChange}
+                            />
+                            ADH Warranty
+                        </label>
                     </div>
                 </div>
                 {warranty ? <p className="text-lg font-semibold text-sky-700 md:text-xl text-center my-3">Unit is {warranty === "LP" ? "IW" : warranty}</p> : ""}

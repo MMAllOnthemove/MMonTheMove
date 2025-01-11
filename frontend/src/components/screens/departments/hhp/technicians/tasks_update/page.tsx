@@ -64,7 +64,7 @@ const TasksUpdate = ({ setEngineer, setEngineerUserId, updateTask, engineer, eng
         value: user?.engineer_firstname + " " + user?.engineer_lastname,
         label: user?.engineer_firstname
     }))
-   
+
     return (
         <form>
             <div className="mb-3">
@@ -97,7 +97,7 @@ const TasksUpdate = ({ setEngineer, setEngineerUserId, updateTask, engineer, eng
                             fill="currentColor"
                         >
                             <path
-                                fill-rule="evenodd"
+                                fillRule="evenodd"
                                 d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.72-3.72a.75.75 0 111.06 1.06l-4 4a.75.75 0 01-1.06 0l-4-4a.75.75 0 01.02-1.06z"
                                 clipRule="evenodd"
                             />
