@@ -62,6 +62,7 @@ const useIpaasGetEngineerList = () => {
     };
     useEffect(() => {
         getGSPNEngineerList();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return { gspnEngineerList, gspnEngineerListLoading };

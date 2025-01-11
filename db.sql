@@ -116,7 +116,8 @@ create table technician_tasks (
     collected boolean,
     collected_date text,
     compensation boolean,
-    additional_info text
+    additional_info text,
+    parts_order_id text
 );
 
 create table technician_tasks_comments (
