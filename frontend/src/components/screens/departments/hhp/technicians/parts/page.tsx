@@ -126,7 +126,7 @@ const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, deletePar
 
                         </div>
 
-                        <Button className="w-full mt-2" type="button" onClick={submitPartOrderId} disabled={submitPartOrderIdLoading}>{submitPartOrderIdLoading ? 'Adding...' : 'Add part'} </Button>
+                        <Button className="w-full mt-2" type="button" onClick={addPart} disabled={addPartLoading}>{addPartLoading ? 'Adding...' : 'Add part'} </Button>
 
                     </AccordionContent>
                 </AccordionItem>

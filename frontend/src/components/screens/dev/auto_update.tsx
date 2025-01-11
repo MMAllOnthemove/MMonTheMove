@@ -193,6 +193,9 @@ const TicketUpdaterScreen: React.FC = () => {
     const processAndUpdateTicket = async (ticket: any, secondSystemTicket: any) => {
         try {
             const serviceOrderNumber = secondSystemTicket.properties["Service Order."]?.trim();
+            const location = secondSystemTicket.properties["Location (BIN)"]?.trim();
+            const additional_info = secondSystemTicket.properties["Special Requirement "]?.trim();
+            const job_repair_no = secondSystemTicket.properties["Job Repair No.:"]?.trim();
             const changes = {
                 service_order_no: serviceOrderNumber,
                 engineer: secondSystemTicket.user?.full_name,
@@ -200,6 +203,9 @@ const TicketUpdaterScreen: React.FC = () => {
                     ? "IW"
                     : "OOW",
                 date_booked: moment(secondSystemTicket.created_at).format("YYYY-MM-DD HH:mm:ss"),
+                additional_info: additional_info,
+                device_location: location,
+                job_repair_no: job_repair_no,
                 unit_status: ticket.unit_status === secondSystemTicket.status
                     ? ticket.unit_status
                     : secondSystemTicket.status,

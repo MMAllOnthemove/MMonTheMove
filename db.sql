@@ -117,8 +117,11 @@ create table technician_tasks (
     collected_date text,
     compensation boolean,
     additional_info text,
-    parts_order_id text
+    parts_order_id text,
+    device_location text,
+    job_repair_no text
 );
+
 
 create table technician_tasks_comments (
     id BIGSERIAL PRIMARY KEY,

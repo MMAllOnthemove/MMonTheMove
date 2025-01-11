@@ -162,6 +162,10 @@ const TechniciansScreen = () => {
     const [repairshoprServiceOrder, setRepairshoprServiceOrder] = useState("")
     const { updateAssessmentDate } = useUpdateAssessmentDate()
 
+    const [device_location, setDeviceLocation] = useState("")
+    const [add_job_repair_no, setAddJobRepairNo] = useState("")
+
+
 
     // engineer filters
     const [engineerFilter, setEngineerFilter] = useState<string>("")
@@ -248,9 +252,9 @@ const TechniciansScreen = () => {
                 setRepairshoprWarranty(extractedValues["Warranty"])
                 setRepairshoprBackupRequires(extractedValues["Backup Requires"])
                 setRepairshoprItemCondition(extractedValues["Item Condition"])
-                setSpecialRequirement(extractedValues["Special Requirement"])
+                // setSpecialRequirement(extractedValues["Special Requirement"])
                 setRepairshoprIMEI(extractedValues["IMEI"])
-                setLocationBin(extractedValues["Location (BIN)"])
+                // setLocationBin(extractedValues["Location (BIN)"])
                 if (properties["Service Order No. "]) {
                     setRepairshoprServiceOrder(properties["Service Order No. "])
                     setServiceOrder(properties["Service Order No. "])
@@ -258,8 +262,8 @@ const TechniciansScreen = () => {
                     setRepairshoprServiceOrder(properties["Service Order No."])
                     setServiceOrder(properties["Service Order No."])
                 }
-                if (properties["Job Repair No."]) setJobRepairNo(properties["Job Repair No."]);
-                else if (properties["Job Repair No.:"]) setJobRepairNo(properties["Job Repair No.:"]);
+                // if (properties["Job Repair No."]) setJobRepairNo(properties["Job Repair No."]);
+                // else if (properties["Job Repair No.:"]) setJobRepairNo(properties["Job Repair No.:"]);
             }
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') {
@@ -368,6 +372,12 @@ const TechniciansScreen = () => {
         // store values from db but still allow user to update those same fields
         // this helps when comparing
         if (modifyTaskModal) {
+            
+            setDeviceLocation(modifyTaskModal?.device_location)
+            setLocationBin(modifyTaskModal?.device_location)
+            setSpecialRequirement(modifyTaskModal?.additional_info)
+            setAddJobRepairNo(modifyTaskModal?.job_repair_no)
+            setJobRepairNo(modifyTaskModal?.job_repair_no)
             setPartsOrderId(modifyTaskModal?.parts_order_id)
             // setPartStatus(modifyTaskModal?.unit_status || "")
             setRepairshoprStatus(modifyTaskModal?.unit_status)
@@ -549,9 +559,9 @@ const TechniciansScreen = () => {
             "Service Order No. ": service_order_no,
             "Special Requirement": specialRequirement,
             "Special Requirement ": specialRequirement,
-            "Job Repair No.": `${job_repair_no}`,
-            "Job Repair No.:": `${job_repair_no}`,
-            "Location (BIN)": `${locationBin}`,
+            "Job Repair No.": `${add_job_repair_no}`,
+            "Job Repair No.:": `${add_job_repair_no}`,
+            "Location (BIN)": `${device_location}`,
         }
     }
     // Update the techs tab
@@ -577,7 +587,7 @@ const TechniciansScreen = () => {
         }
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no, unit_status, assessment_date, updated_at, engineer, collected, collected_date, compensation
+            id, service_order_no, unit_status, assessment_date, updated_at, engineer, collected, collected_date, compensation, device_location, job_repair_no: add_job_repair_no
         }
         const changes = findChanges(modifyTaskModal, updatePayload)
         const created_at = datetimestamp;
@@ -613,11 +623,12 @@ const TechniciansScreen = () => {
             }
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') {
-                console.error("error in hhp techincians screen", error)
+                console.error("error updating in hhp techincians screen", error)
             }
         }
 
     }
+
 
     // Update the parts tab
     const handlePartsSubmit = async (e: React.SyntheticEvent) => {
@@ -898,7 +909,7 @@ const TechniciansScreen = () => {
                                                     <TabsTrigger value="Time">Time summary</TabsTrigger>
                                                 </TabsList>
                                                 <TabsContent value="Techs">
-                                                    <TasksUpdate updateTask={updateHHPTaskLoading} job_repair_no={job_repair_no} location={locationBin} assessment_date={modifyTaskModal?.assessment_date} hhp_tasks_loading={hhpFilesUploading} setHHPFilesProp={handleHHPFiles} submitHHPFiles={submitHHPFiles} date_booked={modifyTaskModal?.date_booked} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={setRepairshoprStatus} submitTasksUpdate={handleSubmit} engineer={engineer} setEngineer={setEngineer} engineerCombobox={engineerCombobox} setEngineerUserId={setEngineerUserId} setEngineerCombobox={setEngineerCombobox} imei={modifyTaskModal?.imei} serial_number={modifyTaskModal?.serial_number} model={modifyTaskModal?.model} additional_info={specialRequirement} />
+                                                    <TasksUpdate updateTask={updateHHPTaskLoading} job_repair_no={job_repair_no} location={locationBin} assessment_date={modifyTaskModal?.assessment_date} hhp_tasks_loading={hhpFilesUploading} setHHPFilesProp={handleHHPFiles} submitHHPFiles={submitHHPFiles} date_booked={modifyTaskModal?.date_booked} service_order_noProp={service_order_no} setServiceOrderProp={(e) => setServiceOrder(e.target.value)} reparshoprCommentProp={reparshoprComment} setRepairshoprCommentProp={(e: React.SyntheticEvent | any) => setRepairshoprComment(e.target.value)} unit_statusProp={unit_status} setRepairshoprStatusProp={setRepairshoprStatus} submitTasksUpdate={handleSubmit} engineer={engineer} setEngineer={setEngineer} engineerCombobox={engineerCombobox} setEngineerUserId={setEngineerUserId} setEngineerCombobox={setEngineerCombobox} imei={modifyTaskModal?.imei} serial_number={modifyTaskModal?.serial_number} model={modifyTaskModal?.model} additional_info={specialRequirement} device_location={device_location} setDeviceLocation={setDeviceLocation} add_job_repair_no={add_job_repair_no} setAddJobRepairNo={setAddJobRepairNo} />
                                                 </TabsContent>
                                                 <TabsContent value="QC">
                                                     <QC qcUpdateLoading={updateHHPTaskLoading} qc_fail_reasonProp={qc_comment} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} qc_FilesLoadingProp={qcFilesUploading} setQCFilesProp={handleQCFiles} submitQCFiles={submitQCFiles} setUnitCompleteDateProp={setUnitCompleteDate} setUnitCompleteProp={setUnitComplete} submitQC={handleQCSubmit} />
