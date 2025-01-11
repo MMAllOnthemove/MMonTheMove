@@ -56,8 +56,13 @@ type TTasksUpdate = {
     submitTasksUpdate: (data: React.SyntheticEvent) => void;
     setHHPFilesProp: (data: ChangeEvent<HTMLInputElement>) => void;
     submitHHPFiles: (data: React.SyntheticEvent) => void;
+    device_location: string | null;
+    setDeviceLocation: (data: any) => void;
+    add_job_repair_no: string | null;
+    setAddJobRepairNo: (data: any) => void;
+
 }
-const TasksUpdate = ({ setEngineer, setEngineerUserId, updateTask, engineer, engineerCombobox, setEngineerCombobox, location, job_repair_no, assessment_date, additional_info, hhp_tasks_loading, model, imei, serial_number, setHHPFilesProp, submitHHPFiles, service_order_noProp, reparshoprCommentProp, unit_statusProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked }: TTasksUpdate) => {
+const TasksUpdate = ({ setEngineer, setEngineerUserId, updateTask, engineer, engineerCombobox, setEngineerCombobox, location, job_repair_no, assessment_date, additional_info, hhp_tasks_loading, model, imei, serial_number, setHHPFilesProp, submitHHPFiles, service_order_noProp, reparshoprCommentProp, unit_statusProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked, device_location, setDeviceLocation, add_job_repair_no, setAddJobRepairNo }: TTasksUpdate) => {
     const { engineersList } = useFetchEngineer()
     const engineerListFomatted = engineersList?.map((user) => ({
         repairshopr_id: user?.repairshopr_id,
@@ -154,6 +159,17 @@ const TasksUpdate = ({ setEngineer, setEngineerUserId, updateTask, engineer, eng
 
 
             </div>
+            <div>
+                <div>
+                    <Label htmlFor="device_location">Add location</Label>
+                    <Input type="text" name="device_location" value={device_location || ''} onChange={(e) => setDeviceLocation(e.target.value)} />
+                </div>
+                <div>
+                    <Label htmlFor="add_job_repair_no">Add job repair no</Label>
+                    <Input type="text" name="add_job_repair_no" value={add_job_repair_no || ''} onChange={(e) => setAddJobRepairNo(e.target.value)} />
+                </div>
+
+            </div>
             <Accordion type="single" collapsible>
                 <AccordionItem value="item-1">
                     <AccordionTrigger>More info</AccordionTrigger>
@@ -170,6 +186,7 @@ const TasksUpdate = ({ setEngineer, setEngineerUserId, updateTask, engineer, eng
                                 <li>Special requirement: <span className="text-gray-600 font-medium">{additional_info}</span></li>
                             </ul>
                         </div>
+                       
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-2">

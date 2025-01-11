@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.11] - 2025-01-11
+
+### Added
+
+-   add order number input field (actually added in [0.1.10] - 2025-01-10)
+-   device_location and job_repair_no columns
+-   field for adding location
+-   adh booking on rs
+
+### Fixed
+
+-   not showing checklist images for today’s checklist
+-   parts not adding
+
 ## [0.1.10] - 2025-01-10
 
 ### Added
