@@ -194,37 +194,37 @@ const TookanScreen = () => {
                                                 <div className="grid grid-cols-1 gap-4">
                                                     <div className="mb-1">
                                                         <Label htmlFor='serviceOrder'>Service order/ticket no</Label>
-                                                        <Input type="text" value={serviceOrder} onChange={(e) => setServiceOrder(e.target.value)} name='serviceOrder' id='serviceOrder' />
+                                                        <Input type="text" defaultValue={serviceOrder} onChange={(e) => setServiceOrder(e.target.value)} name='serviceOrder' id='serviceOrder' />
 
                                                     </div>
                                                 </div>
                                                 <div className="grid grid-cols-1">
                                                     <div className="mb-1">
                                                         <Label htmlFor='fault'>Fault (description)</Label>
-                                                        <Textarea value={fault} onChange={(e) => setFault(e.target.value)} name='fault' id='fault' ></Textarea>
+                                                        <Textarea defaultValue={fault} onChange={(e) => setFault(e.target.value)} name='fault' id='fault' ></Textarea>
                                                     </div>
                                                 </div>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     <div className="mb-1">
                                                         <Label htmlFor='firstname'>First Name</Label>
-                                                        <Input type="text" value={capitalizeFirstLetter(firstname)} onChange={(e) => setFirstname(e.target.value)} name='firstname' id='firstname' />
+                                                        <Input type="text" defaultValue={capitalizeFirstLetter(firstname) || ""} onChange={(e) => setFirstname(e.target.value)} name='firstname' id='firstname' />
 
                                                     </div>
                                                     <div className="mb-1">
                                                         <Label htmlFor='lastname'>Last Name</Label>
-                                                        <Input type="text" value={capitalizeFirstLetter(lastname)} onChange={(e) => setLastname(e.target.value)} id='lastname' name='lastname' />
+                                                        <Input type="text" defaultValue={capitalizeFirstLetter(lastname) || ""} onChange={(e) => setLastname(e.target.value)} id='lastname' name='lastname' />
 
                                                     </div>
                                                 </div>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     <div className="mb-1">
                                                         <Label htmlFor='email'>Email</Label>
-                                                        <Input type="text" value={email?.toLowerCase()} onChange={(e) => setEmail(e.target.value)} name='email' id='email' />
+                                                        <Input type="text" defaultValue={email?.toLowerCase() || ""} onChange={(e) => setEmail(e.target.value)} name='email' id='email' />
 
                                                     </div>
                                                     <div className="mb-1">
                                                         <Label htmlFor='phone' >Telephone</Label>
-                                                        <Input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} id='phone' name='phone' />
+                                                        <Input type="text" defaultValue={phone || ""} onChange={(e) => setPhone(e.target.value)} id='phone' name='phone' />
 
                                                     </div>
                                                 </div>
@@ -234,7 +234,7 @@ const TookanScreen = () => {
 
                                                     <small>Please copy the address, open google maps, and ensure the address is correct</small>
                                                     <div className="flex items-center justify-between gap-2 mb-4">
-                                                        <Input type="text" value={address} onChange={(e) => setAddress(e.target.value)} name='address' id='address' className="flex flex-grow" />
+                                                        <Input type="text" defaultValue={address || ""} onChange={(e) => setAddress(e.target.value)} name='address' id='address' className="flex flex-grow" />
 
                                                         <Link href={`http://maps.google.com/?q=${address}`} target="_blank" rel="noopener noreferrer" className='text-white bg-gray-900 hover:bg-gray-800 focus:outline-none font-medium rounded-sm text-sm px-5 py-2'>Map</Link>
                                                     </div>

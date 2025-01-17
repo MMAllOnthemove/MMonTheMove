@@ -22,6 +22,8 @@ import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';
 import TableBody from './tablebody';
 import TableHead from './tablehead';
+import { TechniciansTableData } from '@/lib/types';
+import Modal from '@/components/modal/page';
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page')
 )
@@ -63,6 +65,8 @@ const CustomerVistListScreen = () => {
         pageIndex: 0,
         pageSize: 10,
     })
+    const [showCustomerTicketListModal, setShowCustomerTicketListModal] = useState<TechniciansTableData | any>();
+    const [openModal, setOpenModal] = useState(false);
     const handleCreateTicket = async (row: any) => {
         const originalData = row?.original;
         startTransition(() => {
@@ -104,6 +108,15 @@ const CustomerVistListScreen = () => {
     }, [customerVisitList]);
 
 
+    const handleRowSelect = (row: TechniciansTableData) => {
+        setShowCustomerTicketListModal(row?.original);
+        setOpenModal(true);
+    }
+
+    const closeModal = () => {
+        setOpenModal(false);
+        setShowCustomerTicketListModal(null);
+    };
     return (
         <>
             {
@@ -122,10 +135,31 @@ const CustomerVistListScreen = () => {
                         </section>
                         {isPending && <p className="text-gray-800 font-semibold text-center mb-2">Loading...</p>}
 
+                        {
+                            showCustomerTicketListModal &&
+                            <Modal
+                                isVisible={openModal}
+                                onClose={closeModal}
+                                title={showCustomerTicketListModal?.customer_name}
+                                content={
+                                    <div className="h-[100px] overflow-auto">
+                                        {
+                                            showCustomerTicketListModal && showCustomerTicketListModal.ticket_numbers &&
+                                            showCustomerTicketListModal.ticket_numbers.map((x: any, index: any) => (
+                                                <ol key={index}>
+                                                    <li>{x}</li>
+                                                </ol>
+                                            ))
+                                        }
+                                    </div>
+
+                                }
+                            />
+                        }
                         <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg">
                             <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
                                 <TableHead table={table} />
-                                <TableBody table={table} handleCreateTicket={handleCreateTicket} handleCreateSO={handleCreateSO} totalJobs={totalJobsCount} />
+                                <TableBody table={table} handleRowSelect={handleRowSelect} handleCreateTicket={handleCreateTicket} handleCreateSO={handleCreateSO} totalJobs={totalJobsCount} />
                             </table>
                         </div>
                         <div className="h-2" />

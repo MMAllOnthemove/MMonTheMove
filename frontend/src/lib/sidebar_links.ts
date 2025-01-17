@@ -60,10 +60,22 @@ export const menuItems = [
         sublinks: [
             // { id: 16, item: "Create customer", pageRoute: "/create_customer" },
             { id: 16, item: "Create customer", pageRoute: "/welcome" },
+            {
+                id: 17,
+                item: "Book from SO",
+                pageRoute: "/departments/hhp/book_from_so",
+            },
         ],
     },
     {
-        label: "Customer list",
-        sublinks: [{ id: 17, item: "Customers", pageRoute: "/customers" }],
+        label: "Customers",
+        sublinks: [
+            {
+                id: 18,
+                item: "Today's customers",
+                pageRoute: "/customers_today",
+            },
+            { id: 19, item: "Customers list", pageRoute: "/customers" },
+        ],
     },
 ];

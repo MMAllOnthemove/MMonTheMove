@@ -12,9 +12,13 @@ type IHHPTask = {
     engineer: string;
     fault: string;
     imei: string;
+    job_repair_no: string;
     serial_number: string;
     repairshopr_status: string;
+    repairshopr_customer_id: number | null | undefined;
     gspn_status: string;
+    device_location: string | null;
+    requires_backup: string | null;
     ticket_number: string;
     department: string;
     job_added_by: string;
@@ -24,10 +28,13 @@ type IHHPTask = {
     stores: boolean | null;
     parts_ordered_date: string | null;
     completed_date: string | null;
+    additional_info: string | null;
     collected_date: string | null;
     qc_complete: string | null;
     qc_date: string | null;
     repair_completed: string | null;
+    rs_warranty: string | null;
+    accessories_and_condition: string | null;
     unit_status: string;
     unit_complete: boolean;
     collected: string | boolean;
@@ -83,6 +90,6 @@ const useFetchHHPTaskById = (taskId: string | string[] | any) => {
         refetch();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [taskId]);
-    return { hhpTask };
+    return { hhpTask, refetch };
 };
 export default useFetchHHPTaskById;

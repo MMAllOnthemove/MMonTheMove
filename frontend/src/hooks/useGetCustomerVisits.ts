@@ -27,16 +27,20 @@ const useGetCustomerVisits = (date: string) => {
         if (!date) return;
         try {
             setLoading(true);
-            const response = await axios.get(
+            const { data } = await axios.get(
                 `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/customer_visits/${date}`,
                 {
                     withCredentials: true,
                 }
             );
-            if (response?.data) {
-                setData(response.data);
+            if (data) {
+                const showRecentTicket = data.map((entry: any) => ({
+                    ...entry,
+                    recent_ticket: entry.ticket_numbers[0] || null,
+                }));
+                setData(showRecentTicket);
             }
-            return response?.data;
+            return data;
         } catch (error: any) {
             if (error) toast.error(error?.response?.data?.error);
         } finally {

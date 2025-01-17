@@ -13,6 +13,10 @@ type TUpdateValues = {
     parts_issued?: boolean;
     parts_pending?: boolean;
     qc_date?: string;
+    repairshopr_customer_id?: string;
+    accessories_and_condition?: string | null;
+    requires_backup?: string | null;
+    job_repair_no?: string | null;
     qc_complete?: string;
 };
 

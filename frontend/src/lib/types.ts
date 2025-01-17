@@ -683,3 +683,41 @@ export type CustomerData = {
     customers: Customer[];
     meta: Meta;
 };
+export type TCustomers = {
+    id: string | number;
+    unique_id: string;
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    phone_number?: string;
+    home_number?: string;
+    office_number?: string;
+    address?: string;
+    address_2?: string;
+    city?: string;
+    state?: string;
+    zip?: string;
+    created_at?: string;
+    repairshopr_customer_id?: string | number;
+    updated_at?: string;
+};
+export type TCustomersTanstackTable = {
+    original: {
+        id: string | number;
+        unique_id: string;
+        first_name?: string;
+        last_name?: string;
+        email?: string;
+        phone_number?: string;
+        home_number?: string;
+        office_number?: string;
+        address?: string;
+        address_2?: string;
+        city?: string;
+        state?: string;
+        zip?: string;
+        created_at?: string;
+        repairshopr_customer_id?: string | number;
+        updated_at?: string;
+    };
+};

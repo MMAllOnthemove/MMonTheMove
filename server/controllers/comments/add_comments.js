@@ -14,7 +14,7 @@ const addComment = async (req, res) => {
 
         // Check if agent already exists (optional, can be adjusted based on your use case)
         const { rows: existingComment } = await pool.query(
-            "SELECT * FROM technician_tasks_comments WHERE task_id = $1 AND comment = $2",
+            "SELECT * FROM technician_tasks_comments WHERE task_id = $1 AND comment = $2 limit 1",
             [task_id, comment]
         );
 
