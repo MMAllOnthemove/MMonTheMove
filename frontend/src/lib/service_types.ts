@@ -14,6 +14,11 @@ const service_types = [
         label: "Pickup Service",
         value: "PS",
     },
+    {
+        id: 4,
+        label: "Accident Damage Handling",
+        value: "ADH",
+    },
 ];
 
 export default service_types;

@@ -98,6 +98,7 @@ import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud'
 import columns from '@/lib/hhp_technicians_table_columns'
 import { globalFilterFn } from '@/lib/tanstack_global_filter'
 import { useRouter } from 'next/navigation'
+import repairshopr_statuses from '@/lib/repairshopr_status'
 const DateCalculationsScreen = dynamic(() =>
     import('./date_calculations/page')
 )
@@ -170,15 +171,23 @@ const TechniciansScreen = () => {
     // engineer filters
     const [engineerFilter, setEngineerFilter] = useState<string>("")
     const [unassisgnedFilter, setUnassignedFilter] = useState<string>("")
+    const [statusFilter, setStatusFilter] = useState<string>("")
 
 
     const handleEngineerFilter = (e: any) => {
         setUnassignedFilter("")
+        setStatusFilter("")
         setEngineerFilter(e)
     }
     const handleUnassignedFilter = (e: any) => {
         setUnassignedFilter(e)
         setEngineerFilter("")
+        setStatusFilter("")
+    }
+    const handleStatusFilter = (e: any) => {
+        setStatusFilter(e)
+        setEngineerFilter("")
+        setUnassignedFilter("")
     }
 
     // parts
@@ -276,6 +285,21 @@ const TechniciansScreen = () => {
     const closeModal = () => {
         // clear the parts search, repair comment, part comment when this is closed
         setSearchPart('')
+        setServiceOrder('')
+        setDeviceLocation('')
+        setLocationBin('')
+        setSpecialRequirement('')
+        setAddJobRepairNo('')
+        setPartsOrderId('')
+        setRepairshoprStatus('')
+        setEngineer('')
+        setAssessmentDate('')
+        setPartsIssued(undefined)
+        setPartsIssuedDate('')
+        setPartsRequestedDate('')
+        setPartsRequested(undefined)
+        setQCComplete('')
+        setQCCompleteDate('')
         setRepairshoprComment('')
         setPartsExtraText("")
         setModifyTaskModalOpen(false);
@@ -321,22 +345,41 @@ const TechniciansScreen = () => {
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
 
-    // Data for the table, so we can filter it
+    const resetFilters = () => {
+        setEngineerFilter(""); // Clear engineer filter
+        setUnassignedFilter(""); // Clear unassigned filter
+        setStatusFilter(""); // Clear status filter
+    };
+
+    // Data for the table with filtering logic
     const filterHHPData = useMemo(() => {
-        if (!hhpTasks) return [];
-        // If "unassigned" filter is active, ignore the engineer filter
+        if (!hhpTasks) return []; // Return empty array if no tasks
+
+        // Return the full dataset when no filters are active
+        if (!engineerFilter && !unassisgnedFilter && !statusFilter) {
+            return hhpTasks;
+        }
+
+        // Apply "unassigned" filter if active
         if (unassisgnedFilter) {
             return hhpTasks.filter((task: any) => !task?.engineer || task?.engineer === null);
         }
 
-        // If "engineerFilter" is active, apply it
+        // Apply "engineer" filter if active
         if (engineerFilter) {
             return hhpTasks.filter((task: any) =>
                 task?.engineer?.toLowerCase()?.includes(engineerFilter.toLowerCase())
             );
         }
-        return hhpTasks;
-    }, [engineerFilter, hhpTasks, unassisgnedFilter]);
+        // Apply "status" filter if active
+        if (statusFilter) {
+            return hhpTasks.filter((task: any) =>
+                task?.unit_status?.toLowerCase()?.includes(statusFilter.toLowerCase())
+            );
+        }
+
+        return hhpTasks; // Default return the full dataset
+    }, [engineerFilter, hhpTasks, unassisgnedFilter, statusFilter]);
 
 
     const [pagination, setPagination] = useState<PaginationState>({
@@ -372,7 +415,7 @@ const TechniciansScreen = () => {
         // store values from db but still allow user to update those same fields
         // this helps when comparing
         if (modifyTaskModal) {
-            
+
             setDeviceLocation(modifyTaskModal?.device_location)
             setLocationBin(modifyTaskModal?.device_location)
             setSpecialRequirement(modifyTaskModal?.additional_info)
@@ -511,12 +554,16 @@ const TechniciansScreen = () => {
         setHHPFilesUploading(true);
         try {
             const formData = new FormData();
-            const ticket_number = modifyTaskModal?.ticket_number
+            const ticket_number = modifyTaskModal?.ticket_number;
+            const task_id = modifyTaskModal?.id;
+            const created_at = datetimestamp;
             Array.from(hhpFiles).forEach((file) => {
                 formData.append('files', file);
             });
             // Append ticket_number once
             formData.append('ticket_number', ticket_number);
+            formData.append('task_id', task_id);
+            formData.append('created_at', created_at);
             const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/files`, formData, {
                 withCredentials: true,
             })
@@ -526,7 +573,7 @@ const TechniciansScreen = () => {
                 const repairshopr_payload = {
                     files: data.fileUrls.map((url: any) => ({
                         url: url,
-                        filename: url.split('/').pop(), // Extract filename from URL
+                        filename: url?.split('/')?.pop(), // Extract filename from URL
                     })),
                 };
                 await addRepairTicketFile(modifyTaskModal?.repairshopr_job_id, repairshopr_payload)
@@ -577,9 +624,9 @@ const TechniciansScreen = () => {
 
         const id = modifyTaskModal?.id;
         const updated_at = datetimestamp;
-        if (modifyTaskModal?.service_order_no !== service_order_no) {
-            setServiceOrder(service_order_no)
-        }
+        // if (modifyTaskModal?.service_order_no !== service_order_no) {
+        //     setServiceOrder(service_order_no)
+        // }
 
         if (unit_status === "Resolved") {
             setCollected(true);
@@ -836,9 +883,23 @@ const TechniciansScreen = () => {
                                 />
 
                                 <div className="flex justify-between items-center gap-3">
+
+                                    <Select name="statusFilter" value={statusFilter} onValueChange={handleStatusFilter}>
+                                        <SelectTrigger className="w-full hidden md:flex">
+                                            <SelectValue placeholder="Status" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Engineer</SelectLabel>
+                                                {repairshopr_statuses.map((dep) => (
+                                                    <SelectItem key={dep.id} value={`${dep._status}`}>{`${dep._status}`}</SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
                                     <Select name="engineerFilter" value={unassisgnedFilter} onValueChange={handleUnassignedFilter}>
                                         <SelectTrigger className="w-full hidden md:flex">
-                                            <SelectValue placeholder="Filter by" />
+                                            <SelectValue placeholder="Unassigned" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value={"unassigned"}>Unassigned</SelectItem>
@@ -846,7 +907,7 @@ const TechniciansScreen = () => {
                                     </Select>
                                     <Select name="engineerFilter" value={engineerFilter} onValueChange={handleEngineerFilter}>
                                         <SelectTrigger className="w-full hidden md:flex">
-                                            <SelectValue placeholder="Filter by" />
+                                            <SelectValue placeholder="Technician" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectGroup>
@@ -857,6 +918,7 @@ const TechniciansScreen = () => {
                                             </SelectGroup>
                                         </SelectContent>
                                     </Select>
+                                    <Button type="button" onClick={resetFilters}> Reset filters</Button>
                                     <Button type="button" onClick={() => setSortTableColumns(true)} className="hidden md:block">Sort columns</Button>
                                     <Button type="button" onClick={() => setOpenAddTaskModal(true)}> Add task</Button>
                                 </div>

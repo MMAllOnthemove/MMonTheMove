@@ -33,17 +33,17 @@ import React, { ChangeEvent } from "react";
 
 type TTasksUpdate = {
     updateTask: boolean;
-    assessment_date: string;
+    assessment_date?: string;
     service_order_noProp: string | number | undefined
     reparshoprCommentProp: string
     unit_statusProp: string | undefined
-    date_booked: string;
+    date_booked: string | undefined | any;
     additional_info: string;
     hhp_tasks_loading: boolean;
-    serial_number: string;
-    engineer: string;
-    model: string;
-    imei: string;
+    serial_number: string | undefined | any;
+    engineer: string | undefined | any;
+    model: string | undefined | any;
+    imei: string | undefined | any;
     job_repair_no: string;
     engineerCombobox: boolean;
     location: string;
@@ -186,7 +186,7 @@ const TasksUpdate = ({ setEngineer, setEngineerUserId, updateTask, engineer, eng
                                 <li>Special requirement: <span className="text-gray-600 font-medium">{additional_info}</span></li>
                             </ul>
                         </div>
-                       
+
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-2">

@@ -58,7 +58,7 @@ const useCheckWarranty = (
                         setWarrantyCode("75130");
                         setTicketTypeId("21877");
                         setLocalWarranty("IW");
-                    } else {
+                    } else if (warranty_type === "OW") {
                         setWarrantyCode("75131");
                         setTicketTypeId("21878");
                         setLocalWarranty("OOW");

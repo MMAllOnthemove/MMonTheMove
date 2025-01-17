@@ -89,7 +89,6 @@ const ChecklistsScreen = () => {
         // Toggle open/close for the clicked row
         setOpenChecklistSummaryRow(openChecklistSummaryRow === rowKey ? null : rowKey);
     };
-    // console.log("checklistList", checklistList)
     const handleRowClick = useCallback(
         (row: any) => {
             setOpenClickedRow(row?.original);

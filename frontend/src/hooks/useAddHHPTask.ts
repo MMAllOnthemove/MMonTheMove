@@ -16,6 +16,7 @@ interface ErrorMessages {
     job_added_by?: string;
     stores?: string;
     repairshopr_job_id?: string;
+    repairshopr_customer_id?: string;
     repeat_repair?: string;
     additional_info?: string;
 }

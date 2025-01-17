@@ -1,9 +1,20 @@
 const sftp = require("ssh2-sftp-client");
 const path = require("path");
 const fs = require("fs");
+const pg = require("pg");
 const yup = require("yup");
 
 const moment = require("moment");
+
+// create a connection to db as we cannot import a module in a common js file
+
+const pool = new pg.Pool({
+    user: process.env.NEXT_PUBLIC_DB_USER,
+    host: process.env.NEXT_PUBLIC_DB_HOST,
+    database: process.env.NEXT_PUBLIC_DB_NAME,
+    password: process.env.NEXT_PUBLIC_DB_PASSWORD,
+    port: process.env.NEXT_PUBLIC_DB_PORT,
+});
 
 const sftpConfig = {
     host: `${process.env.SFTP_HOST}`,
@@ -37,7 +48,7 @@ const date = moment(datetimestamp).format("YYYY-MM-DD%HH:mm:ss");
 
 const uploadTechnicianFiles = async (req, res) => {
     try {
-        const { ticket_number } = req.body;
+        const { task_id, ticket_number, created_at } = req.body;
         // Check if files are present in the request
         if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
             return res.status(400).json({ error: "No files uploaded" });
@@ -53,7 +64,6 @@ const uploadTechnicianFiles = async (req, res) => {
         const fileUrls = await Promise.all(
             req.files.map(async (file) => {
                 const remotePath = `/root/uploads/hhp/${ticket_number}-hhp-${file.originalname}`;
-               
 
                 try {
                     // Upload the file to SFTP
@@ -69,7 +79,13 @@ const uploadTechnicianFiles = async (req, res) => {
                             );
                         }
                     });
-
+                    // the file being added
+                    const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/hhp/${ticket_number}-hhp-${file.originalname}`;
+                    // add the file url of this car into our db
+                    await pool.query(
+                        "INSERT INTO technician_tasks_images (task_id, image_url, created_at) values ($1, $2, $3)",
+                        [task_id, fileBeingAdded, created_at]
+                    );
                     // Construct and return the file URL
                     return `https://repair.mmallonthemove.co.za/files/hhp/${ticket_number}-hhp-${file.originalname}`;
                 } catch (uploadError) {

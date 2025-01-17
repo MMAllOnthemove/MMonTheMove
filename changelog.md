@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.12] - 2025-01-17
+
+### Added
+
+-   ADH to list of service types file
+-   ADHPackConfirm in IsHeaderInfo object, for creating a service order
+-   adh booking on gspn
+-   allow users to modify customer details and modify locally and on rs
+-   link customer to said ticket
+-   Group visits by how many jobs
+-   filter by status
+-   show ticket number and service order number(s) in the daily customers visit table
+-   adjust the customers table to add a column for rs id
+-   join the tech table with the customers table by rs customer id and just get the ticket for the current day
+-   in the ui, show the unit count
+-   clicking on the row, show those units’ ticket numbers (sort sort them desc)
+-   show recent ticket in the customer visit list ui table
+-   backup_terms table
+-   technician_tasks_images table
+-   book from service order page
+-   can create ticket from data pulled on gspn
+-   can add attachments
+
+### Fixed
+
+-   not adding jobs booked to booking agent stats (does this as soon as a ticket is created)
+-   Toggle unassigned filter should “unfilter”
+-   allow editing fields in create tookan task
+-   added columns accessories_and_condition and requires_backup
+-   clear fields on hhp modify tasks close
+-   block adding duplicate parts on one task
+-   no longer requiring email
+
 ## [0.1.11] - 2025-01-11
 
 ### Added

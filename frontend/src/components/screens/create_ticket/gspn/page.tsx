@@ -146,7 +146,8 @@ const GSPNScreen = () => {
             },
             "IvCreationCheck": `${todaysDate}`,
             "IsHeaderInfo": {
-                "AscJobNo": ""
+                "AscJobNo": "",
+                "ADHPackConfirm": `${serviceType && serviceType === "ADH" ? 'X' : ""}` // according to abdul, we should try it like this
             },
             "IsBpInfo": {
                 "CustomerCode": "",

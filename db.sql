@@ -119,9 +119,20 @@ create table technician_tasks (
     additional_info text,
     parts_order_id text,
     device_location text,
-    job_repair_no text
+    job_repair_no text,
+    repairshopr_customer_id numeric,
+    accessories_and_condition text,
+    requires_backup text,
+    rs_warranty text
 );
 
+create table technician_tasks_images (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    task_id bigint REFERENCES technician_tasks(id),
+    image_url text,
+    created_at text
+);
 
 create table technician_tasks_comments (
     id BIGSERIAL PRIMARY KEY,
@@ -442,4 +453,12 @@ create table engineer_ra_status (
     engineer_code varchar(30),
     valid_from text,
     valid_to text
-)
+);
+
+create table backup_terms (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    term TEXT NOT NULL,
+    bold boolean,
+    created_at text
+);

@@ -26,9 +26,10 @@ type TTableBody = {
     }
     handleCreateTicket: (data: TechniciansTableData) => void;
     handleCreateSO: (data: TechniciansTableData) => void;
+    handleRowSelect: (data: TechniciansTableData) => void;
     totalJobs: string | number;
 }
-const TableBody = ({ table, handleCreateTicket, handleCreateSO, totalJobs }: TTableBody) => {
+const TableBody = ({ table, handleCreateTicket, handleCreateSO, handleRowSelect, totalJobs }: TTableBody) => {
     const { user, isLoggedIn } = useUserLoggedIn()
     return (
         <>
@@ -38,6 +39,7 @@ const TableBody = ({ table, handleCreateTicket, handleCreateSO, totalJobs }: TTa
                     <tr
                         key={row.id}
                         className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]"
+                        onDoubleClick={() => handleRowSelect(row)}
                     >
                         <td className="px-4 py-3 font-medium text-sm max-w-full cursor-pointer">
                             <DropdownMenu>

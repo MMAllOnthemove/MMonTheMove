@@ -14,6 +14,7 @@ import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 import 'tldraw/tldraw.css';
 import AlertDialogServiceOrder from './alert_dialog';
+import useAddAgentTask from '@/hooks/useAddBookingAgentTask';
 
 const DrawScratchesModal = dynamic(() =>
     import('./draw_scratches_modal')
@@ -22,6 +23,7 @@ const DrawScratchesModal = dynamic(() =>
 const HHP = (customerProps: string | string[] | any) => {
     const { customerId, email } = customerProps?.customerProps;
     const { addTask } = useAddHHPTask();
+    const { addAgentTask, addAgentTaskLoading, errors } = useAddAgentTask()
     const { user } = useUserLoggedIn()
     const { addTicket, createTicketLoading } = useCreateTicket()
     const [fault, setFault] = useState("")
@@ -30,7 +32,6 @@ const HHP = (customerProps: string | string[] | any) => {
     const [password, setPassword] = useState("")
     const [requires_backup, setRequiresBackup] = useState("")
     const [job_repair_no, setJobRepairNo] = useState("")
-    const [ticket_number, setTicketNumber] = useState<string | number>("")
     const [IMEI, setIMEI] = useState("");
     const [serialNumber, setSerialNumber] = useState("")
     const [modelNumber, setModelNumber] = useState("")
@@ -45,7 +46,6 @@ const HHP = (customerProps: string | string[] | any) => {
     // this is just the warranty just a different variable (I am out of variable names, lol)
     const { warranty, warrantyCode, ticketTypeId, localWarranty } = useCheckWarranty(modelNumber, serialNumber, IMEI)
     const [adh, setADH] = useState("")
-    const [repairshopr_job_id, setepairshoprJobId] = useState("")
     useEffect(() => {
         const loadCustomerAssetInfo = () => {
             if (typeof window !== undefined && window.localStorage) {
@@ -77,8 +77,8 @@ const HHP = (customerProps: string | string[] | any) => {
                 "Service Order No. ": `${serviceOrderNumber}`,
                 "Item Condition ": `${itemCondition}`,
                 "Item Condition": `${itemCondition}`,
-                "Backup Requires": `${requires_backup}`,
-                "Backup Requires ": `${requires_backup}`,
+                "Backup Requires": requires_backup,
+                "Backup Requires ": requires_backup,
                 "Warranty ": adh === 'ADH' ? 75132 : warrantyCode, // ADH RS code
                 "Warranty": adh === 'ADH' ? 75132 : warrantyCode, // ADH RS code
                 "IMEI": `${IMEI}`,
@@ -100,13 +100,16 @@ const HHP = (customerProps: string | string[] | any) => {
                 }
             ]
         }
+
         const data = await addTicket(payload)
-        await sendTicketDataToOurDB(data?.ticket?.number, data?.ticket?.id)
-        setTicketNumber(data?.ticket?.number)
-        setepairshoprJobId(data?.ticket?.id)
+        await sendTicketDataToOurDB(data?.ticket?.number, data?.ticket?.id, data?.ticket?.customer_id)
+        const bookingAgentsStatPayload = {
+            ticket_number: data?.ticket?.number, created_by: user?.email, booking_agent: user?.full_name, created_at: datetimestamp, original_ticket_date: data?.ticket?.created_at, problemType: data?.ticket?.problem_type
+        }
+        await addAgentTask(bookingAgentsStatPayload); // adds it to the booking agent table, for reporting
         setOpenDialog(true)
     }
-    const sendTicketDataToOurDB = async (ticketNumber: string | number, ticketId: string | number) => {
+    const sendTicketDataToOurDB = async (ticketNumber: string | number, ticketId: string | number, repairshoprCustomerId: string | number) => {
         const created_at = datetimestamp;
         const date_booked = datetimestamp; // seeing as the task will be added same time
         // initially a unit does not have a service_order_no
@@ -146,9 +149,9 @@ const HHP = (customerProps: string | string[] | any) => {
             "ticket_number": `${ticketNumber}`,
             "department": department,
             "job_added_by": user?.email,
-            // "customer_email": email,
             "stores": issue_type,
             "repairshopr_job_id": `${ticketId}`,
+            "repairshopr_customer_id": repairshoprCustomerId,
             "repeat_repair": repeat_repair,
             "created_at": created_at
         }
@@ -198,7 +201,6 @@ const HHP = (customerProps: string | string[] | any) => {
                                         (<SelectItem key={x.value} value={`${x.value}`}>{x?.label}</SelectItem>))
                                     }
                                 </SelectGroup>
-
                             </SelectContent>
                         </Select>
                     </div>
