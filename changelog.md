@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.13] - 2025-01-18
+
+### Added
+
+-   store backup code when adding ticket and after creation
+-   store warranty code when adding ticket and after creation
+-   store job_repair_no code when adding ticket and after creation
+-
+
+### Fixed
+
+-   could not upload attachments after booking from so, due to task_id not being present
+-   logic for checking if part has been added already for/on a ticket
+
 ## [0.1.12] - 2025-01-17
 
 ### Added

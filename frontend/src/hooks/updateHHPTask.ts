@@ -37,10 +37,6 @@ const useUpdateHHPTask = () => {
                     withCredentials: true,
                 }
             );
-            // todo: come back to this
-            // has to load imediately
-            // window.location.reload();
-
             return response.data;
         } catch (error: any) {
             if (error) toast.error(error?.response?.data?.error);

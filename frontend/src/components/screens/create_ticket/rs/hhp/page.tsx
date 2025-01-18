@@ -102,14 +102,22 @@ const HHP = (customerProps: string | string[] | any) => {
         }
 
         const data = await addTicket(payload)
-        await sendTicketDataToOurDB(data?.ticket?.number, data?.ticket?.id, data?.ticket?.customer_id)
+        await sendTicketDataToOurDB(
+            data?.ticket?.number,
+            data?.ticket?.id,
+            data?.ticket?.customer_id,
+            data?.ticket?.ticket_fields[0]["Job Repair No.:"], // had to fetch it down under in the api result
+            data?.ticket?.propeties["Item Condition "], // yes it has whitespace
+            data?.ticket?.propeties["Backup Requires"],
+            data?.ticket?.propeties["Warranty "],  // yes it has whitespace
+        );
         const bookingAgentsStatPayload = {
             ticket_number: data?.ticket?.number, created_by: user?.email, booking_agent: user?.full_name, created_at: datetimestamp, original_ticket_date: data?.ticket?.created_at, problemType: data?.ticket?.problem_type
         }
         await addAgentTask(bookingAgentsStatPayload); // adds it to the booking agent table, for reporting
         setOpenDialog(true)
     }
-    const sendTicketDataToOurDB = async (ticketNumber: string | number, ticketId: string | number, repairshoprCustomerId: string | number) => {
+    const sendTicketDataToOurDB = async (ticketNumber: string | number, ticketId: string | number, repairshoprCustomerId: string | number, repair_no: string | null | number, condtion_accessories: string | null | number, backup_code: string | null | number, warranty_code: string | null | number) => {
         const created_at = datetimestamp;
         const date_booked = datetimestamp; // seeing as the task will be added same time
         // initially a unit does not have a service_order_no
@@ -153,9 +161,14 @@ const HHP = (customerProps: string | string[] | any) => {
             "repairshopr_job_id": `${ticketId}`,
             "repairshopr_customer_id": repairshoprCustomerId,
             "repeat_repair": repeat_repair,
-            "created_at": created_at
+            "created_at": created_at,
+            "job_repair_no": repair_no,
+            "accessories_and_condition": condtion_accessories,
+            "requires_backup": backup_code,
+            "rs_warranty": warranty_code
         }
         await addTask(payload)
+
 
     }
 

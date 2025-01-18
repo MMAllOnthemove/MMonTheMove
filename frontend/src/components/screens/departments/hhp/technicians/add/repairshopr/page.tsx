@@ -72,6 +72,12 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
     const [engineersComboBox, setEngineerComboBox] = useState(false)
 
 
+    const [job_repair_no, setJobRepair] = useState("")
+    const [accessories_and_condition, setItemCondition] = useState("")
+    const [requires_backup, setBackupCode] = useState("")
+    const [rs_warranty, setRSWarranty] = useState("")
+    const [repairshopr_customer_id, setCustomerRSId] = useState("")
+
 
 
     // Fetch ticket info
@@ -89,6 +95,11 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                     if (data?.tickets[0]?.ticket_type_name === "In Warranty") setWarranty('IW') // ticket_type_name is new in the api
                     if (data?.tickets[0]?.ticket_type_name === "Out of Warranty") setWarranty('OOW')
                     setServiceOrderNo(data?.tickets[0]["properties"]["Service Order No."])
+                    setJobRepair(data?.tickets[0]["properties"]["Job Repair No.:"])
+                    setItemCondition(data?.tickets[0]["properties"]["Item Condition"])
+                    setBackupCode(data?.tickets[0]["properties"]["Backup Requires"])
+                    setRSWarranty(data?.tickets[0]["properties"]["Warranty"])
+                    setCustomerRSId(data?.tickets?.customer_id)
                     setRepairshoprIMEI(data?.tickets[0]["properties"]["IMEI"])
                     setIMEI(data?.tickets[0]["properties"]["IMEI"])
                     setTicketNumber(data?.tickets[0]?.number)
@@ -183,7 +194,12 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
             stores,
             repairshopr_job_id,
             repeat_repair,
-            created_at
+            created_at,
+            job_repair_no,
+            accessories_and_condition,
+            requires_backup,
+            rs_warranty,
+            repairshopr_customer_id
         }
         const userIdPayload = {
             "user_id": repairshopr_id,
@@ -206,6 +222,11 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
         setDateBooked('')
         setModel('')
         setSerialNumber('')
+        setJobRepair('')
+        setItemCondition('')
+        setBackupCode('')
+        setRSWarranty('')
+        setCustomerRSId('')
 
         if (hhpAddTaskErrors) {
             onChange(false)

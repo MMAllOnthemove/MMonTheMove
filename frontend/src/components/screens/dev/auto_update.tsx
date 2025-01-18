@@ -206,69 +206,69 @@ const TicketUpdaterScreen: React.FC = () => {
             const rs_warranty = secondSystemTicket.properties["Warranty"]?.trim();
 
             // Extract comments from the second system
-            // const newComments = secondSystemTicket.comments
-            //     .map((comment: any) => ({
-            //         body: comment.body,
-            //         tech: comment.tech,
-            //         created_at: moment(comment.created_at).format("YYYY-MM-DD HH:mm:ss"),
-            //     }));
+            const newComments = secondSystemTicket.comments
+                .map((comment: any) => ({
+                    body: comment.body,
+                    tech: comment.tech,
+                    created_at: moment(comment.created_at).format("YYYY-MM-DD HH:mm:ss"),
+                }));
 
-            // // Add comments locally if there are new ones
-            // for (const comment of newComments) {
+            // Add comments locally if there are new ones
+            for (const comment of newComments) {
 
-            //     const payload = {
-            //         "task_id": ticket.id,
-            //         "comment": '*' + comment?.body,
-            //         "created_at": comment?.created_at,
-            //         "created_by": comment?.tech,
-            //     }
-            //     // console.log("comment", comment)
-            //     await addCommentLocally(payload);
-            //     setLogs((prevLogs) => [
-            //         ...prevLogs,
-            //         `Added comment to ticket number: ${ticket.ticket_number}`,
-            //     ]);
-            // }
+                const payload = {
+                    "task_id": ticket.id,
+                    "comment": '*' + comment?.body,
+                    "created_at": comment?.created_at,
+                    "created_by": comment?.tech,
+                }
+                // console.log("comment", comment)
+                await addCommentLocally(payload);
+                setLogs((prevLogs) => [
+                    ...prevLogs,
+                    `Added comment to ticket number: ${ticket.ticket_number}`,
+                ]);
+            }
 
             // update comments
             const changes = {
-                // service_order_no: serviceOrderNumber,
-                // repairshopr_customer_id: secondSystemTicket?.customer_id,
-                // engineer: secondSystemTicket.user?.full_name,
-                // warranty: secondSystemTicket.ticket_type_name === "In Warranty"
-                //     ? "IW"
-                //     : "OOW",
-                // date_booked: moment(secondSystemTicket.created_at).format("YYYY-MM-DD HH:mm:ss"),
-                // additional_info: additional_info,
-                // device_location: location,
-                // job_repair_no: job_repair_no,
-                // unit_status: ticket.unit_status === secondSystemTicket.status
-                //     ? ticket.unit_status
-                //     : secondSystemTicket.status,
-                // qc_complete: secondSystemTicket.comments.some((comment: any) =>
-                //     comment.body.toLowerCase().includes("qc pass")
-                // )
-                //     ? "Pass"
-                //     : "",
-                // qc_date:
-                //     secondSystemTicket.comments
-                //         .filter((comment: any) =>
-                //             comment.body.toLowerCase().includes("qc pass")
-                //         )
-                //         .map((comment: any) =>
-                //             moment(comment.created_at).format("YYYY-MM-DD HH:mm:ss")
-                //         )[0] || "",
-                // unit_complete: secondSystemTicket.comments.some((comment: any) =>
-                //     comment.body.toLowerCase().includes("qc pass")
-                // ),
-                // completed_date:
-                //     secondSystemTicket.comments
-                //         .filter((comment: any) =>
-                //             comment.body.toLowerCase().includes("qc pass")
-                //         )
-                //         .map((comment: any) =>
-                //             moment(comment.created_at).format("YYYY-MM-DD HH:mm:ss")
-                //         )[0] || "",
+                service_order_no: serviceOrderNumber,
+                repairshopr_customer_id: secondSystemTicket?.customer_id,
+                engineer: secondSystemTicket.user?.full_name,
+                warranty: secondSystemTicket.ticket_type_name === "In Warranty"
+                    ? "IW"
+                    : "OOW",
+                date_booked: moment(secondSystemTicket.created_at).format("YYYY-MM-DD HH:mm:ss"),
+                additional_info: additional_info,
+                device_location: location,
+                job_repair_no: job_repair_no,
+                unit_status: ticket.unit_status === secondSystemTicket.status
+                    ? ticket.unit_status
+                    : secondSystemTicket.status,
+                qc_complete: secondSystemTicket.comments.some((comment: any) =>
+                    comment.body.toLowerCase().includes("qc pass")
+                )
+                    ? "Pass"
+                    : "",
+                qc_date:
+                    secondSystemTicket.comments
+                        .filter((comment: any) =>
+                            comment.body.toLowerCase().includes("qc pass")
+                        )
+                        .map((comment: any) =>
+                            moment(comment.created_at).format("YYYY-MM-DD HH:mm:ss")
+                        )[0] || "",
+                unit_complete: secondSystemTicket.comments.some((comment: any) =>
+                    comment.body.toLowerCase().includes("qc pass")
+                ),
+                completed_date:
+                    secondSystemTicket.comments
+                        .filter((comment: any) =>
+                            comment.body.toLowerCase().includes("qc pass")
+                        )
+                        .map((comment: any) =>
+                            moment(comment.created_at).format("YYYY-MM-DD HH:mm:ss")
+                        )[0] || "",
                 accessories_and_condition: accessories_and_condition,
                 requires_backup: requires_backup,
                 rs_warranty: rs_warranty
@@ -277,18 +277,18 @@ const TicketUpdaterScreen: React.FC = () => {
 
             // Compare changes before updating
             if (
-                // serviceOrderNumber !== changes.service_order_no ||
-                // ticket.engineer !== changes.engineer ||
-                // ticket.warranty !== changes.warranty ||
-                // location !== changes.device_location ||
-                // job_repair_no !== changes.job_repair_no ||
-                // ticket.date_booked !== changes.date_booked ||
-                // ticket.additional_info !== changes.additional_info ||
-                // ticket.unit_status !== changes.unit_status ||
-                // ticket.qc_complete !== changes.qc_complete ||
-                // ticket.qc_date !== changes.qc_date ||
-                // ticket.unit_complete !== changes.unit_complete ||
-                // ticket.completed_date !== changes.completed_date ||
+                serviceOrderNumber !== changes.service_order_no ||
+                ticket.engineer !== changes.engineer ||
+                ticket.warranty !== changes.warranty ||
+                location !== changes.device_location ||
+                job_repair_no !== changes.job_repair_no ||
+                ticket.date_booked !== changes.date_booked ||
+                ticket.additional_info !== changes.additional_info ||
+                ticket.unit_status !== changes.unit_status ||
+                ticket.qc_complete !== changes.qc_complete ||
+                ticket.qc_date !== changes.qc_date ||
+                ticket.unit_complete !== changes.unit_complete ||
+                ticket.completed_date !== changes.completed_date ||
                 ticket.accessories_and_condition != changes.accessories_and_condition ||
                 ticket.requires_backup != changes.requires_backup ||
                 ticket.rs_warranty != changes.rs_warranty

@@ -56,6 +56,7 @@ const BookFromSOScreen = () => {
     const [state, setState] = useState("")
     const [serviceOrder, setServiceOrder] = useState("")
     const [fault, setFault] = useState("")
+    const [task_id, setTaskId] = useState("")
     const [newTicketId, setNewTicketId] = useState("")
     const [imei, setIMEI] = useState("")
     const [serialNumber, setSerialNumber] = useState("")
@@ -124,49 +125,7 @@ const BookFromSOScreen = () => {
         setAttachmentsModal(false)
     }
 
-    const handleHHPFiles = (event: any) => {
-        setHHPFiles(event.target.files);
-    };
-    // submit hhp files to backend and repairshopr
-    const submitHHPFiles = async () => {
-        setHHPFilesUploading(true);
-        try {
-            const formData = new FormData();
-            
-            const ticket_number = serviceOrder
-            const created_at =  datetimestamp;
-            Array.from(hhpFiles).forEach((file) => {
-                formData.append('files', file);
-            });
-            // Append ticket_number once
-            formData.append('task_id', newTicketId);
-            formData.append('ticket_number', ticket_number);
-            formData.append('created_at', created_at);
-            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/files`, formData, {
-                withCredentials: true,
-            })
 
-            if (data) {
-                toast.success(`${data?.message}`)
-                const repairshopr_payload = {
-                    files: data.fileUrls.map((url: any) => ({
-                        url: url,
-                        filename: url.split('/').pop(), // Extract filename from URL
-                    })),
-                };
-                await addRepairTicketFile(newTicketId, repairshopr_payload)
-                setHHPFiles([])
-            }
-            // setQCFilesUrls(data?.fileUrls)
-            setHHPFilesUploading(false)
-        } catch (error: any) {
-            toast.error(error?.response?.data?.error);
-            setHHPFilesUploading(false)
-            if (process.env.NODE_ENV !== "production") {
-                console.error("Error uploading hhp files:", error);
-            }
-        }
-    }
 
     const handleCustomerSearchOrCreation = async (
         customerData: any,
@@ -334,7 +293,11 @@ const BookFromSOScreen = () => {
         await sendTicketDataToOurDB(
             data?.ticket?.number,
             data?.ticket?.id,
-            data?.ticket?.customer_id
+            data?.ticket?.customer_id,
+            data?.ticket?.ticket_fields[0]["Job Repair No.:"], // had to fetch it down under in the api result
+            data?.ticket?.propeties["Item Condition "], // yes it has whitespace
+            data?.ticket?.propeties["Backup Requires"],
+            data?.ticket?.propeties["Warranty "],  // yes it has whitespace
         );
         // Step 7: Add task for booking agents
         const bookingAgentsStatPayload = {
@@ -348,7 +311,7 @@ const BookFromSOScreen = () => {
         await addAgentTask(bookingAgentsStatPayload); // adds it to the booking agent table, for reporting
         openModal() // open modal for attachments
     }
-    const sendTicketDataToOurDB = async (ticketNumber: string | number, ticketId: string | number, repairshoprCustomerId: string | number) => {
+    const sendTicketDataToOurDB = async (ticketNumber: string | number, ticketId: string | number, repairshoprCustomerId: string | number, repair_no: string | null | number, condtion_accessories: string | null | number, backup_code: string | null | number, warranty_code: string | null | number) => {
         const created_at = datetimestamp;
         const date_booked = datetimestamp; // seeing as the task will be added same time
         // initially a unit does not have a service_order_no
@@ -392,10 +355,60 @@ const BookFromSOScreen = () => {
             "repairshopr_job_id": `${ticketId}`,
             "repairshopr_customer_id": repairshoprCustomerId,
             "repeat_repair": repeat_repair,
-            "created_at": created_at
+            "created_at": created_at,
+            "job_repair_no": repair_no,
+            "accessories_and_condition": condtion_accessories,
+            "requires_backup": backup_code,
+            "rs_warranty": warranty_code
         }
-        await addTask(payload)
+        const res = await addTask(payload)
+        setTaskId(res?.id)
 
+    }
+    const handleHHPFiles = (event: any) => {
+        setHHPFiles(event.target.files);
+    };
+    // submit hhp files to backend and repairshopr
+    const submitHHPFiles = async () => {
+        setHHPFilesUploading(true);
+        try {
+            const formData = new FormData();
+
+            const ticket_number = serviceOrder
+            const created_at = datetimestamp;
+            Array.from(hhpFiles).forEach((file) => {
+                formData.append('files', file);
+            });
+            // Append ticket_number once
+
+
+            formData.append('task_id', task_id);
+            formData.append('ticket_number', ticket_number);
+            formData.append('created_at', created_at);
+            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/files`, formData, {
+                withCredentials: true,
+            })
+
+            if (data) {
+                toast.success(`${data?.message}`)
+                const repairshopr_payload = {
+                    files: data.fileUrls.map((url: any) => ({
+                        url: url,
+                        filename: url.split('/').pop(), // Extract filename from URL
+                    })),
+                };
+                await addRepairTicketFile(newTicketId, repairshopr_payload)
+                setHHPFiles([])
+            }
+            // setQCFilesUrls(data?.fileUrls)
+            setHHPFilesUploading(false)
+        } catch (error: any) {
+            toast.error(error?.response?.data?.error);
+            setHHPFilesUploading(false)
+            if (process.env.NODE_ENV !== "production") {
+                console.error("Error uploading hhp files:", error);
+            }
+        }
     }
 
     // search service order (ticket)
