@@ -49,6 +49,12 @@ const date = moment(datetimestamp).format("YYYY-MM-DD%HH:mm:ss");
 const uploadTechnicianFiles = async (req, res) => {
     try {
         const { task_id, ticket_number, created_at } = req.body;
+        console.log(
+            "task_id, ticket_number, created_at",
+            task_id,
+            ticket_number,
+            created_at
+        );
         // Check if files are present in the request
         if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
             return res.status(400).json({ error: "No files uploaded" });
