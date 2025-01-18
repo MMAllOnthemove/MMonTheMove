@@ -55,6 +55,10 @@ const columns: TColumns | any = [
         accessorKey: "service_order_no",
     },
     {
+        header: "warranty",
+        accessorKey: "warranty",
+    },
+    {
         header: "date_booked",
         accessorKey: "date_booked",
     },
@@ -119,7 +123,7 @@ const HHPAuditScreen = () => {
     // Table filtering
     const [filtering, setFiltering] = useState("");
 
-    const handleOpenSinglePage = async (row: TechniciansTableData) =>{
+    const handleOpenSinglePage = async (row: TechniciansTableData) => {
 
     }
     // Table column visibility 
@@ -203,6 +207,7 @@ const HHPAuditScreen = () => {
     };
     const changes = {
         "service_order_no": service_order_no,
+        "warranty": warranty,
         "ticket_number": ticket_number,
         "date_booked": date_booked ? moment(date_booked).format("YYYY-MM-DD HH:mm:ss") : date_booked,
         "unit_status": unit_status,
@@ -306,10 +311,14 @@ const HHPAuditScreen = () => {
                                         name="qc_date"
                                         placeholder='qc_date'
                                     />
-                                    <Label htmlFor="assessment_date">qc_date</Label>
+                                    <Label htmlFor="warranty">warranty</Label>
                                     <select className='block w-full mb-2 border' name="warranty" id="warranty" value={warranty} onChange={(e) => setWarranty(e.target.value)}>
+                                        <option disabled value="">
+                                            Choose warranty
+                                        </option>
                                         <option value="IW">IW</option>
                                         <option value="OOW">OOW</option>
+                                        <option value="ADH/IW">ADH</option>
                                     </select>
                                     <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">QC complete?</label>
                                     <div className="text-sm font-medium leading-none mb-2 text-gray-900">
@@ -338,22 +347,6 @@ const HHPAuditScreen = () => {
                     />
 
                 }
-                {/* modal for updating task */}
-                {/* {
-                    modifyTaskModal && <Dialog open={modifyTaskModal} onOpenChange={closeModal} >
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>{modifyTaskModal?.ticket_number}</DialogTitle>
-                                <DialogDescription>
-
-                                </DialogDescription>
-                            </DialogHeader>
-
-
-
-                        </DialogContent>
-                    </Dialog>
-                } */}
                 <section className="flex justify-between items-center py-5">
                     <ManagementSearchForm
                         filtering={filtering}

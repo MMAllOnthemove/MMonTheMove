@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const useHHPTasks = () => {
     const [hhpTasks, setHHPTasks] = useState<THHPTasks[] | any>([]);
-    const [hhpTasksLoading, setHHPTasksLoading] = useState(true);
+    const [hhpTasksLoading, setHHPTasksLoading] = useState(false);
 
     const refetchHhpTasks = async () => {
         try {

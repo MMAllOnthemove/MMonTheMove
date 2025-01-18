@@ -1,10 +1,10 @@
-import React from 'react'
-import { Metadata } from 'next';
-import CustomerVistListScreen from '@/components/screens/customer_vist_list/page';
+import { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 
+const CustomersScreen = dynamic(() => import('@/components/screens/customers/page'))
 
 export const metadata: Metadata = {
-    title: "Customers list",
+    title: "Customers | MM ALL ELECTRONICS",
     description: "",
     robots: {
         index: false,
@@ -12,10 +12,10 @@ export const metadata: Metadata = {
     },
 };
 
-const Customers = () => {
+const CreateCustomer = () => {
     return (
-        <CustomerVistListScreen />
+        <CustomersScreen />
     )
 }
 
-export default Customers
+export default CreateCustomer

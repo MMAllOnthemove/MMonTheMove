@@ -13,6 +13,10 @@ type TUpdateValues = {
     parts_issued?: boolean;
     parts_pending?: boolean;
     qc_date?: string;
+    repairshopr_customer_id?: string;
+    accessories_and_condition?: string | null;
+    requires_backup?: string | null;
+    job_repair_no?: string | null;
     qc_complete?: string;
 };
 
@@ -22,8 +26,8 @@ const useUpdateHHPTask = () => {
         taskId: string | number | undefined,
         values: TUpdateValues
     ) => {
-        setLoading(true);
         if (!taskId) return;
+        setLoading(true);
         try {
             const response = await axios.patch(
                 `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/` +
@@ -33,6 +37,10 @@ const useUpdateHHPTask = () => {
                     withCredentials: true,
                 }
             );
+            // todo: come back to this
+            // has to load imediately
+            // window.location.reload();
+
             return response.data;
         } catch (error: any) {
             if (error) toast.error(error?.response?.data?.error);

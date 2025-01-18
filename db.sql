@@ -115,7 +115,23 @@ create table technician_tasks (
     parts_requested_date text,
     collected boolean,
     collected_date text,
-    compensation boolean
+    compensation boolean,
+    additional_info text,
+    parts_order_id text,
+    device_location text,
+    job_repair_no text,
+    repairshopr_customer_id numeric,
+    accessories_and_condition text,
+    requires_backup text,
+    rs_warranty text
+);
+
+create table technician_tasks_images (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    task_id bigint REFERENCES technician_tasks(id),
+    image_url text,
+    created_at text
 );
 
 create table technician_tasks_comments (
@@ -428,4 +444,21 @@ create table customer_visits (
     customer_id integer REFERENCES customers(id) ON DELETE CASCADE,
     visit_date text,
     visit_notes text
-)
+);
+
+create table engineer_ra_status (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    -- did not want to link the main table for the purpose of the said feature to work properly
+    engineer_code varchar(30),
+    valid_from text,
+    valid_to text
+);
+
+create table backup_terms (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    term TEXT NOT NULL,
+    bold boolean,
+    created_at text
+);

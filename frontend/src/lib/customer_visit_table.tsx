@@ -4,34 +4,19 @@ import moment from "moment";
 const columns: TColumns | any = [
     {
         header: "Full name",
-        accessorKey: "first_name",
-        cell: ({ row }: { row: any }) => (
-            <span>{row.original.first_name} {row.original.last_name}</span>
-
-        ),
+        accessorKey: "customer_name",
     },
     {
         header: "Email",
         accessorKey: "email",
     },
     {
-        header: "Phone",
-        accessorKey: "phone_number",
+        header: "Phones",
+        accessorKey: "phone",
     },
     {
-        header: "Phone alternative",
-        accessorKey: "home_number",
-    },
-    {
-        header: "Address",
-        accessorKey: "address",
-        cell: ({ row }: { row: any }) => (
-            <div>
-                <span>{row.original.address}</span>
-                <br />
-                <small style={{ color: "gray" }}>{row.original.address_2}</small>
-            </div>
-        ),
+        header: "Units booked",
+        accessorKey: "unit_count",
     },
     {
         header: "Visit date",
@@ -39,11 +24,12 @@ const columns: TColumns | any = [
         cell: ({ row }: { row: any }) => (
             <div>
                 <span>{moment(row.original.visit_date).format("YYYY-MM-DD")}</span>
-                <br />
-                <small style={{ color: "gray" }}>{moment(row.original.visit_date).format("HH:mm:ss")}</small>
-
             </div>
         ),
+    },
+    {
+        accessorKey: "recent_ticket",
+        header: "Recent Ticket",
     },
 
 

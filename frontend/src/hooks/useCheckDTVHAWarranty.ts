@@ -51,17 +51,18 @@ const useCheckWarranty = (modelNumber: string, serialNumber: string) => {
                     setWarranty(warranty_type);
 
                     if (warranty_type === "LP") {
-                        setWarrantyCode("69476");
+                        setWarrantyCode("75130");
                         setTicketTypeId("21877");
                         setLocalWarranty("IW");
                     } else {
-                        setWarrantyCode("69477");
+                        setWarrantyCode("75131");
                         setTicketTypeId("21878");
                         setLocalWarranty("OOW");
                     }
                 }
             } catch (error) {
-                console.log("check warranty error", error);
+                if (process.env.NODE_ENV !== "production")
+                    console.error("check warranty error", error);
             }
         };
 

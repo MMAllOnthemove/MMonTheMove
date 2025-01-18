@@ -1,6 +1,4 @@
-import { DriverAdd } from "@/lib/types";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -11,7 +9,7 @@ type TPayload = {
     email: string;
     phone: string | number;
     mobile: string | number;
-    address: string;
+    address?: string;
     address_2?: string;
     city?: string;
     state?: string;
@@ -22,7 +20,6 @@ type TPayload = {
 
 const useCreateCustomerOnRepairshopr = () => {
     const [createCustomerLoading, setLoading] = useState(false); // Loading state
-    const router = useRouter();
     const addCustomer = async (values: TPayload) => {
         setLoading(true);
         try {
@@ -38,17 +35,6 @@ const useCreateCustomerOnRepairshopr = () => {
             );
             const customerId = data?.customer?.id;
             return customerId;
-            // Convert the custInfo object to a JSON string
-            // values['customer_id'] = `${customerId}`
-            // const spreadCustomer = {
-            //     ...values,
-            //     customerId: `${customerId}`,
-            // };
-            // const custInfoString = JSON.stringify(spreadCustomer);
-            // if (typeof window !== "undefined" && window.localStorage) {
-            //     window.localStorage.setItem("custInfo", custInfoString);
-            //     router.push("/repairshopr_asset");
-            // }
         } catch (error: any) {
             toast.error(`${error?.response?.data?.message}`);
         } finally {

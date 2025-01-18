@@ -14,6 +14,7 @@ import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 import 'tldraw/tldraw.css';
 import AlertDialogServiceOrder from './alert_dialog';
+import useAddAgentTask from '@/hooks/useAddBookingAgentTask';
 
 const DrawScratchesModal = dynamic(() =>
     import('./draw_scratches_modal')
@@ -22,6 +23,7 @@ const DrawScratchesModal = dynamic(() =>
 const HHP = (customerProps: string | string[] | any) => {
     const { customerId, email } = customerProps?.customerProps;
     const { addTask } = useAddHHPTask();
+    const { addAgentTask, addAgentTaskLoading, errors } = useAddAgentTask()
     const { user } = useUserLoggedIn()
     const { addTicket, createTicketLoading } = useCreateTicket()
     const [fault, setFault] = useState("")
@@ -30,14 +32,11 @@ const HHP = (customerProps: string | string[] | any) => {
     const [password, setPassword] = useState("")
     const [requires_backup, setRequiresBackup] = useState("")
     const [job_repair_no, setJobRepairNo] = useState("")
-    const [ticket_number, setTicketNumber] = useState<string | number>("")
     const [IMEI, setIMEI] = useState("");
     const [serialNumber, setSerialNumber] = useState("")
     const [modelNumber, setModelNumber] = useState("")
     const [issue_type, setIssueType] = useState("");
-
     const [openModal, setOpenModal] = useState(false);
-    const [openAttachmentsModal, setOpenAttachmentsModal] = useState(false);
     const [openDialog, setOpenDialog] = useState(false)
     const [serviceOrderNumber, setServiceOrder] = useState("")
     // Asset id
@@ -46,7 +45,7 @@ const HHP = (customerProps: string | string[] | any) => {
     // some of the values will be stored in state from the result
     // this is just the warranty just a different variable (I am out of variable names, lol)
     const { warranty, warrantyCode, ticketTypeId, localWarranty } = useCheckWarranty(modelNumber, serialNumber, IMEI)
-    const [repairshopr_job_id, setepairshoprJobId] = useState("")
+    const [adh, setADH] = useState("")
     useEffect(() => {
         const loadCustomerAssetInfo = () => {
             if (typeof window !== undefined && window.localStorage) {
@@ -78,10 +77,10 @@ const HHP = (customerProps: string | string[] | any) => {
                 "Service Order No. ": `${serviceOrderNumber}`,
                 "Item Condition ": `${itemCondition}`,
                 "Item Condition": `${itemCondition}`,
-                "Backup Requires": `${requires_backup}`,
-                "Backup Requires ": `${requires_backup}`,
-                "Warranty ": `${warrantyCode}`,
-                "Warranty": `${warrantyCode}`,
+                "Backup Requires": requires_backup,
+                "Backup Requires ": requires_backup,
+                "Warranty ": adh === 'ADH' ? 75132 : warrantyCode, // ADH RS code
+                "Warranty": adh === 'ADH' ? 75132 : warrantyCode, // ADH RS code
                 "IMEI": `${IMEI}`,
                 "Job Repair No.": `${job_repair_no}`,
                 "Job Repair No.:": `${job_repair_no}`,
@@ -103,16 +102,14 @@ const HHP = (customerProps: string | string[] | any) => {
         }
 
         const data = await addTicket(payload)
-        await sendTicketDataToOurDB(data?.ticket?.number, data?.ticket?.id)
-        setTicketNumber(data?.ticket?.number)
-        setepairshoprJobId(data?.ticket?.id)
-        // todo: trial and error, user will add attachments in the table 
-        // we will now show the alert dialog to ask user if the wanna create an so or not
-        // so we can make way for the alert dialog
-        // setOpenAttachmentsModal(true)
+        await sendTicketDataToOurDB(data?.ticket?.number, data?.ticket?.id, data?.ticket?.customer_id)
+        const bookingAgentsStatPayload = {
+            ticket_number: data?.ticket?.number, created_by: user?.email, booking_agent: user?.full_name, created_at: datetimestamp, original_ticket_date: data?.ticket?.created_at, problemType: data?.ticket?.problem_type
+        }
+        await addAgentTask(bookingAgentsStatPayload); // adds it to the booking agent table, for reporting
         setOpenDialog(true)
     }
-    const sendTicketDataToOurDB = async (ticketNumber: string | number, ticketId: string | number) => {
+    const sendTicketDataToOurDB = async (ticketNumber: string | number, ticketId: string | number, repairshoprCustomerId: string | number) => {
         const created_at = datetimestamp;
         const date_booked = datetimestamp; // seeing as the task will be added same time
         // initially a unit does not have a service_order_no
@@ -143,16 +140,18 @@ const HHP = (customerProps: string | string[] | any) => {
             "service_order_no": serviceOrderNumber,
             "date_booked": date_booked,
             "model": modelNumber,
-            "warranty": localWarranty,
+            "warranty": adh === 'ADH' ? adh : localWarranty,
             "fault": fault,
             "imei": IMEI,
             "serial_number": serialNumber,
             "status": "New",
+            "additional_info": specialRequirement,
             "ticket_number": `${ticketNumber}`,
             "department": department,
             "job_added_by": user?.email,
             "stores": issue_type,
             "repairshopr_job_id": `${ticketId}`,
+            "repairshopr_customer_id": repairshoprCustomerId,
             "repeat_repair": repeat_repair,
             "created_at": created_at
         }
@@ -160,21 +159,19 @@ const HHP = (customerProps: string | string[] | any) => {
 
     }
 
-
+    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setADH(e.target.checked ? 'ADH' : 'IW');
+    };
     const hhp_issue_types = assetTypes.filter(asset => asset.value.includes("HHP"));
     return (
         <>
-
             {
-
                 openModal &&
                 <DrawScratchesModal openModal={openModal} setOpenModal={setOpenModal} />
-
             }
             {
                 openDialog &&
                 <AlertDialogServiceOrder openModal={openDialog} setOpenModal={setOpenDialog} customerEmail={email} />
-
             }
             <form onSubmit={createTicket}>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center mb-2">
@@ -204,7 +201,6 @@ const HHP = (customerProps: string | string[] | any) => {
                                         (<SelectItem key={x.value} value={`${x.value}`}>{x?.label}</SelectItem>))
                                     }
                                 </SelectGroup>
-
                             </SelectContent>
                         </Select>
                     </div>
@@ -237,8 +233,8 @@ const HHP = (customerProps: string | string[] | any) => {
                             <SelectContent>
                                 <SelectGroup>
                                     <SelectLabel>Requires backup</SelectLabel>
-                                    <SelectItem value={`69753`}>No</SelectItem>
-                                    <SelectItem value={`69752`}>Yes</SelectItem>
+                                    <SelectItem value={`75129`}>No</SelectItem>
+                                    <SelectItem value={`75128`}>Yes</SelectItem>
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
@@ -250,7 +246,7 @@ const HHP = (customerProps: string | string[] | any) => {
                     <Textarea placeholder='Special requirement' value={specialRequirement} onChange={(e) => setSpecialRequirement(e.target.value)}></Textarea>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-2">
                     <div>
                         <Label htmlFor='IMEI' className='sr-only'>IMEI</Label>
                         <Input type="text" value={IMEI || ""} onChange={(e) => setIMEI(e.target.value)} name='IMEI number' id='IMEI' placeholder='IMEI' />
@@ -262,6 +258,17 @@ const HHP = (customerProps: string | string[] | any) => {
                     <div>
                         <Label htmlFor='serialNumber' className='sr-only'>Serial number</Label>
                         <Input type="text" value={serialNumber || ""} placeholder='Serial number' onChange={(e) => setSerialNumber(e.target.value)} name='serialNumber' id='serialNumber' />
+                    </div>
+                    <div className="flex gap-2 items-center justify-between cursor-pointer">
+                        <label htmlFor='adh'>
+
+                            <input
+                                type="checkbox"
+                                checked={adh === 'ADH'}
+                                onChange={handleCheckboxChange}
+                            />
+                            ADH Warranty
+                        </label>
                     </div>
                 </div>
                 {warranty ? <p className="text-lg font-semibold text-sky-700 md:text-xl text-center my-3">Unit is {warranty === "LP" ? "IW" : warranty}</p> : ""}

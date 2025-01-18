@@ -5,6 +5,130 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.12] - 2025-01-17
+
+### Added
+
+-   ADH to list of service types file
+-   ADHPackConfirm in IsHeaderInfo object, for creating a service order
+-   adh booking on gspn
+-   allow users to modify customer details and modify locally and on rs
+-   link customer to said ticket
+-   Group visits by how many jobs
+-   filter by status
+-   show ticket number and service order number(s) in the daily customers visit table
+-   adjust the customers table to add a column for rs id
+-   join the tech table with the customers table by rs customer id and just get the ticket for the current day
+-   in the ui, show the unit count
+-   clicking on the row, show those units’ ticket numbers (sort sort them desc)
+-   show recent ticket in the customer visit list ui table
+-   backup_terms table
+-   technician_tasks_images table
+-   book from service order page
+-   can create ticket from data pulled on gspn
+-   can add attachments
+
+### Fixed
+
+-   not adding jobs booked to booking agent stats (does this as soon as a ticket is created)
+-   Toggle unassigned filter should “unfilter”
+-   allow editing fields in create tookan task
+-   added columns accessories_and_condition and requires_backup
+-   clear fields on hhp modify tasks close
+-   block adding duplicate parts on one task
+-   no longer requiring email
+
+## [0.1.11] - 2025-01-11
+
+### Added
+
+-   add order number input field (actually added in [0.1.10] - 2025-01-10)
+-   device_location and job_repair_no columns
+-   field for adding location
+-   adh booking on rs
+
+### Fixed
+
+-   not showing checklist images for today’s checklist
+-   parts not adding
+
+## [0.1.10] - 2025-01-10
+
+### Added
+
+-   status dropdown in parts section
+-   parts_order_id in the technician_tasks table
+-   checkbox in create ticket (rs) to specify if unit is ADH (still needs work)
+
+### Fixed
+
+-   remove comment after commenting on parts tab
+-   clear part search input field after closing modal or after searching
+
+## [0.1.9] - 2025-01-08
+
+### Added
+
+-   dismissible toast in create ticket and create service order
+-   router.back() after creating customer (this works since we are using router.push())
+-   show ticket number or service order for an hour at least after creation
+-   loading effect on dynamic imports on create service order
+-   useTransition() in welcome, customers list screens
+
+### Fixed
+
+-   clear fields after creating customer
+
+## [0.1.8] - 2025-01-07
+
+### Added
+
+-   add a button on the engineer list that will pull data from the gspn engineer list api and adds it to the engineer table locally
+-   we will only add the repairshopr id manually
+-   if engineer exists, skip
+
+### Fixed
+
+-   button text - ‘create new asset’ instead of just ‘create’ on assets screen
+-   create ticket is writing numbers instead of words (rs) and backup requires (rs changed it's codes, again!)
+-   make the customer search field only show that customer (fixed in version [0.1.7])
+
+## [0.1.7] - 2025-01-06
+
+### Added
+
+-   capitalize only first letter of every customer name (added in version [0.1.7])
+-   make it user friendly
+
+### Fixed
+
+-   button text - ‘create new asset’ instead of just ‘create’ on assets screen
+-   create ticket is writing numbers instead of words (rs) and backup requires (rs changed it's codes, again!)
+-   make the customer search field only show that customer (fixed in version [0.1.7])
+
+## [0.1.7] - 2025-01-04
+
+### Added
+
+-   native html select input for engineers and status in the modify task modal (hhp tasks)
+-   temporarily turned off warranty change until we resolve it from repairshopr's side
+-   time summary in modify tasks now calculates based on hours and caters for null assessment date
+-   pagination on customer visits table
+-   searchable as well
+-   add field for special requirements called (additional_info)
+-   highlist entire row on clicked
+-   move the comment in parts tab to added parts section (makes logical sense)
+
+### Fixed
+
+-   adding a task via gspn, ticket number field was flickering (hhp tasks)
+-   window.location.reload() for updating hhp tasks
+-   success and error handling for creating a service order and ticket
+-   creating and searching existing customer now capitalizes first letter of the first and last name
+-   find out why units are added without warranty available
+-   assessment date is not being set properly
+-   not attaching user id if the technician is not reassigned (was only setting current tech)
+
 ## [0.1.6] - 2025-01-02
 
 ### Added
@@ -15,7 +139,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   pull all data and not limited to a specific year
 -   if imei from assets does not work, use one from assets (adding hhp task using repairshopr api)
--   search in table now works even for cells that share values e.g (service order  no / ticket number)
+-   search in table now works even for cells that share values e.g (service order no / ticket number)
 -   add customer button sometimes not working
 -   change ‘add customer’ button text to just ‘Next’
 -   not searching table properly

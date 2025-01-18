@@ -15,6 +15,15 @@ import {
     CommandList,
 } from "@/components/ui/command";
 import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import {
     Dialog,
     DialogContent,
     DialogDescription,
@@ -32,9 +41,12 @@ import useAddEngineer from '@/hooks/useAddEngineer';
 import useDeleteEngineer from '@/hooks/useDeleteEngineer';
 import useFetchEngineer from '@/hooks/useFetchEngineers';
 import useUserLoggedIn from '@/hooks/useGetUser';
+import useIpaasGetEngineerList from '@/hooks/useGSPNEngineerList';
+import useUpdateEngineer from '@/hooks/useUpdateEngineer';
 import { datetimestamp } from '@/lib/date_formats';
 import departments from '@/lib/departments';
 import columns from '@/lib/engineers_columns';
+import findChanges from '@/lib/find_changes';
 import { TEngineersList, TEngineersListTable } from '@/lib/types';
 import { cn } from "@/lib/utils";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
@@ -47,7 +59,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 
 const EngineersScreen = () => {
@@ -55,14 +67,16 @@ const EngineersScreen = () => {
     const { engineersList } = useFetchEngineer()
     const { addEngineer, addEngineerLoading, errors } = useAddEngineer()
     const { deleteEngineer, deleteEngineerLoading } = useDeleteEngineer()
+    const { updateEngineer, updateEngineerLoading } = useUpdateEngineer()
+    const { gspnEngineerList, gspnEngineerListLoading } = useIpaasGetEngineerList()
     const [engineer_firstname, setEngineerFirstname] = useState("")
     const [engineer_lastname, setEngineerLastname] = useState("")
     const [engineer_code, setEngineerCode] = useState("")
+    const [repairshopr_id, setRepairshoprId] = useState("")
 
     const [department, setDepartment] = useState("")
     // popover select
     const [open, setOpen] = useState(false)
-
 
     // Table sorting
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -70,16 +84,23 @@ const EngineersScreen = () => {
     // Table filtering
     const [filtering, setFiltering] = useState("");
 
-    const [openAddModal, setOpenAddModal] = useState(false)
+    const [openModifyModal, setModifyModal] = useState<TEngineersList | any>();
 
-    const [modifyEngineerModal, setModifyEngineerModal] = useState<TEngineersList | any>();
+    const [deleteTechModal, setDeleteTechModal] = useState<TEngineersList | any>();
 
-    const handleRowClick = (row: TEngineersListTable) => {
-        setModifyEngineerModal(row?.original);
+    const handleRowDelete = (row: TEngineersListTable) => {
+        setDeleteTechModal(row?.original);
     };
 
-    const closeModifyEngineerModal = () => {
-        setModifyEngineerModal(false);
+    const closeHandleDeleteRow = () => {
+        setDeleteTechModal(false);
+    };
+    const handleRowModify = (row: TEngineersListTable) => {
+        setModifyModal(row?.original);
+    };
+
+    const closeHandleModifyRow = () => {
+        setModifyModal(false);
     };
 
     const formattedData = departments?.map((user) => ({
@@ -103,26 +124,42 @@ const EngineersScreen = () => {
     });
 
 
+    // preload 
+
+    useEffect(() => {
+        if (openModifyModal) {
+            setEngineerFirstname(openModifyModal?.engineer_firstname)
+            setEngineerLastname(openModifyModal?.engineer_lastname)
+            setDepartment(openModifyModal?.department)
+            setEngineerCode(openModifyModal?.engineer_code)
+            setRepairshoprId(openModifyModal?.repairshopr_id)
+        }
+    }, [openModifyModal])
+
     const addEng = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        const created_at = datetimestamp;
-        const payload = { engineer_firstname, engineer_lastname, engineer_code, department, created_at };
-        const res = await addEngineer(payload);
-        if (res?.status === 201) {
-            setEngineerFirstname('')
-            setEngineerLastname('')
-            setEngineerCode('')
-            setDepartment('')
-            setOpenAddModal(false)
-        } else {
-            setOpenAddModal(true)
+        const names = gspnEngineerList
+        await addEngineer({ names });
+    }
+    const updateEng = async (e: React.SyntheticEvent) => {
+        e.preventDefault();
+        const id = openModifyModal?.unique_id;
+        const payload = {
+            engineer_firstname: engineer_firstname,
+            engineer_lastname: engineer_lastname,
+            department: department,
+            engineer_code: engineer_code,
+            repairshopr_id: repairshopr_id,
         }
+        const changes = findChanges(openModifyModal, payload)
+        await updateEngineer(id, changes);
+        closeHandleModifyRow()
     }
     const delEng = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        const id = modifyEngineerModal?.unique_id;
+        const id = deleteTechModal?.unique_id;
         await deleteEngineer(id);
-        closeModifyEngineerModal()
+        closeHandleDeleteRow()
     }
 
     return (
@@ -144,11 +181,14 @@ const EngineersScreen = () => {
                                     setFiltering={(e) => setFiltering(e.target.value)}
                                 />
 
-                                <Button type="button" onClick={() => setOpenAddModal(true)}> Add engineer</Button>
+                                {/* <Button type="button" onClick={() => setOpenAddModal(true)}> Add engineer</Button> */}
+                                <Button className="outline-none" type="button" onClick={addEng}>Load new engineers</Button>
+
 
                             </section>
                             <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg">
                                 <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
+                                    <caption>Double click on a row to edit technician</caption>
                                     <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] uppercase font-semibold">
                                         {table.getHeaderGroups().map((headerGroup) => (
                                             <tr key={headerGroup.id} className=" font-semibold">
@@ -194,12 +234,12 @@ const EngineersScreen = () => {
                                         {table.getRowModel().rows.map((row: any) => (
                                             <tr
                                                 key={row.id}
-
+                                                onClick={() => handleRowModify(row)}
                                                 className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]"
                                             >
                                                 <td className="px-4 py-3 font-medium text-sm max-w-full">
                                                     <Button
-                                                        onClick={() => handleRowClick(row)}
+                                                        onClick={() => handleRowDelete(row)}
                                                         type="button"
                                                         role="button"
                                                         className="text-red-500 dark:text-red-500 hover:underline bg-transparent outline-none shadow-none hover:bg-transparent"
@@ -226,117 +266,106 @@ const EngineersScreen = () => {
                             </div>
                             <div className="h-2" />
                             <Pagination table={table} />
-                            {/* modal for adding engineer */}
+                            {/* modal for modifying engineer */}
                             {
-                                openAddModal && <Dialog open={openAddModal} onOpenChange={() => setOpenAddModal(false)} >
+                                openModifyModal && <Dialog open={openModifyModal} onOpenChange={closeHandleModifyRow} >
                                     {/* <DialogTrigger>Open</DialogTrigger> */}
                                     <DialogContent>
                                         <DialogHeader>
-                                            <DialogTitle>Add engineer</DialogTitle>
+                                            <DialogTitle>Edit engineer</DialogTitle>
                                             <DialogDescription>
                                                 It will auto detect that it is HHP
                                             </DialogDescription>
                                         </DialogHeader>
                                         <form>
-                                            <div className="space-y-3 mb-3">
-                                                <Label htmlFor="engineer_firstname">Engineer name</Label>
-                                                <Input
-                                                    value={engineer_firstname}
-                                                    onChange={(e) => setEngineerFirstname(e.target.value)}
-                                                    name="engineer_firstname"
-                                                    className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
-                                                />
-                                                {errors.engineer_firstname && <p className="text-sm text-red-500 font-medium">{errors.engineer_firstname}</p>}
+                                            <div className="grid grid-cols-2 items-center justify-between gap-2">
+                                                <div className="space-y-3 mb-3">
+                                                    <Label htmlFor="engineer_firstname">Engineer name</Label>
+                                                    <Input
+                                                        defaultValue={engineer_firstname}
+                                                        onChange={(e) => setEngineerFirstname(e.target.value)}
+                                                        name="engineer_firstname"
+                                                        className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
+                                                    />
+                                                </div>
+                                                <div className="space-y-3 mb-3">
+                                                    <Label htmlFor="engineer_firstname">Engineer lastname</Label>
+                                                    <Input
+                                                        defaultValue={engineer_lastname}
+                                                        onChange={(e) => setEngineerLastname(e.target.value)}
+                                                        name="engineer_lastname"
+                                                        className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
+                                                    />
+                                                </div>
                                             </div>
                                             <div className="space-y-3 mb-3">
-                                                <Label htmlFor="engineer_firstname">Engineer lastname</Label>
-                                                <Input
-                                                    value={engineer_lastname}
-                                                    onChange={(e) => setEngineerLastname(e.target.value)}
-                                                    name="engineer_lastname"
-                                                    className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
-                                                />
-                                                {errors.engineer_lastname && <p className="text-sm text-red-500 font-medium">{errors.engineer_lastname}</p>}
-                                            </div>
-                                            <div className="space-y-3 mb-3">
-                                                <Popover open={open} onOpenChange={setOpen}>
-                                                    <PopoverTrigger asChild>
-                                                        <Button
-                                                            variant="outline"
-                                                            role="combobox"
-                                                            aria-expanded={open}
-                                                            className="w-full justify-between"
-                                                        >
-                                                            {department
-                                                                ? formattedData?.find((framework) => framework.value === department)?.label
-                                                                : "Select department..."}
-                                                            <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                        </Button>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="w-full p-0">
-                                                        <Command>
-                                                            <CommandInput placeholder="Search department..." className="h-9" />
-                                                            <CommandList>
-                                                                <CommandEmpty>No user found.</CommandEmpty>
-                                                                <CommandGroup>
-                                                                    {formattedData?.map((framework) => (
-                                                                        <CommandItem
+                                                <Select defaultValue={department}
+                                                    name="department"
+                                                    onValueChange={(e) =>
+                                                        setDepartment(e)
+                                                    }>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Departments" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectGroup>
+                                                            <SelectLabel>Departments</SelectLabel>
+                                                            {
+                                                                departments?.map((x) => (
 
-                                                                            key={framework.value}
-                                                                            value={framework.value}
-                                                                            onSelect={(currentValue) => {
-                                                                                setDepartment(currentValue === department ? "" : currentValue)
-                                                                                setOpen(false)
-                                                                            }}
-                                                                        >
-                                                                            {framework.label}
-                                                                            <CheckIcon
-                                                                                className={cn(
-                                                                                    "ml-auto h-4 w-4",
-                                                                                    department === framework.value ? "opacity-100" : "opacity-0"
-                                                                                )}
-                                                                            />
-                                                                        </CommandItem>
-                                                                    ))}
-                                                                </CommandGroup>
-                                                            </CommandList>
-                                                        </Command>
-                                                    </PopoverContent>
-                                                </Popover>
-                                            </div>
-                                            <div className="space-y-3 mb-3">
-                                                <Label htmlFor="engineer_code">Engineer code</Label>
-                                                <Input
-                                                    value={engineer_code}
-                                                    onChange={(e) => setEngineerCode(e.target.value)}
-                                                    name="engineer_code"
-                                                    className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
-                                                />
-                                                {errors.engineer_code && <p className="text-sm text-red-500 font-medium">{errors.engineer_code}</p>}
+                                                                    <SelectItem key={x?.dep} value={`${x.dep}`}>{x?.dep}</SelectItem>
+                                                                ))
+                                                            }
 
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
                                             </div>
-                                            <Button className="w-full outline-none" type="submit" onClick={addEng} disabled={addEngineerLoading}>{addEngineerLoading ? 'Creating...' : 'Add engineer'}</Button>
+                                            <div className="grid grid-cols-2 items-center justify-between gap-2">
+                                                <div className="space-y-3 mb-3">
+                                                    <Label htmlFor="engineer_code">Engineer code</Label>
+                                                    <Input
+                                                        disabled
+                                                        aria-disabled
+                                                        defaultValue={engineer_code}
+                                                        onChange={(e) => setEngineerCode(e.target.value)}
+                                                        name="engineer_code"
+                                                        className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
+                                                    />
+                                                </div>
+                                                <div className="space-y-3 mb-3">
+                                                    <Label htmlFor="repairshopr_id">Repairshopr id</Label>
+                                                    <Input
+                                                        defaultValue={repairshopr_id}
+                                                        onChange={(e) => setRepairshoprId(e.target.value)}
+                                                        name="repairshopr_id"
+                                                        className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm focus:ring-[#131515] focus:border-[#131515] block w-full px-3 py-1 shadow-sm"
+                                                    />
+
+                                                </div>
+                                            </div>
+                                            <Button className="w-full outline-none" type="submit" onClick={updateEng} disabled={updateEngineerLoading}>{updateEngineerLoading ? 'Updating...' : 'Update engineer'}</Button>
                                         </form>
 
 
                                     </DialogContent>
                                 </Dialog>
                             }
-                            {/* modal for updating engineer */}
+                            {/* modal for deleting engineer */}
                             {
-                                modifyEngineerModal && <Dialog open={modifyEngineerModal} onOpenChange={closeModifyEngineerModal} >
+                                deleteTechModal && <Dialog open={deleteTechModal} onOpenChange={closeHandleDeleteRow} >
                                     {/* <DialogTrigger>Open</DialogTrigger> */}
                                     <DialogContent>
                                         <DialogHeader>
                                             <DialogTitle>Delete engineer</DialogTitle>
                                             <DialogDescription>
-                                                Are you sure you want to delete <strong>{modifyEngineerModal?.engineer_firstname}</strong>?
+                                                Are you sure you want to delete <strong>{deleteTechModal?.engineer_firstname}</strong>?
                                             </DialogDescription>
                                         </DialogHeader>
 
 
                                         <div className="grid items-center grid-cols-2 gap-3">
-                                            <Button className="outline-none" type="button" onClick={closeModifyEngineerModal}>No, cancel</Button>
+                                            <Button className="outline-none" type="button" onClick={closeHandleDeleteRow}>No, cancel</Button>
                                             <Button className="outline-none bg-red-600 hover:bg-red-500 focus:bg-red-500" type="button" onClick={delEng} disabled={deleteEngineerLoading}>{deleteEngineerLoading ? 'Deleting...' : 'Yes, delete'}</Button>
 
                                         </div>

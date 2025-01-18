@@ -9,6 +9,8 @@ import { datetimestamp } from '@/lib/date_formats'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 
+import { Label } from '@/components/ui/label'
+import { capitalizeText } from '@/lib/capitalize'
 import provinces from '@/lib/provinces'
 type PhoneDetail = {
     type: string;
@@ -52,8 +54,8 @@ const CreateCustomerRepairshoprScreen = () => {
         const visit_date = datetimestamp
         const created_at = datetimestamp
         const payload = {
-            "firstname": firstName,
-            "lastname": lastName,
+            "firstname": capitalizeText(firstName),
+            "lastname": capitalizeText(lastName),
             "businessname": businessname,
             "email": email,
             "phone": phoneDetails
@@ -79,37 +81,49 @@ const CreateCustomerRepairshoprScreen = () => {
 
         }
         await addCustomerLocally(spreadPayload)
+        setFirstName("")
+        setLastName("")
+        setBusinessName("")
+        setEmail("")
+        setAddress("")
+        setAddress_2("")
+        setCity("")
+        setState("")
+        setZip("")
+        setPhoneDetails([{ type: "mobile", number: "" }])
+        router.back()
+
     }
     return (
 
-        <>
+        <div className='container mx-auto p-1'>
 
             <PageTitle title="customer" hasSpan={true} spanText={"Create"} />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
                 <div>
                     <div>
-                        <label htmlFor='firstname' className='text-sm font-medium text-gray-900 mb-2'>First Name</label>
+                        <Label htmlFor='firstname'>First Name</Label>
                         <Input type="text" name='firstname' id='firstname' value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)} className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm block w-full" />
+                            onChange={(e) => setFirstName(e.target.value)} />
                     </div>
                     <div>
-                        <label htmlFor='lastname' className='text-sm font-medium text-gray-900 mb-2'>Last Name</label>
+                        <Label htmlFor='lastname'>Last Name</Label>
                         <Input type="text" id='lastname' name='lastname' value={lastName}
-                            onChange={(e) => setLastName(e.target.value)} className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm block w-full" />
+                            onChange={(e) => setLastName(e.target.value)} />
                     </div>
                     <div>
-                        <label htmlFor='business_name' className='text-sm font-medium text-gray-900 mb-2'>Business Name <small>(only if you have. Leave blank otherwise)</small></label>
+                        <Label htmlFor='business_name'>Business Name <small>(only if you have. Leave blank otherwise)</small></Label>
                         <Input type="text" id='business_name' name='business_name' value={businessname}
-                            onChange={(e) => setBusinessName(e.target.value)} className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm block w-full" />
+                            onChange={(e) => setBusinessName(e.target.value)} />
                     </div>
 
                     <div>
-                        <label htmlFor='email' className='text-sm font-medium text-gray-900 mb-2'>Email address</label>
+                        <Label htmlFor='email'>Email address</Label>
                         <Input type="email" id='email' name='email' value={email}
-                            onChange={(e) => setEmail(e.target.value)} className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm block w-full" />
+                            onChange={(e) => setEmail(e.target.value)} />
                     </div>
 
-                    <label htmlFor='customer_phone' className='text-sm font-medium text-gray-900 mt-2'>Phone number</label>
+                    <Label htmlFor='customer_phone'>Phone number</Label>
                     {phoneDetails.map((phone, index) => (
                         <div key={index} className="flex items-center space-x-4">
                             <Select
@@ -147,22 +161,22 @@ const CreateCustomerRepairshoprScreen = () => {
                 </div>
                 <div>
                     <div>
-                        <label htmlFor='address' className='text-sm font-medium text-gray-900 mb-2'>Address line 1</label>
+                        <Label htmlFor='address'>Address line 1</Label>
                         <Input type="text" id='address' name='address' value={address}
-                            onChange={(e) => setAddress(e.target.value)} className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm block w-full" />
+                            onChange={(e) => setAddress(e.target.value)} />
                     </div>
                     <div>
-                        <label htmlFor='address_2' className='text-sm font-medium text-gray-900 mb-2'>Address line 2</label>
+                        <Label htmlFor='address_2'>Address line 2</Label>
                         <Input type="text" id='address_2' name='address_2' value={address_2}
-                            onChange={(e) => setAddress_2(e.target.value)} className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm block w-full" />
+                            onChange={(e) => setAddress_2(e.target.value)} />
                     </div>
                     <div>
-                        <label htmlFor='city' className='text-sm font-medium text-gray-900 mb-2'>City</label>
+                        <Label htmlFor='city' >City</Label>
                         <Input type="text" id='city' name='city' value={city}
-                            onChange={(e) => setCity(e.target.value)} className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm block w-full" />
+                            onChange={(e) => setCity(e.target.value)} />
                     </div>
                     <div>
-                        <label htmlFor='state' className='text-sm font-medium text-gray-900'>Province</label>
+                        <Label htmlFor='state'>Province</Label>
 
                         <Select defaultValue={state || ""}
                             name="state"
@@ -185,16 +199,16 @@ const CreateCustomerRepairshoprScreen = () => {
                         </Select>
                     </div>
                     <div>
-                        <label htmlFor='zip' className='text-sm font-medium text-gray-900 mb-2'>Zip/Postal code</label>
+                        <Label htmlFor='zip' >Zip/Postal code</Label>
                         <Input type="text" id='zip' name='zip' value={zip}
-                            onChange={(e) => setZip(e.target.value)} className="bg-white border border-gray-300 outline-0 text-gray-900 text-sm rounded-sm block w-full" />
+                            onChange={(e) => setZip(e.target.value)} />
                     </div>
                 </div>
             </div>
             <Button type='button' disabled={createCustomerLoading} className="mt-3" onClick={createCustomer}>
                 {createCustomerLoading ? 'Creating...' : 'Create customer'}
             </Button>
-        </>
+        </div>
     )
 }
 

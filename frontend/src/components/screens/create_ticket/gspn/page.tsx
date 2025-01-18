@@ -6,31 +6,46 @@ const Sidebar = dynamic(() =>
     import('@/components/sidebar/page')
 )
 const LoadingScreen = dynamic(() =>
-    import('@/components/loading_screen/page')
+    import('@/components/loading_screen/page'),
+    {
+        loading: () => <p>Loading...</p>,
+    }
 )
 const NotLoggedInScreen = dynamic(() =>
-    import('@/components/not_logged_in/page')
+    import('@/components/not_logged_in/page'),
+    {
+        loading: () => <p>Loading...</p>,
+    }
 )
 const PageTitle = dynamic(() =>
     import('@/components/PageTitle/page')
 )
 const ProductInfo = dynamic(() =>
-    import('./multistep/product_info')
+    import('./multistep/product_info'),
+    {
+        loading: () => <p>Loading...</p>,
+    }
 )
 const ProductInfoTwo = dynamic(() =>
-    import('./multistep/product_info_two')
+    import('./multistep/product_info_two'),
+    {
+        loading: () => <p>Loading...</p>,
+    }
 )
 const CustomerInfoScreen = dynamic(() =>
-    import('./multistep/customer_info')
+    import('./multistep/customer_info'),
+    {
+        loading: () => <p>Loading...</p>,
+    }
 )
 
 import { Button } from '@/components/ui/button'
 import useUserLoggedIn from "@/hooks/useGetUser"
 
 import useCreateServiceOrder from '@/hooks/useCreateServiceOrder'
+import useGetCustomerLocally from '@/hooks/useGetCustomerLocally'
 import { datetimestamp } from '@/lib/date_formats'
 import moment from 'moment'
-import useGetCustomerLocally from '@/hooks/useGetCustomerLocally'
 import { useParams } from 'next/navigation'
 
 const GSPNScreen = () => {
@@ -85,7 +100,7 @@ const GSPNScreen = () => {
     const [city, setCity] = useState("")
     const [state, setState] = useState("")
     const [zip, setZip] = useState("")
-    const [country, setCountry] = useState("RSA")
+    const [country, setCountry] = useState("ZA")
 
     useEffect(() => {
         if (customer_email && singleCustomer) {
@@ -131,7 +146,8 @@ const GSPNScreen = () => {
             },
             "IvCreationCheck": `${todaysDate}`,
             "IsHeaderInfo": {
-                "AscJobNo": ""
+                "AscJobNo": "",
+                "ADHPackConfirm": `${serviceType && serviceType === "ADH" ? 'X' : ""}` // according to abdul, we should try it like this
             },
             "IsBpInfo": {
                 "CustomerCode": "",
@@ -181,8 +197,7 @@ const GSPNScreen = () => {
             }
         }
         await addServiceOrder(values)
-        // now we can clear assets from local storage
-        if (typeof window !== 'undefined' && window.localStorage) localStorage.clear();
+
         setModel("")
         setSerialNumber("")
         setIMEI("")
@@ -216,6 +231,8 @@ const GSPNScreen = () => {
         setState("")
         setZip("")
         setCountry("")
+        // now we can clear assets from local storage
+        if (typeof window !== 'undefined' && window.localStorage) localStorage.clear();
     }
     return (
         <>

@@ -336,7 +336,7 @@ export type RepairshoprPutTicket = {
     location_id?: number;
     problem_type?: string;
     status?: string;
-    user_id?: number;
+    user_id?: string | number | undefined;
     properties?: {
         IMEI?: string;
         "PO No."?: string;
@@ -380,8 +380,20 @@ export type TEngineersListTable = {
         unique_id: string;
         engineer_firstname: string;
         engineer_lastname: string;
+        engineer_code?: string;
+        repairshopr_id?: string;
         department?: string;
     };
+};
+
+export type TUpdateEngineer = {
+    id?: string;
+    unique_id?: string;
+    engineer_firstname?: string;
+    engineer_lastname?: string;
+    engineer_code?: string;
+    repairshopr_id?: string;
+    department?: string;
 };
 export type TEngineersList = {
     id: string;
@@ -432,9 +444,21 @@ export type HHPTaskAdd = {
     repeat_repair: string;
 };
 export type EngineerAdd = {
-    engineer_firstname: string;
-    engineer_lastname: string;
-    department: string;
+    names: {
+        AscCode?: string;
+        AscEngineer?: string;
+        Capacity?: string;
+        EngType?: string;
+        Engineer?: string;
+        EngineerName?: string;
+        GspnId?: string;
+        GspnIdStatus?: string;
+        HieredDay?: string;
+        RepairTime?: string;
+        TelNo?: string;
+        UniqueId?: string;
+        WorkStatus?: string;
+    };
 };
 export type DriverAdd = {
     driver_firstname: string;
@@ -658,4 +682,42 @@ export type Meta = {
 export type CustomerData = {
     customers: Customer[];
     meta: Meta;
+};
+export type TCustomers = {
+    id: string | number;
+    unique_id: string;
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    phone_number?: string;
+    home_number?: string;
+    office_number?: string;
+    address?: string;
+    address_2?: string;
+    city?: string;
+    state?: string;
+    zip?: string;
+    created_at?: string;
+    repairshopr_customer_id?: string | number;
+    updated_at?: string;
+};
+export type TCustomersTanstackTable = {
+    original: {
+        id: string | number;
+        unique_id: string;
+        first_name?: string;
+        last_name?: string;
+        email?: string;
+        phone_number?: string;
+        home_number?: string;
+        office_number?: string;
+        address?: string;
+        address_2?: string;
+        city?: string;
+        state?: string;
+        zip?: string;
+        created_at?: string;
+        repairshopr_customer_id?: string | number;
+        updated_at?: string;
+    };
 };

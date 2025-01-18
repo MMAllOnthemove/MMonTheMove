@@ -89,7 +89,8 @@ const uploadChecklistFiles = async (req, res) => {
                     // Construct URL for uploaded file
                     return `https://repair.mmallonthemove.co.za/files/driver_app_checklists/${car}-${date}-${file.originalname}`;
                 } catch (uploadError) {
-                    console.error("Error uploading file:", uploadError);
+                 if (process.env.NODE_ENV !== "production")
+                     console.error("Error uploading file:", uploadError);
                     // throw new Error(
                     //     `Failed to upload file: ${file.originalname}`
                     // );

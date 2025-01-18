@@ -230,7 +230,7 @@ const DTVHATechniciansScreen = () => {
             if (comment) await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
 
         } catch (error) {
-            if (process.env.NODE_ENV !== 'production') console.log("error commenting deleted part", error)
+            if (process.env.NODE_ENV !== 'production') console.error("error commenting deleted part", error)
         }
         refetch(); // Refresh the list of parts
 
@@ -433,7 +433,7 @@ const DTVHATechniciansScreen = () => {
             }
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') {
-                console.log("error in dtv/ha techincians screen", error)
+                console.error("error in dtv/ha techincians screen", error)
             }
         }
 
@@ -483,7 +483,7 @@ const DTVHATechniciansScreen = () => {
             setSubmitPartsUpdateLoading(false)
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') {
-                console.log("error in dtv/ha parts screen", error)
+                console.error("error in dtv/ha parts screen", error)
             }
         } finally {
             setSubmitPartsUpdateLoading(false)
@@ -528,7 +528,7 @@ const DTVHATechniciansScreen = () => {
             if (comment) await updateRepairTicketComment(modifyTaskModal?.repairshopr_job_id, commentPayload)
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') {
-                console.log("comment part", error)
+                console.error("comment part", error)
             }
         } finally {
             setaddPartOnRepairshoprLoading(false); // Stop loading

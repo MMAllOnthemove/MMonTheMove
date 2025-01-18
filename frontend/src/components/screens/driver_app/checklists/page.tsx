@@ -89,7 +89,6 @@ const ChecklistsScreen = () => {
         // Toggle open/close for the clicked row
         setOpenChecklistSummaryRow(openChecklistSummaryRow === rowKey ? null : rowKey);
     };
-
     const handleRowClick = useCallback(
         (row: any) => {
             setOpenClickedRow(row?.original);
@@ -97,9 +96,8 @@ const ChecklistsScreen = () => {
             // Filter today's checklist
             const today = checklistList?.filter(
                 (checklist) =>
-                    checklist.car === row?.original?.car && checklist.created_at === todayDate
+                    checklist.car === row?.original?.car && moment(checklist.created_at).format('YYYY-MM-DD') === todayDate
             );
-
             // Filter historical checklists
             const history = checklistList?.filter(
                 (checklist) =>

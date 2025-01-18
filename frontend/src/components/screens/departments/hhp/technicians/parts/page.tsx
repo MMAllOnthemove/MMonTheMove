@@ -8,19 +8,22 @@ import {
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { datetimestamp } from '@/lib/date_formats';
+import repairshopr_statuses from "@/lib/repairshopr_status";
 import { TTaskParts } from '@/lib/types';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { CheckedState } from '@radix-ui/react-checkbox';
 import React from 'react';
 type TPartsHHPUpdate = {
     parts_orderedProp: CheckedState | undefined
-    parts_pendingProp: CheckedState | undefined
     parts_issuedProp: CheckedState | undefined
     parts_requestedProp: CheckedState | undefined
     compensation: CheckedState | undefined | any | any
     search_part: string;
+    parts_order_id: string | null | undefined;
+    setPartsOrderId: (data: string) => void;
     setSearchPart: (data: string) => void;
     partsExtraText: string;
     setPartsExtraText: (data: string) => void;
@@ -30,8 +33,6 @@ type TPartsHHPUpdate = {
     setPartQuantity: (data: number | undefined) => void;
     setPartsOrderedProp: (data: CheckedState | undefined) => void;
     setPartsOrderedDateProp: (data: string) => void;
-    setPartsPendingProp: (data: CheckedState | undefined) => void;
-    setPartsPendingDateProp: (data: string) => void;
     setPartsIssuedProp: (data: CheckedState | undefined) => void;
     setPartsRequestedProp: (data: CheckedState | undefined) => void;
     setCompensation: (data: CheckedState | undefined | any | null) => void;
@@ -42,6 +43,8 @@ type TPartsHHPUpdate = {
     submitPartsUpdateLoading: boolean;
     addPartOnRepairshopr: (data: React.SyntheticEvent) => void;
     addPart: (data: React.SyntheticEvent) => void;
+    submitPartOrderIdLoading: boolean;
+    submitPartOrderId: (data: React.SyntheticEvent) => void;
     submitPartsUpdate: (data: React.SyntheticEvent) => void;
     serial_number: string;
     model: string;
@@ -55,29 +58,25 @@ type TPartsHHPUpdate = {
         part_desc?: string;
         part_quantity?: string;
     }
+    stored_parts_order_id: string;
+    part_status: string;
+    setPartStatus: (e: string) => void;
 }
-const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, parts_pendingProp, deletePartLoading, parts_issuedProp, part_data, handleDelete, parts_requestedProp, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsPendingProp, setPartsPendingDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, model, imei, serial_number,errors }: TPartsHHPUpdate) => {
-    const handlePartsOrdered = (e: React.SyntheticEvent | any) => {
-        if (!parts_orderedProp) {
-            setPartsOrderedProp(e);
+const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, deletePartLoading, parts_order_id, setPartsOrderId, stored_parts_order_id, submitPartOrderIdLoading, submitPartOrderId, parts_issuedProp, part_data, handleDelete, parts_requestedProp, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, model, imei, serial_number, errors, part_status, setPartStatus }: TPartsHHPUpdate) => {
+
+
+    const handlePartStatus = (e: React.SyntheticEvent | any) => {
+        setPartStatus(e.target.value)
+        if (e.target.value === 'Parts to be ordered') {
+            setPartsOrderedProp(true);
             setPartsOrderedDateProp(datetimestamp)
         }
-    }
-    const handlePartsPending = (e: React.SyntheticEvent | any) => {
-        if (!parts_pendingProp) {
-            setPartsPendingProp(e);
-            setPartsPendingDateProp(datetimestamp)
-        }
-    }
-    const handlePartsIssued = (e: React.SyntheticEvent | any) => {
-        if (!parts_issuedProp) {
-            setPartsIssuedProp(e);
+        if (e.target.value === 'Parts Issued') {
+            setPartsIssuedProp(true);
             setPartsIssuedDateProp(datetimestamp)
         }
-    }
-    const handlePartsRequested = (e: React.SyntheticEvent | any) => {
-        if (!parts_requestedProp) {
-            setPartsRequestedProp(e);
+        if (e.target.value === 'Parts Request 1st Approval') {
+            setPartsRequestedProp(true);
             setPartsRequestedDateProp(datetimestamp)
         }
     }
@@ -86,6 +85,9 @@ const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, parts_pen
             setCompensation(e);
         }
     }
+    const partsStatuses = repairshopr_statuses.filter(status =>
+        status._status.toLowerCase().includes("parts")
+    );
     return (
         <div>
             <Accordion type="single" collapsible>
@@ -123,9 +125,18 @@ const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, parts_pen
                             </div>
 
                         </div>
-                        <div>
+
+                        <Button className="w-full mt-2" type="button" onClick={addPart} disabled={addPartLoading}>{addPartLoading ? 'Adding...' : 'Add part'} </Button>
+
+                    </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-2">
+                    <AccordionTrigger>Added parts</AccordionTrigger>
+                    <AccordionContent>
+                        <div className="my-3">
                             {part_data?.length > 0 && (
                                 <div className="my-3">
+                                    <Label htmlFor="partsExtraText">Add comment to go with these parts</Label>
                                     <Textarea
                                         placeholder="e.g. I need these parts..."
                                         name="partsExtraText"
@@ -135,19 +146,11 @@ const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, parts_pen
                                 </div>
                             )}
                         </div>
-                        <Button className="w-full outline-none bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985]" type="button" onClick={addPart} disabled={addPartLoading}>{addPartLoading ? 'Adding...' : 'Add part'} </Button>
-
-                    </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-2">
-                    <AccordionTrigger>Added parts</AccordionTrigger>
-                    <AccordionContent>
-
                         <div>
                             {part_data?.length > 0 ? part_data?.map((item) => (
                                 <div key={item.id}>
-                                    <p className="flex items-center justify-between border-b border-grey-50" >
-                                        ({item.part_name}) / <span className="text-ellipsis overflow-hidden whitespace-nowrap">{item?.part_desc} /</span> ({item?.part_quantity}) <button type="button" disabled={deletePartLoading} onClick={() => handleDelete(item.id, item?.part_name, item?.part_desc)}>{deletePartLoading ? '...' : <XMarkIcon className="h-4 w-4" />}</button>
+                                    <p className="flex items-center justify-between border-b border-grey-50 text-xs leading-3" >
+                                        ({item.part_name}) / <span className="text-ellipsis overflow-hidden whitespace-nowrap">{item?.part_desc} /</span>({item?.part_quantity}) <button type="button" disabled={deletePartLoading} onClick={() => handleDelete(item.id, item?.part_name, item?.part_desc)}>{deletePartLoading ? '...' : <XMarkIcon className="h-4 w-4" />}</button>
                                     </p>
                                 </div>
                             )) : "No parts for this task"}
@@ -161,68 +164,64 @@ const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, parts_pen
                             ) : null}
                         </div>
 
-                        <div>
-                            <p className="text-sm font-medium">Ensure you select part status when adding parts</p>
-                            <div className="mb-3 pt-4">
+                        <div className="mt-4">
 
-                                <div className="flex items-center space-x-2 mb-3">
-                                    <Checkbox id="parts_pending" checked={parts_pendingProp}
-                                        onCheckedChange={handlePartsPending} />
-                                    <label
-                                        htmlFor="parts_pending"
-                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                    >
-                                        Parts pending?
-                                    </label>
-                                </div>
-                            </div>
                             <div className="mb-3">
-                                <div className="flex items-center space-x-2 mb-3">
-                                    <Checkbox id="parts_ordered" checked={parts_requestedProp}
-                                        onCheckedChange={handlePartsRequested} />
-                                    <label
-                                        htmlFor="parts_ordered"
-                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                <label htmlFor="part_status" className="text-sm font-medium mb-3">Select part status</label>
+                                <div className="relative">
+                                    <select className="block w-full appearance-none rounded-md border border-gray-300 bg-white px-4 py-2 pr-8 text-sm shadow-sm focus:outline-none cursor-pointer [&>span]:line-clamp-1" name="part_status" value={part_status} onChange={handlePartStatus}>
+                                        <option disabled value="">
+                                            Choose status
+                                        </option>
+                                        {repairshopr_statuses.map((dep) => (
+                                            <option key={dep.id} value={`${dep._status}`}>
+                                                {dep._status}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <span
+                                        className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400"
                                     >
-                                        Parts requested 1st approval?
-                                    </label>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-5 w-5"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                        >
+                                            <path
+                                                fillRule="evenodd"
+                                                d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.72-3.72a.75.75 0 111.06 1.06l-4 4a.75.75 0 01-1.06 0l-4-4a.75.75 0 01.02-1.06z"
+                                                clipRule="evenodd"
+                                            />
+                                        </svg>
+                                    </span>
                                 </div>
                             </div>
-                            <div className="mb-3">
-                                <div className="flex items-center space-x-2 mb-3">
-                                    <Checkbox id="parts_ordered" checked={parts_orderedProp}
-                                        onCheckedChange={handlePartsOrdered} />
-                                    <label
-                                        htmlFor="parts_ordered"
-                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                    >
-                                        Parts ordered?
-                                    </label>
-                                </div>
-                            </div>
-                            <div className="flex items-center space-x-2 mb-3">
-                                <Checkbox id="parts_issued" checked={parts_issuedProp}
-                                    onCheckedChange={handlePartsIssued} />
-                                <label
-                                    htmlFor="parts_issued"
-                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                >
-                                    Parts issued?
-                                </label>
-                            </div>
+
                         </div>
                     </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-3">
+                    <AccordionTrigger>Add parts order info</AccordionTrigger>
+                    <AccordionContent>
+                        <div>
+                            <Input type="text" className="outline-none" placeholder="Part order id" name="parts_order_id" value={parts_order_id || ''} onChange={(e) => setPartsOrderId(e.target.value)} />
+                            <Button className="w-full mt-2" type="button" onClick={submitPartOrderId} disabled={submitPartOrderIdLoading}>{submitPartOrderIdLoading ? 'Adding...' : 'Send order to ticket'} </Button>
+
+                        </div>
+                    </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-4">
                     <AccordionTrigger>More info</AccordionTrigger>
                     <AccordionContent>
                         <div>
                             <ul className="list-decimal list-inside">
-                               
+
                                 <li>Model: <span className="text-gray-600 font-medium">{model}</span></li>
                                 <li>IMEI: <span className="text-gray-600 font-medium">{imei}</span></li>
                                 <li>Serial number: <span className="text-gray-600 font-medium">{serial_number}</span></li>
+                                <li>Order id: <span className="text-gray-600 font-medium">{stored_parts_order_id}</span></li>
                             </ul>
                         </div>
                     </AccordionContent>

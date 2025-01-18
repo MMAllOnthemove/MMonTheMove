@@ -88,7 +88,6 @@ const ForgotPassword = async (req, res) => {
         // error.inner.forEach((err) => {
         //     errors[err.path] = err.message; // `err.path` is the field name, `err.message` is the error message
         // });
-        // console.log(errors);
         return res.status(500).json({ errors });
     }
 };

@@ -71,7 +71,8 @@ const uploadTicketAttachments = async (req, res) => {
                     // Construct URL for uploaded file
                     return `https://repair.mmallonthemove.co.za/files/ticket_attachments/${ticket_number}-${file.originalname}`;
                 } catch (error) {
-                    console.error("Error uploading file:", error);
+                    if (process.env.NODE_ENV !== "production")
+                        console.error("Error uploading file:", error);
                     // throw new Error(
                     //     `Failed to upload file: ${file.originalname}`
                     // );

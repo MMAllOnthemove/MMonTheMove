@@ -11,7 +11,7 @@ type TPayload = {
     email: string;
     phone: string | number;
     mobile: string | number;
-    address: string;
+    address?: string;
     address_2?: string;
     city?: string;
     state?: string;
@@ -39,9 +39,24 @@ const useCreateCustomerLocally = () => {
                     // customer will handle this section
                 }
             );
-            if (data) toast.success(`${data?.message}`);
+            console.log(data);
+            if (data)
+                toast.success(`${data?.message}`, {
+                    duration: 8000,
+                });
         } catch (error: any) {
-            toast.error(`${error?.response.data?.message}`);
+            // console.error("add customer locally error", error);
+            // toast.error(`${error?.response.data?.message}`);
+            if (error?.response.data?.message) {
+                toast.error(`${error?.response.data?.message}`);
+            } else if (error.response && error.response.data.errors) {
+                const result = Object.entries(error.response.data.errors)?.map(
+                    ([key, value]) => {
+                        return `${value}`;
+                    }
+                );
+                toast(`${result}`);
+            }
         } finally {
             setLoading(false);
         }

@@ -14,6 +14,7 @@ import {
     flexRender,
     Row,
 } from "@tanstack/react-table"
+import { useState } from 'react'
 
 
 type TTableBody = {
@@ -30,12 +31,19 @@ type TTableBody = {
 }
 const TableBody = ({ table, handleRowClick, deleteRow, handleOpenSinglePage }: TTableBody) => {
     const { user, isLoggedIn } = useUserLoggedIn()
+    const [selectedRowId, setSelectedRowId] = useState(null)
+
+    const handleRowSelect = (row: any) => {
+        setSelectedRowId(row.id)
+    }
+
     return (
         <tbody className="z-0">
             {table.getRowModel().rows.map((row: any) => (
                 <tr
                     key={row.id}
-                    className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]"
+                    className={`border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e] ${selectedRowId === row.id ? 'bg-gray-200' : ''}`}
+                    onClick={() => handleRowSelect(row)}
                 >
                     <td className="px-4 py-3 font-medium text-sm max-w-full cursor-pointer">
                         <DropdownMenu>

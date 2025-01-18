@@ -16,7 +16,9 @@ interface ErrorMessages {
     job_added_by?: string;
     stores?: string;
     repairshopr_job_id?: string;
+    repairshopr_customer_id?: string;
     repeat_repair?: string;
+    additional_info?: string;
 }
 
 const useAddHHPTask = () => {
@@ -40,7 +42,7 @@ const useAddHHPTask = () => {
             if (error?.response?.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {
-                toast.error("Fill in all fields");
+                toast(error.response.data.errors);
                 setErrors(error.response.data.errors); // Set validation errors to state
             }
         } finally {

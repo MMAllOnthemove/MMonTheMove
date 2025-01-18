@@ -5,10 +5,10 @@ const addCustomerSchema = Yup.object({
     firstname: Yup.string().required("Firstname is required!"),
     lastname: Yup.string().required("Lastname is required!"),
     businessname: Yup.string(),
-    email: Yup.string().required("Email is required!"),
+    email: Yup.string(),
     phone: Yup.string(),
     mobile: Yup.string(),
-    address: Yup.string().required("Address is required!"),
+    address: Yup.string(),
     address_2: Yup.string(),
     city: Yup.string(),
     state: Yup.string(),
@@ -73,10 +73,10 @@ const addCustomer = async (req, res) => {
             [customerId, visit_date]
         );
         return res.status(201).json({
-            message: "Successfully added as visit",
+            message:
+                "Successfully added as visit\nBooking agent will now book you in",
         });
     } catch (error) {
-        console.log(error);
         // Handle validation or other errors
         const errors = {};
         if (error.inner) {
