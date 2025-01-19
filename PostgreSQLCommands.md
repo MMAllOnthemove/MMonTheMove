@@ -89,8 +89,8 @@ And make sure your system is listening to the 5432 port that is reserved for Pos
 
 ### Connect to PostgreSQL database through a remote host
 
-- Connect via Command Line Tool
-- You may now connect to a remote database by using the following command pattern:
+-   Connect via Command Line Tool
+-   You may now connect to a remote database by using the following command pattern:
 
 `psql -h [ip address] -p [port] -d [database] -U [username]`
 
@@ -102,16 +102,61 @@ Double check connection details
 
 Now you can start writing SQL queries to retrieve data from your database tables.
 
-``` SELECT * FROM clients; ```
+`SELECT * FROM clients;`
+
+Copy data from a csv without commas
+
+```sql COPY devices (company, marketing_name, device, device_model)
+FROM '/root/sites/supported_devices.csv'
+DELIMITER ';'
+CSV HEADER
+NULL '';
+
+```
+
+Copy data from a csv with commas
+
+```sql COPY devices (company, marketing_name, device, device_model)
+FROM '/root/sites/supported_devices.csv'
+DELIMITER ','
+CSV HEADER;
+```
+
+<!-- In both instances, rows have to all be filed and file should exist in the server -->
+
+## Extensions added
+
+`sql CREATE EXTENSION IF NOT EXISTS pg_trgm; `
+
+## INDEXES used
+
+a. Index on created_at for Year Filtering
+Filtering on the created_at year is a common operation. Adding a functional index on EXTRACT(YEAR FROM created_at) can improve performance:
+`sql CREATE INDEX idx_tt_model_prefix ON technician_tasks (LEFT(model, 8)); `
+
+b. Index for department
+Since you’re filtering rows with tt.department LIKE '%HHP%', you can optimize by using a GIN or BTREE index on department with a text pattern search:
+
+`sql CREATE INDEX idx_tt_department_gin ON technician_tasks USING gin (department gin_trgm_ops); `
+
+c. Index for model (substring match)
+Because you're matching the first 8 characters of model, create an index on the substring to speed up joins:
+
+`sql CREATE INDEX idx_tt_model_prefix ON technician_tasks (LEFT(model, 8)); `
+
+d. Index on devices.device_model
+Similarly, index the device_model prefix in the devices table:
+
+`sql CREATE INDEX idx_devices_model_prefix ON devices (LEFT(device_model, 8)); `
 
 ### Connect via GUI Client (pgAdmin)
 
 After installing pgAdmin 4 and running it you will get to a standard pgAdmin 4 dashboard.
 
-- Press ``` Add New Server ``` button and enter the information of your remote server.
-- Enter your connection details
-- After saving your credentials you will be automatically connected to a remote database server.
-- You may now open a Query Tool for your selected database ``` test_er ``` and start writing your queries.
+-   Press `Add New Server` button and enter the information of your remote server.
+-   Enter your connection details
+-   After saving your credentials you will be automatically connected to a remote database server.
+-   You may now open a Query Tool for your selected database `test_er` and start writing your queries.
 
 Links
 
@@ -121,37 +166,45 @@ Notes
 
 Selecting date and formating from 6 digits
 
-``` SELECT to_char(to_timestamp('310322', 'DDMMYY'),'YYYY-MM-DD') ```
+`SELECT to_char(to_timestamp('310322', 'DDMMYY'),'YYYY-MM-DD')`
 
 <!-- Calculate date_completed -->
-``` (repair_completed_date::date - created_date::date) AS completed_days ```
+
+`(repair_completed_date::date - created_date::date) AS completed_days`
 
 <!-- Count jobs done by specific engineer -->
-``` SELECT count(DISTINCT service_order_no) FROM units WHERE engineer = '[name]' ```
+
+`SELECT count(DISTINCT service_order_no) FROM units WHERE engineer = '[name]'`
 
 <!-- Count jobs that have the in house status 'Booked in' -->
-``` SELECT count(DISTINCT service_order_no) FROM units WHERE in_house_status = 'Booked in' ```
+
+`SELECT count(DISTINCT service_order_no) FROM units WHERE in_house_status = 'Booked in'`
 
 <!-- Count total jobs that have any status besides 'repair completed -->
 
-``` SELECT count(DISTINCT service_order_no) AS pending FROM units WHERE in_house_status = 'Booked in' OR in_house_status = 'Waiting for customer' ```
+`SELECT count(DISTINCT service_order_no) AS pending FROM units WHERE in_house_status = 'Booked in' OR in_house_status = 'Waiting for customer'`
 
-``` SELECT count(DISTINCT service_order_no) AS pending FROM units WHERE NOT in_house_status = 'Booked in' ```
+`SELECT count(DISTINCT service_order_no) AS pending FROM units WHERE NOT in_house_status = 'Booked in'`
 
 <!-- Show service_order_no and engineer -->
-``` SELECT DISTINCT service_order_no, engineer from units ```
+
+`SELECT DISTINCT service_order_no, engineer from units`
 
 <!-- Count number of jobs that have in house status 'Repair complete' -->
-``` SELECT count(DISTINCT service_order_no)  AS complete_count FROM units WHERE in_house_status = 'Repair complete' ```
+
+`SELECT count(DISTINCT service_order_no)  AS complete_count FROM units WHERE in_house_status = 'Repair complete'`
 
 <!-- Get jobs booked in today -->
-``` select * from units where DATE(created_date) = '2023-06-12' ```
+
+`select * from units where DATE(created_date) = '2023-06-12'`
 
 <!-- Select all jobs for one week -->
-``` select distinct count( *) from units WHERE (DATE(created_date) >= date_trunc('week', CURRENT_TIMESTAMP - interval '1 week') and DATE(created_date) < date_trunc('week', CURRENT_TIMESTAMP)); ```
+
+`select distinct count( *) from units WHERE (DATE(created_date) >= date_trunc('week', CURRENT_TIMESTAMP - interval '1 week') and DATE(created_date) < date_trunc('week', CURRENT_TIMESTAMP));`
 
 <!-- Select all jobs for one month -->
-```select distinct * from units WHERE (DATE(created_date) >= date_trunc('month', CURRENT_TIMESTAMP - interval '1 month') and DATE(created_date) < date_trunc('month', CURRENT_TIMESTAMP))```
+
+`select distinct * from units WHERE (DATE(created_date) >= date_trunc('month', CURRENT_TIMESTAMP - interval '1 month') and DATE(created_date) < date_trunc('month', CURRENT_TIMESTAMP))`
 
 <!-- Added a constraint on so number -->
 <!-- ALTER TABLE units ADD CONSTRAINT service_order_no_unique UNIQUE (service_order_no); -->
@@ -169,16 +222,14 @@ AND date_modified < date_trunc('month', current_date); -->
 WHERE date_modified >= date_trunc('month', current_date - interval '1' month)
 AND date_modified < date_trunc('month', current_date); -->
 
-
-
 <!-- Select data for previous day -->
-<!-- SELECT 
+<!-- SELECT
 (service_order_no) AS yesterday, date_modified FROM units WHERE date_modified ::date = current_date - 1; -->
 <!-- DELETE DUPLICATE ROWS -->
 <!-- DELETE FROM units
 WHERE service_order_no IN
     (SELECT service_order_no
-    FROM 
+    FROM
         (SELECT service_order_no,
          ROW_NUMBER() OVER( PARTITION BY service_order_no
         ORDER BY  service_order_no ) AS row_num
