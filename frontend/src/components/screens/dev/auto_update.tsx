@@ -222,7 +222,6 @@ const TicketUpdaterScreen: React.FC = () => {
                     "created_at": comment?.created_at,
                     "created_by": comment?.tech,
                 }
-                // console.log("comment", comment)
                 await addCommentLocally(payload);
                 setLogs((prevLogs) => [
                     ...prevLogs,

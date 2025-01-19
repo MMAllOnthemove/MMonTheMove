@@ -15,6 +15,7 @@ import React, { useEffect, useState } from 'react';
 import 'tldraw/tldraw.css';
 import AlertDialogServiceOrder from './alert_dialog';
 import useAddAgentTask from '@/hooks/useAddBookingAgentTask';
+import useAddTaskCommentLocally from '@/hooks/useAddCommentLocally';
 
 const DrawScratchesModal = dynamic(() =>
     import('./draw_scratches_modal')
@@ -25,6 +26,7 @@ const HHP = (customerProps: string | string[] | any) => {
     const { addTask } = useAddHHPTask();
     const { addAgentTask, addAgentTaskLoading, errors } = useAddAgentTask()
     const { user } = useUserLoggedIn()
+    const { addCommentLocally } = useAddTaskCommentLocally()
     const { addTicket, createTicketLoading } = useCreateTicket()
     const [fault, setFault] = useState("")
     const [itemCondition, setItemCondition] = useState("");
@@ -39,6 +41,7 @@ const HHP = (customerProps: string | string[] | any) => {
     const [openModal, setOpenModal] = useState(false);
     const [openDialog, setOpenDialog] = useState(false)
     const [serviceOrderNumber, setServiceOrder] = useState("")
+        const [task_id, setTaskId] = useState("")
     // Asset id
     const [assetId, setAssetId] = useState('')
     // these will be send to our db as soon as a ticket is booked
@@ -73,14 +76,14 @@ const HHP = (customerProps: string | string[] | any) => {
             "ticket_type_id": `${ticketTypeId}`,
             "user_id": `${user?.repairshopr_id}`,
             "properties": {
-                "Service Order No.": `${serviceOrderNumber}`,
-                "Service Order No. ": `${serviceOrderNumber}`,
-                "Item Condition ": `${itemCondition}`,
-                "Item Condition": `${itemCondition}`,
+                "Service Order No.": serviceOrderNumber,
+                "Service Order No. ": serviceOrderNumber,
+                "Item Condition ": itemCondition,
+                "Item Condition": itemCondition,
                 "Backup Requires": requires_backup,
                 "Backup Requires ": requires_backup,
-                "Warranty ": adh === 'ADH' ? 75132 : warrantyCode, // ADH RS code
-                "Warranty": adh === 'ADH' ? 75132 : warrantyCode, // ADH RS code
+                "Warranty ": adh === 'ADH' && ticketTypeId === "21877" ? '75132' : warrantyCode, // ADH RS code
+                "Warranty": adh === 'ADH' && ticketTypeId === "21877" ? '75132' : warrantyCode, // ADH RS code
                 "IMEI": `${IMEI}`,
                 "Job Repair No.": `${job_repair_no}`,
                 "Job Repair No.:": `${job_repair_no}`,
@@ -106,14 +109,15 @@ const HHP = (customerProps: string | string[] | any) => {
             data?.ticket?.number,
             data?.ticket?.id,
             data?.ticket?.customer_id,
-            data?.ticket?.ticket_fields[0]["Job Repair No.:"], // had to fetch it down under in the api result
-            data?.ticket?.propeties["Item Condition "], // yes it has whitespace
-            data?.ticket?.propeties["Backup Requires"],
-            data?.ticket?.propeties["Warranty "],  // yes it has whitespace
+            job_repair_no, // had to fetch it down under in the api result
+            itemCondition, // yes it has whitespace
+            requires_backup,
+            warrantyCode,  // yes it has whitespace
         );
         const bookingAgentsStatPayload = {
             ticket_number: data?.ticket?.number, created_by: user?.email, booking_agent: user?.full_name, created_at: datetimestamp, original_ticket_date: data?.ticket?.created_at, problemType: data?.ticket?.problem_type
         }
+        const created_at = datetimestamp
         await addAgentTask(bookingAgentsStatPayload); // adds it to the booking agent table, for reporting
         setOpenDialog(true)
     }
@@ -167,7 +171,8 @@ const HHP = (customerProps: string | string[] | any) => {
             "requires_backup": backup_code,
             "rs_warranty": warranty_code
         }
-        await addTask(payload)
+        const res = await addTask(payload)
+        setTaskId(res?.id)
 
 
     }
@@ -246,8 +251,8 @@ const HHP = (customerProps: string | string[] | any) => {
                             <SelectContent>
                                 <SelectGroup>
                                     <SelectLabel>Requires backup</SelectLabel>
-                                    <SelectItem value={`75129`}>No</SelectItem>
-                                    <SelectItem value={`75128`}>Yes</SelectItem>
+                                    <SelectItem value={`${ticketTypeId === "21877" ? '75129' : '69753'}`}>No</SelectItem>
+                                    <SelectItem value={`${ticketTypeId === "21878" ? '75128' : '69752'}`}>Yes</SelectItem>
                                 </SelectGroup>
                             </SelectContent>
                         </Select>

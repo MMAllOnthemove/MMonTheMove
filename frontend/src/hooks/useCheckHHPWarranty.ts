@@ -55,13 +55,13 @@ const useCheckWarranty = (
                     setWarranty(warranty_type);
 
                     if (warranty_type === "LP") {
-                        setWarrantyCode("75130");
-                        setTicketTypeId("21877");
-                        setLocalWarranty("IW");
+                     setTicketTypeId("21877");
+                     setWarrantyCode("75130");
+                     setLocalWarranty("IW");
                     } else if (warranty_type === "OW") {
-                        setWarrantyCode("75131");
-                        setTicketTypeId("21878");
-                        setLocalWarranty("OOW");
+                     setTicketTypeId("21878");
+                     setWarrantyCode("69477");
+                     setLocalWarranty("OOW");
                     }
                 }
             } catch (error) {
