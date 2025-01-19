@@ -24,6 +24,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
 import Modal from '@/components/modal/page';
+import useAddTaskCommentLocally from '@/hooks/useAddCommentLocally';
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page')
 )
@@ -41,6 +42,7 @@ const BookFromSOScreen = () => {
     const { addAgentTask, addAgentTaskLoading, errors } = useAddAgentTask()
     const { addCustomer, createCustomerLoading } = useCreateCustomerOnRepairshopr()
     const { addRepairTicketFile } = useRepairshoprFile()
+    const { addCommentLocally } = useAddTaskCommentLocally()
     const { addCustomerLocally } = useCreateCustomerLocally()
     const { addTask } = useAddHHPTask();
     const [search, setSearch] = useState("")
@@ -99,12 +101,12 @@ const BookFromSOScreen = () => {
             setWarranty(warranty_type);
 
             if (warranty_type === "LP") {
-                setWarrantyCode("75130");
                 setTicketTypeId("21877");
+                setWarrantyCode("75130");
                 setLocalWarranty("IW");
             } else if (warranty_type === "OW") {
-                setWarrantyCode("75131");
                 setTicketTypeId("21878");
+                setWarrantyCode("69477");
                 setLocalWarranty("OOW");
             }
         } catch (error) {
@@ -185,9 +187,6 @@ const BookFromSOScreen = () => {
         const visit_date = datetimestamp
         const created_at = datetimestamp
 
-
-        // Step 1: search or create Customer and Store Locally
-
         // Step 1: Get or Create Customer
         const customer_id = await handleCustomerSearchOrCreation({
             firstname,
@@ -263,8 +262,8 @@ const BookFromSOScreen = () => {
                 "Item Condition": itemCondition,
                 "Backup Requires": requires_backup,
                 "Backup Requires ": requires_backup,
-                "Warranty ": adh === 'ADH' ? '75132' : warrantyCode, // ADH RS code
-                "Warranty": adh === 'ADH' ? '75132' : warrantyCode, // ADH RS code
+                "Warranty ": adh === 'ADH' && ticketTypeId === "21877" ? '75132' : warrantyCode, // ADH RS code
+                "Warranty": adh === 'ADH' && ticketTypeId === "21877" ? '75132' : warrantyCode, // ADH RS code
                 "IMEI": imei,
                 "Job Repair No.": job_repair_no,
                 "Job Repair No.:": job_repair_no,
@@ -289,15 +288,15 @@ const BookFromSOScreen = () => {
         // we will grab the ticket id so we can send attachments to the correct ticket on rs
         setNewTicketId(data?.ticket?.id)
 
-        // Step 6: Send ticket data to your DB
+
         await sendTicketDataToOurDB(
             data?.ticket?.number,
             data?.ticket?.id,
             data?.ticket?.customer_id,
-            data?.ticket?.ticket_fields[0]["Job Repair No.:"], // had to fetch it down under in the api result
-            data?.ticket?.propeties["Item Condition "], // yes it has whitespace
-            data?.ticket?.propeties["Backup Requires"],
-            data?.ticket?.propeties["Warranty "],  // yes it has whitespace
+            job_repair_no, // had to fetch it down under in the api result
+            itemCondition, // yes it has whitespace
+            requires_backup,
+            warrantyCode,  // yes it has whitespace
         );
         // Step 7: Add task for booking agents
         const bookingAgentsStatPayload = {
@@ -309,7 +308,15 @@ const BookFromSOScreen = () => {
             problemType: data?.ticket?.problem_type,
         };
         await addAgentTask(bookingAgentsStatPayload); // adds it to the booking agent table, for reporting
+        const addCommentLocallyPayload = {
+            "task_id": task_id,
+            "comment": `*${fault}`,
+            "created_at": created_at,
+            "created_by": user?.full_name,
+        }
+        await addCommentLocally(addCommentLocallyPayload)
         openModal() // open modal for attachments
+
     }
     const sendTicketDataToOurDB = async (ticketNumber: string | number, ticketId: string | number, repairshoprCustomerId: string | number, repair_no: string | null | number, condtion_accessories: string | null | number, backup_code: string | null | number, warranty_code: string | null | number) => {
         const created_at = datetimestamp;
@@ -374,7 +381,7 @@ const BookFromSOScreen = () => {
         try {
             const formData = new FormData();
 
-            const ticket_number = serviceOrder
+            const ticket_number = serviceOrder 
             const created_at = datetimestamp;
             Array.from(hhpFiles).forEach((file) => {
                 formData.append('files', file);
@@ -511,8 +518,8 @@ const BookFromSOScreen = () => {
                                     <Input type="text" name="fault" value={fault || ""} onChange={(e) => setFault(e.target.value)} />
                                 </div>
                                 <div>
-                                    <Label htmlFor='password' className="text-gray-500">Warranty</Label>
-                                    <Input type="text" name='password' id='password' placeholder='warranty' value={localWarranty} onChange={(e) => setLocalWarranty(e.target.value)} />
+                                    <Label htmlFor='warranty' className="text-gray-500">Warranty</Label>
+                                    <Input type="text" name='warranty' id='warranty' placeholder='warranty' value={localWarranty} onChange={(e) => setLocalWarranty(e.target.value)} />
 
                                 </div>
 
@@ -572,8 +579,8 @@ const BookFromSOScreen = () => {
                                         <SelectContent>
                                             <SelectGroup>
                                                 <SelectLabel>Requires backup</SelectLabel>
-                                                <SelectItem value={`75129`}>No</SelectItem>
-                                                <SelectItem value={`75128`}>Yes</SelectItem>
+                                                <SelectItem value={`${ticketTypeId === "21877" ? '75129' : '69753'}`}>No</SelectItem>
+                                                <SelectItem value={`${ticketTypeId === "21878" ? '75128' : '69752'}`}>Yes</SelectItem>
                                             </SelectGroup>
                                         </SelectContent>
                                     </Select>
@@ -587,7 +594,7 @@ const BookFromSOScreen = () => {
                             </div>
                             <div>
                                 <Label htmlFor='specialRequirement' className="text-gray-500">Special requirement</Label>
-                                <Textarea placeholder='Special requirement' value={specialRequirement} onChange={(e) => setSpecialRequirement(e.target.value)}></Textarea>
+                                <Textarea placeholder='Special requirement' name="specialRequirement" value={specialRequirement} onChange={(e) => setSpecialRequirement(e.target.value)}></Textarea>
                             </div>
 
                             <Button type="button" className="mt-2 w-full" disabled={createTicketLoading} onClick={createTicket}>

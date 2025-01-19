@@ -39,7 +39,6 @@ const useCreateCustomerLocally = () => {
                     // customer will handle this section
                 }
             );
-            console.log(data);
             if (data)
                 toast.success(`${data?.message}`, {
                     duration: 8000,
