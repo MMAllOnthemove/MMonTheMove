@@ -159,7 +159,7 @@ const GSPNScreen = () => {
                 "IMEI": `${imei}`,
                 "PurchaseDate": `${modifiedPurchaseDate && modifiedPurchaseDate !== "Invalid date" ? modifiedPurchaseDate : ""}`,
                 "Accessory": `${accessory}`,
-                "DefectDesc": `${defectDesc}`,
+                "DefectDesc": `*${defectDesc}`,
                 "Remark": `${remark}`,
                 "WtyException": `${wtyException}`
             },

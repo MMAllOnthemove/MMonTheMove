@@ -9,7 +9,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle
 } from "@/components/ui/alert-dialog"
-import { useRouter } from "next/navigation";
+import { useRouter } from 'nextjs-toploader/app';
 
 type TAlertDialogServiceOrder = {
     openModal: boolean;
@@ -21,7 +21,7 @@ const AlertDialogServiceOrder = ({ openModal, setOpenModal, customerEmail }: TAl
     const router = useRouter()
     const handleCancel = () => {
         if (typeof window !== 'undefined' && window.localStorage) localStorage.clear();
-        router.push("/customers")
+        router.push("/customers_today")
     }
     const handleContinue = () => {
         // in this instance just redirect to service order page without clearing customer and asset details

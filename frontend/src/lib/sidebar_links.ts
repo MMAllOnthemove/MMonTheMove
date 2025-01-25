@@ -1,38 +1,39 @@
 export const menuItems = [
-    {
-        label: "Technicians",
-        sublinks: [
-            {
-                id: 1,
-                item: "HHP",
-                pageRoute: "/departments/hhp/technicians",
-            },
-            {
-                id: 2,
-                item: "DTV/HA",
-                pageRoute: "/departments/dtv_ha/technicians",
-            },
-        ],
-    },
-    {
-        label: "Booking agents stats",
-        sublinks: [
-            { id: 3, item: "Analytics", pageRoute: "/booking_agents_report" },
-        ],
-    },
+    // {
+    //     label: "Technicians",
+    //     sublinks: [
+    //         {
+    //             id: 1,
+    //             item: "HHP",
+    //             pageRoute: "/departments/hhp/technicians",
+    //         },
+    //         {
+    //             id: 2,
+    //             item: "DTV/HA",
+    //             pageRoute: "/departments/dtv_ha/technicians",
+    //         },
+    //     ],
+    // },
     {
         label: "Claims",
         sublinks: [
-            { id: 4, item: "Add claim", pageRoute: "/departments/claims" },
+            { id: 3, item: "Add claim", pageRoute: "/departments/claims" },
         ],
     },
     {
         label: "Tookan",
-        sublinks: [{ id: 5, item: "Add task", pageRoute: "/tookan" }],
+        sublinks: [{ id: 4, item: "Add task", pageRoute: "/tookan" }],
     },
     {
         label: "Dashboard",
-        sublinks: [{ id: 6, item: "Analytics", pageRoute: "/dashboard" }],
+        sublinks: [
+            { id: 5, item: "HHP stats", pageRoute: "/dashboard" },
+            {
+                id: 6,
+                item: "Booking agents stats",
+                pageRoute: "/booking_agents_report",
+            },
+        ],
     },
     {
         label: "Driver app",
@@ -53,17 +54,28 @@ export const menuItems = [
             { id: 11, item: "Add store", pageRoute: "/stores" },
             { id: 12, item: "Add driver", pageRoute: "/drivers" },
             { id: 13, item: "Add car", pageRoute: "/cars" },
+            { id: 13, item: "Add assembly term", pageRoute: "/assembly_terms" },
         ],
     },
     {
         label: "Bookings",
         sublinks: [
             // { id: 16, item: "Create customer", pageRoute: "/create_customer" },
-            { id: 16, item: "Create customer", pageRoute: "/welcome" },
+            { id: 14, item: "Create customer", pageRoute: "/welcome" },
             {
-                id: 17,
+                id: 15,
                 item: "Book from SO",
                 pageRoute: "/departments/hhp/book_from_so",
+            },
+            {
+                id: 16,
+                item: "Check warranty",
+                pageRoute: "/check_warranty",
+            },
+            {
+                id: 17,
+                item: "Add files to ticket",
+                pageRoute: "/files_ticket",
             },
         ],
     },

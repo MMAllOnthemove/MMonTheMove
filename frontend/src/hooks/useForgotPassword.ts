@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import toast from "react-hot-toast";
 import { ForgotPasswordValues } from "@/lib/types";
 interface ErrorMessages {

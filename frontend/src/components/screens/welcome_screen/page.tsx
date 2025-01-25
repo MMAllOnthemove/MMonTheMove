@@ -8,23 +8,20 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
-import { useTransition } from 'react'
+import { useRouter } from 'nextjs-toploader/app';
 
 const WelcomeScreen = () => {
     const router = useRouter();
-    const [isPending, startTransition] = useTransition()
 
     const goTo = (location: string) => {
-        startTransition(() => {
-            router.push(location)
-        })
+        router.push(location)
+
     }
 
     return (
         <div className="flex justify-center items-center h-screen bg-orange-100">
             <Card className="max-w-md w-full">
-                
+
                 <CardHeader>
                     <CardTitle className="text-center text-xl font-bold">
                         Is this your first visit to us?
@@ -50,7 +47,6 @@ const WelcomeScreen = () => {
                             No, I’ve been here before
                         </Button>
                     </div>
-                    {isPending && <p className="text-gray-800 font-semibold">Loading...</p>}
                 </CardContent>
             </Card>
         </div>

@@ -9,7 +9,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle
 } from "@/components/ui/alert-dialog"
-import { useRouter } from "next/navigation";
+import { useRouter } from 'nextjs-toploader/app';
 
 type TAlertDialogServiceOrder = {
     openModal: boolean;

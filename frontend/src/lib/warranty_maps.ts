@@ -1,13 +1,36 @@
 // Warranty mappings
-const WARRANTY_MAP: any = {
-    IN: {
-        "75130": { system: "IW", outCode: "75131" }, // Maps to Out of Warranty: 75131
-        "69476": { system: "IW", outCode: "69477" }, // Maps to Out of Warranty: 69477
+const type_21877 = [
+    {
+        id: 1,
+        warranty: "IW",
+        code: "75130",
     },
-    OUT: {
-        "75131": { system: "OOW", inCode: "75130" }, // Maps to In Warranty: 75130
-        "69477": { system: "OOW", inCode: "69476" }, // Maps to In Warranty: 69476
+    {
+        id: 2,
+        warranty: "OOW",
+        code: "75131",
     },
-};
-
-export default WARRANTY_MAP;
+    {
+        id: 3,
+        warranty: "ADH",
+        code: "75132",
+    },
+];
+const type_21878 = [
+    {
+        id: 1,
+        warranty: "IW",
+        code: "69476",
+    },
+    {
+        id: 2,
+        warranty: "OOW",
+        code: "69477",
+    },
+    {
+        id: 3,
+        warranty: "ADH",
+        code: "69478",
+    },
+];
+export { type_21877, type_21878 };

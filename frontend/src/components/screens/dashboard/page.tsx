@@ -54,9 +54,9 @@ const DashboardScreen = () => {
     const [dateTo, setDateTo] = useState("")
     const [selectedEngineerTasks, setSelectedEngineerTasks] = useState<boolean | null | any>(false);
 
-    const averageRepairTime = useMemo(() => calculateAverageRepairTime(hhpTasks), [hhpTasks])
+    const averageRepairTime = useMemo(() => calculateAverageRepairTime(hhpTasks, dateFrom, dateTo), [hhpTasks, dateFrom, dateTo])
 
-    const averageCompletionRate = useMemo(() => getCompletionRate(hhpTasks), [hhpTasks])
+    const averageCompletionRate = useMemo(() => getCompletionRate(hhpTasks, dateFrom, dateTo), [hhpTasks, dateFrom, dateTo])
     const averagePartsPendingTime = useMemo(() => getAveragePartsPendingTime(hhpTasks), [hhpTasks])
     const averagePartsIssuedTime = useMemo(() => partsIssuedRate(hhpTasks), [hhpTasks])
 

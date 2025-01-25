@@ -1,5 +1,5 @@
 import isDateInRange from "./date_range";
-
+import moment from "moment";
 // 1. Count of Repairs by Store
 // You can count how many repairs were done at each store.
 export function getRepairsByStore(
@@ -152,9 +152,18 @@ interface RepairEntry {
 }
 
 // used
-export function calculateAverageRepairTime(data: RepairEntry[]) {
+export function calculateAverageRepairTime(
+    data: RepairEntry[],
+    startDate?: string,
+    endDate?: string
+) {
     let totalRepairTime = 0;
     let completedRepairs = 0;
+
+    // Default range: last 7 days ending today if no dates are provided
+    const rangeStart =
+        startDate || moment().subtract(7, "days").format("YYYY-MM-DD");
+    const rangeEnd = endDate || moment().format("YYYY-MM-DD");
 
     data?.forEach((entry) => {
         const { date_booked, completed_date } = entry;
@@ -162,13 +171,17 @@ export function calculateAverageRepairTime(data: RepairEntry[]) {
         if (date_booked && completed_date) {
             const startDate = new Date(date_booked);
             const endDate = new Date(completed_date);
-            const timeDifference = endDate.getTime() - startDate.getTime();
 
-            if (timeDifference >= 0) {
-                // Ensure valid dates
-                const daysToRepair = timeDifference / (1000 * 60 * 60 * 24);
-                totalRepairTime += daysToRepair;
-                completedRepairs++;
+            // Only process entries within the specified date range
+            if (isDateInRange(date_booked, rangeStart, rangeEnd)) {
+                const timeDifference = endDate.getTime() - startDate.getTime();
+
+                if (timeDifference >= 0) {
+                    // Ensure valid dates
+                    const daysToRepair = timeDifference / (1000 * 60 * 60 * 24);
+                    totalRepairTime += daysToRepair;
+                    completedRepairs++;
+                }
             }
         }
     });
@@ -260,10 +273,27 @@ export function getCompleteRepairsByEngineer(data: any[]) {
 // 10. Repair Completion Rate
 // Calculate the percentage of repairs that are completed versus those that are not.
 // used
-export function getCompletionRate(data: any[]) {
-    const totalRepairs = data?.length;
-    const completedRepairs = data?.filter((r) => r.completed_date).length;
-    const completionRate = (completedRepairs / totalRepairs) * 100;
+export function getCompletionRate(
+    data: any[],
+    startDate?: string,
+    endDate?: string
+) {
+    // Default range: last 7 days ending today if no dates are provided
+    const rangeStart =
+        startDate || moment().subtract(7, "days").format("YYYY-MM-DD");
+    const rangeEnd = endDate || moment().format("YYYY-MM-DD");
+
+    // Filter data within the specified date range
+    const filteredData = data?.filter((entry) =>
+        isDateInRange(entry.date_booked, rangeStart, rangeEnd)
+    );
+    const totalRepairs = filteredData?.length || 0;
+    const completedRepairs =
+        filteredData?.filter((r) => r.completed_date).length || 0;
+
+    // Calculate the completion rate
+    const completionRate =
+        totalRepairs > 0 ? (completedRepairs / totalRepairs) * 100 : 0;
 
     return completionRate.toFixed(2);
 }

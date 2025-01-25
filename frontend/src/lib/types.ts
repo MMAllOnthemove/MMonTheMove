@@ -327,7 +327,7 @@ export type RepairshorTicketComment = {
 
 export type RepairshoprPutTicket = {
     customer_id?: number;
-    ticket_type_id?: number;
+    ticket_type_id?: string | number | undefined | null;
     number?: string;
     subject?: string;
     due_date?: string; // ISO 8601 date string
@@ -336,7 +336,7 @@ export type RepairshoprPutTicket = {
     location_id?: number;
     problem_type?: string;
     status?: string;
-    user_id?: string | number | undefined;
+    user_id?: string | number | undefined | null;
     properties?: {
         IMEI?: string;
         "PO No."?: string;
@@ -719,5 +719,13 @@ export type TCustomersTanstackTable = {
         created_at?: string;
         repairshopr_customer_id?: string | number;
         updated_at?: string;
+    };
+};
+export type TAssemblyTermTable = {
+    original: {
+        id?: string;
+        unique_id?: string;
+        term: string;
+        bold?: boolean;
     };
 };
