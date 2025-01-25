@@ -152,7 +152,8 @@ const TicketUpdaterScreen: React.FC = () => {
             );
 
             // const filtered = tickets?.filter((x) => x.repairshopr_customer_id === null || x.repairshopr_customer_id === '')
-            // const filtered = tickets?.filter((x) => x.accessories_and_condition === null)
+            // const filtered = tickets?.filter((x: any) => x.stores === 'HHP (Robtronics)' && x.unit_status !== 'Resolved')
+            // const filtered = tickets?.filter((x) => x.id === '1397')
 
             for (const ticket of tickets) {
                 if (processedTickets.has(ticket.ticket_number)) {
@@ -201,9 +202,9 @@ const TicketUpdaterScreen: React.FC = () => {
             const location = secondSystemTicket.properties["Location (BIN)"]?.trim();
             const additional_info = secondSystemTicket.properties["Special Requirement "]?.trim();
             const job_repair_no = secondSystemTicket.properties["Job Repair No.:"]?.trim();
-            const accessories_and_condition = secondSystemTicket.properties["Item Condition"]?.trim();
+            const accessories_and_condition = secondSystemTicket.properties["Item Condition "]?.trim();
             const requires_backup = secondSystemTicket.properties["Backup Requires"]?.trim();
-            const rs_warranty = secondSystemTicket.properties["Warranty"]?.trim();
+            const rs_warranty = secondSystemTicket.properties["Warranty "]?.trim();
 
             // Extract comments from the second system
             const newComments = secondSystemTicket.comments
@@ -214,20 +215,20 @@ const TicketUpdaterScreen: React.FC = () => {
                 }));
 
             // Add comments locally if there are new ones
-            for (const comment of newComments) {
+            // for (const comment of newComments) {
 
-                const payload = {
-                    "task_id": ticket.id,
-                    "comment": '*' + comment?.body,
-                    "created_at": comment?.created_at,
-                    "created_by": comment?.tech,
-                }
-                await addCommentLocally(payload);
-                setLogs((prevLogs) => [
-                    ...prevLogs,
-                    `Added comment to ticket number: ${ticket.ticket_number}`,
-                ]);
-            }
+            //     const payload = {
+            //         "task_id": ticket.id,
+            //         "comment": '*' + comment?.body,
+            //         "created_at": comment?.created_at,
+            //         "created_by": comment?.tech,
+            //     }
+            //     await addCommentLocally(payload);
+            //     setLogs((prevLogs) => [
+            //         ...prevLogs,
+            //         `Added comment to ticket number: ${ticket.ticket_number}`,
+            //     ]);
+            // }
 
             // update comments
             const changes = {

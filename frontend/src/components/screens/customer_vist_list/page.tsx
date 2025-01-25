@@ -16,14 +16,13 @@ import moment from 'moment';
 import dynamic from 'next/dynamic';
 import React, { useMemo, useState } from 'react';
 
+import Modal from '@/components/modal/page';
 import ManagementSearchForm from '@/components/search_field/page';
 import useUserLoggedIn from '@/hooks/useGetUser';
-import { useRouter } from 'next/navigation';
-import { useTransition } from 'react';
+import { TechniciansTableData } from '@/lib/types';
+import { useRouter } from 'nextjs-toploader/app';
 import TableBody from './tablebody';
 import TableHead from './tablehead';
-import { TechniciansTableData } from '@/lib/types';
-import Modal from '@/components/modal/page';
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page')
 )
@@ -43,7 +42,6 @@ const Pagination = dynamic(() =>
 const CustomerVistListScreen = () => {
     const today = moment(datetimestamp).format('YYYY-MM-DD');
     const { customerVisitList, customerVisitListLoading, refetch } = useGetCustomerVisits(today)
-    const [isPending, startTransition] = useTransition()
 
 
     const { user, isLoggedIn, loading } = useUserLoggedIn()
@@ -69,17 +67,14 @@ const CustomerVistListScreen = () => {
     const [openModal, setOpenModal] = useState(false);
     const handleCreateTicket = async (row: any) => {
         const originalData = row?.original;
-        startTransition(() => {
-            // to be able to grab customer id from rs on this page
-            router.push(`/repairshopr_asset/${encodeURIComponent(originalData?.email)}`)
-        })
+        router.push(`/repairshopr_asset/${encodeURIComponent(originalData?.email)}`)
+
     }
     const handleCreateSO = async (row: any) => {
         const originalData = row?.original;
-        startTransition(() => {
-            // for gspn, user can type
-            router.push(`/create_ticket/gspn/${encodeURIComponent(originalData?.email)}`)
-        })
+        // for gspn, user can type
+        router.push(`/create_ticket/gspn/${encodeURIComponent(originalData?.email)}`)
+
     }
     const table = useReactTable({
         data: customerVisitList,
@@ -133,7 +128,6 @@ const CustomerVistListScreen = () => {
                                 setFiltering={(e) => setFiltering(e.target.value)}
                             />
                         </section>
-                        {isPending && <p className="text-gray-800 font-semibold text-center mb-2">Loading...</p>}
 
                         {
                             showCustomerTicketListModal &&

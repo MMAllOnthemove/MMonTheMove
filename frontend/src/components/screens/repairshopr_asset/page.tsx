@@ -42,8 +42,8 @@ const RepairshoprAssetScreen = () => {
     const router = useRouter()
     // Hooks
     const { searchAssets, setSearchAssets, result } = useSearchAssets(id);
-    const { storeAvailableAssetsLocalStorage, isPendingAvailableAssetsLocalStorage } = useStoreAvailableAssetsLocalStorage()
-    const { storeNewAssetsToLocalStorage, isPendingCreatedAssetsToLocalStorage } = useStoreCreatedAssetsToLocalStorage()
+    const { storeAvailableAssetsLocalStorage } = useStoreAvailableAssetsLocalStorage()
+    const { storeNewAssetsToLocalStorage } = useStoreCreatedAssetsToLocalStorage()
     const { createAssetsOnRepairshopr, createAssetLoading } = useCreateAssets()
 
 
@@ -80,16 +80,13 @@ const RepairshoprAssetScreen = () => {
         storeNewAssetsToLocalStorage("assetInfo", assetInfo, `/create_ticket/rs/${encodeURIComponent(customerEmail)}`);
     }
 
- 
+
     return (
         <>
 
             <div className="flex flex-col justify-center items-center h-screen bg-white border w-30">
                 <h4 className="text-3xl font-bold mb-2 text-center dark:text-gray-700">Search asset</h4>
                 <p className='tracking-tighter text-gray-500 md:text-lg dark:text-gray-400'>Serial number</p>
-                {isPendingAvailableAssetsLocalStorage && <p className="text-gray-800 font-semibold text-center mb-2">Loading...</p>}
-                {isPendingCreatedAssetsToLocalStorage && <p className="text-gray-800 font-semibold text-center mb-2">Loading...</p>}
-
                 <div>
                     <Input
                         value={searchAssets}

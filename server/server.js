@@ -29,6 +29,7 @@ import { router as fuel } from "./routes/fuel_consumption/index.js";
 import { router as devices } from "./routes/devices/index.js";
 import { router as customer_visits } from "./routes/customer_visits/index.js";
 import { router as customers } from "./routes/customers/index.js";
+import { router as assembly_terms } from "./routes/terms_and_conditions/index.js";
 
 const { router: fileRoutes } = QCfileRoutesModule;
 const { router: dtvFiles } = dtvhaFiles;
@@ -73,6 +74,7 @@ app.use("/api/v1/customer_visits", customer_visits);
 app.use("/api/v1/fuel", fuel);
 app.use("/api/v1/devices", devices);
 app.use("/api/v1/customers", customers);
+app.use("/api/v1/terms/assembly", assembly_terms);
 app.use("/tools/dev/add_images_checklist", add_images_checklist);
 
 const PORT = process.env.NEXT_PUBLIC_EXPRESS_SERVER_PORT;

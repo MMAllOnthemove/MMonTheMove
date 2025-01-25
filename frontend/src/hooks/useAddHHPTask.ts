@@ -40,6 +40,7 @@ const useAddHHPTask = () => {
             }
             return response?.data?.task;
         } catch (error: any) {
+            console.log("error", error);
             if (error?.response?.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {

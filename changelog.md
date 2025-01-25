@@ -5,15 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.14] - 2025-01-19
+## [0.1.15] - 2025-01-25
 
+### Added
+
+-   check warranty screen
+-   filter hhp tasks by date range
+-   assembly_terms table
+-   backend routes for assembly terms, add, delete, update
+-   can now add asembly terms and conditions
+-   acknowledgement of assessment damages (cannot be hardcoded as it can be changed)
+-   add a section just for editing a ticket, this will ensure we show service order number stored in our db. instead of the one on rs
+-   can edit any field of the actual ticket which will update locally and on rs
+-   field for adding pictures on edit task
+-   techs can only see rs statuses related to them and admins can see all of them
 
 ### Fixed
 
--   increase client_max_body_size  in the nginx server file
+-   added phone as a value in create customer
+-   tookan create not clearing fields after searching new so (window will reload)
+-   dashboard show also for daily stats
+-   navbar structure
+-   hide admin panel from navbar if user is not admin
+-   removed loading screen from 'Not logged in' screen when user clicks 'Log in' button (will use the toploader load)
+-   removed useTransition hook
+-   when updating customer from the search customer, refresh as soon as it is updated (search customer screen)
+-   was not adding accessories_and_condition, requires_backup, rs_warranty fields to the backend locally
+-   error handling when adding task with missing fields
+-   delay ticket search by 5 seconds at least
+-   check why we cannot edit a customer’s details on rs from the app, display rs’ errors
+-   adding task with gspn now sets it to 'New' as status just like rs
+-   removed technicians link in the navbar because app defaults to it anyway
+
+## [0.1.14] - 2025-01-19
+
+### Fixed
+
+-   increase client_max_body_size in the nginx server file
 -   upload in book from so
 -   warranty codes and backup codes from rs
-
 
 ## [0.1.13] - 2025-01-18
 

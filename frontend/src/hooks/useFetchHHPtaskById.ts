@@ -19,6 +19,7 @@ type IHHPTask = {
     gspn_status: string;
     device_location: string | null;
     requires_backup: string | null;
+    ticket_type_id?: string | null | any;
     ticket_number: string;
     department: string;
     job_added_by: string;
@@ -41,13 +42,20 @@ type IHHPTask = {
     parts_pending: string | boolean;
     parts_issued: string | boolean;
     compensation: string | boolean;
-    comments: {
+    images?: {
+        image_id: number;
+        unique_id: string;
+        task_id: number;
+        image_url: string;
+        created_at: string;
+    }[];
+    comments?: {
         comment_id: number;
         comment_text: string;
         comment_created_at: string;
         created_by: string;
-    };
-    parts: {
+    }[];
+    parts?: {
         part_id: number;
         unique_id: string;
         ticket_number: string;
@@ -60,7 +68,7 @@ type IHHPTask = {
         created_by: string;
         updated_at: null | string;
         compensation: boolean;
-    };
+    }[];
     repairshopr_job_id: string;
 };
 

@@ -7,23 +7,6 @@ import Sidebar from '@/components/sidebar/page';
 import Pagination from '@/components/table_pagination/page';
 import { Button } from '@/components/ui/button';
 import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import {
     Dialog,
     DialogContent,
     DialogDescription,
@@ -33,23 +16,24 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import useAddEngineer from '@/hooks/useAddEngineer';
 import useDeleteEngineer from '@/hooks/useDeleteEngineer';
 import useFetchEngineer from '@/hooks/useFetchEngineers';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import useIpaasGetEngineerList from '@/hooks/useGSPNEngineerList';
 import useUpdateEngineer from '@/hooks/useUpdateEngineer';
-import { datetimestamp } from '@/lib/date_formats';
 import departments from '@/lib/departments';
 import columns from '@/lib/engineers_columns';
 import findChanges from '@/lib/find_changes';
 import { TEngineersList, TEngineersListTable } from '@/lib/types';
-import { cn } from "@/lib/utils";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import {
     SortingState,
     flexRender,

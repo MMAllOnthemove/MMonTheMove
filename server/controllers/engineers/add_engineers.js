@@ -44,12 +44,10 @@ const addEngineers = async (req, res) => {
         const existingCodesSet = new Set(
             existingEngineers.map((e) => e.engineer_code)
         );
-        // console.log(existingCodesSet);
         // Filter new engineers (those whose codes do not exist)
         const newEngineers = names.filter(
             (entry) => !existingCodesSet.has(entry.Engineer)
         );
-        // console.log("newEngineers", newEngineers);
         if (newEngineers.length > 0) {
             const insertQuery = `
             INSERT INTO engineers (engineer_firstname, engineer_lastname, engineer_code, created_at, updated_at)
@@ -64,7 +62,6 @@ const addEngineers = async (req, res) => {
             // Insert new engineers
             await Promise.all(
                 newEngineers.map(({ Engineer, EngineerName }) => {
-                    // console.log("EngineerName:", EngineerName); // Debugging log
                     const { firstname, lastname } = splitName(EngineerName);
                     return pool.query(insertQuery, [
                         firstname,
@@ -81,7 +78,6 @@ const addEngineers = async (req, res) => {
             skipped: names.length - newEngineers.length,
         });
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error" });
     }
 };

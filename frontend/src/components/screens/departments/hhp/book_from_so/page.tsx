@@ -251,7 +251,7 @@ const BookFromSOScreen = () => {
         const payload = {
             "customer_id": customer_id, // only need this for creating a ticket on rs
             "problem_type": issue_type, // Will aways be HHP for handheld devices, no need to choose
-            "subject": fault,
+            "subject": "*" + fault,
             "status": "New", //  will always be 'New' for a recently created ticket
             "ticket_type_id": `${ticketTypeId}`,
             "user_id": `${user?.repairshopr_id}`,
@@ -267,8 +267,8 @@ const BookFromSOScreen = () => {
                 "IMEI": imei,
                 "Job Repair No.": job_repair_no,
                 "Job Repair No.:": job_repair_no,
-                "Special Requirement": `${specialRequirement}`,
-                "Special Requirement ": `${specialRequirement}`,
+                "Special Requirement": specialRequirement,
+                "Special Requirement ": specialRequirement,
                 "Password": `${password}`,
                 "Location (BIN)": "",
             },
@@ -293,10 +293,7 @@ const BookFromSOScreen = () => {
             data?.ticket?.number,
             data?.ticket?.id,
             data?.ticket?.customer_id,
-            job_repair_no, // had to fetch it down under in the api result
-            itemCondition, // yes it has whitespace
-            requires_backup,
-            warrantyCode,  // yes it has whitespace
+            data?.ticket?.ticket_type_id
         );
         // Step 7: Add task for booking agents
         const bookingAgentsStatPayload = {
@@ -318,7 +315,7 @@ const BookFromSOScreen = () => {
         openModal() // open modal for attachments
 
     }
-    const sendTicketDataToOurDB = async (ticketNumber: string | number, ticketId: string | number, repairshoprCustomerId: string | number, repair_no: string | null | number, condtion_accessories: string | null | number, backup_code: string | null | number, warranty_code: string | null | number) => {
+    const sendTicketDataToOurDB = async (ticketNumber: string | number, ticketId: string | number, repairshoprCustomerId: string | number, ticket_type_id: number | string) => {
         const created_at = datetimestamp;
         const date_booked = datetimestamp; // seeing as the task will be added same time
         // initially a unit does not have a service_order_no
@@ -363,10 +360,11 @@ const BookFromSOScreen = () => {
             "repairshopr_customer_id": repairshoprCustomerId,
             "repeat_repair": repeat_repair,
             "created_at": created_at,
-            "job_repair_no": repair_no,
-            "accessories_and_condition": condtion_accessories,
-            "requires_backup": backup_code,
-            "rs_warranty": warranty_code
+            "job_repair_no": job_repair_no,
+            "accessories_and_condition": itemCondition,
+            "requires_backup": requires_backup,
+            "rs_warranty": warrantyCode,
+            "ticket_type_id": ticket_type_id
         }
         const res = await addTask(payload)
         setTaskId(res?.id)
@@ -381,7 +379,7 @@ const BookFromSOScreen = () => {
         try {
             const formData = new FormData();
 
-            const ticket_number = serviceOrder 
+            const ticket_number = serviceOrder
             const created_at = datetimestamp;
             Array.from(hhpFiles).forEach((file) => {
                 formData.append('files', file);

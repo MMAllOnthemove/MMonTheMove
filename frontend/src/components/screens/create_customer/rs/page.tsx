@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import useCreateCustomerOnRepairshopr from '@/hooks/useCreateCustomer'
 import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally'
 import { datetimestamp } from '@/lib/date_formats'
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'nextjs-toploader/app'
 import React, { useState } from 'react'
 
 import { Label } from '@/components/ui/label'
@@ -81,17 +81,10 @@ const CreateCustomerRepairshoprScreen = () => {
 
         }
         await addCustomerLocally(spreadPayload)
-        setFirstName("")
-        setLastName("")
-        setBusinessName("")
-        setEmail("")
-        setAddress("")
-        setAddress_2("")
-        setCity("")
-        setState("")
-        setZip("")
-        setPhoneDetails([{ type: "mobile", number: "" }])
-        router.back()
+        // send the customer name in the url params
+        // this will then be stored in the customer name, in the next screen
+        const fullname = `${capitalizeText(firstName)} ${capitalizeText(lastName)}`
+        router.push(`/assembly_terms/${encodeURIComponent(fullname)}`)
 
     }
     return (
@@ -138,7 +131,7 @@ const CreateCustomerRepairshoprScreen = () => {
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="mobile">Mobile</SelectItem>
-                                    <SelectItem value="office">Office</SelectItem>
+                                    <SelectItem value="phone">Phone</SelectItem>
                                     <SelectItem value="home">Home</SelectItem>
                                 </SelectContent>
                             </Select>

@@ -8,9 +8,8 @@ import useUpdateRepairshoprCustomer from '@/hooks/useUpdateRepairshoprCustomer';
 import { datetimestamp } from '@/lib/date_formats';
 import { Customer } from '@/lib/types';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-
+import { useRouter } from 'nextjs-toploader/app'
 import {
     Card,
     CardContent,
@@ -127,21 +126,10 @@ const SearchCustomerRepairshoprScreen = () => {
             visit_date: visit_date
         };
         await addCustomerLocally(custInfo)
-        setResult([]); // Display only the exact match
-        setSearchCustomer('');
-        setCustomerId('');
-        setFirstname("")
-        setLastname("")
-        setBusinessname("")
-        setEmail("")
-        setPhoneNumber("")
-        setPhoneNumber2("")
-        setAddress("")
-        setAddress2("")
-        setCity("")
-        setState("")
-        setZip("")
-
+        // send the customer name in the url params
+        // this will then be stored in the customer name, in the next screen
+        const fullname = `${capitalizeText(firstname)} ${capitalizeText(lastname)}`
+        router.push(`/assembly_terms/${encodeURIComponent(fullname)}`)
     }
     const updateCustomerDetailsOnRepairshopr = async () => {
         const payload = {
@@ -161,8 +149,10 @@ const SearchCustomerRepairshoprScreen = () => {
         if (data) {
             setEditModalOpen(false);
             // to prevent having to search again, set the resulting details to the customer details (email or fullname)
-            if (data?.email !== "" || data?.email !== null)
-                setSearchCustomer(data?.email);
+            if (data?.email !== "" || data?.email !== null) {
+                setSearchCustomer(data?.email); checkIfCustomerWasHere()
+            }
+
             else setSearchCustomer(data?.fullname);
         }
 

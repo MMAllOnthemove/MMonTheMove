@@ -24,7 +24,9 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import useFetchEngineer from "@/hooks/useFetchEngineers";
+import useUserLoggedIn from "@/hooks/useGetUser";
 import repairshopr_statuses from "@/lib/repairshopr_status";
+import repairshopr_statuses_techs from "@/lib/tech_rs_statuses";
 import { cn } from "@/lib/utils";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import moment from "moment";
@@ -69,7 +71,7 @@ const TasksUpdate = ({ setEngineer, setEngineerUserId, updateTask, engineer, eng
         value: user?.engineer_firstname + " " + user?.engineer_lastname,
         label: user?.engineer_firstname
     }))
-
+    const { user, isLoggedIn, loading } = useUserLoggedIn()
     return (
         <form>
             <div className="mb-3">
@@ -82,16 +84,27 @@ const TasksUpdate = ({ setEngineer, setEngineerUserId, updateTask, engineer, eng
             </div>
             <div className="mb-3">
                 <div className="relative">
-                    <select className="block w-full appearance-none rounded-md border border-gray-300 bg-white px-4 py-2 pr-8 text-sm shadow-sm focus:outline-none cursor-pointer [&>span]:line-clamp-1" name="status" value={unit_statusProp} onChange={(e) => setRepairshoprStatusProp(e.target.value)}>
-                        <option disabled value="">
-                            Choose status
-                        </option>
-                        {repairshopr_statuses.map((dep) => (
-                            <option key={dep.id} value={`${dep._status}`}>
-                                {dep._status}
+                    {isLoggedIn && user?.user_role === "admin" ?
+                        <select className="block w-full appearance-none rounded-md border border-gray-300 bg-white px-4 py-2 pr-8 text-sm shadow-sm focus:outline-none cursor-pointer [&>span]:line-clamp-1" name="status" value={unit_statusProp} onChange={(e) => setRepairshoprStatusProp(e.target.value)}>
+                            <option disabled value="">
+                                Select status
                             </option>
-                        ))}
-                    </select>
+                            {repairshopr_statuses.map((dep) => (
+                                <option key={dep.id} value={`${dep._status}`}>
+                                    {dep._status}
+                                </option>
+                            ))}
+                        </select> :
+                        <select className="block w-full appearance-none rounded-md border border-gray-300 bg-white px-4 py-2 pr-8 text-sm shadow-sm focus:outline-none cursor-pointer [&>span]:line-clamp-1" name="status" value={unit_statusProp} onChange={(e) => setRepairshoprStatusProp(e.target.value)}>
+                            <option disabled value="">
+                                Select status
+                            </option>
+                            {repairshopr_statuses_techs.map((dep) => (
+                                <option key={dep.id} value={`${dep._status}`}>
+                                    {dep._status}
+                                </option>
+                            ))}
+                        </select>}
                     <span
                         className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400"
                     >

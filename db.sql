@@ -123,7 +123,8 @@ create table technician_tasks (
     repairshopr_customer_id numeric,
     accessories_and_condition text,
     requires_backup text,
-    rs_warranty text
+    rs_warranty text,
+    ticket_type_id text
 );
 
 create table technician_tasks_images (
@@ -455,10 +456,27 @@ create table engineer_ra_status (
     valid_to text
 );
 
+create table assembly_terms (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    term TEXT NOT NULL,
+    bold boolean,
+    created_at text
+);
+
 create table backup_terms (
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
     term TEXT NOT NULL,
     bold boolean,
+    created_at text
+);
+
+create table dunorworks_reports (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    job_repair_no text,
+    imei text,
+    unit_status text,
     created_at text
 );

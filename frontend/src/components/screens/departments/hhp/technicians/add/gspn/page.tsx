@@ -58,7 +58,6 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
     const [warranty, setWarranty] = useState("")
     const [engineer, setEngineer] = useState('');
 
-    const [status, setStatus] = useState("")
     const [stores, setStore] = useState("")
     const [repeat_repair, setRepeatRepair] = useState('')
     const [imei, setIMEI] = useState("")
@@ -131,7 +130,7 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
             fault,
             imei,
             serial_number,
-            status,
+            status: "New",
             ticket_number,
             department,
             job_added_by,
@@ -149,7 +148,6 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
         setSearchSericeOrder('')
         setWarranty('')
         setEngineer('')
-        setStatus('')
         setStore('')
         setRepeatRepair('')
         setIMEI('')
@@ -184,28 +182,6 @@ const AddgspnHHPTask = ({ onChange }: { onChange: (value: boolean) => void }) =>
                 <div className="mb-3">
                     <Label htmlFor="imei">IMEI</Label>
                     <Input type="text" name="imei" defaultValue={loadGSPNApiData ? 'Loading...' : imei} disabled aria-disabled />
-                </div>
-                <div className="mb-3">
-                    <Select value={status} onValueChange={(e) => setStatus(e)}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel>Statuses</SelectLabel>
-                                {repairshopr_statuses.map((stat) => (
-                                    <SelectItem key={stat.id} value={stat._status}>
-                                        {stat._status}
-                                    </SelectItem>
-                                ))}
-
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-
-
-                    {hhpAddTaskErrors.status && <p className="text-sm text-red-500 font-medium">{hhpAddTaskErrors.status}</p>}
-
                 </div>
                 <div className="mb-3">
                     <Popover open={engineersComboBox} onOpenChange={setEngineerComboBox}>

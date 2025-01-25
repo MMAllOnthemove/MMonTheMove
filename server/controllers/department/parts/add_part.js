@@ -30,7 +30,6 @@ const AddPart = async (req, res) => {
 
     try {
         await AddPartSchema.validate(req.body, { abortEarly: false });
-        // todo: visit this logic check
         const { rows: existingPart } = await pool.query(
             "SELECT * FROM parts_for_tasks WHERE part_name = $1 and ticket_number = $2 limit 1",
             [part_name, ticket_number]

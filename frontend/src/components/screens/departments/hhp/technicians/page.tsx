@@ -16,7 +16,7 @@ const Sidebar = dynamic(() =>
 const Pagination = dynamic(() =>
     import('@/components/table_pagination/page')
 )
-
+import { useRouter } from 'nextjs-toploader/app';
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -97,8 +97,12 @@ import Modal from '@/components/modal/page'
 import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud'
 import columns from '@/lib/hhp_technicians_table_columns'
 import { globalFilterFn } from '@/lib/tanstack_global_filter'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 import repairshopr_statuses from '@/lib/repairshopr_status'
+import moment from 'moment'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import repairshopr_statuses_techs from '@/lib/tech_rs_statuses'
 const DateCalculationsScreen = dynamic(() =>
     import('./date_calculations/page')
 )
@@ -162,10 +166,10 @@ const TechniciansScreen = () => {
     const [collected_date, setCollectedDate] = useState("")
     const [repairshoprServiceOrder, setRepairshoprServiceOrder] = useState("")
     const { updateAssessmentDate } = useUpdateAssessmentDate()
-
     const [device_location, setDeviceLocation] = useState("")
     const [add_job_repair_no, setAddJobRepairNo] = useState("")
-
+    const [dateFrom, setDateFrom] = useState("")
+    const [dateTo, setDateTo] = useState("")
 
 
     // engineer filters
@@ -187,6 +191,18 @@ const TechniciansScreen = () => {
     const handleStatusFilter = (e: any) => {
         setStatusFilter(e)
         setEngineerFilter("")
+        setUnassignedFilter("")
+    }
+    const handleDateFromFilter = (e: any) => {
+        setDateFrom(e.target.value)
+        setEngineerFilter("")
+        setStatusFilter("")
+        setUnassignedFilter("")
+    }
+    const handleDateToFilter = (e: any) => {
+        setDateTo(e.target.value)
+        setEngineerFilter("")
+        setStatusFilter("")
         setUnassignedFilter("")
     }
 
@@ -356,7 +372,8 @@ const TechniciansScreen = () => {
         if (!hhpTasks) return []; // Return empty array if no tasks
 
         // Return the full dataset when no filters are active
-        if (!engineerFilter && !unassisgnedFilter && !statusFilter) {
+        if (!engineerFilter && !unassisgnedFilter && !statusFilter && !dateFrom &&
+            !dateTo) {
             return hhpTasks;
         }
 
@@ -378,8 +395,18 @@ const TechniciansScreen = () => {
             );
         }
 
+        const filteredTasks = hhpTasks?.filter((task: any) => {
+            const taskDate = moment(task?.date_booked).format("YYYY-MM-DD");
+            return (taskDate >= dateFrom) && (taskDate <= dateTo);
+        });
+        if (dateFrom && dateTo) {
+            return filteredTasks
+        }
+
+
+
         return hhpTasks; // Default return the full dataset
-    }, [engineerFilter, hhpTasks, unassisgnedFilter, statusFilter]);
+    }, [engineerFilter, hhpTasks, unassisgnedFilter, statusFilter, dateFrom, dateTo]);
 
 
     const [pagination, setPagination] = useState<PaginationState>({
@@ -883,18 +910,59 @@ const TechniciansScreen = () => {
                                 />
 
                                 <div className="flex justify-between items-center gap-3">
-
+                                    <div className="flex gap-3 items-center">
+                                        <span>
+                                            <Label
+                                                htmlFor="dateFrom"
+                                                className="sr-only dark:text-[#eee]"
+                                            >
+                                                Date from
+                                            </Label>
+                                            <Input
+                                                type="date"
+                                                name="dateFrom"
+                                                value={dateFrom}
+                                                onChange={handleDateFromFilter}
+                                                className="cursor-pointer"
+                                                id="dateFrom"
+                                            />
+                                        </span>
+                                        <span>-</span>
+                                        <span>
+                                            <Label
+                                                htmlFor="dateTo"
+                                                className="sr-only dark:text-[#eee]"
+                                            >
+                                                Date to
+                                            </Label>
+                                            <Input
+                                                type="date"
+                                                name="dateTo"
+                                                value={dateTo}
+                                                onChange={handleDateToFilter}
+                                                className="cursor-pointer"
+                                                id="dateTo"
+                                            />
+                                        </span>
+                                    </div>
                                     <Select name="statusFilter" value={statusFilter} onValueChange={handleStatusFilter}>
                                         <SelectTrigger className="w-full hidden md:flex">
                                             <SelectValue placeholder="Status" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectGroup>
-                                                <SelectLabel>Engineer</SelectLabel>
-                                                {repairshopr_statuses.map((dep) => (
-                                                    <SelectItem key={dep.id} value={`${dep._status}`}>{`${dep._status}`}</SelectItem>
-                                                ))}
-                                            </SelectGroup>
+                                            {isLoggedIn && user?.user_role === "admin" ?
+                                                <SelectGroup>
+                                                    <SelectLabel>Status</SelectLabel>
+                                                    {repairshopr_statuses.map((dep) => (
+                                                        <SelectItem key={dep.id} value={`${dep._status}`}>{`${dep._status}`}</SelectItem>
+                                                    ))}
+                                                </SelectGroup> :
+                                                <SelectGroup>
+                                                    <SelectLabel>Status</SelectLabel>
+                                                    {repairshopr_statuses_techs.map((dep) => (
+                                                        <SelectItem key={dep.id} value={`${dep._status}`}>{`${dep._status}`}</SelectItem>
+                                                    ))}
+                                                </SelectGroup>}
                                         </SelectContent>
                                     </Select>
                                     <Select name="engineerFilter" value={unassisgnedFilter} onValueChange={handleUnassignedFilter}>

@@ -77,6 +77,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
     const [requires_backup, setBackupCode] = useState("")
     const [rs_warranty, setRSWarranty] = useState("")
     const [repairshopr_customer_id, setCustomerRSId] = useState("")
+    const [ticket_type_id, setTicketTypeId] = useState("")
 
 
 
@@ -100,6 +101,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                     setBackupCode(data?.tickets[0]["properties"]["Backup Requires"])
                     setRSWarranty(data?.tickets[0]["properties"]["Warranty"])
                     setCustomerRSId(data?.tickets?.customer_id)
+                    setTicketTypeId(data?.tickets?.ticket_type_id)
                     setRepairshoprIMEI(data?.tickets[0]["properties"]["IMEI"])
                     setIMEI(data?.tickets[0]["properties"]["IMEI"])
                     setTicketNumber(data?.tickets[0]?.number)
@@ -115,7 +117,11 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                 if (process.env.NODE_ENV !== "production") console.error(error)
             }
         };
-        fetchRSData();
+        const delayFetch = setTimeout(() => {
+            fetchRSData();
+        }, 5000); // 5-second delay
+
+        return () => clearTimeout(delayFetch); // Cleanup timeout if searchTicket changes
     }, [searchTicket]);
 
     useEffect(() => {
@@ -199,7 +205,8 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
             accessories_and_condition,
             requires_backup,
             rs_warranty,
-            repairshopr_customer_id
+            repairshopr_customer_id,
+            ticket_type_id
         }
         const userIdPayload = {
             "user_id": repairshopr_id,
