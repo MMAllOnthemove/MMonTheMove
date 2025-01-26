@@ -14,7 +14,6 @@ export const UpdateAssemblyTerm = async (req, res) => {
             message: "Term updated",
         });
     } catch (error) {
-        console.log("error update assembly term", error);
         return res.status(500).json({ error: "Could not update, try again" });
     }
 };

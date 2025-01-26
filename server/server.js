@@ -30,6 +30,7 @@ import { router as devices } from "./routes/devices/index.js";
 import { router as customer_visits } from "./routes/customer_visits/index.js";
 import { router as customers } from "./routes/customers/index.js";
 import { router as assembly_terms } from "./routes/terms_and_conditions/index.js";
+import { router as hhp_reports } from "./routes/request_reports/index.js";
 
 const { router: fileRoutes } = QCfileRoutesModule;
 const { router: dtvFiles } = dtvhaFiles;
@@ -56,6 +57,7 @@ app.use("/auth", auth);
 
 // HHP jobs
 app.use("/api/v1/hhp/jobs", hhpjobsrouter);
+app.use("/api/v1/hhp/reports", hhp_reports);
 // dtv jobs
 app.use("/api/v1/dtv_ha/jobs", dtv_hajobsrouter);
 app.use("/engineers", engineers);

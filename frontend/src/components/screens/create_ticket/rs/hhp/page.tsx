@@ -105,7 +105,6 @@ const HHP = (customerProps: string | string[] | any) => {
 
         }
         const data = await addTicket(payload)
-        console.log("ticket data", data)
         await sendTicketDataToOurDB(
             data?.ticket?.number,
             data?.ticket?.id,

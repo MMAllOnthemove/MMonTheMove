@@ -19,6 +19,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   can edit any field of the actual ticket which will update locally and on rs
 -   field for adding pictures on edit task
 -   techs can only see rs statuses related to them and admins can see all of them
+-   store qc attachments locally and in rs
+-   screen for adding attachments to rs and locally
+-   add new devices (from the list of devices)
+-   can void warranty
+-   screen for uploading images to a ticket
+-   reports_download table
+-   can download reports (only admin)
+-   change warranty status in view summary
+-   stats for bins (know how many units the engineer has in their bin per specific status)
+-   adding a part, shows if in stock or not
 
 ### Fixed
 

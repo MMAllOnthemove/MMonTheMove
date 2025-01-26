@@ -35,4 +35,23 @@ const GetTaskById = async (req, res) => {
         });
     }
 };
-export { GetAllTasks, GetTaskById };
+// get job by ticket
+// this is for the file upload screen
+const GetTaskByTicket = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { rows } = await pool.query(
+            "SELECT id, ticket_number, repairshopr_job_id FROM technician_tasks AS tt WHERE tt.department LIKE '%HHP%' AND tt.ticket_number = $1",
+            [id]
+        );
+        return res.status(200).json(rows); // Explicit 200 OK status
+    } catch (err) {
+        return res.status(500).json({
+            message: "Internal server error",
+            error:
+                process.env.NODE_ENV === "production" ? undefined : err.message, // Hide detailed error message in production
+        });
+    }
+};
+
+export { GetAllTasks, GetTaskById, GetTaskByTicket };

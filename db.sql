@@ -227,11 +227,6 @@ create table booking_agents_tasks (
     updated_at text
 );
 
-alter table
-    booking_agents_tasks
-add
-    column original ticket_date text;
-
 create TYPE reason_for_use_enum as enum (
     'Fuel',
     'Callout (TV)',
@@ -330,8 +325,7 @@ create table vehicle_checklist(
     created_at text,
     updated_at text,
     license_disc_expiry text,
-    next_service_kms text;
-
+    next_service_kms text
 );
 
 create type tank_filled_enum as enum ('Yes', 'No');
@@ -480,3 +474,10 @@ create table dunorworks_reports (
     unit_status text,
     created_at text
 );
+
+create table reports_download (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    downloaded_by text,
+    downloaded_at text
+)
