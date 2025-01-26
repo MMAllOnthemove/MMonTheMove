@@ -189,7 +189,6 @@ const TicketUpdaterScreen: React.FC = () => {
 
             setLogs((prevLogs) => [...prevLogs, "All tickets processed."]);
         } catch (error) {
-            console.error("Error fetching tickets:", error);
             setLogs((prevLogs) => [...prevLogs, "Error fetching tickets."]);
         } finally {
             setIsRunning(false);
@@ -307,7 +306,6 @@ const TicketUpdaterScreen: React.FC = () => {
                 ]);
             }
         } catch (error) {
-            console.error("Error updating ticket:", error);
             setLogs((prevLogs) => [
                 ...prevLogs,
                 `Error updating ticket number: ${ticket.ticket_number}`,

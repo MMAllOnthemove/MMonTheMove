@@ -451,3 +451,23 @@ export const engineerWorkload = (data: any[]) => {
     }, {});
     return workloadCount;
 };
+
+interface IEngineerBinsData {
+    engineer: string | null;
+    unit_status: string;
+    units_count: number;
+    ticket_numbers: string[];
+}
+
+export const getEngineerBinsData = (data: any[]) => {
+    // Group the data by engineer
+    const groupedData = data.reduce<Record<string, IEngineerBinsData[]>>(
+        (acc, item) => {
+            if (!acc[item.engineer]) acc[item.engineer] = [];
+            acc[item.engineer].push(item);
+            return acc;
+        },
+        {}
+    );
+    return groupedData;
+};

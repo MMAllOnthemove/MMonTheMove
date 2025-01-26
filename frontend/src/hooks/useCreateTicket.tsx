@@ -58,7 +58,6 @@ const useCreateTicket = () => {
             );
             return data;
         } catch (error: any) {
-            console.error("create ticket error", error)
             toast.error(`${error?.response?.data?.error}`);
         } finally {
             setLoading(false);

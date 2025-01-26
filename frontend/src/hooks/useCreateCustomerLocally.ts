@@ -49,8 +49,6 @@ const useCreateCustomerLocally = () => {
                 });
             refetch();
         } catch (error: any) {
-            // console.error("add customer locally error", error);
-            // toast.error(`${error?.response.data?.message}`);
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {

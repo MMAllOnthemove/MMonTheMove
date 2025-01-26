@@ -28,6 +28,7 @@ import useUserLoggedIn from "@/hooks/useGetUser";
 import repairshopr_statuses from "@/lib/repairshopr_status";
 import repairshopr_statuses_techs from "@/lib/tech_rs_statuses";
 import { cn } from "@/lib/utils";
+import { type_21877, type_21878 } from "@/lib/warranty_maps";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import moment from "moment";
 import React, { ChangeEvent } from "react";
@@ -46,6 +47,8 @@ type TTasksUpdate = {
     engineer: string | undefined | any;
     model: string | undefined | any;
     imei: string | undefined | any;
+    ticket_type_id: string | undefined | any;
+    rs_warranty: string | undefined | any;
     job_repair_no: string;
     engineerCombobox: boolean;
     location: string;
@@ -56,6 +59,7 @@ type TTasksUpdate = {
     setRepairshoprCommentProp: (data: ChangeEvent<HTMLTextAreaElement>) => void;
     setRepairshoprStatusProp: (e: string) => void;
     submitTasksUpdate: (data: React.SyntheticEvent) => void;
+    handleTicketRSWarranty: (data: React.ChangeEvent<HTMLSelectElement>) => void;
     setHHPFilesProp: (data: ChangeEvent<HTMLInputElement>) => void;
     submitHHPFiles: (data: React.SyntheticEvent) => void;
     device_location: string | null;
@@ -64,7 +68,7 @@ type TTasksUpdate = {
     setAddJobRepairNo: (data: any) => void;
 
 }
-const TasksUpdate = ({ setEngineer, setEngineerUserId, updateTask, engineer, engineerCombobox, setEngineerCombobox, location, job_repair_no, assessment_date, additional_info, hhp_tasks_loading, model, imei, serial_number, setHHPFilesProp, submitHHPFiles, service_order_noProp, reparshoprCommentProp, unit_statusProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked, device_location, setDeviceLocation, add_job_repair_no, setAddJobRepairNo }: TTasksUpdate) => {
+const TasksUpdate = ({ rs_warranty, handleTicketRSWarranty, setEngineer, setEngineerUserId, ticket_type_id, updateTask, engineer, engineerCombobox, setEngineerCombobox, location, job_repair_no, assessment_date, additional_info, hhp_tasks_loading, model, imei, serial_number, setHHPFilesProp, submitHHPFiles, service_order_noProp, reparshoprCommentProp, unit_statusProp, setServiceOrderProp, setRepairshoprCommentProp, setRepairshoprStatusProp, submitTasksUpdate, date_booked, device_location, setDeviceLocation, add_job_repair_no, setAddJobRepairNo }: TTasksUpdate) => {
     const { engineersList } = useFetchEngineer()
     const engineerListFomatted = engineersList?.map((user) => ({
         repairshopr_id: user?.repairshopr_id,
@@ -123,7 +127,49 @@ const TasksUpdate = ({ setEngineer, setEngineerUserId, updateTask, engineer, eng
                     </span>
                 </div>
             </div>
+            <div className="relative my-3">
+                {/* so we can change warranty this on rs */}
+                {
+                    ticket_type_id === "21877" ?
+                        <select name='rs_warranty' className="block w-full appearance-none rounded-md border border-gray-300 bg-white px-4 py-2 pr-8 text-sm shadow-sm focus:outline-none cursor-pointer [&>span]:line-clamp-1" value={rs_warranty || ''}
+                            onChange={handleTicketRSWarranty}>
+                            <option value="">Select warranty</option>
+                            {
+                                type_21877?.map((x: any) => (
 
+                                    <option key={`${x?.id}`} value={`${x?.code}`}>{x?.warranty}</option>
+                                ))
+                            }
+                        </select> : <select name='rs_warranty' className="block w-full appearance-none rounded-md border border-gray-300 bg-white px-4 py-2 pr-8 text-sm shadow-sm focus:outline-none cursor-pointer [&>span]:line-clamp-1" value={rs_warranty || ''}
+                            onChange={handleTicketRSWarranty}>
+                            <option value="">Select warranty</option>
+                            {
+                                type_21878?.map((x: any) => (
+
+                                    <option key={`${x?.id}`} value={`${x?.code}`}>{x?.warranty}</option>
+                                ))
+                            }
+                        </select>
+                }
+
+
+                <span
+                    className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                    >
+                        <path
+                            fillRule="evenodd"
+                            d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.72-3.72a.75.75 0 111.06 1.06l-4 4a.75.75 0 01-1.06 0l-4-4a.75.75 0 01.02-1.06z"
+                            clipRule="evenodd"
+                        />
+                    </svg>
+                </span>
+            </div>
             <div className="mb-3">
                 <Popover open={engineerCombobox} onOpenChange={setEngineerCombobox}>
                     <PopoverTrigger asChild>

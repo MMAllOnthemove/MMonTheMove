@@ -166,7 +166,7 @@ const ViewHHPTaskScreen = () => {
         const updated_at = datetimestamp;
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no: serviceOrder, unit_status, updated_at, engineer, collected, stores: selected, collected_date, device_location: deviceLocation, job_repair_no: repairNo
+            id, service_order_no: serviceOrder, accessories_and_condition: itemCondition, unit_status, updated_at, engineer, collected, stores: selected, collected_date, device_location: deviceLocation, job_repair_no: repairNo
         }
         const changes = findChanges(hhpTask, updatePayload)
         await updateRepairTicket(hhpTask?.repairshopr_job_id, problem_type_update);
@@ -211,17 +211,14 @@ const ViewHHPTaskScreen = () => {
         };
 
         setEngineer(selected);
-        console.log("engineer_update", engineer_update)
         const id = hhpTask?.id;
         const updated_at = datetimestamp;
         const updatePayload = {
             // This goes to our in house db
             id, service_order_no: serviceOrder, unit_status, updated_at, engineer: selected, collected, collected_date, stores: issue_type, device_location: deviceLocation, job_repair_no: repairNo
         }
-        console.log("updatePayload", updatePayload)
 
         const changes = findChanges(hhpTask, updatePayload)
-        console.log("changes", changes)
 
         await updateRepairTicket(hhpTask?.repairshopr_job_id, engineer_update);
         if (Object.keys(changes).length > 0) {

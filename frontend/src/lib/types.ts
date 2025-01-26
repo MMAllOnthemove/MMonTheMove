@@ -191,6 +191,7 @@ export type ModifyTaskModalTechnicians = {
     fault: string;
     imei: string;
     serial_number: string;
+    ticket_type_id?: string | null | any;
     unit_status: string;
     ticket_number: string;
     department: string;

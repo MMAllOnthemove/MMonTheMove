@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { datetimestamp } from '@/lib/date_formats';
+import repairshopr_part_statuses from "@/lib/parts_status";
 import repairshopr_statuses from "@/lib/repairshopr_status";
 import { TTaskParts } from '@/lib/types';
 import { XMarkIcon } from '@heroicons/react/24/outline';
@@ -61,8 +62,9 @@ type TPartsHHPUpdate = {
     stored_parts_order_id: string;
     part_status: string;
     setPartStatus: (e: string) => void;
+    in_stock: string | undefined;
 }
-const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, deletePartLoading, parts_order_id, setPartsOrderId, stored_parts_order_id, submitPartOrderIdLoading, submitPartOrderId, parts_issuedProp, part_data, handleDelete, parts_requestedProp, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, model, imei, serial_number, errors, part_status, setPartStatus }: TPartsHHPUpdate) => {
+const Parts = ({ in_stock, partsExtraText, setPartsExtraText, parts_orderedProp, deletePartLoading, parts_order_id, setPartsOrderId, stored_parts_order_id, submitPartOrderIdLoading, submitPartOrderId, parts_issuedProp, part_data, handleDelete, parts_requestedProp, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, model, imei, serial_number, errors, part_status, setPartStatus }: TPartsHHPUpdate) => {
 
 
     const handlePartStatus = (e: React.SyntheticEvent | any) => {
@@ -113,7 +115,9 @@ const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, deletePar
                                 {errors.part_quantity && <p className="text-sm text-red-500 font-medium">{errors.part_quantity}</p>}
 
                             </div>
-                            <div className="flex items-center space-x-2 mb-3">
+                        </div>
+                        <div className="flex items-center justify-between mb-3 w-full">
+                            <div className="flex items-center space-x-2 ">
                                 <Checkbox id="compensation" checked={compensation}
                                     onCheckedChange={handleCompensation} />
                                 <label
@@ -123,9 +127,10 @@ const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, deletePar
                                     Compensation?
                                 </label>
                             </div>
+                            <p className="text-sm text-gray-500">{in_stock}</p>
+
 
                         </div>
-
                         <Button className="w-full mt-2" type="button" onClick={addPart} disabled={addPartLoading}>{addPartLoading ? 'Adding...' : 'Add part'} </Button>
 
                     </AccordionContent>
@@ -173,7 +178,7 @@ const Parts = ({ partsExtraText, setPartsExtraText, parts_orderedProp, deletePar
                                         <option disabled value="">
                                             Choose status
                                         </option>
-                                        {repairshopr_statuses.map((dep) => (
+                                        {repairshopr_part_statuses?.map((dep) => (
                                             <option key={dep.id} value={`${dep._status}`}>
                                                 {dep._status}
                                             </option>
