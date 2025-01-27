@@ -18,6 +18,7 @@ import useAddTaskCommentLocally from '@/hooks/useAddCommentLocally';
 import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
 import useFetchEngineer from '@/hooks/useFetchEngineers';
 import useFetchHHPTaskById from '@/hooks/useFetchHHPtaskById';
+import useGetAttachments from '@/hooks/useGetAttachments';
 import useGetCustomerLocallyByRSId from '@/hooks/useGetCustomerLocallyByRSId';
 import useGetComments from '@/hooks/useGetLocalComments';
 import useUserLoggedIn from '@/hooks/useGetUser';
@@ -61,13 +62,24 @@ const ViewHHPTaskScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { hhpTask, refetch } = useFetchHHPTaskById(id ? decodeURIComponent(Array.isArray(id) ? id[0] : id) : null)
     const { commentsList, commentsListLoading, totalPages, currentPage, fetchComments } = useGetComments(id)
+    const {
+        attachmentsList,
+        attachmentsListLoading,
+        currentAttPage,
+        totalAttPages,
+        fetchAttachments,
+    } = useGetAttachments(id)
     const { updateHHPTaskLoading, updateTask } = useHHPTasksCrud()
     const { addCommentLocally, addCommentLoading } = useAddTaskCommentLocally()
     const { updateRepairTicket } = useRepairshoprTicket()
     const { updateRepairTicketComment } = useRepairshoprComment()
+
     const handlePageChange = (page: number) => {
         fetchComments(page);
     };
+    const handleAttachmentsPageChange = (page: number) => {
+        fetchAttachments(page)
+    }
     const { addRepairTicketFile } = useRepairshoprFile()
     const [hhpFiles, setHHPFiles] = useState([]);
     const [hhpFilesUploading, setHHPFilesUploading] = useState(false);
@@ -597,8 +609,8 @@ const ViewHHPTaskScreen = () => {
                                             {/* hhpTask && hhpTask?.images?.map((x)  */}
 
                                             {
-                                                hhpTask && hhpTask?.images?.map((x) => (
-                                                    <div key={x?.image_id} className='flex items-center gap-4 md:justify-between my-2 border p-2'>
+                                                attachmentsList && attachmentsList?.map((x) => (
+                                                    <div key={x?.id} className='flex items-center gap-4 md:justify-between my-2 border p-2'>
 
                                                         <div className="flex flex-col">
                                                             <div className="flex gap-3 items-center cursor-pointer" onClick={() => openInNewTab(x?.image_url)}>
@@ -620,7 +632,22 @@ const ViewHHPTaskScreen = () => {
                                                 ))
                                             }
 
+                                            {
+                                                attachmentsListLoading ? <p>Loading...</p> :
+                                                    <>
 
+                                                        {[...Array(totalAttPages)]?.map((_, index) => (
+                                                            <Button
+                                                                type="button"
+                                                                key={index}
+                                                                onClick={() => handleAttachmentsPageChange(index + 1)}
+                                                                disabled={currentAttPage === index + 1}
+                                                            >
+                                                                {index + 1}
+                                                            </Button>
+                                                        ))}
+                                                    </>
+                                            }
 
                                         </div>
                                     </div>

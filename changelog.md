@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.16] - 2025-01-26
+
+### Added
+
+-   attachments fetched separately
+
+### Fixed
+
+-   not updating rs from the app
+-   same id in navbar
+-   attatchments pagination
+
 ## [0.1.15] - 2025-01-25
 
 ### Added
