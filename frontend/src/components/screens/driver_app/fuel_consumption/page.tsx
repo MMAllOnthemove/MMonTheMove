@@ -16,17 +16,17 @@ import {
 } from "@tanstack/react-table"
 import dynamic from 'next/dynamic'
 import React, { useState } from 'react'
-const Tablehead = dynamic(() => import('./tablehead'))
-const TableBody = dynamic(() => import('./tablebody'))
-const AddFuelConsumptionModal = dynamic(() => import('./modal'))
-const LoadingScreen = dynamic(() => import('@/components/loading_screen/page'))
-const NotLoggedInScreen = dynamic(() => import('@/components/not_logged_in/page'))
+const Tablehead = dynamic(() => import('./tablehead'), { ssr: false })
+const TableBody = dynamic(() => import('./tablebody'), { ssr: false })
+const AddFuelConsumptionModal = dynamic(() => import('./modal'), { ssr: false })
+const LoadingScreen = dynamic(() => import('@/components/loading_screen/page'), { ssr: false })
+const NotLoggedInScreen = dynamic(() => import('@/components/not_logged_in/page'), { ssr: false })
 const PageTitle = dynamic(() =>
-    import('@/components/PageTitle/page')
+    import('@/components/PageTitle/page'), { ssr: false }
 )
-const ManagementSearchForm = dynamic(() => import('@/components/search_field/page'))
-const Sidebar = dynamic(() => import('@/components/sidebar/page'))
-const Pagination = dynamic(() => import('@/components/table_pagination/page'))
+const ManagementSearchForm = dynamic(() => import('@/components/search_field/page'), { ssr: false })
+const Sidebar = dynamic(() => import('@/components/sidebar/page'), { ssr: false })
+const Pagination = dynamic(() => import('@/components/table_pagination/page'), { ssr: false })
 
 const FuelConsumptionScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()

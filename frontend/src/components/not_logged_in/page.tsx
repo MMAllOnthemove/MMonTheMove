@@ -1,12 +1,12 @@
 "use client"
 import { Button } from "@/components/ui/button";
-import dynamic from 'next/dynamic';
 import { useRouter } from 'nextjs-toploader/app';
 
 
 const NotLoggedInScreen = () => {
     const router = useRouter();
-
+    // Prefetch the auth page ahead of time
+    router.prefetch('/auth');
     const handleLoginClick = () => {
         router.push("/auth");
     };

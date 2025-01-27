@@ -3,40 +3,26 @@ import dynamic from 'next/dynamic'
 
 import { useEffect, useState } from 'react'
 const Sidebar = dynamic(() =>
-    import('@/components/sidebar/page')
+    import('@/components/sidebar/page'), { ssr: false }
 )
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page'),
-    {
-        loading: () => <p>Loading...</p>,
-    }
+    { ssr: false }
 )
 const NotLoggedInScreen = dynamic(() =>
-    import('@/components/not_logged_in/page'),
-    {
-        loading: () => <p>Loading...</p>,
-    }
+    import('@/components/not_logged_in/page'), { ssr: false }
 )
 const PageTitle = dynamic(() =>
-    import('@/components/PageTitle/page')
+    import('@/components/PageTitle/page'), { ssr: false }
 )
 const ProductInfo = dynamic(() =>
-    import('./multistep/product_info'),
-    {
-        loading: () => <p>Loading...</p>,
-    }
+    import('./multistep/product_info'), { ssr: false }
 )
 const ProductInfoTwo = dynamic(() =>
-    import('./multistep/product_info_two'),
-    {
-        loading: () => <p>Loading...</p>,
-    }
+    import('./multistep/product_info_two'), { ssr: false }
 )
 const CustomerInfoScreen = dynamic(() =>
-    import('./multistep/customer_info'),
-    {
-        loading: () => <p>Loading...</p>,
-    }
+    import('./multistep/customer_info'), { ssr: false }
 )
 
 import { Button } from '@/components/ui/button'

@@ -14,6 +14,8 @@ const useLogin = () => {
     const [errors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
 
     const router = useRouter();
+    // Prefetch the / page ahead of time
+    router.prefetch("/");
     const login = async (values: SignupValues) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt

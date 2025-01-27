@@ -1,6 +1,4 @@
 "use client"
-import React, { useState } from 'react'
-import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -8,29 +6,31 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { useRouter } from 'nextjs-toploader/app';
+import moment from "moment"
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import useCheckWarranty from '@/hooks/useCheckDTVHAWarranty';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import dynamic from 'next/dynamic';
+import { useState } from 'react';
 const LoadingScreen = dynamic(() =>
-    import('@/components/loading_screen/page')
+    import('@/components/loading_screen/page'), { ssr: false }
 )
 const NotLoggedInScreen = dynamic(() =>
-    import('@/components/not_logged_in/page')
+    import('@/components/not_logged_in/page'), { ssr: false }
 )
 const PageTitle = dynamic(() =>
-    import('@/components/PageTitle/page')
+    import('@/components/PageTitle/page'), { ssr: false }
 )
 const Sidebar = dynamic(() =>
-    import('@/components/sidebar/page')
+    import('@/components/sidebar/page'), { ssr: false }
 )
 const CheckWarrantyScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const [model, setModel] = useState("")
     const [serialNumber, setSerialNumber] = useState("")
-    const { warranty, warrantyCode, ticketTypeId, localWarranty } = useCheckWarranty(model, serialNumber)
+    const { warranty, warrantyCode, ticketTypeId, localWarranty, LPDate,
+        PartsDate, } = useCheckWarranty(model, serialNumber)
 
     return (
 
@@ -73,6 +73,7 @@ const CheckWarrantyScreen = () => {
                                             />
                                         </div>
                                         <p className="text-center">The unit is <span className="font-semibold text-sky-800">{warranty}</span></p>
+                                        <p className="text-center">(L) {LPDate ? moment(LPDate).format("YYYY-MM-DD") : null} - (P) {PartsDate ? moment(PartsDate).format("YYYY-MM-DD") : null}</p>
                                     </div>
                                 </CardContent>
                             </Card>

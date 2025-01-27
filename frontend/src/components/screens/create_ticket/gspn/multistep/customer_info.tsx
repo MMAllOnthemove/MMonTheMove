@@ -10,9 +10,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import FormWrapper from './wrapper';
 import provinces from '@/lib/provinces';
-
+import dynamic from 'next/dynamic'
+const FormWrapper = dynamic(() =>
+    import('./wrapper')
+)
 
 type TCustomerInfo = {
     firstName: string | undefined;

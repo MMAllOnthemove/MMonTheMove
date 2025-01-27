@@ -1,15 +1,6 @@
 "use client"
 import { Button } from '@/components/ui/button';
 
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
-import useUpdateRepairshoprCustomer from '@/hooks/useUpdateRepairshoprCustomer';
-import { datetimestamp } from '@/lib/date_formats';
-import { Customer } from '@/lib/types';
-import axios from 'axios';
-import { useState } from 'react';
-import { useRouter } from 'nextjs-toploader/app'
 import {
     Card,
     CardContent,
@@ -17,6 +8,15 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
+import useUpdateRepairshoprCustomer from '@/hooks/useUpdateRepairshoprCustomer';
+import { datetimestamp } from '@/lib/date_formats';
+import { Customer } from '@/lib/types';
+import axios from 'axios';
+import { useRouter } from 'nextjs-toploader/app';
+import { useState } from 'react';
 
 import {
     Dialog,
@@ -50,7 +50,7 @@ const SearchCustomerRepairshoprScreen = () => {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter()
 
-
+    router.prefetch("/assembly_terms")
     const checkIfCustomerWasHere = async () => {
         const trimmedSearch = searchCustomer.trim(); // Remove leading and trailing spaces
         if (!trimmedSearch) return; // Do nothing if the input is empty after trimming

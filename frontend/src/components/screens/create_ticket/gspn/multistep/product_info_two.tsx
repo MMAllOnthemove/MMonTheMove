@@ -1,4 +1,5 @@
 "use client"
+import { Input } from "@/components/ui/input";
 import {
     Select,
     SelectContent,
@@ -9,13 +10,16 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import useIpaasSymptomCodes from '@/hooks/useSymptomCodes';
-import { useEffect, useState } from 'react';
-import FormWrapper from './wrapper';
-import service_types from "@/lib/service_types";
-import { Input } from "@/components/ui/input";
-import { MagnifyingGlassIcon, ClockIcon } from "@radix-ui/react-icons";
 import { datetimestamp } from "@/lib/date_formats";
+import service_types from "@/lib/service_types";
+import { ClockIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import moment from "moment";
+import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic'
+const FormWrapper = dynamic(() =>
+    import('./wrapper'), { ssr: false }
+)
+
 type TProductInfo = {
     model: string
     symCode1: string;

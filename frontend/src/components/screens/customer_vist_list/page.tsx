@@ -1,7 +1,9 @@
 "use client"
 import useGetCustomerVisits from '@/hooks/useGetCustomerVisits';
+import useUserLoggedIn from '@/hooks/useGetUser';
 import columns from '@/lib/customer_visit_table';
 import { datetimestamp } from '@/lib/date_formats';
+import { TechniciansTableData } from '@/lib/types';
 import {
     ColumnOrderState,
     getCoreRowModel,
@@ -14,38 +16,46 @@ import {
 } from "@tanstack/react-table";
 import moment from 'moment';
 import dynamic from 'next/dynamic';
-import React, { useMemo, useState } from 'react';
-
-import Modal from '@/components/modal/page';
-import ManagementSearchForm from '@/components/search_field/page';
-import useUserLoggedIn from '@/hooks/useGetUser';
-import { TechniciansTableData } from '@/lib/types';
 import { useRouter } from 'nextjs-toploader/app';
-import TableBody from './tablebody';
-import TableHead from './tablehead';
+import React, { useMemo, useState } from 'react';
+const Modal = dynamic(() =>
+    import('@/components/modal/page'), { ssr: false }
+)
+
+const ManagementSearchForm = dynamic(() =>
+    import('@/components/search_field/page'), { ssr: false }
+)
+const TableBody = dynamic(() =>
+    import('./tablebody'), { ssr: false }
+)
+const TableHead = dynamic(() =>
+    import('./tablehead'), { ssr: false }
+)
 const LoadingScreen = dynamic(() =>
-    import('@/components/loading_screen/page')
+    import('@/components/loading_screen/page'), { ssr: false }
 )
 const NotLoggedInScreen = dynamic(() =>
-    import('@/components/not_logged_in/page')
+    import('@/components/not_logged_in/page'), { ssr: false }
 )
 const PageTitle = dynamic(() =>
-    import('@/components/PageTitle/page')
+    import('@/components/PageTitle/page'), { ssr: false }
 )
 
 const Sidebar = dynamic(() =>
-    import('@/components/sidebar/page')
+    import('@/components/sidebar/page'), { ssr: false }
 )
 const Pagination = dynamic(() =>
-    import('@/components/table_pagination/page')
+    import('@/components/table_pagination/page'), { ssr: false }
 )
 const CustomerVistListScreen = () => {
     const today = moment(datetimestamp).format('YYYY-MM-DD');
-    const { customerVisitList, customerVisitListLoading, refetch } = useGetCustomerVisits(today)
+    const { customerVisitList } = useGetCustomerVisits(today)
 
 
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const router = useRouter()
+    router.prefetch("/repairshopr_asset/")
+    router.prefetch("/create_ticket/gspn/")
     // Table sorting
     const [sorting, setSorting] = useState<SortingState>([]);
 

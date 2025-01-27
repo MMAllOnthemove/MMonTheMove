@@ -1,9 +1,21 @@
 "use client"
-import LoadingScreen from '@/components/loading_screen/page'
-import NotLoggedInScreen from '@/components/not_logged_in/page'
-import PageTitle from '@/components/PageTitle/page'
-import Sidebar from '@/components/sidebar/page'
-import Pagination from '@/components/table_pagination/page'
+import dynamic from 'next/dynamic'
+const LoadingScreen = dynamic(() =>
+    import('@/components/loading_screen/page'), { ssr: false }
+)
+const NotLoggedInScreen = dynamic(() =>
+    import('@/components/not_logged_in/page'), { ssr: false }
+)
+const PageTitle = dynamic(() =>
+    import('@/components/PageTitle/page'), { ssr: false }
+)
+
+const Sidebar = dynamic(() =>
+    import('@/components/sidebar/page'), { ssr: false }
+)
+const Pagination = dynamic(() =>
+    import('@/components/table_pagination/page'), { ssr: false }
+)
 import {
     Card,
     CardContent,
@@ -16,6 +28,13 @@ import {
     ChartTooltip,
     ChartTooltipContent
 } from "@/components/ui/chart"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle
+} from "@/components/ui/dialog"
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import useUserLoggedIn from '@/hooks/useGetUser'
@@ -24,15 +43,6 @@ import { calculateAverageRepairTime, getAveragePartsPendingTime, getCompletionRa
 import { unitsBookedInMonthlyChartConfig, warrantyBreakdownChartConfig } from '@/lib/chart_configs'
 import engineerWorkColumns from '@/lib/engineer_workload_table_columns'
 import columns from '@/lib/frequent_faults__table_columns'
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
 
 import {
     SortingState,
