@@ -50,6 +50,10 @@ import useUpdateAssessmentDate from '@/hooks/useUpdateAssessmentDate'
 import { datetimestamp } from '@/lib/date_formats'
 import findChanges from '@/lib/find_changes'
 
+import Modal from '@/components/modal/page'
+import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud'
+import columns from '@/lib/hhp_technicians_table_columns'
+import { globalFilterFn } from '@/lib/tanstack_global_filter'
 import { ModifyTaskModalTechnicians, RepairshorTicketComment, TechniciansTableData } from '@/lib/types'
 import { CheckedState } from '@radix-ui/react-checkbox'
 import {
@@ -70,44 +74,26 @@ const AddgspnHHPTask = dynamic(() =>
     import('./add/gspn/page')
 )
 const AddRepairshoprHHPTask = dynamic(() =>
-    import('./add/repairshopr/page')
+    import('./add/repairshopr/page'), { ssr: false }
 )
 const Parts = dynamic(() =>
-    import('./parts/page')
+    import('./parts/page'), { ssr: false }
 )
 const QC = dynamic(() =>
-    import('./qc/page')
+    import('./qc/page'), { ssr: false }
 )
 const TableBody = dynamic(() =>
-    import('./tablebody')
+    import('./tablebody'), { ssr: false }
 )
 const TableHead = dynamic(() =>
-    import('./tablehead')
+    import('./tablehead'), { ssr: false }
 )
 const TasksUpdate = dynamic(() =>
-    import('./tasks_update/page')
+    import('./tasks_update/page'), { ssr: false }
 )
 const ManagementSearchForm = dynamic(() =>
-    import('@/components/search_field/page')
+    import('@/components/search_field/page'), { ssr: false }
 )
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuPortal,
-    DropdownMenuSeparator,
-    DropdownMenuShortcut,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import Modal from '@/components/modal/page'
-import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud'
-import columns from '@/lib/hhp_technicians_table_columns'
-import { globalFilterFn } from '@/lib/tanstack_global_filter'
 // import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -119,7 +105,7 @@ import repairshopr_statuses_techs from '@/lib/tech_rs_statuses'
 import { type_21877, type_21878 } from '@/lib/warranty_maps'
 import moment from 'moment'
 const DateCalculationsScreen = dynamic(() =>
-    import('./date_calculations/page')
+    import('./date_calculations/page'), { ssr: false }
 )
 
 
@@ -263,6 +249,7 @@ const TechniciansScreen = () => {
     }, [search_part])
 
     const router = useRouter()
+    router.prefetch(`/departments/hhp/technicians`)
     const handleOpenSinglePage = async (row: TechniciansTableData) => {
         const data = row.original?.id
         router.push(`/departments/hhp/technicians/${encodeURIComponent(data)}`)

@@ -18,7 +18,7 @@ import 'tldraw/tldraw.css';
 import AlertDialogServiceOrder from './alert_dialog';
 
 const DrawScratchesModal = dynamic(() =>
-    import('./draw_scratches_modal')
+    import('./draw_scratches_modal'), { ssr: false }
 )
 
 const HHP = (customerProps: string | string[] | any) => {

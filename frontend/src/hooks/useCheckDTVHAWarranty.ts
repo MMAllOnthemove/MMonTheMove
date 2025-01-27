@@ -8,6 +8,9 @@ const useCheckWarranty = (modelNumber: string, serialNumber: string) => {
     const [warrantyCode, setWarrantyCode] = useState<number | any>();
     const [localWarranty, setLocalWarranty] = useState("");
 
+    const [LPDate, setLPDate] = useState("");
+    const [PartsDate, setPartsDate] = useState("");
+
     useEffect(() => {
         const checkWarranty = async () => {
             if (!modelNumber || !serialNumber) return;
@@ -49,7 +52,8 @@ const useCheckWarranty = (modelNumber: string, serialNumber: string) => {
                 if (data) {
                     const warranty_type = data?.Return?.EvWtyType;
                     setWarranty(warranty_type);
-
+                    setLPDate(data?.Return?.EvNewLaborWtyDate);
+                    setPartsDate(data?.Return?.EvNewPartsWtyDate);
                     if (warranty_type === "LP") {
                         setWarrantyCode("75130");
                         setTicketTypeId("21877");
@@ -69,7 +73,14 @@ const useCheckWarranty = (modelNumber: string, serialNumber: string) => {
         checkWarranty();
     }, [modelNumber, serialNumber]);
 
-    return { warranty, warrantyCode, ticketTypeId, localWarranty };
+    return {
+        warranty,
+        warrantyCode,
+        ticketTypeId,
+        localWarranty,
+        LPDate,
+        PartsDate,
+    };
 };
 
 export default useCheckWarranty;

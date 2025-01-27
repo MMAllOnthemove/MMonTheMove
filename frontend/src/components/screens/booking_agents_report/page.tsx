@@ -13,28 +13,28 @@ import useRepairshoprFetchTicket from '@/hooks/useRepairshoprFetchTicket'
 import dynamic from 'next/dynamic'
 import React, { useEffect, useMemo, useState } from 'react'
 const LoadingScreen = dynamic(() =>
-    import('@/components/loading_screen/page')
+    import('@/components/loading_screen/page'), { ssr: false }
 )
 const NotLoggedInScreen = dynamic(() =>
-    import('@/components/not_logged_in/page')
+    import('@/components/not_logged_in/page'), { ssr: false }
 )
 const PageTitle = dynamic(() =>
-    import('@/components/PageTitle/page')
+    import('@/components/PageTitle/page'), { ssr: false }
 )
 const Sidebar = dynamic(() =>
-    import('@/components/sidebar/page')
+    import('@/components/sidebar/page'), { ssr: false }
 )
 const ReportTableHead = dynamic(() =>
-    import('./report_tablehead')
+    import('./report_tablehead'), { ssr: false }
 )
 const ReportTableBody = dynamic(() =>
-    import('./report_tablebody')
+    import('./report_tablebody'), { ssr: false }
 )
 const TableBody = dynamic(() =>
-    import('./tablebody')
+    import('./tablebody'), { ssr: false }
 )
 const TableHead = dynamic(() =>
-    import('./tablehead')
+    import('./tablehead'), { ssr: false }
 )
 
 

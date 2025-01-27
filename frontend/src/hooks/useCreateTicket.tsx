@@ -31,7 +31,6 @@ type TPayload = {
 
 const useCreateTicket = () => {
     const [createTicketLoading, setLoading] = useState(false); // Loading state
-    const router = useRouter();
     const addTicket = async (values: TPayload) => {
         setLoading(true);
         try {

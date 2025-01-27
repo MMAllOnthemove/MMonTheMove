@@ -1,12 +1,11 @@
 "use client"
-import { useParams } from 'next/navigation';
-import React from 'react'
 import useAssemblyTerms from '@/hooks/useGetAssemblyTerm';
 import { datetimestamp } from '@/lib/date_formats';
 import jsPDF from 'jspdf';
 import moment from 'moment';
+import { useParams } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'nextjs-toploader/app'
 type Rule = {
     id: string;
     unique_id: string;
@@ -22,7 +21,7 @@ const TermsAndConditionsScreen = () => {
     const params = useParams(); // Fetch URL parameters
     const {
         customer_name } = params;
-    const { assemblyTermsList, assemblyTermsListLoading, refetch } = useAssemblyTerms()
+    const { assemblyTermsList } = useAssemblyTerms()
     const router = useRouter()
     const customer = customer_name ? decodeURIComponent(Array.isArray(customer_name) ? customer_name[0] : customer_name) : null
     const [rules, setRules] = useState<Rule[]>([]);

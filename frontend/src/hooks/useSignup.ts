@@ -16,7 +16,8 @@ const useSignup = () => {
     const [loading, setLoading] = useState(false); // Loading state
     const [errors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
     const router = useRouter();
-
+    // Prefetch the / page ahead of time
+    router.prefetch("/");
     const signup = async (values: SignupValues) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt

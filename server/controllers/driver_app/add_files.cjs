@@ -67,11 +67,11 @@ const uploadChecklistFiles = async (req, res) => {
                 const sanitizedFileName = file.originalname
                     .replace(/[^a-zA-Z0-9.-]/g, "_") // Replace special characters with _
                     .toLowerCase();
-                const uniqueFileName = `${ticket_number}-hhp-${
+                const uniqueFileName = `${car}-${date}-${
                     index + 1
                 }-${sanitizedFileName}`;
 
-                const remotePath = `/root/uploads/hhp/${uniqueFileName}`;
+                const remotePath = `/root/uploads/driver_app_checklists/${uniqueFileName}`;
                 try {
                     await sftpClient.put(file.path, remotePath);
 
@@ -86,14 +86,14 @@ const uploadChecklistFiles = async (req, res) => {
                                 );
                     });
                     // the file being added
-                    const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/hhp/${ticket_number}-hhp-${file.originalname}`;
-                    // add the file url of this task into our db
+                    const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/driver_app_checklists/${uniqueFileName}`;
+                    // add the file url of this car into our db
                     await pool.query(
-                        "INSERT INTO technician_tasks_images (task_id, image_url, created_at) values ($1, $2, $3)",
-                        [task_id, fileBeingAdded, created_at]
+                        "INSERT INTO vehicle_checklist_images (vehicle_checklist_id, image_url, created_at) values ($1, $2, $3)",
+                        [vehicle_checklist_id, fileBeingAdded, created_at]
                     );
                     // Construct and return the file URL
-                    return `https://repair.mmallonthemove.co.za/files/hhp/${ticket_number}-hhp-${file.originalname}`;
+                    return `https://repair.mmallonthemove.co.za/files/driver_app_checklists/${uniqueFileName}`;
                 } catch (uploadError) {
                     if (process.env.NODE_ENV !== "production")
                         console.error("Error uploading file:", uploadError);
