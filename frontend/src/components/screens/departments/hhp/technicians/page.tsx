@@ -1,22 +1,4 @@
 "use client"
-import dynamic from 'next/dynamic'
-const LoadingScreen = dynamic(() =>
-    import('@/components/loading_screen/page')
-)
-const NotLoggedInScreen = dynamic(() =>
-    import('@/components/not_logged_in/page')
-)
-const PageTitle = dynamic(() =>
-    import('@/components/PageTitle/page')
-)
-
-const Sidebar = dynamic(() =>
-    import('@/components/sidebar/page')
-)
-const Pagination = dynamic(() =>
-    import('@/components/table_pagination/page')
-)
-import { useRouter } from 'nextjs-toploader/app';
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -35,6 +17,24 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import dynamic from 'next/dynamic'
+import { useRouter } from 'nextjs-toploader/app'
+const LoadingScreen = dynamic(() =>
+    import('@/components/loading_screen/page')
+)
+const NotLoggedInScreen = dynamic(() =>
+    import('@/components/not_logged_in/page')
+)
+const PageTitle = dynamic(() =>
+    import('@/components/PageTitle/page'), { ssr: false }
+)
+
+const Sidebar = dynamic(() =>
+    import('@/components/sidebar/page'), { ssr: false }
+)
+const Pagination = dynamic(() =>
+    import('@/components/table_pagination/page'), { ssr: false }
+)
 
 import useAddTaskCommentLocally from '@/hooks/useAddCommentLocally'
 import useAddPart from '@/hooks/useAddPart'
@@ -48,11 +48,9 @@ import useRepairshoprComment from '@/hooks/useRepairshoprComment'
 import useRepairshoprTicket from '@/hooks/useRepairshoprTicket'
 import useUpdateAssessmentDate from '@/hooks/useUpdateAssessmentDate'
 import { datetimestamp } from '@/lib/date_formats'
-import { fetchRSTicketDataById } from '@/lib/fetch_ticket_by_id'
-import { fieldsToExtract } from '@/lib/fields_to_extract'
 import findChanges from '@/lib/find_changes'
 
-import { ModifyTaskModalTechnicians, PropertiesType, RepairshorTicketComment, TechniciansTableData } from '@/lib/types'
+import { ModifyTaskModalTechnicians, RepairshorTicketComment, TechniciansTableData } from '@/lib/types'
 import { CheckedState } from '@radix-ui/react-checkbox'
 import {
     ColumnFiltersState,
@@ -92,21 +90,34 @@ const TasksUpdate = dynamic(() =>
 const ManagementSearchForm = dynamic(() =>
     import('@/components/search_field/page')
 )
-
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuPortal,
+    DropdownMenuSeparator,
+    DropdownMenuShortcut,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import Modal from '@/components/modal/page'
 import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud'
 import columns from '@/lib/hhp_technicians_table_columns'
 import { globalFilterFn } from '@/lib/tanstack_global_filter'
 // import { useRouter } from 'next/navigation'
-import repairshopr_statuses from '@/lib/repairshopr_status'
-import moment from 'moment'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import useFetchHHPReports from '@/hooks/useFetchHHPReports'
+import useIpaasGetBranchStockOverview from '@/hooks/useGetBranchStockOverview'
+import openFullScreenPopup from '@/lib/openFullScreenPopup'
+import repairshopr_statuses from '@/lib/repairshopr_status'
 import repairshopr_statuses_techs from '@/lib/tech_rs_statuses'
 import { type_21877, type_21878 } from '@/lib/warranty_maps'
-import useFetchHHPReports from '@/hooks/useFetchHHPReports'
-import openFullScreenPopup from '@/lib/openFullScreenPopup'
-import useIpaasGetBranchStockOverview from '@/hooks/useGetBranchStockOverview'
+import moment from 'moment'
 const DateCalculationsScreen = dynamic(() =>
     import('./date_calculations/page')
 )
@@ -426,6 +437,7 @@ const TechniciansScreen = () => {
     useEffect(() => {
         // store values from db but still allow user to update those same fields
         // this helps when comparing
+        // console.log("modifyTaskModal", modifyTaskModal)
         if (modifyTaskModal) {
             setServiceOrder(modifyTaskModal?.service_order_no)
             setCondition(modifyTaskModal?.accessories_and_condition)
@@ -899,7 +911,7 @@ const TechniciansScreen = () => {
                                     </DialogContent>
                                 </Dialog>
                             }
-                            <section className="flex justify-between items-center py-5 gap-2">
+                            <section className="flex justify-between items-center py-5 gap-2 w-full overflow-auto">
                                 <ManagementSearchForm
                                     filtering={filtering}
                                     setFiltering={(e) => setFiltering(e.target.value)}

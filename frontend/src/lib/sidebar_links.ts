@@ -54,26 +54,26 @@ export const menuItems = [
             { id: 11, item: "Add store", pageRoute: "/stores" },
             { id: 12, item: "Add driver", pageRoute: "/drivers" },
             { id: 13, item: "Add car", pageRoute: "/cars" },
-            { id: 13, item: "Add assembly term", pageRoute: "/assembly_terms" },
+            { id: 14, item: "Add assembly term", pageRoute: "/assembly_terms" },
         ],
     },
     {
         label: "Bookings",
         sublinks: [
             // { id: 16, item: "Create customer", pageRoute: "/create_customer" },
-            { id: 14, item: "Create customer", pageRoute: "/welcome" },
+            { id: 15, item: "Create customer", pageRoute: "/welcome" },
             {
-                id: 15,
+                id: 16,
                 item: "Book from SO",
                 pageRoute: "/departments/hhp/book_from_so",
             },
             {
-                id: 16,
+                id: 17,
                 item: "Check warranty",
                 pageRoute: "/check_warranty",
             },
             {
-                id: 17,
+                id: 18,
                 item: "Add files to ticket",
                 pageRoute: "/files_ticket",
             },
@@ -83,11 +83,11 @@ export const menuItems = [
         label: "Customers",
         sublinks: [
             {
-                id: 18,
+                id: 19,
                 item: "Today's customers",
                 pageRoute: "/customers_today",
             },
-            { id: 19, item: "Customers list", pageRoute: "/customers" },
+            { id: 20, item: "Customers list", pageRoute: "/customers" },
         ],
     },
 ];
