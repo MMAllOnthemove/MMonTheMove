@@ -1,5 +1,6 @@
 import { RepairshoprPutTicket } from "@/lib/types";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const useRepairshoprTicket = () => {
     const updateRepairTicket = async (
@@ -19,7 +20,9 @@ const useRepairshoprTicket = () => {
                 }
             );
 
-            return response.data;
+            if (response.data) {
+                return response.data;
+            }
         } catch (error) {
             if (process.env.NODE_ENV !== "production") {
                 console.error(

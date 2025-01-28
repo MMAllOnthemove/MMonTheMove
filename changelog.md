@@ -5,17 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.17] - 2025-01-26
+## [0.1.17] - 2025-01-28
 
 ### Added
 
 -   prefetch
 -   dynamic imports to use ssr:false on some routes
 -   toggle password shown/hide on login
+-   show count next to tech name in engineer bin stats
+-   parts section, add comment (they can use the section already there since parts are attached)
+-   in_progress_date, assigned_date columns
+-   adding part order id changes status to ‘waiting for parts’ with type being ‘parts order’
+-   For Invoicing status
+-   waiting for parts on statuses (engineer bin dashboard)
+-   parts hand out a part, select from list which ones are being handed out (part 1 or 2 handed out (they are sorted accordingly))
 
 ### Fixed
 
 -   checklists add attachments
+-   renamed "/files_ticket" to "/attachments_ticket"
+-   getting part details and part stock details was delaying, used await Promise.all
+-   open popup engineer bin stats in medium size screen
+-   status not updating on rs
+-   modal not overflowing properly
 
 ## [0.1.16] - 2025-01-26
 

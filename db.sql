@@ -101,6 +101,8 @@ create table technician_tasks (
     parts_issued_date text,
     stores text,
     parts_ordered_date text,
+    in_progress_date text,
+    assigned_date text,
     repairshopr_job_id text,
     qc_complete text,
     qc_date text,

@@ -75,7 +75,7 @@ export const menuItems = [
             {
                 id: 18,
                 item: "Add files to ticket",
-                pageRoute: "/files_ticket",
+                pageRoute: "/attachments_ticket",
             },
         ],
     },

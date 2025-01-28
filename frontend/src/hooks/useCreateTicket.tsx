@@ -2,6 +2,7 @@ import axios from "axios";
 import { useRouter } from 'nextjs-toploader/app';
 import { useState } from "react";
 import toast from "react-hot-toast";
+import useGetEngineerBins from "./useGetEngineerBins";
 
 type TPayload = {
     customer_id: string | number;
@@ -31,6 +32,7 @@ type TPayload = {
 
 const useCreateTicket = () => {
     const [createTicketLoading, setLoading] = useState(false); // Loading state
+    const { engineerBinList, engineerBinListLoading, refetch } = useGetEngineerBins();
     const addTicket = async (values: TPayload) => {
         setLoading(true);
         try {
@@ -55,6 +57,7 @@ const useCreateTicket = () => {
                     duration: 86400000, // 24 hours
                 }
             );
+            refetch()
             return data;
         } catch (error: any) {
             toast.error(`${error?.response?.data?.error}`);
