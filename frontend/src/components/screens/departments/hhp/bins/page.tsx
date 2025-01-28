@@ -8,7 +8,7 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
-import React from 'react'
+import React, { useMemo } from 'react'
 import { getEngineerBinsData } from '@/lib/analytics_functions'
 const Sidebar = dynamic(() => import('@/components/sidebar/page'))
 const LoadingScreen = dynamic(() => import('@/components/loading_screen/page'))
@@ -18,6 +18,32 @@ const BinsScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { engineerBinList, engineerBinListLoading, refetch } = useGetEngineerBins();
 
+
+
+
+    const calculateByStatus = useMemo(() => {
+        return (engineer: string | null) => {
+            if (!engineerBinList) return 0;
+
+            // Filter the data for the given engineer
+            const filteredData = engineerBinList.filter((x) => x.engineer === engineer);
+
+            // Sum up the counts for the desired statuses
+            const totalCount = filteredData.reduce((acc, item) => {
+                if (
+                    ['Assigned to Tech', 'New', 'In Progress', 'Parts Request 1st Approval'].includes(item.unit_status)
+                ) {
+                    return acc + Number(item.units_count); // Ensure `units_count` is treated as a number
+                }
+                return acc;
+            }, 0);
+
+            return totalCount;
+        };
+    }, [engineerBinList]);
+
+
+    // const calculatePartsToBeOrdered = [...engineerBinList]?.filter((x) => x?.unit_status === 'Parts to be ordered')
 
     return (
         <>
@@ -29,10 +55,11 @@ const BinsScreen = () => {
                         <Sidebar />
                         <main className='container p-1'>
                             <PageTitle title="bins" hasSpan={true} spanText={"Engineer"} />
+                            <p className="text-sm text-gray-500 text-center font-medium">Based on New, Assigned, In Progress, Parts request tickets</p>
                             <Accordion type="single" collapsible>
                                 {Object.entries(getEngineerBinsData(engineerBinList)).map(([engineer, tasks]) => (
                                     <AccordionItem key={engineer} value={engineer}>
-                                        <AccordionTrigger>{engineer === null || engineer === 'null' ? 'Unassigned' : engineer}</AccordionTrigger>
+                                        <AccordionTrigger>{engineer === null || engineer === 'null' ? 'Unassigned' : engineer}  ({calculateByStatus(engineer)})</AccordionTrigger>
                                         <AccordionContent>
                                             <div className="space-y-4">
                                                 {tasks.map((task, index) => (

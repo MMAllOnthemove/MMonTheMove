@@ -157,8 +157,8 @@ const TechniciansScreen = () => {
     const [submitPartsUpdateLoading, setSubmitPartsUpdateLoading] = useState(false)
     const [addPartOnRepairshoprLoading, setaddPartOnRepairshoprLoading] = useState(false)
     // for purpose of updating
-    const [backup_requires_code, setBackupCode] = useState<string | null>("")
-    const [itemCondition, setCondition] = useState<string | null>("")
+    const [backup_requires_code, setBackupCode] = useState("")
+    const [itemCondition, setCondition] = useState("")
     const [imei, setIMEI] = useState<string | undefined>("")
     const [specialRequirement, setSpecialRequirement] = useState("")
     const [job_repair_no, setJobRepairNo] = useState("")
@@ -170,9 +170,12 @@ const TechniciansScreen = () => {
     const [add_job_repair_no, setAddJobRepairNo] = useState("")
     const [dateFrom, setDateFrom] = useState("")
     const [dateTo, setDateTo] = useState("")
-    const [warranty, setWarranty] = useState<string | null | undefined>("")
+    const [warranty, setWarranty] = useState<string | undefined>("")
     const [ticket_type_id, setTicketTypeId] = useState<string | number | undefined | null | any>("")
-    const [rs_warranty, setRSWarranty] = useState<string | null>("")
+    const [rs_warranty, setRSWarranty] = useState<string | undefined>("")
+    const [assigned_date, setAssignedDate] = useState("")
+    const [in_progress_date, setInProgressDate] = useState("")
+
 
     // engineer filters
     const [engineerFilter, setEngineerFilter] = useState<string>("")
@@ -233,8 +236,10 @@ const TechniciansScreen = () => {
         const handleGetSOPartInfo = async (search_part: string) => {
             if (!search_part) return;
             try {
-                const data = await getSOPartsInfo(search_part);
-                const stock = await getBranchStockOverview(search_part);
+                const [data, stock] = await Promise.all([
+                    getSOPartsInfo(search_part),
+                    getBranchStockOverview(search_part),
+                ]);
                 setPartName(data?.Return?.EsPartsInfo?.PartsNo)
                 setPartDesc(data?.Return?.EsPartsInfo?.PartsDescription)
                 setInStock(stock)
@@ -654,13 +659,31 @@ const TechniciansScreen = () => {
         //     setServiceOrder(service_order_no)
         // }
 
+        if (unit_status === "Parts Request 1st Approval") {
+            setPartsRequested(true);
+            setPartsRequestedDate(datetimestamp)
+        }
         if (unit_status === "Resolved") {
             setCollected(true);
             setCollectedDate(datetimestamp)
         }
+        if (unit_status === "Assigned to Tech") {
+            setAssignedDate(datetimestamp)
+        }
+        if (unit_status === "Parts to be ordered") {
+            setPartsOrdered(true);
+            setPartsOrderedDate(datetimestamp)
+        }
+        if (unit_status === "Parts issued") {
+            setPartsIssued(true);
+            setPartsIssuedDate(datetimestamp)
+        }
+        if (unit_status === "In Progress") {
+            setInProgressDate(datetimestamp)
+        }
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no, unit_status, assessment_date, accessories_and_condition: itemCondition, imei, updated_at, engineer, warranty, rs_warranty, collected, collected_date, compensation, device_location, job_repair_no: add_job_repair_no
+            id, service_order_no, unit_status, parts_requested, parts_requested_date, assigned_date, assessment_date, in_progress_date, accessories_and_condition: itemCondition, imei, updated_at, engineer, warranty, rs_warranty, collected, collected_date, compensation, device_location, job_repair_no: add_job_repair_no
         }
         const changes = findChanges(modifyTaskModal, updatePayload)
         const created_at = datetimestamp;
@@ -806,7 +829,7 @@ const TechniciansScreen = () => {
         }
 
         const commentPayload: RepairshorTicketComment = {
-            "subject": "Update",
+            "subject": "Parts Order",
             "tech": user?.full_name,
             "body": '*Parts ordered:\n' + parts_order_id,
             "hidden": true,

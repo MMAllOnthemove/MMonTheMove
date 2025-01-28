@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import useGetEngineerBins from "./useGetEngineerBins";
 
 type TUpdateValues = {
     id?: string | number;
@@ -22,6 +23,8 @@ type TUpdateValues = {
 
 const useUpdateHHPTask = () => {
     const [updateHHPTaskLoading, setLoading] = useState(false); // Loading state
+    const { engineerBinList, engineerBinListLoading, refetch } =
+        useGetEngineerBins();
     const updateHHPTask = async (
         taskId: string | number | undefined,
         values: TUpdateValues
@@ -37,6 +40,7 @@ const useUpdateHHPTask = () => {
                     withCredentials: true,
                 }
             );
+            refetch();
             return response.data;
         } catch (error: any) {
             if (error) toast.error(error?.response?.data?.error);

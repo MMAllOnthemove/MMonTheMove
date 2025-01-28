@@ -32,7 +32,7 @@ export const UpdateTask = async (req, res) => {
             values: values,
         });
         const fetchResult = await pool.query(returnDataWithNewRow, [
-            result?.rows[0].id,
+            result?.rows[0]?.id,
         ]);
         // Check if the update was successful
         if (result.rowCount === 0) {
