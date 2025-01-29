@@ -99,7 +99,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import useFetchHHPReports from '@/hooks/useFetchHHPReports'
 import useIpaasGetBranchStockOverview from '@/hooks/useGetBranchStockOverview'
-import openFullScreenPopup from '@/lib/openFullScreenPopup'
 import repairshopr_statuses from '@/lib/repairshopr_status'
 import repairshopr_statuses_techs from '@/lib/tech_rs_statuses'
 import { type_21877, type_21878 } from '@/lib/warranty_maps'
@@ -935,7 +934,6 @@ const TechniciansScreen = () => {
                                         user?.user_role === "admin" ?
                                             <>
 
-                                                <Button type="button" onClick={() => openFullScreenPopup('/departments/hhp/bins')}>Bin stats</Button>
                                                 <Button type="button" onClick={downloadReport} disabled={reportsLoading}>{reportsLoading ? 'Downloading...' : 'Get report'}</Button>
                                             </>
                                             : null
