@@ -549,7 +549,8 @@ const ViewHHPTaskScreen = () => {
                                             <h4 className="scroll-m-20 text-lg border-b pb-2 font-semibold tracking-tight">Customer info</h4>
 
                                             {
-                                                singleCustomerByRsIdLoading ? <p className="font-medium text-sm text-gray-600">Loading customer...</p> : <>
+                                                singleCustomerByRsIdLoading ? <p className="font-medium text-sm text-gray-600">Loading customer...</p> : 
+                                                <>
 
                                                     <div className='flex items-center gap-4 md:justify-between my-2'>
                                                         <h5 className="font-medium text-sm  text-gray-500">Customer</h5>

@@ -14,14 +14,14 @@ const GetReport = async (req, res) => {
         const fileName = `report_${Date.now()}.csv`;
         // Base query
         let query = `
-      SELECT * FROM technician_tasks WHERE 1=1
+      SELECT date_booked as Booked date, ticket_number as Ticket, model as Model, warranty as Warranty, engineer as Engineer, fault as Fault, imei as IMEI, serial_number as SN, unit_status as Status, assessment_date as Assessment date, parts_issued_date as Parts issued date, in_progress_date as In progress date, assigned_date as Assigned date, qc_date as QC complete date, completed_date as Completed date, parts_requested_date as Parts requested date, collected_date as Collected date  FROM technician_tasks WHERE 1=1
     `;
 
         // Dynamic filters
         const params = [];
         if (dateFrom && dateTo) {
             params.push(dateFrom, dateTo);
-            query += ` AND created_at BETWEEN $${params.length - 1} AND $${
+            query += ` AND date_booked BETWEEN $${params.length - 1} AND $${
                 params.length
             }`;
         }

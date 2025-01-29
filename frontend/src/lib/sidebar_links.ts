@@ -58,36 +58,48 @@ export const menuItems = [
         ],
     },
     {
-        label: "Bookings",
+        label: "Bookings staff",
         sublinks: [
-            // { id: 16, item: "Create customer", pageRoute: "/create_customer" },
-            { id: 15, item: "Create customer", pageRoute: "/welcome" },
+            {
+                id: 15,
+                item: "Create customer",
+                pageRoute: "/bookings/staff/create_customer",
+            },
             {
                 id: 16,
-                item: "Book from SO",
-                pageRoute: "/departments/hhp/book_from_so",
+                item: "Search customer",
+                pageRoute: "/bookings/staff/search_customer",
             },
             {
                 id: 17,
-                item: "Check warranty",
-                pageRoute: "/check_warranty",
+                item: "Today's customers",
+                pageRoute: "/bookings/staff/customers_today",
             },
             {
                 id: 18,
-                item: "Add files to ticket",
-                pageRoute: "/attachments_ticket",
+                item: "Book from SO",
+                pageRoute: "/bookings/staff/book_from_so",
+            },
+            {
+                id: 19,
+                item: "Warranty check",
+                pageRoute: "/bookings/staff/check_warranty",
+            },
+            {
+                id: 20,
+                item: "View ticket",
+                pageRoute: "/bookings/staff/view_ticket",
             },
         ],
     },
     {
-        label: "Customers",
+        label: "Bookings customers",
         sublinks: [
             {
-                id: 19,
-                item: "Today's customers",
+                id: 22,
+                item: "Begin process",
                 pageRoute: "/customers_today",
             },
-            { id: 20, item: "Customers list", pageRoute: "/customers" },
         ],
     },
 ];

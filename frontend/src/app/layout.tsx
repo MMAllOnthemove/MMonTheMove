@@ -24,7 +24,20 @@ export default function RootLayout({
     <html lang="en" className={inter.className}>
       <body
       >
-        <NextTopLoader />
+        <NextTopLoader
+          color="#075985"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={true}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px #075985,0 0 5px #075985"
+          template='<div class="bar" role="bar"><div class="peg"></div></div> 
+  <div class="spinner" role="spinner"><div class="spinner-icon"></div></div>'
+          zIndex={1600}
+          showAtBottom={false} />
         {children}
         <Toaster />
       </body>

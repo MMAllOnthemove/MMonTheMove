@@ -30,7 +30,9 @@ export const useCreateAssets = () => {
                 // storeCreatedAssetsToLocalStorage(assetId);
                 toast.success(`Assets created, Continue`);
                 router.push(
-                    `/create_ticket/rs/${encodeURIComponent(customerEmail)}`
+                    `/bookings/staff/create_ticket/rs/${encodeURIComponent(
+                        customerEmail
+                    )}`
                 );
                 return assetId;
             }

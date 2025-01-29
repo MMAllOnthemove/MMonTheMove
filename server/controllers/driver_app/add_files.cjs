@@ -71,9 +71,10 @@ const uploadChecklistFiles = async (req, res) => {
                     index + 1
                 }-${sanitizedFileName}`;
 
-                const remotePath = `/root/uploads/driver_app_checklists/${uniqueFileName}`;
+                const remotePath = `/home/mmallonthemove/uploads/driver_app_checklists/${uniqueFileName}`;
                 try {
                     await sftpClient.put(file.path, remotePath);
+                    console.log(file.path, remotePath);
 
                     // Remove temporary file from local storage
                     fs.unlink(file.path, (err) => {
@@ -86,14 +87,16 @@ const uploadChecklistFiles = async (req, res) => {
                                 );
                     });
                     // the file being added
-                    const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/driver_app_checklists/${uniqueFileName}`;
+                    const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/driver_app_checklists/${file.originalname}`;
+                    console.log(`Uploading file to: ${remotePath}`);
+                    console.log(`Serving file from: ${fileBeingAdded}`);
                     // add the file url of this car into our db
                     await pool.query(
                         "INSERT INTO vehicle_checklist_images (vehicle_checklist_id, image_url, created_at) values ($1, $2, $3)",
                         [vehicle_checklist_id, fileBeingAdded, created_at]
                     );
                     // Construct and return the file URL
-                    return `https://repair.mmallonthemove.co.za/files/driver_app_checklists/${uniqueFileName}`;
+                    return `https://repair.mmallonthemove.co.za/files/driver_app_checklists/${file.originalname}`;
                 } catch (uploadError) {
                     if (process.env.NODE_ENV !== "production")
                         console.error("Error uploading file:", uploadError);
