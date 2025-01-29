@@ -1,4 +1,5 @@
-import ReactPDFScreen from '@/components/ui/dev/react_pdf';
+
+import ReactPDFScreen from '@/components/screens/dev/react_pdf';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
