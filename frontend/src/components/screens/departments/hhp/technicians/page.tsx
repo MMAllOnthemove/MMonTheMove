@@ -99,6 +99,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import useFetchHHPReports from '@/hooks/useFetchHHPReports'
 import useIpaasGetBranchStockOverview from '@/hooks/useGetBranchStockOverview'
+import openFullScreenPopup from '@/lib/openFullScreenPopup'
 import repairshopr_statuses from '@/lib/repairshopr_status'
 import repairshopr_statuses_techs from '@/lib/tech_rs_statuses'
 import { type_21877, type_21878 } from '@/lib/warranty_maps'
@@ -253,7 +254,7 @@ const TechniciansScreen = () => {
     }, [search_part])
 
     const router = useRouter()
-    router.prefetch(`/departments/hhp/technicians`)
+
     const handleOpenSinglePage = async (row: TechniciansTableData) => {
         const data = row.original?.id
         router.push(`/departments/hhp/technicians/${encodeURIComponent(data)}`)
@@ -934,45 +935,49 @@ const TechniciansScreen = () => {
                                         user?.user_role === "admin" ?
                                             <>
 
+                                                <Button type="button" onClick={() => openFullScreenPopup('/departments/hhp/bins')}>Bin stats</Button>
                                                 <Button type="button" onClick={downloadReport} disabled={reportsLoading}>{reportsLoading ? 'Downloading...' : 'Get report'}</Button>
                                             </>
                                             : null
                                     }
-                                    <div className="flex gap-3 items-center">
-                                        <span>
-                                            <Label
-                                                htmlFor="dateFrom"
-                                                className="sr-only dark:text-[#eee]"
-                                            >
-                                                Date from
-                                            </Label>
-                                            <Input
-                                                type="date"
-                                                name="dateFrom"
-                                                value={dateFrom}
-                                                onChange={handleDateFromFilter}
-                                                className="cursor-pointer"
-                                                id="dateFrom"
-                                            />
-                                        </span>
-                                        <span>-</span>
-                                        <span>
-                                            <Label
-                                                htmlFor="dateTo"
-                                                className="sr-only dark:text-[#eee]"
-                                            >
-                                                Date to
-                                            </Label>
-                                            <Input
-                                                type="date"
-                                                name="dateTo"
-                                                value={dateTo}
-                                                onChange={handleDateToFilter}
-                                                className="cursor-pointer"
-                                                id="dateTo"
-                                            />
-                                        </span>
-                                    </div>
+                                    {
+                                        user?.user_role === "admin" ?
+                                            <div className="flex gap-3 items-center">
+                                                <span>
+                                                    <Label
+                                                        htmlFor="dateFrom"
+                                                        className="sr-only dark:text-[#eee]"
+                                                    >
+                                                        Date from
+                                                    </Label>
+                                                    <Input
+                                                        type="date"
+                                                        name="dateFrom"
+                                                        value={dateFrom}
+                                                        onChange={handleDateFromFilter}
+                                                        className="cursor-pointer"
+                                                        id="dateFrom"
+                                                    />
+                                                </span>
+                                                <span>-</span>
+                                                <span>
+                                                    <Label
+                                                        htmlFor="dateTo"
+                                                        className="sr-only dark:text-[#eee]"
+                                                    >
+                                                        Date to
+                                                    </Label>
+                                                    <Input
+                                                        type="date"
+                                                        name="dateTo"
+                                                        value={dateTo}
+                                                        onChange={handleDateToFilter}
+                                                        className="cursor-pointer"
+                                                        id="dateTo"
+                                                    />
+                                                </span>
+                                            </div> : null
+                                    }
                                     <Select name="statusFilter" value={statusFilter} onValueChange={handleStatusFilter}>
                                         <SelectTrigger className="w-full hidden md:flex">
                                             <SelectValue placeholder="Status" />

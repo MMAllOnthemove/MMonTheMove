@@ -41,7 +41,7 @@ const GetTaskByTicket = async (req, res) => {
     try {
         const { id } = req.params;
         const { rows } = await pool.query(
-            "SELECT id, ticket_number, repairshopr_job_id FROM technician_tasks AS tt WHERE tt.department LIKE '%HHP%' AND tt.ticket_number = $1",
+            "SELECT tt.*, COALESCE(d.marketing_name, '') AS phone_name FROM technician_tasks tt LEFT JOIN devices d ON LEFT(tt.model, 8) = LEFT(d.device_model, 8) AND d.company = 'Samsung' WHERE tt.department LIKE '%HHP%' AND tt.ticket_number = $1",
             [id]
         );
         return res.status(200).json(rows); // Explicit 200 OK status

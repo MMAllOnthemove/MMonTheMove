@@ -47,7 +47,6 @@ const AgentsScreen = () => {
 
     const [openAddModal, setOpenAddModal] = useState(false)
     const [modifyAgentModal, setModifyAgentModal] = useState<boolean | null | undefined | any>();
-    // const { hhpTask } = useFetchHHPTaskById(modifyTaskModal?.id)
 
     const handleRowClick = (row: TBookingAgentData) => {
         setModifyAgentModal(row?.original);
