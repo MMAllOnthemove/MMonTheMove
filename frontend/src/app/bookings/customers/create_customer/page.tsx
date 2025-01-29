@@ -1,7 +1,7 @@
+import CreateCustomerRepairshoprScreen from '@/components/screens/bookings/customers/create_customer/rs/page';
 import { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 
-const CreateCustomerRepairshoprScreen = dynamic(() => import('@/components/screens/create_customer/rs/page'))
 
 export const metadata: Metadata = {
     title: "Customers | create",

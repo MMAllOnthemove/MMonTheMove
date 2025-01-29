@@ -15,6 +15,7 @@ import React, { useState } from 'react'
 import { Label } from '@/components/ui/label'
 import { capitalizeText } from '@/lib/capitalize'
 import provinces from '@/lib/provinces'
+import AlertDialogPassword from '../../modal/page'
 type PhoneDetail = {
     type: string;
     number: string;
@@ -30,6 +31,7 @@ const CreateCustomerRepairshoprScreen = () => {
     const [address_2, setAddress_2] = useState("")
     const [city, setCity] = useState("")
     const [state, setState] = useState("")
+    const [openDialog, setOpenDialog] = useState(false)
     const [zip, setZip] = useState("")
     const [phoneDetails, setPhoneDetails] = useState([{ type: "mobile", number: "" }]);
 
@@ -87,12 +89,17 @@ const CreateCustomerRepairshoprScreen = () => {
         // send the customer name in the url params
         // this will then be stored in the customer name, in the next screen
         const fullname = `${capitalizeText(firstName)} ${capitalizeText(lastName)}`
-        router.push(`/assembly_terms/${encodeURIComponent(fullname)}`)
+        // router.push(`/assembly_terms/${encodeURIComponent(fullname)}`)
+        setOpenDialog(true)
 
     }
     return (
 
         <div className='container mx-auto p-1'>
+            {
+                openDialog &&
+                <AlertDialogPassword openModal={openDialog} setOpenModal={setOpenDialog} firstName={firstName} lastName={lastName} />
+            }
 
             <PageTitle title="customer" hasSpan={true} spanText={"Create"} />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">

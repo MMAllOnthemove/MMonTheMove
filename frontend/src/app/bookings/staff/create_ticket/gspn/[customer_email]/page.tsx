@@ -1,4 +1,4 @@
-import GSPNScreen from '@/components/screens/create_ticket/gspn/page';
+import GSPNScreen from '@/components/screens/bookings/staff/create_ticket/gspn/page';
 import { Metadata } from 'next';
 
 

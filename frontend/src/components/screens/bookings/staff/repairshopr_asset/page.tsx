@@ -7,7 +7,7 @@ import {
     DialogTitle
 } from "@/components/ui/dialog";
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -44,7 +44,7 @@ const RepairshoprAssetScreen = () => {
 
     const router = useRouter()
     // Hooks
-    const { searchAssets, setSearchAssets, result } = useSearchAssets(id);
+    const { searchAssets, setSearchAssets, result, loadingAssets } = useSearchAssets(id);
     const { storeAvailableAssetsLocalStorage } = useStoreAvailableAssetsLocalStorage()
     const { storeNewAssetsToLocalStorage } = useStoreCreatedAssetsToLocalStorage()
     const { createAssetsOnRepairshopr, createAssetLoading } = useCreateAssets()
@@ -91,6 +91,7 @@ const RepairshoprAssetScreen = () => {
                 <Sidebar />
                 <h4 className="text-3xl font-bold mb-2 text-center dark:text-gray-700">Search asset</h4>
                 <p className='tracking-tighter text-gray-500 md:text-lg dark:text-gray-400'>Serial number</p>
+                <p className='tracking-tighter text-gray-500 text-sm mb-2'>{loadingAssets ? 'Searching...' : null}</p>
                 <div>
                     <Input
                         value={searchAssets}
@@ -104,23 +105,28 @@ const RepairshoprAssetScreen = () => {
                 {
                     result?.length > 0 ? (
                         result.map((x: any) => (
-                            <div className='mb-4 flex flex-col justify-center mx-auto' key={x?.asset_serial}>
-                                <Label htmlFor='selectedAsset' className='sr-only'>Select existing asset</Label>
+
+                            <>
                                 <Select
+                                    key={x?.asset_serial}
                                     value={selectedAsset}
                                     onValueChange={(e) => setSelectedAsset(e)}
                                     name='selectedAsset'
                                 >
-                                    <SelectTrigger className="w-full border ml-0 flex justify-center mx-auto mb-3">
-                                        <SelectValue placeholder="Choose asset" />
+                                    <SelectTrigger className="w-[180px] border ml-0 flex justify-center mx-auto mb-3 text-sm">
+                                        <SelectValue placeholder="Select existing asset" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value={`${x.id}`}>{x?.asset_serial} - {x?.name}</SelectItem>
+                                        <SelectGroup>
+                                            <SelectLabel>Customer assets</SelectLabel>
+                                            <SelectItem value={`${x.id}`}>{x?.asset_serial} - {x?.name}</SelectItem>
+                                        </SelectGroup>
                                     </SelectContent>
                                 </Select>
 
                                 <Button type="button" onClick={storeAssetsLocally}>Add asset to ticket</Button>
-                            </div>
+                            </>
+
 
                         ))
                     ) : null

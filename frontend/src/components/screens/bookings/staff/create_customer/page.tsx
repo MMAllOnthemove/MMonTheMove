@@ -96,7 +96,7 @@ const CreateCustomerStaffScreen = () => {
         // send the customer name in the url params
         // this will then be stored in the customer name, in the next screen
         const fullname = `${capitalizeText(firstName)} ${capitalizeText(lastName)}`
-        router.push(`/customers_today`)
+        router.push(`/bookings/staff/customers_today`)
 
     }
     return (

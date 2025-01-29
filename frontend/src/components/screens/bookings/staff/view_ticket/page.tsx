@@ -62,9 +62,11 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import Modal from '@/components/modal/page'
 import { Textarea } from '@/components/ui/textarea'
+import useSearchStorage from '@/hooks/useSearchStorage'
 const ViewTicketStaffScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
-    const [search, setSearch] = useState("")
+    const [search, setSearch] = useSearchStorage("");
+
     const [id, setRSJobId] = useState<string | undefined>("")
     const getResult = () => {
         if (search?.trim()) {
@@ -75,14 +77,15 @@ const ViewTicketStaffScreen = () => {
 
     const { hhpTask, refetch, hhpTaskLoading } = useFetchHHPTaskByTicket(search)
 
-    const { commentsList, commentsListLoading, totalPages, currentPage, fetchComments } = useGetComments(id)
+    const { commentsList, commentsListLoading, totalPages, currentPage, fetchComments } = useGetComments(hhpTask?.id)
+
     const {
         attachmentsList,
         attachmentsListLoading,
         currentAttPage,
         totalAttPages,
         fetchAttachments,
-    } = useGetAttachments(id)
+    } = useGetAttachments(hhpTask?.id)
     const { updateHHPTaskLoading, updateTask } = useHHPTasksCrud()
     const { addCommentLocally, addCommentLoading } = useAddTaskCommentLocally()
     const { updateRepairTicket } = useRepairshoprTicket()
@@ -419,7 +422,7 @@ const ViewTicketStaffScreen = () => {
                                     <div>
                                         <div>
                                             <Label htmlFor="device_location">Add location</Label>
-                                            <Input type="text" name="device_location" value={additionalInfo || ''} onChange={(e) => setDeviceLocation(e.target.value)} />
+                                            <Input type="text" name="device_location" value={deviceLocation || ''} onChange={(e) => setDeviceLocation(e.target.value)} />
                                         </div>
                                         <div>
                                             <Label htmlFor="add_job_repair_no">Add job repair no</Label>
@@ -754,7 +757,7 @@ const ViewTicketStaffScreen = () => {
                                     <Textarea value={comment} onChange={(e) => setComment(e.target.value)} className='my-2 outline-none focus:outline-none focus:border-none focus-visible:outline-none focus-visible:border-none' name="comment" placeholder="Add comment..." cols={3} />
                                     <Button type="button" disabled={addCommentLoading} onClick={handleComment}>{addCommentLoading ? 'Loading...' : 'Comment'}</Button>
                                     <div>
-                                        <div className='w-full overflow-auto h-[400px] my-2'>
+                                        <div className='w-full my-2'>
                                             <div>
                                                 {commentsList?.map((comment: any) => (
                                                     <div key={comment.id} className="border border-gray-200 rounded p-2 mb-2">

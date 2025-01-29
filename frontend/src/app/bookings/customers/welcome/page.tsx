@@ -1,7 +1,8 @@
 
-import WelcomeScreen from '@/components/screens/welcome_screen/page'
+
 import React from 'react'
 import type { Metadata } from 'next';
+import WelcomeScreen from '@/components/screens/bookings/customers/welcome_screen/page';
 
 export const metadata: Metadata = {
     title: 'Welcome',

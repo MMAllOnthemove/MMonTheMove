@@ -21,12 +21,12 @@ const AlertDialogServiceOrder = ({ openModal, setOpenModal, customerEmail }: TAl
     const router = useRouter()
     const handleCancel = () => {
         if (typeof window !== 'undefined' && window.localStorage) localStorage.clear();
-        router.push("/customers")
+        router.push("/bookings/staff/customers_today")
     }
     const handleContinue = () => {
         // in this instance just redirect to service order page without clearing customer and asset details
         // we will need those for that page
-        router.push(`/create_ticket/gspn/${encodeURIComponent(customerEmail)}`)
+        router.push(`/bookings/staff/create_ticket/gspn/${encodeURIComponent(customerEmail)}`)
     }
     return (
         <AlertDialog open={openModal} onOpenChange={() => setOpenModal(false)} >

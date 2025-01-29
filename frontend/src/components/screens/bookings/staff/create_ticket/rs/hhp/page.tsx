@@ -71,7 +71,7 @@ const HHP = (customerProps: string | string[] | any) => {
         const payload = {
             "customer_id": customerId, // only need this for creating a ticket on rs
             "problem_type": `${issue_type}`, // Will aways be HHP for handheld devices, no need to choose
-            "subject": "*" + fault,
+            "subject": `*${fault}`,
             "status": "New", //  will always be 'New' for a recently created ticket
             "ticket_type_id": `${ticketTypeId}`,
             "user_id": `${user?.repairshopr_id}`,

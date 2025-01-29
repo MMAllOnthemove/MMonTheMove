@@ -133,7 +133,7 @@ const SearchCustomerRepairshoprScreen = () => {
         // this will then be stored in the customer name, in the next screen
         const fullname = `${capitalizeText(firstname)} ${capitalizeText(lastname)}`
         // router.push(`/assembly_terms/${encodeURIComponent(fullname)}`)
-        router.push(`/customers_today`)
+        router.push(`/bookings/staff/customers_today`)
     }
     const updateCustomerDetailsOnRepairshopr = async () => {
         const payload = {
