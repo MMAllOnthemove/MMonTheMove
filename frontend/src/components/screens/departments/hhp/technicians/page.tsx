@@ -921,12 +921,14 @@ const TechniciansScreen = () => {
                                     </DialogContent>
                                 </Dialog>
                             }
-                            <section className="flex justify-between items-center py-5 gap-2 w-full overflow-auto">
-                                <ManagementSearchForm
-                                    filtering={filtering}
-                                    setFiltering={(e) => setFiltering(e.target.value)}
-                                />
-
+                            <section className="flex flex-wrap justify-between items-center py-5 gap-2 w-full overflow-auto">
+                                {/* Search Field - Allow it to grow */}
+                                <div className="flex-grow min-w-[200px]">
+                                    <ManagementSearchForm
+                                        filtering={filtering}
+                                        setFiltering={(e) => setFiltering(e.target.value)}
+                                    />
+                                </div>
                                 <div className="flex justify-between items-center gap-3">
 
                                     {

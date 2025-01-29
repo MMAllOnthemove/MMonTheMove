@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   For Invoicing status
 -   waiting for parts on statuses (engineer bin dashboard)
 -   parts hand out a part, select from list which ones are being handed out (part 1 or 2 handed out (they are sorted accordingly))
+-   window not undefined check
+-   added flex grow to searchbar in table
+-   imports
 
 ### Fixed
 
