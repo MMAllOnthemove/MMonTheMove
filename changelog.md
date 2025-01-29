@@ -7,7 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.18] - 2025-01-29
 
+### Added
 
+-   CREATE INDEX idx_parts_for_tasks_task_row_id ON parts_for_tasks(task_row_id);
+-   CREATE INDEX idx_technician_tasks_unit_status ON technician_tasks(unit_status);
+-   CREATE INDEX idx_technician_tasks_engineer ON technician_tasks(engineer);
+-   CREATE INDEX idx_technician_tasks_images_task_id ON technician_tasks_images(task_id);
+-   CREATE INDEX idx_technician_tasks_images_created_at ON technician_tasks_images(created_at DESC);
+-   CREATE INDEX idx_booking_agents_created_at ON booking_agents(created_at DESC);
+-   CREATE INDEX idx_booking_agents_department ON booking_agents(department);
+-   CREATE INDEX idx_booking_agents_tasks_original_ticket_date
+    ON booking_agents_tasks(original_ticket_date DESC);
+-   CREATE INDEX idx_claims_created_at ON claims(created_at DESC);
+-   useSearchStorage for storing search value
+-   booking screens for customer, and for staff
+-   pattern lock screen
+-   if password, booking agent will type it in while booking
 
 ### Fixed
 
