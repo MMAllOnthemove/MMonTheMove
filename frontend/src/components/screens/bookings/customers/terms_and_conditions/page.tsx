@@ -177,7 +177,7 @@ const TermsAndConditionsScreen = () => {
             doc.text(`Date: ${moment(currentDate).format("YYYY-MM-DD HH:mm:ss")}`, 20, signatureSectionYPosition + 15);
 
             doc.save(`${customer}.pdf`);
-            router.push("/welcome")
+            router.push("/bookings/customers/welcome")
         }
     };
     return (

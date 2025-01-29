@@ -1,6 +1,7 @@
-import AssemblyTermScreen from '@/components/screens/assembly_terms/page'
+
 import React from 'react'
 import type { Metadata } from 'next';
+import AssemblyTermScreen from '@/components/screens/bookings/customers/assembly_terms/page';
 
 export const metadata: Metadata = {
     title: 'Terms and conditions',

@@ -80,6 +80,7 @@ const LoginUser = async (req, res) => {
             token: accessToken,
         });
     } catch (error) {
+        console.log(error)
         // Handle validation or other errors
         if (error.inner) {
             // Yup validation error

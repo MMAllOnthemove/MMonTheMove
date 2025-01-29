@@ -90,6 +90,11 @@ export const menuItems = [
                 item: "View ticket",
                 pageRoute: "/bookings/staff/view_ticket",
             },
+            {
+                id: 21,
+                item: "All customers",
+                pageRoute: "/bookings/staff/customers",
+            },
         ],
     },
     {
@@ -98,7 +103,7 @@ export const menuItems = [
             {
                 id: 22,
                 item: "Begin process",
-                pageRoute: "/customers_today",
+                pageRoute: "/bookings/customers/welcome",
             },
         ],
     },

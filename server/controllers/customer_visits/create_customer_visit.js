@@ -73,8 +73,7 @@ const addCustomer = async (req, res) => {
             [customerId, visit_date]
         );
         return res.status(201).json({
-            message:
-                "Successfully added as visit\nBooking agent will now book you in",
+            message: "Successfully added",
         });
     } catch (error) {
         // Handle validation or other errors

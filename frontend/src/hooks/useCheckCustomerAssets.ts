@@ -4,12 +4,14 @@ import { useState, useEffect } from "react";
 export const useSearchAssets = (customerId: string | number | undefined) => {
     const [searchAssets, setSearchAssets] = useState("");
     const [result, setResult] = useState<any[]>([]);
+    const [loadingAssets, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchAssets = async () => {
             if (!searchAssets || !customerId) return;
 
             try {
+                setLoading(true);
                 const { data } = await axios.get(
                     `${process.env.NEXT_PUBLIC_REPAIRSHOPR_CREATE_ASSETS}?query=${searchAssets}`,
                     {
@@ -26,6 +28,8 @@ export const useSearchAssets = (customerId: string | number | undefined) => {
                 );
             } catch (error) {
                 console.error("Error fetching assets:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -33,5 +37,5 @@ export const useSearchAssets = (customerId: string | number | undefined) => {
         return () => clearTimeout(debounce);
     }, [searchAssets, customerId]);
 
-    return { searchAssets, setSearchAssets, result };
+    return { searchAssets, setSearchAssets, result, loadingAssets };
 };

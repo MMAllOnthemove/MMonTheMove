@@ -1,21 +1,20 @@
+
+import PatternLockScreen from '@/components/screens/bookings/customers/pattern_lock/page'
 import React from 'react'
 import type { Metadata } from 'next';
-import FilesToTicketScreen from '@/components/screens/bookings/staff/ticket_attachments/page';
-
 
 export const metadata: Metadata = {
-    title: 'Attachments',
+    title: 'Pattern lock',
     description: '...',
     robots: {
         index: false,
         follow: false,
     },
 }
-
-const FilesToTicket = () => {
+const PatternLock = () => {
     return (
-        <FilesToTicketScreen />
+        <PatternLockScreen />
     )
 }
 
-export default FilesToTicket
+export default PatternLock
