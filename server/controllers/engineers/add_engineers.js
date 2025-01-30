@@ -78,7 +78,7 @@ const addEngineers = async (req, res) => {
             skipped: names.length - newEngineers.length,
         });
     } catch (error) {
-        res.status(500).json({ error: "Server error" });
+        res.status(500).json({ message: "Try again" });
     }
 };
 

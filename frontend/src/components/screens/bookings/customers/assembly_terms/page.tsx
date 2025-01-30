@@ -1,12 +1,7 @@
 "use client"
-import LoadingScreen from '@/components/loading_screen/page'
-import Modal from '@/components/modal/page'
-import NotLoggedInScreen from '@/components/not_logged_in/page'
-import PageTitle from '@/components/PageTitle/page'
-import ManagementSearchForm from '@/components/search_field/page'
-import Sidebar from '@/components/sidebar/page'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Textarea } from '@/components/ui/textarea'
 import useUpdateAssemblyTerm from '@/hooks/updateAssemblyTerm'
 import useAddAssemblyTerm from '@/hooks/useAddAssemblyTerm'
 import useDeleteAssemblyTerm from '@/hooks/useDeleteAssemblyTerm'
@@ -14,6 +9,7 @@ import useAssemblyTerms from '@/hooks/useGetAssemblyTerm'
 import useUserLoggedIn from '@/hooks/useGetUser'
 import columns from '@/lib/assembly_terms_columns'
 import { datetimestamp } from '@/lib/date_formats'
+import { TAssemblyTermTable } from '@/lib/types'
 import {
     SortingState,
     getCoreRowModel,
@@ -22,13 +18,18 @@ import {
     getSortedRowModel,
     useReactTable
 } from "@tanstack/react-table"
+import dynamic from 'next/dynamic'
 import React, { useEffect, useState } from 'react'
+const LoadingScreen = dynamic(() => import('@/components/loading_screen/page'), { ssr: false })
+const Modal = dynamic(() => import('@/components/modal/page'), { ssr: false })
+const NotLoggedInScreen = dynamic(() => import('@/components/not_logged_in/page'), { ssr: false })
+const PageTitle = dynamic(() => import('@/components/PageTitle/page'), { ssr: false })
+const ManagementSearchForm = dynamic(() => import('@/components/search_field/page'), { ssr: false })
+const Sidebar = dynamic(() => import('@/components/sidebar/page'), { ssr: false })
 
-import Pagination from '@/components/table_pagination/page'
-import { Textarea } from '@/components/ui/textarea'
-import { TAssemblyTermTable } from '@/lib/types'
-import TableBody from './tablebody'
-import TableHead from './tablehead'
+const Pagination = dynamic(() => import('@/components/table_pagination/page'), { ssr: false })
+const TableHead = dynamic(() => import('./tablehead'), { ssr: false })
+const TableBody = dynamic(() => import('./tablebody'), { ssr: false })
 
 function AssemblyTermScreen() {
     const { user, isLoggedIn, loading } = useUserLoggedIn()

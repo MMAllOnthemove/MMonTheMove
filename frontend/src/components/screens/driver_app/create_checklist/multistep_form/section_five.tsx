@@ -1,6 +1,7 @@
 import { Textarea } from '@/components/ui/textarea';
+import dynamic from 'next/dynamic';
 import React from 'react';
-import FormWrapper from './wrapper';
+const FormWrapper = dynamic(() => import('./wrapper'), { ssr: false })
 
 interface ISectionFive {
 

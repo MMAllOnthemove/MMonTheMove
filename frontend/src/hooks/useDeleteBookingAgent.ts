@@ -16,7 +16,7 @@ const useDeleteBookingAgent = () => {
                     withCredentials: true,
                 }
             );
-            if (response.status === 201) {
+            if (response.data) {
                 toast.success(`${response?.data?.message}`);
             }
         } catch (error: any) {

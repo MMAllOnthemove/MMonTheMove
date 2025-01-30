@@ -1,6 +1,6 @@
 "use client"
-import { useEffect, useRef, useState } from "react";
 import { useRouter } from 'nextjs-toploader/app';
+import { useEffect, useRef, useState } from "react";
 interface Point {
     x: number;
     y: number;
@@ -87,10 +87,25 @@ const PatternLockScreen = () => {
         router.push(`/assembly_terms/${encodeURIComponent(customer)}`)
     };
 
+    const clearPattern = () => {
+        const ctx = ctxRef.current;
+        if (!ctx) return;
+
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+        const img = new Image();
+        img.src = imageUrl;
+        img.onload = () => {
+            ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
+        };
+
+        setPoints([]); // Reset drawn points
+    };
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
             <h1 className="text-2xl font-bold mb-4">Draw Your Pattern</h1>
-            <div className=" p-6 rounded-lg shadow-lg">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
                 <canvas
                     ref={canvasRef}
                     width={400}
@@ -100,12 +115,20 @@ const PatternLockScreen = () => {
                     onMouseUp={stopDrawing}
                     className="border border-gray-300 cursor-crosshair"
                 />
-                <button
-                    onClick={savePattern}
-                    className="mt-4 w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-                >
-                    Save Pattern
-                </button>
+                <div className="flex gap-4 mt-4">
+                    <button
+                        onClick={savePattern}
+                        className="flex-1 p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                    >
+                        Save Pattern
+                    </button>
+                    <button
+                        onClick={clearPattern}
+                        className="flex-1 p-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                    >
+                        Clear Pattern
+                    </button>
+                </div>
             </div>
         </div>
     )

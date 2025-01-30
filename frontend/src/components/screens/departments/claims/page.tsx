@@ -35,34 +35,33 @@ const ClaimsScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const [searchServiceOrder, setSearchServiceOrder] = useState("")
     const { addAddClaim, addClaimLoading, errors } = useAddClaims()
-    const { getSOInfoAllTookan } = useIpaasGetSOInfoAll();
+    const { getSOInfoAllTookan, loadingData } = useIpaasGetSOInfoAll();
     const [claim_status, setClaimStatus] = useState("")
     const [ticket_number, setTicketNumber] = useState("")
     const [service_order_no, setServiceOrder] = useState("")
     const [department, setDepartment] = useState("")
 
 
-    useEffect(() => {
-        const handleGetSOInfo = async (serviceOrder: string | number) => {
-            if (!serviceOrder) return
-            try {
-                const data = await getSOInfoAllTookan(serviceOrder);
-                const statusDescs = data?.EtLogInfo?.results?.map((result: getSOInfoAllLogInfoSection) => result?.StatusDesc);
+    const handleGetSOInfo = async (serviceOrder: string | number) => {
+        if (!serviceOrder) return;
+        try {
+            const data = await getSOInfoAllTookan(serviceOrder);
+            const statusDescs = data?.EtLogInfo?.results?.map(
+                (result: getSOInfoAllLogInfoSection) => result?.StatusDesc
+            );
 
-                if (statusDescs && statusDescs.length > 0) {
-                    // Check if statusDescs is defined and not empty
-                    setClaimStatus(statusDescs[statusDescs.length - 1]);
-                }
-                setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
-            } catch (error) {
-                if (process.env.NODE_ENV !== 'production') {
-                    console.error(error)
-                }
+            if (statusDescs && statusDescs.length > 0) {
+                setClaimStatus(statusDescs[statusDescs.length - 1]);
             }
-        };
-        handleGetSOInfo(searchServiceOrder)
-    }, [searchServiceOrder, getSOInfoAllTookan, setClaimStatus])
+            setServiceOrder(data?.Return?.EsHeaderInfo?.SvcOrderNo);
+        } catch (error) {
+            if (process.env.NODE_ENV !== 'production') {
+                console.error(error);
+            }
+        }
+    };
 
+    // handleGetSOInfo(searchServiceOrder);
 
 
 
@@ -89,10 +88,10 @@ const ClaimsScreen = () => {
                         <main className='container p-1'>
                             <PageTitle title="claims" hasSpan={true} spanText={"Add"} />
 
-                            <section className="flex flex-col justify-center gap-3 py-4">
-                                <div className="flex gap-3 items-center justify-between flex-col lg:flex-row">
+                            <section >
+                                <div className="flex gap-3 items-center mb-3">
 
-                                    <span>
+                                    <span className="flex gap-3 items-center justify-between flex-col lg:flex-row">
                                         <Label
                                             htmlFor='searchTicket'
                                             className='sr-only'
@@ -109,6 +108,7 @@ const ClaimsScreen = () => {
                                         />
 
                                     </span>
+                                    <Button type="button" disabled={loadingData} onClick={() => handleGetSOInfo(searchServiceOrder)}>{loadingData ? 'Searching...' : 'Search'}</Button>
                                 </div>
                             </section>
                             <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg mb-4">

@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.19] - 2025-01-30
+
+### Added
+
+-   clear button on pattern lock canvas
+-   booking section for customers and staff
+-   user?.full_name.toLowerCase().includes(row?.original?.engineer.toLowerCase()) to better acc for assessment dates
+-   loading effect on search claims
+-   search button to reduce unncessary requests
+-   clear customer name from local storage on success (customer booking process)
+
+
+### Fixed
+
+-   warranty not voiding on rs (this is a repairshopr problem) (fixed in [0.1.18] - 2025-01-29)
+
 ## [0.1.18] - 2025-01-29
 
 ### Added
@@ -23,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   booking screens for customer, and for staff
 -   pattern lock screen
 -   if password, booking agent will type it in while booking
+-   store search value to local storage and then refresh after update, then use that value as the search (booking from so)
 
 ### Fixed
 

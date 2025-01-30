@@ -1,6 +1,9 @@
 "use client"
+import dynamic from 'next/dynamic'
+
 import LoadingScreen from '@/components/loading_screen/page'
-import NotLoggedInScreen from '@/components/not_logged_in/page'
+const NotLoggedInScreen = dynamic(() => import('@/components/not_logged_in/page'), { ssr: false })
+
 import PageTitle from '@/components/PageTitle/page'
 import Sidebar from '@/components/sidebar/page'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'

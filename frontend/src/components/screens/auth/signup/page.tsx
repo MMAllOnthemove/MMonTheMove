@@ -1,4 +1,5 @@
 "use client"
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -6,13 +7,6 @@ import {
     CardHeader,
     CardTitle
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import useGetUserListRepairshopr from "@/hooks/useGetUsersListRepairshopr";
-import useSignup from "@/hooks/useSignup";
-import { datetimestamp } from "@/lib/date_formats";
-import { useState } from "react";
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import {
     Command,
     CommandEmpty,
@@ -20,13 +14,19 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
+import { Label } from "@/components/ui/label";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
+import useGetUserListRepairshopr from "@/hooks/useGetUsersListRepairshopr";
+import useSignup from "@/hooks/useSignup";
+import { datetimestamp } from "@/lib/date_formats";
+import { cn } from "@/lib/utils";
 import { CheckIcon, ChevronUpDownIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
 const SignupScreen = () => {
     const { rsUsersList } = useGetUserListRepairshopr()
 

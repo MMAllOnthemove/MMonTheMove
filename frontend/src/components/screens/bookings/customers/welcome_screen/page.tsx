@@ -12,10 +12,6 @@ import { useRouter } from 'nextjs-toploader/app';
 
 const WelcomeScreen = () => {
     const router = useRouter();
-
-    // router.prefetch("/create_customer")
-    // router.prefetch("/search_customer")
-
     const goTo = (location: string) => {
         router.push(location)
 

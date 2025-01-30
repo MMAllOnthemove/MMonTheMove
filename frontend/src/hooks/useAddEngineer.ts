@@ -31,9 +31,7 @@ const useAddEngineer = () => {
         } catch (error: any) {
             if (error?.response?.data?.message) {
                 toast.error(`${error?.response?.data?.message}`);
-            } else if (error?.response && error?.response?.data?.errors) {
-                setErrors(error.response.data.errors); // Set validation errors to state
-            }
+            } 
         } finally {
             setLoading(false); // Stop loading
         }

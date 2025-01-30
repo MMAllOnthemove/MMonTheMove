@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
+import toast from "react-hot-toast";
 
 const useCheckWarranty = (modelNumber: string, serialNumber: string) => {
     const [warranty, setWarranty] = useState("");
@@ -63,6 +64,8 @@ const useCheckWarranty = (modelNumber: string, serialNumber: string) => {
                         setTicketTypeId("21878");
                         setLocalWarranty("OOW");
                     }
+                } else {
+                    toast.error(data?.Return?.EvRetMsg);
                 }
             } catch (error) {
                 if (process.env.NODE_ENV !== "production")

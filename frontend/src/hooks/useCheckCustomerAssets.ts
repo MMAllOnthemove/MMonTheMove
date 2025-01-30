@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 export const useSearchAssets = (customerId: string | number | undefined) => {
     const [searchAssets, setSearchAssets] = useState("");
@@ -26,8 +27,8 @@ export const useSearchAssets = (customerId: string | number | undefined) => {
                         (asset: any) => asset.customer_id == customerId
                     ) || []
                 );
-            } catch (error) {
-                console.error("Error fetching assets:", error);
+            } catch (error: any) {
+                toast.error(error?.response?.data?.error);
             } finally {
                 setLoading(false);
             }

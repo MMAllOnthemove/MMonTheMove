@@ -7,7 +7,7 @@ const deleteStore = async (req, res) => {
             "DELETE FROM stores WHERE unique_id = $1",
             [id]
         );
-        return res.status(201).json({ message: "Successfully deleted!" });
+        return res.status(204).json({ message: "Successfully deleted!" });
     } catch (error) {
         return res.status(500).json({ error: error });
     }

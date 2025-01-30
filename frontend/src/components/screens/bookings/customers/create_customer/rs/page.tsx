@@ -1,16 +1,16 @@
 "use client"
-import dynamic from 'next/dynamic'
-const PageTitle = dynamic(() =>
-    import('@/components/PageTitle/page'), { ssr: false }
-)
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import useCreateCustomerOnRepairshopr from '@/hooks/useCreateCustomer'
 import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally'
 import { datetimestamp } from '@/lib/date_formats'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'nextjs-toploader/app'
 import React, { useState } from 'react'
+const PageTitle = dynamic(() =>
+    import('@/components/PageTitle/page'), { ssr: false }
+)
 
 import { Label } from '@/components/ui/label'
 import { capitalizeText } from '@/lib/capitalize'

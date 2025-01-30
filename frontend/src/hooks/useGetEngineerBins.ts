@@ -1,7 +1,6 @@
 "use client";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 
 type TEngineerBins = {
     engineer: string | null;
@@ -28,7 +27,9 @@ const useGetEngineerBins = () => {
             }
             return response?.data;
         } catch (error: any) {
-            if (error) toast.error(error?.response?.data?.error);
+            if (process.env.NODE_ENV !== "production") {
+            }
+            // console.error(error?.response?.data?.error);
         } finally {
             setLoading(false);
         }

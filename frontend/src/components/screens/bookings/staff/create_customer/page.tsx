@@ -1,6 +1,19 @@
 "use client"
 
+import Sidebar from '@/components/sidebar/page'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
+import useCreateCustomerOnRepairshopr from '@/hooks/useCreateCustomer'
+import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally'
+import useUserLoggedIn from '@/hooks/useGetUser'
+import { capitalizeText } from '@/lib/capitalize'
+import { datetimestamp } from '@/lib/date_formats'
+import provinces from '@/lib/provinces'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'nextjs-toploader/app'
+import React, { useState } from 'react'
 const PageTitle = dynamic(() =>
     import('@/components/PageTitle/page'), { ssr: false }
 )
@@ -10,19 +23,6 @@ const LoadingScreen = dynamic(() =>
 const NotLoggedInScreen = dynamic(() =>
     import('@/components/not_logged_in/page'), { ssr: false }
 )
-import useUserLoggedIn from '@/hooks/useGetUser'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
-import useCreateCustomerOnRepairshopr from '@/hooks/useCreateCustomer'
-import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally'
-import { datetimestamp } from '@/lib/date_formats'
-import { useRouter } from 'nextjs-toploader/app'
-import React, { useState } from 'react'
-import Sidebar from '@/components/sidebar/page'
-import { Label } from '@/components/ui/label'
-import { capitalizeText } from '@/lib/capitalize'
-import provinces from '@/lib/provinces'
 type PhoneDetail = {
     type: string;
     number: string;

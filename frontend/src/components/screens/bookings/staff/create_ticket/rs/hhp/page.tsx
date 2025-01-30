@@ -114,7 +114,7 @@ const HHP = (customerProps: string | string[] | any) => {
         const bookingAgentsStatPayload = {
             ticket_number: data?.ticket?.number, created_by: user?.email, booking_agent: user?.full_name, created_at: datetimestamp, original_ticket_date: data?.ticket?.created_at, problemType: data?.ticket?.problem_type
         }
-        const created_at = datetimestamp
+
         await addAgentTask(bookingAgentsStatPayload); // adds it to the booking agent table, for reporting
         setOpenDialog(true)
     }

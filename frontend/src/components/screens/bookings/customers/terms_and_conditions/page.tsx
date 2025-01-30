@@ -177,6 +177,9 @@ const TermsAndConditionsScreen = () => {
             doc.text(`Date: ${moment(currentDate).format("YYYY-MM-DD HH:mm:ss")}`, 20, signatureSectionYPosition + 15);
 
             doc.save(`${customer}.pdf`);
+            // clear customer details from local storage
+            // if (typeof window !== 'undefined' && window.localStorage) localStorage.clear();
+            if (typeof window !== 'undefined' && window.localStorage) localStorage.removeItem("customer");;
             router.push("/bookings/customers/welcome")
         }
     };
