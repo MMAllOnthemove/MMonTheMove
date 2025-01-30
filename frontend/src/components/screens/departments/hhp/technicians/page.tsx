@@ -264,7 +264,7 @@ const TechniciansScreen = () => {
         setModifyTaskModalOpen(true);
         // by opening the modal, that will be the assessment_date and assessed_true
         // check if logged in user matches the engineer name, so only engineer can set auto assess
-        if (row?.original?.engineer === user?.full_name) {
+        if (user?.full_name.toLowerCase().includes(row?.original?.engineer.toLowerCase())) {
             const id = row?.original?.id;
             const payload = { assessment_date: datetimestamp, units_assessed: true }
             await updateAssessmentDate(id, payload)

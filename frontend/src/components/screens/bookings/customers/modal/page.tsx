@@ -8,7 +8,7 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 import { capitalizeText } from "@/lib/capitalize";
 import { useRouter } from 'nextjs-toploader/app';
 
@@ -46,12 +46,12 @@ const AlertDialogPassword = ({ openModal, setOpenModal, firstName, lastName }: T
                 <AlertDialogHeader>
                     <AlertDialogTitle>Which one of these does your device use?</AlertDialogTitle>
                     <AlertDialogDescription>
-                        {/*  */}
+                        If it uses password, booking agent will fill it in
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel onClick={handleContinue}>None</AlertDialogCancel>
-                    <AlertDialogAction onClick={handlePattern}>Pattern</AlertDialogAction>
+                    <AlertDialogCancel onClick={handleContinue}>No pattern</AlertDialogCancel>
+                    <AlertDialogAction onClick={handlePattern}>Pattern lock</AlertDialogAction>
                     {/* <AlertDialogAction onClick={handleContinue}>Password</AlertDialogAction> */}
                 </AlertDialogFooter>
             </AlertDialogContent>

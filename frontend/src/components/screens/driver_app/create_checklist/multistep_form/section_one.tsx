@@ -1,26 +1,5 @@
 "use client"
-import { Button } from "@/components/ui/button";
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import useFetchDrivers from '@/hooks/useFetchDrivers';
-import cars from '@/lib/cars';
-import vehicle_use_reasons from '@/lib/reasons_for_vehicle_use';
-import { cn } from "@/lib/utils";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
-import React, { useState } from 'react';
-import FormWrapper from './wrapper';
 import {
     Select,
     SelectContent,
@@ -30,6 +9,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import useFetchDrivers from '@/hooks/useFetchDrivers';
+import cars from '@/lib/cars';
+import vehicle_use_reasons from '@/lib/reasons_for_vehicle_use';
+import dynamic from 'next/dynamic';
+import React, { useState } from 'react';
+const FormWrapper = dynamic(() => import('./wrapper'), { ssr: false })
 
 interface ISectionOne {
     car: string;

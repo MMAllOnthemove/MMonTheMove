@@ -1,30 +1,28 @@
 "use client"
+import PageTitle from '@/components/PageTitle/page';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import useIpaasGetSOInfoAll from '@/hooks/useIpaasGetSoInfoAll';
-import useTookanAssignTeam from '@/hooks/useTookanAssignTeam';
-import useTookanApi from '@/hooks/useTookanTask';
-import React, { useEffect, useState } from 'react'
-import dynamic from 'next/dynamic'
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import PageTitle from '@/components/PageTitle/page';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import dynamic from 'next/dynamic';
+import React, { useState } from 'react';
 
+import Modal from '@/components/modal/page';
 import { Button } from '@/components/ui/button';
-import { assetTypes } from '@/lib/asset_types';
-import { capitalizeText } from '@/lib/capitalize';
 import { Textarea } from '@/components/ui/textarea';
-import useCreateTicket from '@/hooks/useCreateTicket';
-import useAddHHPTask from '@/hooks/useAddHHPTask';
 import useAddAgentTask from '@/hooks/useAddBookingAgentTask';
-import { datetimestamp } from '@/lib/date_formats';
+import useAddTaskCommentLocally from '@/hooks/useAddCommentLocally';
+import useAddHHPTask from '@/hooks/useAddHHPTask';
+import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
 import useCreateCustomerOnRepairshopr from '@/hooks/useCreateCustomer';
 import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
+import useCreateTicket from '@/hooks/useCreateTicket';
+import { assetTypes } from '@/lib/asset_types';
+import { capitalizeText } from '@/lib/capitalize';
+import { datetimestamp } from '@/lib/date_formats';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
-import Modal from '@/components/modal/page';
-import useAddTaskCommentLocally from '@/hooks/useAddCommentLocally';
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page')
 )
@@ -439,7 +437,6 @@ const BookFromSOScreen = () => {
                 ) : isLoggedIn ? (
                     <>
                         <Sidebar />
-
 
                         <main className="container mx-auto p-1">
                             <PageTitle title="ticket" hasSpan={true} spanText={"Create"} />

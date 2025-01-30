@@ -22,13 +22,11 @@ const TableBody = dynamic(() => import('./tablebody'), { ssr: false })
 const AgentsModal = dynamic(() => import('./modal'), { ssr: false })
 const LoadingScreen = dynamic(() => import('@/components/loading_screen/page'), { ssr: false })
 const NotLoggedInScreen = dynamic(() => import('@/components/not_logged_in/page'), { ssr: false })
-// const PageTitle = dynamic(() => import('@/components/PageTitle/page'))
 import PageTitle from '@/components/PageTitle/page'
 const ModifyAgentsModal = dynamic(() => import('./modify_agents_modal'), { ssr: false })
 
 const ManagementSearchForm = dynamic(() => import('@/components/search_field/page'), { ssr: false })
 const Sidebar = dynamic(() => import('@/components/sidebar/page'), { ssr: false })
-
 const Pagination = dynamic(() => import('@/components/table_pagination/page'), { ssr: false })
 
 const AgentsScreen = () => {

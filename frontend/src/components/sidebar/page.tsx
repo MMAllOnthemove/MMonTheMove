@@ -13,11 +13,12 @@ import useUserLoggedIn from "@/hooks/useGetUser";
 import useLogoutUser from "@/hooks/useLogout";
 import { menuItems } from "@/lib/sidebar_links";
 import { Bars4Icon } from "@heroicons/react/24/outline";
+import dynamic from 'next/dynamic';
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import logo from "../../assets/mmlogo.png";
-import Navbar from "../navbar/page";
+const Navbar = dynamic(() => import('../navbar/page'), { ssr: false })
 
 
 const Sidebar = () => {

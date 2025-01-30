@@ -1,5 +1,5 @@
-import React from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import React from "react";
 export interface IPopupModal {
     isVisible?: true | false;
     title: string | number | null | undefined;

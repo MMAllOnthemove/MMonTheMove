@@ -8,19 +8,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
-import useUpdateRepairshoprCustomer from '@/hooks/useUpdateRepairshoprCustomer';
-import { datetimestamp } from '@/lib/date_formats';
-import { Customer } from '@/lib/types';
-import axios from 'axios';
-import { useRouter } from 'nextjs-toploader/app';
-import { useState } from 'react';
-import dynamic from 'next/dynamic';
-const Sidebar = dynamic(() =>
-    import('@/components/sidebar/page'), { ssr: false }
-)
 import {
     Dialog,
     DialogContent,
@@ -28,9 +15,23 @@ import {
     DialogHeader,
     DialogTitle
 } from "@/components/ui/dialog";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
+import useUpdateRepairshoprCustomer from '@/hooks/useUpdateRepairshoprCustomer';
 import { capitalizeText } from '@/lib/capitalize';
+import { datetimestamp } from '@/lib/date_formats';
+import { Customer } from '@/lib/types';
+import axios from 'axios';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'nextjs-toploader/app';
+import { useState } from 'react';
+import AlertDialogPassword from '../modal/page';
+const Sidebar = dynamic(() =>
+    import('@/components/sidebar/page'), { ssr: false }
+)
 
-const SearchCustomerRepairshoprScreen = () => {
+const SearchCustomerRepairshoprCustomerScreen = () => {
     const [searchCustomer, setSearchCustomer] = useState("");
     const [result, setResult] = useState<Customer[] | any>([]);
     const [customerId, setCustomerId] = useState("")
@@ -45,6 +46,7 @@ const SearchCustomerRepairshoprScreen = () => {
     const [city, setCity] = useState("");
     const [state, setState] = useState("");
     const [zip, setZip] = useState("")
+    const [openDialog, setOpenDialog] = useState(false)
     const { addCustomerLocally, createCustomerLocallyLoading } = useCreateCustomerLocally()
     const { updateCustomer, updateCustomerRepairshoprLoading } = useUpdateRepairshoprCustomer()
     // this is the modal for editing customer details
@@ -133,7 +135,7 @@ const SearchCustomerRepairshoprScreen = () => {
         // this will then be stored in the customer name, in the next screen
         const fullname = `${capitalizeText(firstname)} ${capitalizeText(lastname)}`
         // router.push(`/assembly_terms/${encodeURIComponent(fullname)}`)
-        router.push(`/bookings/staff/customers_today`)
+        setOpenDialog(true)
     }
     const updateCustomerDetailsOnRepairshopr = async () => {
         const payload = {
@@ -173,7 +175,6 @@ const SearchCustomerRepairshoprScreen = () => {
 
     return (
         <main className="flex justify-center items-center h-screen bg-orange-100">
-            <Sidebar />
             {
                 editModalOpen &&
                 <Dialog open={editModalOpen} onOpenChange={closeModal} >
@@ -261,10 +262,14 @@ const SearchCustomerRepairshoprScreen = () => {
                     </DialogContent>
                 </Dialog>
             }
+            {
+                openDialog &&
+                <AlertDialogPassword openModal={openDialog} setOpenModal={setOpenDialog} firstName={firstname} lastName={lastname} />
+            }
             <Card className="max-w-md mx-auto p-1">
                 <CardHeader>
                     <CardTitle className="text-center text-xl font-bold">
-                        Search customer
+                        Welcome back
                     </CardTitle>
                     <CardDescription className='text-center'>
                         Search using firstname, lastname, fullname, or email
@@ -275,7 +280,7 @@ const SearchCustomerRepairshoprScreen = () => {
                     <div className="space-y-2">
                         <Input
                             type="text"
-                            placeholder="Enter name or phone number"
+                            placeholder="Enter your name or phone number"
                             value={searchCustomer}
                             onChange={(e) => setSearchCustomer(e.target.value)}
                             className="w-full"
@@ -349,4 +354,4 @@ const SearchCustomerRepairshoprScreen = () => {
     )
 }
 
-export default SearchCustomerRepairshoprScreen
+export default SearchCustomerRepairshoprCustomerScreen
