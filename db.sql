@@ -404,8 +404,11 @@ create table parts_for_tasks (
     created_by text,
     updated_at text,
     compensation boolean,
+    part_unused boolean,
     FOREIGN KEY (task_row_id) REFERENCES technician_tasks(id) ON DELETE CASCADE
 );
+
+
 
 CREATE TABLE devices (
     id BIGSERIAL PRIMARY KEY UNIQUE,
@@ -482,4 +485,13 @@ create table reports_download (
     unique_id uuid DEFAULT gen_random_uuid(),
     downloaded_by text,
     downloaded_at text
+);
+
+create table logs (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    operation text,
+    changed_by text,
+    created_at text,
+    changes jsonb 
 )

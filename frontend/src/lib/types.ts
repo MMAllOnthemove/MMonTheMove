@@ -480,6 +480,7 @@ export type AgentsAdd = {
     agent_firstname: string;
     agent_lastname: string;
     department: string;
+    created_by: string;
 };
 export type AgentsTask = {
     ticket_number: number;
