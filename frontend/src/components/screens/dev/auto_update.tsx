@@ -151,11 +151,11 @@ const TicketUpdaterScreen: React.FC = () => {
                 { withCredentials: true }
             );
 
-            // const filtered = tickets?.filter((x) => x.repairshopr_customer_id === null || x.repairshopr_customer_id === '')
+            const filtered = tickets?.filter((x) => x.rs_warranty === null)
             // const filtered = tickets?.filter((x: any) => x.stores === 'HHP (Robtronics)' && x.unit_status !== 'Resolved')
             // const filtered = tickets?.filter((x) => x.id === '1397')
 
-            for (const ticket of tickets) {
+            for (const ticket of filtered) {
                 if (processedTickets.has(ticket.ticket_number)) {
                     setLogs((prevLogs) => [
                         ...prevLogs,
@@ -203,7 +203,7 @@ const TicketUpdaterScreen: React.FC = () => {
             const job_repair_no = secondSystemTicket.properties["Job Repair No.:"]?.trim();
             const accessories_and_condition = secondSystemTicket.properties["Item Condition "]?.trim();
             const requires_backup = secondSystemTicket.properties["Backup Requires"]?.trim();
-            const rs_warranty = secondSystemTicket.properties["Warranty "]?.trim();
+            const rs_warranty = secondSystemTicket.properties["Warranty"]?.trim();
 
             // Extract comments from the second system
             const newComments = secondSystemTicket.comments

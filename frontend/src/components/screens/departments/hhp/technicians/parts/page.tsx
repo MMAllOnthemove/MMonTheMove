@@ -16,7 +16,7 @@ import repairshopr_statuses from "@/lib/repairshopr_status";
 import { TTaskParts } from '@/lib/types';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { CheckedState } from '@radix-ui/react-checkbox';
-import React from 'react';
+import React, { useState } from 'react';
 type TPartsHHPUpdate = {
     parts_orderedProp: CheckedState | undefined
     parts_issuedProp: CheckedState | undefined
@@ -63,9 +63,35 @@ type TPartsHHPUpdate = {
     part_status: string;
     setPartStatus: (e: string) => void;
     in_stock: string | undefined;
-}
-const Parts = ({ in_stock, partsExtraText, setPartsExtraText, parts_orderedProp, deletePartLoading, parts_order_id, setPartsOrderId, stored_parts_order_id, submitPartOrderIdLoading, submitPartOrderId, parts_issuedProp, part_data, handleDelete, parts_requestedProp, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, model, imei, serial_number, errors, part_status, setPartStatus }: TPartsHHPUpdate) => {
+    // for unuused parts section
+    selectedDispatchedParts: { id: string; part_name: string }[]
+    setSelectedDispatchedParts: (e: { id: string; part_name: string }) => void;
 
+}
+const Parts = ({ setSelectedDispatchedParts, in_stock, partsExtraText, setPartsExtraText, deletePartLoading, parts_order_id, setPartsOrderId, stored_parts_order_id, submitPartOrderIdLoading, submitPartOrderId, part_data, handleDelete, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, model, imei, serial_number, errors, part_status, setPartStatus }: TPartsHHPUpdate) => {
+    const [selectedParts, setSelectedParts] = React.useState<{ id: string; part_name: string }[]>([]);
+    const [selectAll, setSelectAll] = React.useState(false);
+
+    const handleSelectPart = (part: { id: string; part_name: string }) => {
+        if (selectedParts.includes(part)) {
+            setSelectedParts(selectedParts.filter((p) => p.id !== part.id));
+        } else {
+            setSelectedParts([...selectedParts, part]);
+        }
+    };
+
+    const handleSelectAll = () => {
+        setSelectAll(!selectAll);
+        if (selectAll) {
+            setSelectedParts([]);
+        } else {
+            setSelectedParts(part_data);
+        }
+    };
+
+    const handleSubmit = () => {
+        setSelectedDispatchedParts(selectedParts);
+    };
 
     const handlePartStatus = (e: React.SyntheticEvent | any) => {
         setPartStatus(e.target.value)
@@ -87,9 +113,7 @@ const Parts = ({ in_stock, partsExtraText, setPartsExtraText, parts_orderedProp,
             setCompensation(e);
         }
     }
-    const partsStatuses = repairshopr_statuses.filter(status =>
-        status._status.toLowerCase().includes("parts")
-    );
+
     return (
         <div>
             <Accordion type="single" collapsible>
@@ -218,7 +242,38 @@ const Parts = ({ in_stock, partsExtraText, setPartsExtraText, parts_orderedProp,
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-4">
-                    <AccordionTrigger>More info</AccordionTrigger>
+                    <AccordionTrigger>Dispatched parts</AccordionTrigger>
+                    <AccordionContent>
+                        <div>
+                            <div>
+                                {part_data.map((part) => (
+                                    <div key={part.id} className="mb-2 flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedDispatchedParts?.includes(part) || selectAll}
+                                            onChange={() => handleSelectPart(part)}
+                                            className="mr-2"
+                                        />
+                                        <label>{part.part_name}</label>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="mb-2">
+                                <input
+                                    type="checkbox"
+                                    checked={selectAll}
+                                    onChange={handleSelectAll}
+                                    className="mr-2"
+                                />
+                                <label>Select All</label>
+                            </div>
+
+                            <button onClick={handleSubmit}>Submit</button>
+                        </div>
+                    </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-5">
+                    <AccordionTrigger>Device info</AccordionTrigger>
                     <AccordionContent>
                         <div>
                             <ul className="list-decimal list-inside">

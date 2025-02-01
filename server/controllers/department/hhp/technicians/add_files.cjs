@@ -67,9 +67,11 @@ const uploadTechnicianFiles = async (req, res) => {
                 const sanitizedFileName = file.originalname
                     .replace(/[^a-zA-Z0-9.-]/g, "_") // Replace special characters with _
                     .toLowerCase();
-                    const uniqueFileName = `${ticket_number}-hhp-${index + 1}-${sanitizedFileName}`;
+                const uniqueFileName = `${ticket_number}-hhp-${
+                    index + 1
+                }-${sanitizedFileName}`;
 
-                    const remotePath = `/root/uploads/hhp/${uniqueFileName}`;
+                const remotePath = `/home/mmallonthemove/uploads/hhp/${uniqueFileName}`;
                 // const remotePath = `/root/uploads/hhp/${ticket_number}-hhp-${file.originalname}`;
 
                 try {
@@ -88,6 +90,7 @@ const uploadTechnicianFiles = async (req, res) => {
                     });
                     // the file being added
                     const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/hhp/${ticket_number}-hhp-${file.originalname}`;
+                    console.log("file", fileBeingAdded);
                     // add the file url of this task into our db
                     await pool.query(
                         "INSERT INTO technician_tasks_images (task_id, image_url, created_at) values ($1, $2, $3)",

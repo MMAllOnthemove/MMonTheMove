@@ -6,6 +6,7 @@ import {
     generateRefreshToken,
 } from "../../utils/token_generate.js";
 import * as Yup from "yup";
+import appLogs from "../logs/logs.js";
 
 // Define Yup schema for request body validation
 const signupSchema = Yup.object().shape({
@@ -79,6 +80,8 @@ const SignupUser = async (req, res) => {
         // Generate tokens (without the password)
         const accessToken = generateAccessToken(userForToken);
         const refreshToken = generateRefreshToken(userForToken);
+
+        await appLogs("INSERT", capitalizedEmail, user);
 
         // Set refresh token in the cookie (secure for production)
         res.cookie("refreshToken", refreshToken, {

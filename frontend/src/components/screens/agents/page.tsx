@@ -73,7 +73,8 @@ const AgentsScreen = () => {
     const addBookingAg = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const created_at = datetimestamp;
-        const payload = { agent_firstname, agent_lastname, department, created_at };
+        const created_by = user?.email;
+        const payload = { agent_firstname, agent_lastname, department, created_at, created_by };
         await addAgent(payload);
         setAgentFirstname('')
         setAgentLastname('')

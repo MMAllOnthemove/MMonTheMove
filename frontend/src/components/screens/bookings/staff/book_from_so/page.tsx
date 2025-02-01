@@ -467,7 +467,7 @@ const BookFromSOScreen = () => {
                                 </div>
                                 <div>
                                     <Label htmlFor="phone" className="text-gray-500">Phone</Label>
-                                    <Input type="email" name="phone" value={phone || ""} onChange={(e) => setPhone(e.target.value)} />
+                                    <Input type="text" name="phone" value={phone || ""} onChange={(e) => setPhone(e.target.value)} />
                                 </div>
                                 <div>
                                     <Label htmlFor="phone_2" className="text-gray-500">Alternative Phone</Label>
