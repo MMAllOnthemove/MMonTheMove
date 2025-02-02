@@ -456,7 +456,7 @@ interface IEngineerBinsData {
     engineer: string | null;
     unit_status: string;
     units_count: number;
-    ticket_numbers: string[];
+    tickets: [{ ticket_number: string; repairshopr_job_id: string }];
 }
 
 export const getEngineerBinsData = (data: any[]) => {

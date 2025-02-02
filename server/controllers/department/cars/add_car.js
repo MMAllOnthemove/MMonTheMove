@@ -1,5 +1,6 @@
 import { pool } from "../../../db.js";
 import * as Yup from "yup";
+import appLogs from "../../logs/logs.js";
 
 const carSchema = Yup.object().shape({
     plate_number: Yup.string().required(),
@@ -8,7 +9,7 @@ const carSchema = Yup.object().shape({
 });
 
 const addCar = async (req, res) => {
-    const { plate_number, car_model, created_at } = req.body;
+    const { plate_number, car_model, created_at, created_by } = req.body;
 
     try {
         await carSchema.validate(req.body, { abortEarly: false });
@@ -23,6 +24,7 @@ const addCar = async (req, res) => {
                 "INSERT INTO cars (plate_number, car_model, created_at) values ($1, $2, $3) returning *",
                 [plate_number, car_model, created_at]
             );
+            await appLogs("INSERT", created_by, req.body);
             return res.status(201).json({
                 message: "Successfully created",
             });

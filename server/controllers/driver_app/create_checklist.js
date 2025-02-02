@@ -1,5 +1,6 @@
 import { pool } from "../../db.js";
 import * as Yup from "yup";
+import appLogs from "../logs/logs.js";
 
 const reasonForUseEnum = [
     "Fuel",
@@ -293,6 +294,7 @@ const createChecklist = async (req, res) => {
             license_disc_expiry,
         ];
         const { rows } = await pool.query(insertVehicleChecklistQuery, values);
+        await appLogs("INSERT", created_by, req.body);
         return res.status(201).json({
             message: "Successfully created",
             rows: rows,

@@ -10,5 +10,6 @@ const repairshopr_statuses_techs = [
     { id: 15, _status: "For Invoicing" },
     { id: 17, _status: "QC Failed" },
     { id: 22, _status: "Parts to be ordered" },
+    { id: 23, _status: "Complete/RNR" },
 ];
 export default repairshopr_statuses_techs;

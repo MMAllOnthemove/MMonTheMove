@@ -1,5 +1,6 @@
 import { pool } from "../../db.js";
 import * as Yup from "yup";
+import appLogs from "../logs/logs.js";
 
 const addCommentSchema = Yup.object({
     task_id: Yup.string(),
@@ -26,6 +27,7 @@ const addComment = async (req, res) => {
                 "INSERT INTO technician_tasks_comments (task_id, comment, created_at, created_by) VALUES ($1, $2, $3, $4)",
                 [task_id, comment, created_at, created_by]
             );
+            await appLogs("INSERT", created_by, req.body);
             return res.status(201).json({
                 message: "Successfully created",
             });

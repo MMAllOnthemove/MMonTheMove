@@ -1,4 +1,5 @@
 import { pool } from "../../../../db.js";
+import appLogs from "../../../logs/logs.js";
 
 export const UpdateTask = async (req, res) => {
     const { id } = req.params; // Assuming the ID is passed in the URL
@@ -40,6 +41,7 @@ export const UpdateTask = async (req, res) => {
                 .status(404)
                 .json({ error: "Task not found or no changes made" });
         }
+        await appLogs("UPDATE", changes?.updated_by, req.body);
         return res.status(201).json({
             message: "HHP task updated",
             task: fetchResult.rows[0],

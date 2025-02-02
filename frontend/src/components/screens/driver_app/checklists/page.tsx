@@ -68,7 +68,7 @@ const CreateChecklistScreen = dynamic(() =>
 )
 
 const ChecklistsScreen = () => {
-    const { isLoggedIn, loading } = useUserLoggedIn()
+    const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { checklistList } = useFetchChecklists()
     const [openAddModal, setOpenAddModal] = useState(false)
     const [mileage_after, setMileageAfter] = useState<string>('')
@@ -119,7 +119,8 @@ const ChecklistsScreen = () => {
     // update the mileage after return
     const updateVehicleChecklist = async () => {
         const rowId = openClickedRow?.id
-        const payload = { rowId, mileage_after, next_service_date }
+        const created_by = user?.email
+        const payload = { rowId, mileage_after, next_service_date, created_by }
         await updateChecklist(rowId, payload)
     }
 
