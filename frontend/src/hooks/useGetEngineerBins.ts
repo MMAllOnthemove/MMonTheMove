@@ -6,8 +6,9 @@ type TEngineerBins = {
     engineer: string | null;
     unit_status: string;
     units_count: string;
-    ticket_numbers: [];
+    tickets: [];
 };
+
 
 const useGetEngineerBins = () => {
     const [engineerBinList, setData] = useState<TEngineerBins[]>([]);

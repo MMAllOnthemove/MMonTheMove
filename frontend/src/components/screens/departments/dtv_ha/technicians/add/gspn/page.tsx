@@ -200,7 +200,6 @@ const AddgspnDTVHATask = ({ onChange }: { onChange: (value: boolean) => void }) 
                                     <CommandGroup>
                                         {statusListFomatted?.map((framework) => (
                                             <CommandItem
-
                                                 key={framework.value}
                                                 value={framework.value}
                                                 onSelect={(currentValue) => {

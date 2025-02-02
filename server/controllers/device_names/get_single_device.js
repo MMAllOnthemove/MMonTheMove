@@ -2,7 +2,7 @@ import { pool } from "../../db.js";
 
 const getDeviceName = async (req, res) => {
     try {
-        const { rows } = await pool.query("SELECT * from devices where ");
+        const { rows } = await pool.query("SELECT * from devices");
 
         return res.status(200).json(rows);
     } catch (error) {

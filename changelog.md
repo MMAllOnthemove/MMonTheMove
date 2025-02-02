@@ -11,8 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   a table - logs
 -   part_unused boolean column in parts for tasks
+-   add status ‘Complete/RNR’
+-   log who updated what, when
+-   column fault_category
+-   credit_req_number column in parts table
+-   book rework
+-   part issued section, with seal numbers, can select all parts and also comment
+-   predefined faults to make the app structured
 
+### Fixed
 
+-   not pulling phone names
 
 ## [0.1.19] - 2025-01-30
 
@@ -24,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   loading effect on search claims
 -   search button to reduce unncessary requests
 -   clear customer name from local storage on success (customer booking process)
-
+-   engineer bin, clicking on ticket opens repairshopr (cannot be done as rs just send you to ticket table)
 
 ### Fixed
 

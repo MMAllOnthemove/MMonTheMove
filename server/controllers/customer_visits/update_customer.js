@@ -1,4 +1,5 @@
 import { pool } from "../../db.js";
+import appLogs from "../logs/logs.js";
 
 export const UpdateCustomer = async (req, res) => {
     const { id } = req.params; // Assuming the ID is passed in the URL
@@ -30,6 +31,7 @@ export const UpdateCustomer = async (req, res) => {
             text: query,
             values: values,
         });
+        await appLogs("UPDATE", "", changes);
         // Check if the update was successful
         if (result.rowCount === 0) {
             return res

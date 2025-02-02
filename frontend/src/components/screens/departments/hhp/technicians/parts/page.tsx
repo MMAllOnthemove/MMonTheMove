@@ -12,11 +12,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { datetimestamp } from '@/lib/date_formats';
 import repairshopr_part_statuses from "@/lib/parts_status";
-import repairshopr_statuses from "@/lib/repairshopr_status";
 import { TTaskParts } from '@/lib/types';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { CheckedState } from '@radix-ui/react-checkbox';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 type TPartsHHPUpdate = {
     parts_orderedProp: CheckedState | undefined
     parts_issuedProp: CheckedState | undefined
@@ -28,6 +27,8 @@ type TPartsHHPUpdate = {
     setSearchPart: (data: string) => void;
     partsExtraText: string;
     setPartsExtraText: (data: string) => void;
+    partsIssuedText: string;
+    setIssuedExtraText: (data: string) => void;
     part_desc: string;
     setPartDesc: (data: string) => void;
     part_quantity: number | undefined;
@@ -52,6 +53,7 @@ type TPartsHHPUpdate = {
     imei: string;
     part_data: TTaskParts[];
     deletePartLoading: boolean;
+    issuedPartsLoading: boolean;
     // 3 arguments so we know which part was deleted
     handleDelete: (data: string, part_name: string, part_desc: string) => void;
     errors: {
@@ -63,35 +65,49 @@ type TPartsHHPUpdate = {
     part_status: string;
     setPartStatus: (e: string) => void;
     in_stock: string | undefined;
-    // for unuused parts section
-    selectedDispatchedParts: { id: string; part_name: string }[]
-    setSelectedDispatchedParts: (e: { id: string; part_name: string }) => void;
-
+    onSelectionChange: (selectedParts: string[]) => void;
+    submitPartsIssued: (data: any) => void;
 }
-const Parts = ({ setSelectedDispatchedParts, in_stock, partsExtraText, setPartsExtraText, deletePartLoading, parts_order_id, setPartsOrderId, stored_parts_order_id, submitPartOrderIdLoading, submitPartOrderId, part_data, handleDelete, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, model, imei, serial_number, errors, part_status, setPartStatus }: TPartsHHPUpdate) => {
-    const [selectedParts, setSelectedParts] = React.useState<{ id: string; part_name: string }[]>([]);
-    const [selectAll, setSelectAll] = React.useState(false);
+const Parts = ({  partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedPartsLoading, onSelectionChange, in_stock, partsExtraText, setPartsExtraText, deletePartLoading, parts_order_id, setPartsOrderId, stored_parts_order_id, submitPartOrderIdLoading, submitPartOrderId, part_data, handleDelete, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, model, imei, serial_number, errors, part_status, setPartStatus }: TPartsHHPUpdate) => {
+    const [selectedParts, setSelectedParts] = useState<any[]>([]);
+    const [selectAll, setSelectAll] = useState(false);
 
-    const handleSelectPart = (part: { id: string; part_name: string }) => {
-        if (selectedParts.includes(part)) {
-            setSelectedParts(selectedParts.filter((p) => p.id !== part.id));
-        } else {
-            setSelectedParts([...selectedParts, part]);
-        }
+
+    useEffect(() => {
+        onSelectionChange(selectedParts); // Notify parent of changes
+    }, [selectedParts, onSelectionChange]);
+
+    // Toggle single part selection
+    // Toggle part selection
+    const handlePartChange = (partId: string, partName: string) => {
+        setSelectedParts((prevSelectedParts) =>
+            prevSelectedParts.some((p) => p.id === partId)
+                ? prevSelectedParts.filter((p) => p.id !== partId)
+                : [...prevSelectedParts, { id: partId, part_name: partName, seal_number: "", part_issued: true }]
+        );
     };
 
+    // Handle Select All
     const handleSelectAll = () => {
-        setSelectAll(!selectAll);
         if (selectAll) {
-            setSelectedParts([]);
+            setSelectedParts([]); // Deselect all
         } else {
-            setSelectedParts(part_data);
+            setSelectedParts(part_data?.map((part) => ({ id: part.id, part_name: part.part_name, seal_number: "", part_issued: true }))); // Select all
         }
+        setSelectAll(!selectAll);
     };
 
-    const handleSubmit = () => {
-        setSelectedDispatchedParts(selectedParts);
+    // Update seal number
+    const handleSealNumberChange = (partId: string, seal_number: string) => {
+        setSelectedParts((prevSelectedParts) =>
+            prevSelectedParts.map((p) =>
+                p.id === partId ? { ...p, seal_number } : p
+            )
+        );
     };
+
+
+
 
     const handlePartStatus = (e: React.SyntheticEvent | any) => {
         setPartStatus(e.target.value)
@@ -176,7 +192,7 @@ const Parts = ({ setSelectedDispatchedParts, in_stock, partsExtraText, setPartsE
                             )}
                         </div>
                         <div>
-                            {part_data?.length > 0 ? part_data?.map((item) => (
+                            {part_data?.length > 0 ? part_data?.map((item: any) => (
                                 <div key={item.id}>
                                     <p className="flex items-center justify-between border-b border-grey-50 text-xs leading-3" >
                                         ({item.part_name}) / <span className="text-ellipsis overflow-hidden whitespace-nowrap">{item?.part_desc} /</span>({item?.part_quantity}) <button type="button" disabled={deletePartLoading} onClick={() => handleDelete(item.id, item?.part_name, item?.part_desc)}>{deletePartLoading ? '...' : <XMarkIcon className="h-4 w-4" />}</button>
@@ -242,34 +258,67 @@ const Parts = ({ setSelectedDispatchedParts, in_stock, partsExtraText, setPartsE
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-4">
-                    <AccordionTrigger>Dispatched parts</AccordionTrigger>
+                    <AccordionTrigger>Parts issued</AccordionTrigger>
                     <AccordionContent>
-                        <div>
-                            <div>
-                                {part_data.map((part) => (
-                                    <div key={part.id} className="mb-2 flex items-center">
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedDispatchedParts?.includes(part) || selectAll}
-                                            onChange={() => handleSelectPart(part)}
-                                            className="mr-2"
-                                        />
-                                        <label>{part.part_name}</label>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="mb-2">
-                                <input
-                                    type="checkbox"
-                                    checked={selectAll}
-                                    onChange={handleSelectAll}
-                                    className="mr-2"
-                                />
-                                <label>Select All</label>
-                            </div>
-
-                            <button onClick={handleSubmit}>Submit</button>
+                        <div className="my-3">
+                            <Label htmlFor="partsIssuedText">Add comment to go with these parts</Label>
+                            <Textarea
+                                placeholder="Parts issued to: "
+                                name="partsIssuedText"
+                                value={partsIssuedText}
+                                onChange={(e) => setIssuedExtraText(e.target.value)}
+                            />
                         </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" checked={selectAll} onChange={handleSelectAll} />
+                                Select All
+                            </label>
+                            <ul>
+                                {part_data.map((part: any) => {
+                                    const isSelected = selectedParts.some((p) => p.id === part.id);
+                                    const sealNumber = selectedParts.find((p) => p.id === part.id)?.seal_number || "";
+
+                                    return (
+                                        <li key={part.id} className="flex gap-2 items-center">
+                                            <label>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={isSelected}
+                                                    onChange={() => handlePartChange(part.id, part.part_name)}
+                                                />
+                                                {part.part_name}
+                                            </label>
+                                            <>
+                                                {isSelected && (
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Seal Number (Optional)"
+                                                        value={sealNumber ?? part?.seal_number ?? ""}
+                                                        onChange={(e) => handleSealNumberChange(part.id, e.target.value)}
+                                                        className="border p-1 rounded"
+                                                    />
+
+                                                )}
+                                                {part?.seal_number ? (
+                                                    <span className="ml-2 text-sm text-gray-500">
+                                                        (Seal: {part?.seal_number})
+                                                    </span>
+                                                ) : null}
+                                                {part?.part_issued ? (
+                                                    <span className="ml-2 text-sm text-green-700">
+                                                        Issued
+                                                    </span>
+                                                ) : null}
+                                            </>
+
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                        <Button className="w-full mt-2" type="button" onClick={submitPartsIssued} disabled={issuedPartsLoading}>{issuedPartsLoading ? 'Adding...' : 'Send parts issued to ticket'} </Button>
+
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-5">

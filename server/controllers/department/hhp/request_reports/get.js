@@ -1,5 +1,6 @@
 import { pool } from "../../../../db.js";
 import { Parser } from "@json2csv/plainjs";
+import appLogs from "../../../logs/logs.js";
 
 const GetReport = async (req, res) => {
     try {
@@ -47,6 +48,7 @@ const GetReport = async (req, res) => {
       INSERT INTO reports_download (downloaded_by, downloaded_at,filename) VALUES ($1, $2, $3)`,
             [downloaded_by, downloaded_at, fileName]
         );
+        await appLogs("INSERT", downloaded_by, req.query);
 
         res.header("Content-Type", "text/csv");
         res.attachment(fileName);

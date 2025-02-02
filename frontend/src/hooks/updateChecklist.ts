@@ -6,6 +6,7 @@ type TUpdateValues = {
     rowId: string | number | undefined | any;
     mileage_after: string;
     next_service_date: string;
+    created_by: string | undefined;
 };
 
 const useUpdateChecklist = () => {

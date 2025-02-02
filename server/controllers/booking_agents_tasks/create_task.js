@@ -1,5 +1,6 @@
 import { pool } from "../../db.js";
 import * as Yup from "yup";
+import appLogs from "../logs/logs.js";
 
 const addAgentsSchema = Yup.object({
     ticket_number: Yup.string().required("Ticket number is required!"),
@@ -44,7 +45,7 @@ const addBookingAgentTask = async (req, res) => {
                     original_ticket_date,
                 ]
             );
-
+            await appLogs("INSERT", created_by, req.body);
             return res.status(201).json({
                 message: "Successfully created",
             });

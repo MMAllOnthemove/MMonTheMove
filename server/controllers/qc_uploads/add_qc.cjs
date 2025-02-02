@@ -73,7 +73,7 @@ const uploadQCFile = async (req, res) => {
                     index + 1
                 }-${sanitizedFileName}`;
 
-                const remotePath = `/home/mmallonthemove/uploads/hhp/${ticket_number}-qc-${file.originalname}`;
+                const remotePath = `/home/mmallonthemove/uploads/hhp/${uniqueFileName}`;
                 try {
                     await sftpClient.put(file.path, remotePath);
                     // Remove temporary file from local storage
@@ -87,14 +87,14 @@ const uploadQCFile = async (req, res) => {
                                 );
                     });
                     // the file being added
-                    const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/hhp/${ticket_number}-qc-${file.originalname}`;
+                    const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/hhp/${uniqueFileName}`;
                     // add the file url of this task into our db
                     await pool.query(
                         "INSERT INTO technician_tasks_images (task_id, image_url, created_at) values ($1, $2, $3)",
                         [task_id, fileBeingAdded, created_at]
                     );
                     // Construct URL for uploaded file
-                    return `https://repair.mmallonthemove.co.za/files/hhp/${ticket_number}-qc-${file.originalname}`;
+                    return `https://repair.mmallonthemove.co.za/files/hhp/${uniqueFileName}`;
                 } catch (error) {
                     if (process.env.NODE_ENV !== "production")
                         console.error("Error uploading file:", error);

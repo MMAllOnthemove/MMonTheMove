@@ -4,17 +4,7 @@ import { pool } from "../../../../db.js";
 const GetAllTasks = async (req, res) => {
     try {
         const { rows } = await pool.query(
-            `SELECT tt.*, 
-                COALESCE(d.marketing_name, '') AS phone_name 
-            FROM technician_tasks tt
-            LEFT JOIN LATERAL (
-                SELECT d.marketing_name 
-                FROM devices d
-                WHERE d.company = 'Samsung' AND d.device_model LIKE tt.model || '%'
-                LIMIT 1
-            ) d ON true
-            WHERE tt.department ILIKE 'HHP%'
-            ORDER BY tt.date_booked DESC`
+            `SELECT tt.*, COALESCE(d.marketing_name, '') AS phone_name FROM technician_tasks tt LEFT JOIN devices d ON LEFT(tt.model, 8) = LEFT(d.device_model, 8) AND d.company = 'Samsung' WHERE tt.department LIKE '%HHP%' GROUP BY tt.id, d.marketing_name ORDER BY tt.date_booked DESC`
         );
         return res.status(200).json(rows);
     } catch (err) {
@@ -31,17 +21,7 @@ const GetTaskById = async (req, res) => {
     try {
         const { id } = req.params;
         const { rows } = await pool.query(
-            `SELECT tt.*, 
-                COALESCE(d.marketing_name, '') AS phone_name 
-            FROM technician_tasks tt
-            LEFT JOIN LATERAL (
-                SELECT d.marketing_name 
-                FROM devices d
-                WHERE d.company = 'Samsung' AND d.device_model LIKE tt.model || '%'
-                LIMIT 1
-            ) d ON true
-            WHERE tt.department ILIKE 'HHP%' AND tt.id = $1
-            ORDER BY tt.date_booked DESC`,
+            `SELECT tt.*, COALESCE(d.marketing_name, '') AS phone_name FROM technician_tasks tt LEFT JOIN technician_tasks_comments ttc ON tt.id = ttc.task_id LEFT JOIN devices d ON LEFT(tt.model, 8) = LEFT(d.device_model, 8) AND d.company = 'Samsung' LEFT JOIN parts_for_tasks p ON tt.id = p.task_row_id LEFT JOIN technician_tasks_images tti ON tt.id = tti.task_id WHERE tt.department LIKE '%HHP%' AND tt.id = $1 GROUP BY tt.id, d.marketing_name ORDER BY tt.date_booked DESC`,
             [id]
         );
         return res.status(200).json(rows);
@@ -59,16 +39,7 @@ const GetTaskByTicket = async (req, res) => {
     try {
         const { id } = req.params;
         const { rows } = await pool.query(
-            `SELECT tt.*, 
-                COALESCE(d.marketing_name, '') AS phone_name 
-            FROM technician_tasks tt
-            LEFT JOIN LATERAL (
-                SELECT d.marketing_name 
-                FROM devices d
-                WHERE d.company = 'Samsung' AND d.device_model LIKE tt.model || '%'
-                LIMIT 1
-            ) d ON true
-            WHERE tt.department ILIKE 'HHP%' AND tt.ticket_number = $1`,
+            `SELECT tt.*, COALESCE(d.marketing_name, '') AS phone_name FROM technician_tasks tt LEFT JOIN technician_tasks_comments ttc ON tt.id = ttc.task_id LEFT JOIN devices d ON LEFT(tt.model, 8) = LEFT(d.device_model, 8) AND d.company = 'Samsung' LEFT JOIN parts_for_tasks p ON tt.id = p.task_row_id LEFT JOIN technician_tasks_images tti ON tt.id = tti.task_id WHERE tt.department LIKE '%HHP%' AND tt.ticket_number = $1 GROUP BY tt.id, d.marketing_name ORDER BY tt.date_booked DESC`,
             [id]
         );
         return res.status(200).json(rows);

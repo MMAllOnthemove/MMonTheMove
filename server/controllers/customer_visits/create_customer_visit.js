@@ -1,5 +1,6 @@
 import { pool } from "../../db.js";
 import * as Yup from "yup";
+import appLogs from "../logs/logs.js";
 
 const addCustomerSchema = Yup.object({
     firstname: Yup.string().required("Firstname is required!"),
@@ -67,11 +68,14 @@ const addCustomer = async (req, res) => {
             );
             customerId = rows[0].id;
         }
+
         // Insert visit
         await pool.query(
             "INSERT INTO customer_visits (customer_id, visit_date) VALUES ($1, $2)",
             [customerId, visit_date]
         );
+        // add log
+        await appLogs("INSERT", lowercaseEmail, req.body);
         return res.status(201).json({
             message: "Successfully added",
         });
