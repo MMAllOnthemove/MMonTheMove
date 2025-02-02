@@ -1,7 +1,5 @@
 "use client"
 import dynamic from 'next/dynamic'
-
-
 import { Button } from '@/components/ui/button'
 import useAddChecklist from '@/hooks/useAddChecklist'
 import useUserLoggedIn from '@/hooks/useGetUser'
@@ -45,6 +43,8 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Input } from "@/components/ui/input"
+
+
 const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
     const { user } = useUserLoggedIn()
     const { addChecklist, addChecklistLoading } = useAddChecklist()

@@ -1,19 +1,14 @@
 "use client"
-import LoadingScreen from '@/components/loading_screen/page';
-import NotLoggedInScreen from '@/components/not_logged_in/page';
-import PageTitle from '@/components/PageTitle/page';
-import ManagementSearchForm from '@/components/search_field/page';
-import Sidebar from '@/components/sidebar/page';
-import Pagination from '@/components/table_pagination/page';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
 import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command";
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle
+} from "@/components/ui/dialog"
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
     Select,
     SelectContent,
@@ -23,33 +18,16 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle
-} from "@/components/ui/dialog";
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import useAddEngineer from '@/hooks/useAddEngineer';
-import useDeleteEngineer from '@/hooks/useDeleteEngineer';
-import useFetchEngineer from '@/hooks/useFetchEngineers';
-import useUserLoggedIn from '@/hooks/useGetUser';
-import useIpaasGetEngineerList from '@/hooks/useGSPNEngineerList';
-import useUpdateEngineer from '@/hooks/useUpdateEngineer';
-import { datetimestamp } from '@/lib/date_formats';
-import departments from '@/lib/departments';
-import columns from '@/lib/engineers_columns';
-import findChanges from '@/lib/find_changes';
-import { TEngineersList, TEngineersListTable } from '@/lib/types';
-import { cn } from "@/lib/utils";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
+import useAddEngineer from '@/hooks/useAddEngineer'
+import useDeleteEngineer from '@/hooks/useDeleteEngineer'
+import useFetchEngineer from '@/hooks/useFetchEngineers'
+import useUserLoggedIn from '@/hooks/useGetUser'
+import useIpaasGetEngineerList from '@/hooks/useGSPNEngineerList'
+import useUpdateEngineer from '@/hooks/useUpdateEngineer'
+import departments from '@/lib/departments'
+import columns from '@/lib/engineers_columns'
+import findChanges from '@/lib/find_changes'
+import { TEngineersList, TEngineersListTable } from '@/lib/types'
 import {
     SortingState,
     flexRender,
@@ -58,8 +36,28 @@ import {
     getPaginationRowModel,
     getSortedRowModel,
     useReactTable,
-} from "@tanstack/react-table";
-import React, { useEffect, useState } from 'react';
+} from "@tanstack/react-table"
+import dynamic from 'next/dynamic'
+import React, { useEffect, useState } from 'react'
+const ManagementSearchForm = dynamic(() =>
+    import('@/components/search_field/page'), { ssr: false }
+)
+const LoadingScreen = dynamic(() =>
+    import('@/components/loading_screen/page')
+)
+const NotLoggedInScreen = dynamic(() =>
+    import('@/components/not_logged_in/page')
+)
+const PageTitle = dynamic(() =>
+    import('@/components/PageTitle/page'), { ssr: false }
+)
+
+const Sidebar = dynamic(() =>
+    import('@/components/sidebar/page'), { ssr: false }
+)
+const Pagination = dynamic(() =>
+    import('@/components/table_pagination/page'), { ssr: false }
+)
 
 
 const EngineersScreen = () => {

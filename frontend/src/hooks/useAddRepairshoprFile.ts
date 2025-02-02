@@ -25,7 +25,7 @@ const useRepairshoprFile = () => {
                     },
                 }
             );
-
+            if (response?.data) toast.success(response?.data?.message);
             return response.data;
         } catch (error: any) {
             if (error?.response?.data?.error)

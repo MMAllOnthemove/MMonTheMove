@@ -1,5 +1,5 @@
-import React from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import React from "react";
 export interface IPopupModal {
     isVisible?: true | false;
     title: string | number | null | undefined;
@@ -37,7 +37,7 @@ function Modal({
         // onClick={onClose}
         >
             <div
-                className="w-full max-w-lg sm:rounded-lg p-6 bg-white relative my-0 mx-[20px] text-left flex flex-col overflow-hidden popup-modal-dialog"
+                className="w-full max-w-lg sm:rounded-lg p-6 bg-white relative my-0 mx-[20px] text-left flex flex-col overflow-y-auto max-h-[540px] popup-modal-dialog"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex items-center justify-between mb-2 pb-2">

@@ -101,6 +101,8 @@ create table technician_tasks (
     parts_issued_date text,
     stores text,
     parts_ordered_date text,
+    in_progress_date text,
+    assigned_date text,
     repairshopr_job_id text,
     qc_complete text,
     qc_date text,
@@ -123,7 +125,8 @@ create table technician_tasks (
     repairshopr_customer_id numeric,
     accessories_and_condition text,
     requires_backup text,
-    rs_warranty text
+    rs_warranty text,
+    ticket_type_id text
 );
 
 create table technician_tasks_images (
@@ -226,11 +229,6 @@ create table booking_agents_tasks (
     updated_at text
 );
 
-alter table
-    booking_agents_tasks
-add
-    column original ticket_date text;
-
 create TYPE reason_for_use_enum as enum (
     'Fuel',
     'Callout (TV)',
@@ -329,8 +327,7 @@ create table vehicle_checklist(
     created_at text,
     updated_at text,
     license_disc_expiry text,
-    next_service_kms text;
-
+    next_service_kms text
 );
 
 create type tank_filled_enum as enum ('Yes', 'No');
@@ -407,8 +404,11 @@ create table parts_for_tasks (
     created_by text,
     updated_at text,
     compensation boolean,
+    part_unused boolean,
     FOREIGN KEY (task_row_id) REFERENCES technician_tasks(id) ON DELETE CASCADE
 );
+
+
 
 CREATE TABLE devices (
     id BIGSERIAL PRIMARY KEY UNIQUE,
@@ -455,6 +455,14 @@ create table engineer_ra_status (
     valid_to text
 );
 
+create table assembly_terms (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    term TEXT NOT NULL,
+    bold boolean,
+    created_at text
+);
+
 create table backup_terms (
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
@@ -462,3 +470,28 @@ create table backup_terms (
     bold boolean,
     created_at text
 );
+
+create table dunorworks_reports (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    job_repair_no text,
+    imei text,
+    unit_status text,
+    created_at text
+);
+
+create table reports_download (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    downloaded_by text,
+    downloaded_at text
+);
+
+create table logs (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    operation text,
+    changed_by text,
+    created_at text,
+    changes jsonb 
+)

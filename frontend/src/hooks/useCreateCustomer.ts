@@ -36,7 +36,17 @@ const useCreateCustomerOnRepairshopr = () => {
             const customerId = data?.customer?.id;
             return customerId;
         } catch (error: any) {
-            toast.error(`${error?.response?.data?.message}`);
+            if (error?.response?.data) {
+                const { success, message, params } = error.response.data;
+                if (!success && message) {
+                    if (Array.isArray(message)) {
+                        const errorMessages = message.join("\n");
+                        toast(errorMessages, { duration: 6000 });
+                    } else {
+                        toast(message, { duration: 6000 });
+                    }
+                }
+            }
         } finally {
             setLoading(false);
         }

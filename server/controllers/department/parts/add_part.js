@@ -31,12 +31,12 @@ const AddPart = async (req, res) => {
     try {
         await AddPartSchema.validate(req.body, { abortEarly: false });
         const { rows: existingPart } = await pool.query(
-            "SELECT * FROM parts_for_tasks WHERE part_name = $1 limit 1",
-            [part_name]
+            "SELECT * FROM parts_for_tasks WHERE part_name = $1 and ticket_number = $2 limit 1",
+            [part_name, ticket_number]
         );
 
         if (existingPart.length > 0) {
-            return res.status(409).json({ message: "Part already added" });
+            return res.status(409).json({ message: "Part already added for this ticket" });
         }
         const { rows } = await pool.query(
             "INSERT INTO parts_for_tasks (task_row_id, ticket_number, part_name, part_desc, part_quantity,compensation, created_at, created_by) values ($1, $2, $3, $4, $5, $6, $7, $8) returning *",

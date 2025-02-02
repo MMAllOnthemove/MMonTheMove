@@ -62,8 +62,17 @@ const uploadTechnicianFiles = async (req, res) => {
 
         // Upload all files and remove local temporary files afterward
         const fileUrls = await Promise.all(
-            req.files.map(async (file) => {
-                const remotePath = `/root/uploads/hhp/${ticket_number}-hhp-${file.originalname}`;
+            req.files.map(async (file, index) => {
+                // Sanitize filename and add a unique identifier
+                const sanitizedFileName = file.originalname
+                    .replace(/[^a-zA-Z0-9.-]/g, "_") // Replace special characters with _
+                    .toLowerCase();
+                const uniqueFileName = `${ticket_number}-hhp-${
+                    index + 1
+                }-${sanitizedFileName}`;
+
+                const remotePath = `/home/mmallonthemove/uploads/hhp/${uniqueFileName}`;
+                // const remotePath = `/root/uploads/hhp/${ticket_number}-hhp-${file.originalname}`;
 
                 try {
                     // Upload the file to SFTP
@@ -81,7 +90,8 @@ const uploadTechnicianFiles = async (req, res) => {
                     });
                     // the file being added
                     const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/hhp/${ticket_number}-hhp-${file.originalname}`;
-                    // add the file url of this car into our db
+                    console.log("file", fileBeingAdded);
+                    // add the file url of this task into our db
                     await pool.query(
                         "INSERT INTO technician_tasks_images (task_id, image_url, created_at) values ($1, $2, $3)",
                         [task_id, fileBeingAdded, created_at]

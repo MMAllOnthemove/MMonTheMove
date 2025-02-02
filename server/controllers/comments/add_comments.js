@@ -2,6 +2,7 @@ import { pool } from "../../db.js";
 import * as Yup from "yup";
 
 const addCommentSchema = Yup.object({
+    task_id: Yup.string(),
     created_by: Yup.string(),
     created_at: Yup.string(),
     comment: Yup.string().required("Please add comment"),
@@ -20,14 +21,15 @@ const addComment = async (req, res) => {
 
         if (existingComment.length > 0) {
             return res.status(409).json({ message: "Comment already exists" });
+        } else {
+            const { rows } = await pool.query(
+                "INSERT INTO technician_tasks_comments (task_id, comment, created_at, created_by) VALUES ($1, $2, $3, $4)",
+                [task_id, comment, created_at, created_by]
+            );
+            return res.status(201).json({
+                message: "Successfully created",
+            });
         }
-        const { rows } = await pool.query(
-            "INSERT INTO technician_tasks_comments (task_id, comment, created_at, created_by) VALUES ($1, $2, $3, $4)",
-            [task_id, comment, created_at, created_by]
-        );
-        return res.status(201).json({
-            message: "Successfully created",
-        });
     } catch (error) {
         // Handle validation or other errors
         const errors = {};

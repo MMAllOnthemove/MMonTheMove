@@ -1,13 +1,13 @@
 "use client"
 import dynamic from 'next/dynamic'
 const LoadingScreen = dynamic(() =>
-    import('@/components/loading_screen/page')
+    import('@/components/loading_screen/page'), { ssr: false }
 )
 const NotLoggedInScreen = dynamic(() =>
-    import('@/components/not_logged_in/page')
+    import('@/components/not_logged_in/page'), { ssr: false }
 )
 const Sidebar = dynamic(() =>
-    import('@/components/sidebar/page')
+    import('@/components/sidebar/page'), { ssr: false }
 )
 
 import { Button } from '@/components/ui/button'
@@ -149,18 +149,7 @@ const TookanScreen = () => {
             if (response.status === 200) {
                 toast.success(response.message);
                 setIsModalOpen(false);
-                // window.location.reload();
-                setFirstname('')
-                setLastname('')
-                setEmail('')
-                setPhone('')
-                setAddress('')
-                setServiceOrder('')
-                setStartDate('')
-                setEndDate('')
-                setFault('')
-                setLatitudeLongitude('')
-
+                window.location.reload();
             }
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') {

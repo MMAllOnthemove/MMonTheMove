@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import toast from "react-hot-toast";
 import { SignupValues } from "@/lib/types";
 interface ErrorMessages {
@@ -16,7 +16,8 @@ const useSignup = () => {
     const [loading, setLoading] = useState(false); // Loading state
     const [errors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
     const router = useRouter();
-
+    // Prefetch the / page ahead of time
+    // router.prefetch("/");
     const signup = async (values: SignupValues) => {
         setLoading(true);
         setErrors({}); // Reset error before new attempt

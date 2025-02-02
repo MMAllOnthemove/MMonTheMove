@@ -3,20 +3,7 @@ import { useState } from "react";
 
 import toast from "react-hot-toast";
 interface ErrorMessages {
-    date_booked?: string;
-    model?: string;
-    warranty?: string;
-    engineer?: string;
-    fault?: string;
-    imei?: string;
-    serial_number?: string;
-    status?: string;
-    ticket_number?: string;
-    department?: string;
-    job_added_by?: string;
-    stores?: string;
-    repairshopr_job_id?: string;
-    repeat_repair?: string;
+    comment?: string;
 }
 
 const useAddTaskCommentLocally = () => {
@@ -41,7 +28,7 @@ const useAddTaskCommentLocally = () => {
             if (error?.response?.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {
-                toast.error("Fill in all fields");
+                toast.error("Comment empty");
                 setErrors(error.response.data.errors); // Set validation errors to state
             }
         } finally {

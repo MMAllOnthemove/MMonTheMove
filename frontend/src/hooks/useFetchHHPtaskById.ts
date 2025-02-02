@@ -19,6 +19,7 @@ type IHHPTask = {
     gspn_status: string;
     device_location: string | null;
     requires_backup: string | null;
+    ticket_type_id?: string | null | any;
     ticket_number: string;
     department: string;
     job_added_by: string;
@@ -41,13 +42,20 @@ type IHHPTask = {
     parts_pending: string | boolean;
     parts_issued: string | boolean;
     compensation: string | boolean;
-    comments: {
+    images?: {
+        image_id: number;
+        unique_id: string;
+        task_id: number;
+        image_url: string;
+        created_at: string;
+    }[];
+    comments?: {
         comment_id: number;
         comment_text: string;
         comment_created_at: string;
         created_by: string;
-    };
-    parts: {
+    }[];
+    parts?: {
         part_id: number;
         unique_id: string;
         ticket_number: string;
@@ -60,16 +68,18 @@ type IHHPTask = {
         created_by: string;
         updated_at: null | string;
         compensation: boolean;
-    };
+    }[];
     repairshopr_job_id: string;
 };
 
 const useFetchHHPTaskById = (taskId: string | string[] | any) => {
     const [hhpTask, setHHPTask] = useState<IHHPTask | null>(null);
+    const [hhpTaskLoading, setLoading] = useState(false);
 
     const refetch = async () => {
         if (!taskId) return;
         try {
+            setLoading(true);
             const { data } = await axios.get(
                 `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/` +
                     taskId,
@@ -84,12 +94,19 @@ const useFetchHHPTaskById = (taskId: string | string[] | any) => {
             if (process.env.NODE_ENV !== "production") {
                 console.error("Error fetching HHP task by id:", error);
             }
+        } finally {
+            setLoading(false);
         }
     };
     useEffect(() => {
-        refetch();
+        const delayFetch = setTimeout(() => {
+            refetch();
+        }, 5000); // 5-second delay
+
+        return () => clearTimeout(delayFetch); // Cleanup timeout if searchTicket changes
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [taskId]);
-    return { hhpTask, refetch };
+    return { hhpTask, refetch, hhpTaskLoading };
 };
 export default useFetchHHPTaskById;

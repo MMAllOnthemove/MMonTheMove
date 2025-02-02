@@ -10,7 +10,7 @@ const deletePart = async (req, res) => {
         if (rows.length === 0) {
             return res.status(404).json({ message: "Part not found" });
         }
-        res.status(204).json({ message: "Successfully deleted!" });
+        res.status(200).json({ message: "Successfully deleted!" });
     } catch (error) {
         return res.status(500).json({ error: "Internal server error" });
     }

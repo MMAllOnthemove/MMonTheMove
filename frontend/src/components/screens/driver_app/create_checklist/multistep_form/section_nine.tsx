@@ -1,6 +1,7 @@
 import { Textarea } from '@/components/ui/textarea';
+import dynamic from 'next/dynamic';
 import React from 'react';
-import FormWrapper from './wrapper';
+const FormWrapper = dynamic(() => import('./wrapper'), { ssr: false })
 
 interface ISectionNine {
 
@@ -17,7 +18,7 @@ interface ISectionNine {
 
 
 
-const SectionNine: React.FC<ISectionNine> = ({ hass, setHass, hass_fail_reason, setHassFailReason, tools, setTools, tools_fail_reason, setToolsFailReason}) => {
+const SectionNine: React.FC<ISectionNine> = ({ hass, setHass, hass_fail_reason, setHassFailReason, tools, setTools, tools_fail_reason, setToolsFailReason }) => {
     return (
         <FormWrapper title='Accessories & attachments'>
 
@@ -76,7 +77,7 @@ const SectionNine: React.FC<ISectionNine> = ({ hass, setHass, hass_fail_reason, 
                 </div>
 
 
-                
+
             </div>
 
 

@@ -1,9 +1,20 @@
 const sftp = require("ssh2-sftp-client");
 const path = require("path");
 const fs = require("fs");
+const pg = require("pg");
 const yup = require("yup");
 
 const moment = require("moment");
+
+// create a connection to db as we cannot import a module in a common js file
+
+const pool = new pg.Pool({
+    user: process.env.NEXT_PUBLIC_DB_USER,
+    host: process.env.NEXT_PUBLIC_DB_HOST,
+    database: process.env.NEXT_PUBLIC_DB_NAME,
+    password: process.env.NEXT_PUBLIC_DB_PASSWORD,
+    port: process.env.NEXT_PUBLIC_DB_PORT,
+});
 
 const sftpConfig = {
     host: `${process.env.SFTP_HOST}`,
@@ -36,7 +47,7 @@ const date = moment(datetimestamp).format("YYYY-MM-DD%HH:mm:ss");
 
 const uploadQCFile = async (req, res) => {
     try {
-        const { ticket_number } = req.body;
+        const { task_id, ticket_number, created_at } = req.body;
         // Check if files are present in the request
         if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
             return res.status(400).json({ error: "No files uploaded" });
@@ -49,12 +60,20 @@ const uploadQCFile = async (req, res) => {
 
         // Upload all files and remove local temporary files afterward
         const fileUrls = await Promise.all(
-            req.files.map(async (file) => {
+            req.files.map(async (file, index) => {
                 // Because we have 'files' as a directory pointing to '/uploads' folder in our root
                 // we will only reference it as 'files'
                 // e.g. we have a directory inside 'files' called 'hhp/qc'
                 // we will now reference it as https://url.com/files/hhp/qc/filename
-                const remotePath = `/root/uploads/hhp/qc/${ticket_number}-qc-${file.originalname}`;
+                // Sanitize filename and add a unique identifier
+                const sanitizedFileName = file.originalname
+                    .replace(/[^a-zA-Z0-9.-]/g, "_") // Replace special characters with _
+                    .toLowerCase();
+                const uniqueFileName = `${ticket_number}-qc-${
+                    index + 1
+                }-${sanitizedFileName}`;
+
+                const remotePath = `/home/mmallonthemove/uploads/hhp/${ticket_number}-qc-${file.originalname}`;
                 try {
                     await sftpClient.put(file.path, remotePath);
                     // Remove temporary file from local storage
@@ -67,12 +86,18 @@ const uploadQCFile = async (req, res) => {
                                     err
                                 );
                     });
-
+                    // the file being added
+                    const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/hhp/${ticket_number}-qc-${file.originalname}`;
+                    // add the file url of this task into our db
+                    await pool.query(
+                        "INSERT INTO technician_tasks_images (task_id, image_url, created_at) values ($1, $2, $3)",
+                        [task_id, fileBeingAdded, created_at]
+                    );
                     // Construct URL for uploaded file
-                    return `https://repair.mmallonthemove.co.za/files/hhp/qc/${ticket_number}-qc-${file.originalname}`;
+                    return `https://repair.mmallonthemove.co.za/files/hhp/${ticket_number}-qc-${file.originalname}`;
                 } catch (error) {
-                 if (process.env.NODE_ENV !== "production")
-                     console.error("Error uploading file:", error);
+                    if (process.env.NODE_ENV !== "production")
+                        console.error("Error uploading file:", error);
                     // throw new Error(
                     //     `Failed to upload file: ${file.originalname}`
                     // );

@@ -1,8 +1,10 @@
-import { DriverAdd } from "@/lib/types";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import moment from "moment";
+import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import useGetCustomerVisits from "./useGetCustomerVisits";
+import { datetimestamp } from "@/lib/date_formats";
 
 type TPayload = {
     firstname: string;
@@ -24,6 +26,8 @@ type TPayload = {
 const useCreateCustomerLocally = () => {
     const [createCustomerLocallyLoading, setLoading] = useState(false); // Loading state
     const router = useRouter();
+    const today = moment(datetimestamp).format("YYYY-MM-DD");
+    const { refetch } = useGetCustomerVisits(today);
     const addCustomerLocally = async (values: TPayload) => {
         setLoading(true);
         try {
@@ -39,14 +43,12 @@ const useCreateCustomerLocally = () => {
                     // customer will handle this section
                 }
             );
-            console.log(data);
             if (data)
                 toast.success(`${data?.message}`, {
                     duration: 8000,
                 });
+            refetch();
         } catch (error: any) {
-            // console.error("add customer locally error", error);
-            // toast.error(`${error?.response.data?.message}`);
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {

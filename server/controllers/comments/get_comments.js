@@ -1,24 +1,31 @@
 import { pool } from "../../db.js";
 
 const getComments = async (req, res) => {
-    const { id, page = 1, limit = 10 } = req.query;
+    let { id, page = 1, limit = 10 } = req.query;
 
+    // Parse and validate `page` and `limit`
+    page = Math.max(parseInt(page, 10), 1); // Ensure `page` is at least 1
+    limit = Math.max(parseInt(limit, 10), 1); // Ensure `limit` is at least 1
     const offset = (page - 1) * limit;
+
     try {
+        // Fetch comments for the task
         const { rows } = await pool.query(
-            "SELECT * from technician_tasks_comments where task_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3",
+            "SELECT * FROM technician_tasks_comments WHERE task_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3",
             [id, limit, offset]
         );
 
+        // Fetch the total count of comments
         const total = await pool.query(
-            `SELECT COUNT(*) FROM technician_tasks_comments WHERE task_id = $1`,
+            "SELECT COUNT(*) FROM technician_tasks_comments WHERE task_id = $1",
             [id]
         );
         const totalComments = parseInt(total.rows[0].count, 10);
+
         return res.status(200).json({
             data: rows,
             meta: {
-                currentPage: parseInt(page, 10),
+                currentPage: page,
                 totalPages: Math.ceil(totalComments / limit),
                 totalComments,
             },
