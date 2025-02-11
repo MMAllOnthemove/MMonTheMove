@@ -36,7 +36,7 @@ import toast from 'react-hot-toast'
 const SingleChecklistScreen = () => {
     const params = useParams(); // Fetch URL parameters
     const id = params?.id;
-    const { isLoggedIn, loading } = useUserLoggedIn()
+    const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { checklist } = useFetchChecklist(id)
     const [mileage_after, setMileageAfter] = useState<string>('')
     const [next_service_kms, setNextServiceKms] = useState<string>('')
@@ -59,7 +59,8 @@ const SingleChecklistScreen = () => {
     // update the mileage after return
     const updateVehicleChecklist = async () => {
         const rowId = id
-        const payload = { rowId, mileage_after, next_service_date, next_service_kms, license_disc_expiry }
+        const created_by = user?.email;
+        const payload = { rowId, mileage_after, next_service_date, next_service_kms, license_disc_expiry, created_by }
         await updateChecklist(rowId, payload)
     }
 

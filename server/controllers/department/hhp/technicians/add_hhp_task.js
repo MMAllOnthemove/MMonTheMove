@@ -1,6 +1,7 @@
 import { pool } from "../../../../db.js";
 import "dotenv/config";
 import * as Yup from "yup";
+import appLogs from "../../../logs/logs.js";
 
 const AddHHPTaskSchema = Yup.object({
     service_order_no: Yup.string(),
@@ -95,6 +96,7 @@ const AddHHPTask = async (req, res) => {
             const fetchResult = await pool.query(returnDataWithNewRow, [
                 rows[0].id,
             ]);
+            await appLogs("INSERT", job_added_by, req.body);
             return res.status(201).json({
                 message: "HHP task created",
                 task: fetchResult.rows[0],

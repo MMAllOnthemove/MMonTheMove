@@ -14,12 +14,118 @@ import { assetTypes } from '@/lib/asset_types';
 import { datetimestamp } from '@/lib/date_formats';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
-import 'tldraw/tldraw.css';
-import AlertDialogServiceOrder from './alert_dialog';
 
-const DrawScratchesModal = dynamic(() =>
-    import('./draw_scratches_modal'), { ssr: false }
-)
+import AlertDialogServiceOrder from './alert_dialog';
+import { cn } from "@/lib/utils"
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
+
+
+// Define a flat list of faults
+const faults = [
+    { value: "Cracked Screen", label: "Cracked Screen" },
+    { value: "Broken Glass", label: "Broken Glass" },
+    { value: "Touchscreen Malfunction", label: "Touchscreen Malfunction" },
+    { value: "Unresponsive Touch", label: "Unresponsive Touch" },
+    { value: "Dead Pixels", label: "Dead Pixels" },
+    { value: "Flickering Screen", label: "Flickering Screen" },
+    { value: "Screen Burn-in", label: "Screen Burn-in" },
+    { value: "Color Distortion", label: "Color Distortion" },
+    { value: "Broken or Flickering AMOLED Panel", label: "Broken or Flickering AMOLED Panel" },
+    { value: "Display Lines or Artifacts", label: "Display Lines or Artifacts" },
+    { value: "Black Screen", label: "Black Screen" },
+    { value: "Screen Bleeding", label: "Screen Bleeding (e.g., light leaking around edges)" },
+    { value: "Brightness Issues", label: "Brightness Issues" },
+    { value: "Display Dead Zones", label: "Display Dead Zones" },
+    { value: "Cracked or Dislodged Digitizer", label: "Cracked or Dislodged Digitizer" },
+    { value: "Battery Not Charging", label: "Battery Not Charging" },
+    { value: "Fast Draining Battery", label: "Fast Draining Battery" },
+    { value: "Battery Swelling or Expansion", label: "Battery Swelling or Expansion" },
+    { value: "Overheating While Charging", label: "Overheating While Charging" },
+    { value: "Charging Port Damage", label: "Charging Port Damage" },
+    { value: "Wireless Charging Not Working", label: "Wireless Charging Not Working" },
+    { value: "Battery Not Holding Charge", label: "Battery Not Holding Charge" },
+    { value: "Inconsistent Charging Speed", label: "Inconsistent Charging Speed" },
+    { value: "Phone Turning Off Unexpectedly", label: "Phone Turning Off Unexpectedly" },
+    { value: "Slow Charging", label: "Slow Charging" },
+    { value: "Charging Cable Failure", label: "Charging Cable Failure" },
+    { value: "No Sound from Speakers", label: "No Sound from Speakers" },
+    { value: "Distorted Sound from Speakers", label: "Distorted Sound from Speakers" },
+    { value: "Microphone Not Working", label: "Microphone Not Working" },
+    { value: "Audio Cutting In and Out", label: "Audio Cutting In and Out" },
+    { value: "Call Audio Issues", label: "Call Audio Issues" },
+    { value: "Headphone Jack Issues", label: "Headphone Jack Issues" },
+    { value: "Bluetooth Audio Problems", label: "Bluetooth Audio Problems" },
+    { value: "Speakers Not Responding to Volume Changes", label: "Speakers Not Responding to Volume Changes" },
+    { value: "Camera Lens Cracked or Scratched", label: "Camera Lens Cracked or Scratched" },
+    { value: "Camera Not Focusing", label: "Camera Not Focusing" },
+    { value: "Blurred Photos", label: "Blurred Photos" },
+    { value: "Poor Low-light Performance", label: "Poor Low-light Performance" },
+    { value: "Black or Blank Camera Screen", label: "Black or Blank Camera Screen" },
+    { value: "Shutter Button Not Responding", label: "Shutter Button Not Responding" },
+    { value: "Camera App Crashing or Freezing", label: "Camera App Crashing or Freezing" },
+    { value: "Flash Not Working", label: "Flash Not Working" },
+    { value: "Front or Rear Camera Malfunction", label: "Front or Rear Camera Malfunction" },
+    { value: "Overheating When Using Camera", label: "Overheating When Using Camera" },
+    { value: "Water Damage to Camera", label: "Water Damage to Camera" },
+    { value: "Phone Freezing or Lagging", label: "Phone Freezing or Lagging" },
+    { value: "App Crashes", label: "App Crashes" },
+    { value: "Phone Stuck in Boot Loop", label: "Phone Stuck in Boot Loop" },
+    { value: "System Update Failures", label: "System Update Failures" },
+    { value: "Wi-Fi or Cellular Connectivity Problems", label: "Wi-Fi or Cellular Connectivity Problems" },
+    { value: "Slow Performance or Unresponsiveness", label: "Slow Performance or Unresponsiveness" },
+    { value: "Unresponsive Touchscreen After Software Update", label: "Unresponsive Touchscreen After Software Update" },
+    { value: "Bluetooth Connectivity Problems", label: "Bluetooth Connectivity Problems" },
+    { value: "OS Not Booting Up", label: "OS Not Booting Up" },
+    { value: "Device Not Responding to Fingerprint or Face Recognition", label: "Device Not Responding to Fingerprint or Face Recognition" },
+    { value: "Weak or No Wi-Fi Signal", label: "Weak or No Wi-Fi Signal" },
+    { value: "No Cellular Network/Signal", label: "No Cellular Network/Signal" },
+    { value: "Dropped Calls", label: "Dropped Calls" },
+    { value: "SIM Card Not Detected", label: "SIM Card Not Detected" },
+    { value: "No Internet Connection", label: "No Internet Connection" },
+    { value: "Bluetooth Not Pairing", label: "Bluetooth Not Pairing" },
+    { value: "GPS Not Working", label: "GPS Not Working" },
+    { value: "Mobile Data Not Working", label: "Mobile Data Not Working" },
+    { value: "Airplane Mode Stuck On", label: "Airplane Mode Stuck On" },
+    { value: "Install screen protector", label: "Install screen protector" },
+    { value: "Water Damage", label: "Water Damage" },
+    { value: "Dropped or Impact Damage", label: "Dropped or Impact Damage" },
+    { value: "Button Malfunctions", label: "Button Malfunctions" },
+    { value: "Frame or Chassis Damage", label: "Frame or Chassis Damage" },
+    { value: "Cracked Back Glass", label: "Cracked Back Glass" },
+    { value: "Bent or Warped Body", label: "Bent or Warped Body" },
+    { value: "Damage from Extreme Temperatures", label: "Damage from Extreme Temperatures" },
+    { value: "Overheating", label: "Overheating" },
+    { value: "Slow Processing/Freezing", label: "Slow Processing/Freezing" },
+    { value: "Faulty RAM or Storage", label: "Faulty RAM or Storage" },
+    { value: "Unresponsive Home Button or Volume Buttons", label: "Unresponsive Home Button or Volume Buttons" },
+    { value: "Power Button Malfunction", label: "Power Button Malfunction" },
+    { value: "Vibration Not Working", label: "Vibration Not Working" },
+    { value: "Fingerprint Sensor Issues", label: "Fingerprint Sensor Issues" },
+    { value: "Face Recognition Not Working", label: "Face Recognition Not Working" },
+    { value: "Sensors Not Responding", label: "Sensors Not Responding" },
+    { value: "App Not Installing or Updating", label: "App Not Installing or Updating" },
+    { value: "Phone Not Turning On", label: "Phone Not Turning On" },
+    { value: "Phone Restarting Randomly", label: "Phone Restarting Randomly" },
+    { value: "Phone Not Recognized by Computer", label: "Phone Not Recognized by Computer" },
+    { value: "Touchscreen Showing Ghost Touches", label: "Touchscreen Showing Ghost Touches" },
+    { value: "Software/Hardware Compatibility Issues", label: "Software/Hardware Compatibility Issues" },
+    { value: "Wi-Fi Calling Not Working", label: "Wi-Fi Calling Not Working" },
+    { value: "Bluetooth Device Disconnecting", label: "Bluetooth Device Disconnecting" },
+
+];
 
 const HHP = (customerProps: string | string[] | any) => {
     const { customerId, email } = customerProps?.customerProps;
@@ -28,7 +134,6 @@ const HHP = (customerProps: string | string[] | any) => {
     const { user } = useUserLoggedIn()
     const { addCommentLocally } = useAddTaskCommentLocally()
     const { addTicket, createTicketLoading } = useCreateTicket()
-    const [fault, setFault] = useState("")
     const [itemCondition, setItemCondition] = useState("");
     const [specialRequirement, setSpecialRequirement] = useState("")
     const [password, setPassword] = useState("")
@@ -44,6 +149,30 @@ const HHP = (customerProps: string | string[] | any) => {
     const [task_id, setTaskId] = useState("")
     // Asset id
     const [assetId, setAssetId] = useState('')
+    const [isRework, setIsRework] = useState<boolean>(false);
+
+
+    const [fault, setFault] = useState("")
+    // const [customFault, setCustomFault] = useState('');
+    // const [isCustom, setIsCustom] = useState(false);
+    const [openFaultList, setOpenFaultList] = React.useState(false)
+
+    // const handleSelectChange = (e) => {
+    //     setFault(e);
+    //     setIsCustom(false); // If the user selects from dropdown, reset the custom input
+    // };
+
+    // const handleInputChange = (e) => {
+    //     setCustomFault(e.target.value);
+    //     setFault(''); // Reset selected fault if the user types a custom one
+    // };
+
+    // const handleCustomFaultToggle = () => {
+    //     setIsCustom(!isCustom);
+    //     setFault(''); // Clear selection if they choose to type a custom fault
+    // };
+
+
     // these will be send to our db as soon as a ticket is booked
     // some of the values will be stored in state from the result
     // this is just the warranty just a different variable (I am out of variable names, lol)
@@ -71,7 +200,7 @@ const HHP = (customerProps: string | string[] | any) => {
         const payload = {
             "customer_id": customerId, // only need this for creating a ticket on rs
             "problem_type": `${issue_type}`, // Will aways be HHP for handheld devices, no need to choose
-            "subject": `*${fault}`,
+            "subject": isRework ? `*Rework: ${fault}` : `*${fault}`,
             "status": "New", //  will always be 'New' for a recently created ticket
             "ticket_type_id": `${ticketTypeId}`,
             "user_id": `${user?.repairshopr_id}`,
@@ -104,6 +233,7 @@ const HHP = (customerProps: string | string[] | any) => {
             ]
 
         }
+
         const data = await addTicket(payload)
         await sendTicketDataToOurDB(
             data?.ticket?.number,
@@ -111,6 +241,7 @@ const HHP = (customerProps: string | string[] | any) => {
             data?.ticket?.customer_id,
             data?.ticket?.ticket_type_id
         );
+
         const bookingAgentsStatPayload = {
             ticket_number: data?.ticket?.number, created_by: user?.email, booking_agent: user?.full_name, created_at: datetimestamp, original_ticket_date: data?.ticket?.created_at, problemType: data?.ticket?.problem_type
         }
@@ -181,24 +312,99 @@ const HHP = (customerProps: string | string[] | any) => {
     const hhp_issue_types = assetTypes.filter(asset => asset.value.includes("HHP"));
     return (
         <>
-            {
-                openModal &&
-                <DrawScratchesModal openModal={openModal} setOpenModal={setOpenModal} />
-            }
+
             {
                 openDialog &&
                 <AlertDialogServiceOrder openModal={openDialog} setOpenModal={setOpenDialog} customerEmail={email} />
             }
             <form onSubmit={createTicket}>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center mb-2">
-
-                    <div>
-                        <Label htmlFor='fault' className='sr-only'>Fault description</Label>
-                        <Input type="text" name='fault' id='fault' placeholder='Fault description' value={fault || ""} onChange={(e) => setFault(e.target.value)} />
+                <div className="grid grid-cols-1 text-start md:grid-cols-3 gap-4 items-center mb-2">
+                    <div className='flex items-center gap-2'>
+                        <Popover open={openFaultList} onOpenChange={setOpenFaultList}>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    aria-expanded={openFaultList}
+                                    className="w-full justify-between"
+                                >
+                                    {fault
+                                        ? faults.find((framework) => framework.value === fault)?.label
+                                        : "Select fault..."}
+                                    <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-full p-0">
+                                <Command>
+                                    <CommandInput placeholder="Search fault..." />
+                                    <CommandList>
+                                        <CommandEmpty>No faults found.</CommandEmpty>
+                                        <CommandGroup>
+                                            {faults.map((framework) => (
+                                                <CommandItem
+                                                    key={framework.value}
+                                                    value={framework.value}
+                                                    onSelect={(currentValue) => {
+                                                        setFault(currentValue === fault ? "" : currentValue)
+                                                        setOpenFaultList(false)
+                                                    }}
+                                                >
+                                                    <CheckIcon
+                                                        className={cn(
+                                                            "ml-auto h-4 w-4",
+                                                            fault === framework.value ? "opacity-100" : "opacity-0"
+                                                        )}
+                                                    />
+                                                    {framework.label}
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    </CommandList>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
+                        <label className="ml-2 flex gap-2">
+                            <input
+                                className="cursor-pointer"
+                                type="checkbox"
+                                checked={isRework}
+                                onChange={() => setIsRework((prev) => !prev)}
+                            />
+                            Rework?
+                        </label>
                     </div>
                     <div>
                         <Label htmlFor='serviceOrderNumber' className='sr-only'>Service order number</Label>
                         <Input type="number" name='serviceOrderNumber' id='serviceOrderNumber' placeholder='Service order number' value={serviceOrderNumber || ""} onChange={(e) => setServiceOrder(e.target.value)} />
+                    </div>
+                    <div>
+                        <Label htmlFor='itemCondition' className='sr-only'>Item condition</Label>
+                        <Input type="text" name='itemCondition' id='itemCondition' placeholder='Item condition' value={itemCondition} onChange={(e) => setItemCondition(e.target.value)} />
+                    </div>
+
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center mb-2">
+                    <div>
+                        <Label htmlFor='job_repair_no' className='sr-only'>Job repair no</Label>
+                        <Input type="text" name='job_repair_no' id='job_repair_no' placeholder='Job repair no' value={job_repair_no} onChange={(e) => setJobRepairNo(e.target.value)} />
+                    </div>
+                    <div>
+                        <Select
+                            value={requires_backup}
+                            onValueChange={(e) => setRequiresBackup(e)}
+                            name='requires_backup'
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Backup requires" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectLabel>Requires backup</SelectLabel>
+                                    <SelectItem value={`${ticketTypeId === "21877" ? '75129' : '69753'}`}>No</SelectItem>
+                                    <SelectItem value={`${ticketTypeId === "21878" ? '75128' : '69752'}`}>Yes</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
                     </div>
                     <div>
                         <Select
@@ -220,41 +426,7 @@ const HHP = (customerProps: string | string[] | any) => {
                             </SelectContent>
                         </Select>
                     </div>
-                    <div>
-                        <Label htmlFor='itemCondition' className='sr-only'>Item condition</Label>
-                        <Input type="text" name='itemCondition' id='itemCondition' placeholder='Item condition' value={itemCondition} onChange={(e) => setItemCondition(e.target.value)} />
-                    </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center mb-2">
-                    <div>
-                        <Label htmlFor='job_repair_no' className='sr-only'>Job repair no</Label>
-                        <Input type="text" name='job_repair_no' id='job_repair_no' placeholder='Job repair no' value={job_repair_no} onChange={(e) => setJobRepairNo(e.target.value)} />
-                    </div>
-                    <div>
-                        <Label htmlFor='password' className='sr-only'>Password or pin</Label>
-                        <div className='flex flex-1/2 gap-2'>
-                            <Input type="text" name='password' id='password' placeholder='Password or pin' value={password} onChange={(e) => setPassword(e.target.value)} />
-                            <Button type="button" onClick={() => setOpenModal(true)}>Pattern</Button>
-                        </div>
-                    </div>
-                    <div>
-                        <Select
-                            value={requires_backup}
-                            onValueChange={(e) => setRequiresBackup(e)}
-                            name='requires_backup'
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Backup requires" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    <SelectLabel>Requires backup</SelectLabel>
-                                    <SelectItem value={`${ticketTypeId === "21877" ? '75129' : '69753'}`}>No</SelectItem>
-                                    <SelectItem value={`${ticketTypeId === "21878" ? '75128' : '69752'}`}>Yes</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-                    </div>
+
                 </div>
 
                 <div className="mb-2">

@@ -167,7 +167,8 @@ const DTVHATechniciansScreen = () => {
             const units_assessed = true;
             const assessment_date = datetimestamp;
             const id = row?.original?.id;
-            const payload = { assessment_date, units_assessed }
+            const created_by = user?.email
+            const payload = { assessment_date, units_assessed, created_by }
             await updateAssessmentDate(id, payload)
 
         }

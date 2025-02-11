@@ -64,7 +64,8 @@ const CarsScreen = () => {
     const addCars = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const created_at = datetimestamp;
-        const payload = { plate_number, car_model, created_at };
+        const created_by = user?.email
+        const payload = { plate_number, car_model, created_at, created_by };
         await addCar(payload);
         refetch()
         setPlateNumber('')

@@ -50,7 +50,8 @@ const CreateTicketRepairshoprScreen = () => {
                                     <HHP customerProps={customer} />
                                 </TabsContent>
                                 <TabsContent value="dtv/ha">
-                                    <DTVHA customerProps={customer} />
+                                    <p>Coming soon</p>
+                                    {/* <DTVHA customerProps={customer} /> */}
                                 </TabsContent>
                             </Tabs>
 

@@ -9,9 +9,6 @@ export const metadata: Metadata = {
 };
 
 const inter = Inter({
-  // using variable font, no need to specify weight
-  // weight: ['100', '200', '300', '500', '600', '700', '800', '900'],
-  // style: ['normal', 'italic'],
   subsets: ['latin'],
   display: 'swap',
 })

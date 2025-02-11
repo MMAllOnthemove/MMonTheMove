@@ -82,6 +82,7 @@ create table technician_tasks (
     date_booked text,
     created_at text,
     updated_at text,
+    updated_by text,
     model text,
     warranty text,
     engineer text,
@@ -126,7 +127,8 @@ create table technician_tasks (
     accessories_and_condition text,
     requires_backup text,
     rs_warranty text,
-    ticket_type_id text
+    ticket_type_id text,
+    fault_category text
 );
 
 create table technician_tasks_images (
@@ -405,10 +407,10 @@ create table parts_for_tasks (
     updated_at text,
     compensation boolean,
     part_unused boolean,
+    credit_req_number text,
+    part_issued boolean,
     FOREIGN KEY (task_row_id) REFERENCES technician_tasks(id) ON DELETE CASCADE
 );
-
-
 
 CREATE TABLE devices (
     id BIGSERIAL PRIMARY KEY UNIQUE,
@@ -493,5 +495,5 @@ create table logs (
     operation text,
     changed_by text,
     created_at text,
-    changes jsonb 
+    changes jsonb
 )
