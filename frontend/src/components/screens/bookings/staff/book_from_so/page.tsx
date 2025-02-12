@@ -23,6 +23,7 @@ import { capitalizeText } from '@/lib/capitalize';
 import { datetimestamp } from '@/lib/date_formats';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import warranties from '@/lib/warranties';
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page')
 )
@@ -107,10 +108,27 @@ const BookFromSOScreen = () => {
                 setWarrantyCode("69477");
                 setLocalWarranty("OOW");
             }
+
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') {
                 console.error(error)
             }
+        }
+    };
+
+    const handleWarrantyChange = (
+        event: any
+    ) => {
+        setLocalWarranty(event);
+        // Update other state variables based on the selected warranty
+        if (event === "IW") {
+            setTicketTypeId("21877");
+            setWarrantyCode("75130");
+            setLocalWarranty("IW");
+        } else if (event === "OOW") {
+            setTicketTypeId("21878");
+            setWarrantyCode("69477");
+            setLocalWarranty("OOW");
         }
     };
     const [hhpFiles, setHHPFiles] = useState([]);
@@ -512,12 +530,32 @@ const BookFromSOScreen = () => {
                                     <Label htmlFor="fault" className="text-gray-500">Fault</Label>
                                     <Input type="text" name="fault" value={fault || ""} onChange={(e) => setFault(e.target.value)} />
                                 </div>
-                                <div>
+                                {/* <div>
                                     <Label htmlFor='warranty' className="text-gray-500">Warranty</Label>
                                     <Input type="text" name='warranty' id='warranty' placeholder='warranty' value={localWarranty} onChange={(e) => setLocalWarranty(e.target.value)} />
 
-                                </div>
+                                </div> */}
+                                <div>
+                                    <Label htmlFor='localWarranty' className="text-gray-500">Change warranty</Label>
+                                    <Select
+                                        value={localWarranty || ""}
+                                        onValueChange={handleWarrantyChange}
+                                        name='localWarranty'
+                                    >
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Change warranty" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Warranties</SelectLabel>
 
+                                                {warranties.map((x: any) =>
+                                                    (<SelectItem key={x.id} value={`${x.warranty}`}>{x?.warranty}</SelectItem>))
+                                                }
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                                 <div>
                                     <Label htmlFor='issue_type' className="text-gray-500">Issue type</Label>
                                     <Select

@@ -72,7 +72,7 @@ const SearchCustomerRepairshoprCustomerScreen = () => {
             );
 
             if (data?.customers?.length > 0) {
-                const searchLower = searchCustomer.toLowerCase();
+                const searchLower = searchCustomer?.toLowerCase();
 
                 const exactMatchCustomer = data.customers.find((customer: any) => {
                     const firstNameExact = customer.firstname?.toLowerCase() === searchLower;

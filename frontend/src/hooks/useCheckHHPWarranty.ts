@@ -11,6 +11,7 @@ const useCheckWarranty = (
     const [ticketTypeId, setTicketTypeId] = useState<number | any>();
     const [warrantyCode, setWarrantyCode] = useState<number | any>();
     const [localWarranty, setLocalWarranty] = useState("");
+    const [selectedWarranty, setSelectedWarranty] = useState("");
     const [LPDate, setLPDate] = useState("");
     const [PartsDate, setPartsDate] = useState("");
     useEffect(() => {
@@ -56,11 +57,11 @@ const useCheckWarranty = (
                     setWarranty(warranty_type);
                     setLPDate(data?.Return?.EvNewLaborWtyDate);
                     setPartsDate(data?.Return?.EvNewPartsWtyDate);
-                    if (warranty_type === "LP") {
+                    if (data?.Return?.EvWtyType === "LP") {
                         setTicketTypeId("21877");
                         setWarrantyCode("75130");
                         setLocalWarranty("IW");
-                    } else if (warranty_type === "OW") {
+                    } else if (data?.Return?.EvWtyType === "OW") {
                         setTicketTypeId("21878");
                         setWarrantyCode("69477");
                         setLocalWarranty("OOW");
@@ -75,11 +76,29 @@ const useCheckWarranty = (
         checkWarranty();
     }, [imei, modelNumber, serialNumber]);
 
+    const handleWarrantyChange = (
+        event: React.ChangeEvent<HTMLSelectElement>
+    ) => {
+        setLocalWarranty(event.target.value);
+        // Update other state variables based on the selected warranty
+        if (event.target.value === "IW") {
+            setTicketTypeId("21877");
+            setWarrantyCode("75130");
+            setLocalWarranty("IW");
+        } else if (event.target.value === "OOW") {
+            setTicketTypeId("21878");
+            setWarrantyCode("69477");
+            setLocalWarranty("OOW");
+        }
+    };
+
     return {
         warranty,
         warrantyCode,
         ticketTypeId,
         localWarranty,
+        selectedWarranty,
+        handleWarrantyChange,
         LPDate,
         PartsDate,
     };

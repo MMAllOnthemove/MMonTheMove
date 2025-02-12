@@ -31,101 +31,11 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
+import faults_hhp from '@/lib/hhp_faults';
+import warranties from '@/lib/warranties';
 
 
-// Define a flat list of faults
-const faults = [
-    { value: "Cracked Screen", label: "Cracked Screen" },
-    { value: "Broken Glass", label: "Broken Glass" },
-    { value: "Touchscreen Malfunction", label: "Touchscreen Malfunction" },
-    { value: "Unresponsive Touch", label: "Unresponsive Touch" },
-    { value: "Dead Pixels", label: "Dead Pixels" },
-    { value: "Flickering Screen", label: "Flickering Screen" },
-    { value: "Screen Burn-in", label: "Screen Burn-in" },
-    { value: "Color Distortion", label: "Color Distortion" },
-    { value: "Broken or Flickering AMOLED Panel", label: "Broken or Flickering AMOLED Panel" },
-    { value: "Display Lines or Artifacts", label: "Display Lines or Artifacts" },
-    { value: "Black Screen", label: "Black Screen" },
-    { value: "Screen Bleeding", label: "Screen Bleeding (e.g., light leaking around edges)" },
-    { value: "Brightness Issues", label: "Brightness Issues" },
-    { value: "Display Dead Zones", label: "Display Dead Zones" },
-    { value: "Cracked or Dislodged Digitizer", label: "Cracked or Dislodged Digitizer" },
-    { value: "Battery Not Charging", label: "Battery Not Charging" },
-    { value: "Fast Draining Battery", label: "Fast Draining Battery" },
-    { value: "Battery Swelling or Expansion", label: "Battery Swelling or Expansion" },
-    { value: "Overheating While Charging", label: "Overheating While Charging" },
-    { value: "Charging Port Damage", label: "Charging Port Damage" },
-    { value: "Wireless Charging Not Working", label: "Wireless Charging Not Working" },
-    { value: "Battery Not Holding Charge", label: "Battery Not Holding Charge" },
-    { value: "Inconsistent Charging Speed", label: "Inconsistent Charging Speed" },
-    { value: "Phone Turning Off Unexpectedly", label: "Phone Turning Off Unexpectedly" },
-    { value: "Slow Charging", label: "Slow Charging" },
-    { value: "Charging Cable Failure", label: "Charging Cable Failure" },
-    { value: "No Sound from Speakers", label: "No Sound from Speakers" },
-    { value: "Distorted Sound from Speakers", label: "Distorted Sound from Speakers" },
-    { value: "Microphone Not Working", label: "Microphone Not Working" },
-    { value: "Audio Cutting In and Out", label: "Audio Cutting In and Out" },
-    { value: "Call Audio Issues", label: "Call Audio Issues" },
-    { value: "Headphone Jack Issues", label: "Headphone Jack Issues" },
-    { value: "Bluetooth Audio Problems", label: "Bluetooth Audio Problems" },
-    { value: "Speakers Not Responding to Volume Changes", label: "Speakers Not Responding to Volume Changes" },
-    { value: "Camera Lens Cracked or Scratched", label: "Camera Lens Cracked or Scratched" },
-    { value: "Camera Not Focusing", label: "Camera Not Focusing" },
-    { value: "Blurred Photos", label: "Blurred Photos" },
-    { value: "Poor Low-light Performance", label: "Poor Low-light Performance" },
-    { value: "Black or Blank Camera Screen", label: "Black or Blank Camera Screen" },
-    { value: "Shutter Button Not Responding", label: "Shutter Button Not Responding" },
-    { value: "Camera App Crashing or Freezing", label: "Camera App Crashing or Freezing" },
-    { value: "Flash Not Working", label: "Flash Not Working" },
-    { value: "Front or Rear Camera Malfunction", label: "Front or Rear Camera Malfunction" },
-    { value: "Overheating When Using Camera", label: "Overheating When Using Camera" },
-    { value: "Water Damage to Camera", label: "Water Damage to Camera" },
-    { value: "Phone Freezing or Lagging", label: "Phone Freezing or Lagging" },
-    { value: "App Crashes", label: "App Crashes" },
-    { value: "Phone Stuck in Boot Loop", label: "Phone Stuck in Boot Loop" },
-    { value: "System Update Failures", label: "System Update Failures" },
-    { value: "Wi-Fi or Cellular Connectivity Problems", label: "Wi-Fi or Cellular Connectivity Problems" },
-    { value: "Slow Performance or Unresponsiveness", label: "Slow Performance or Unresponsiveness" },
-    { value: "Unresponsive Touchscreen After Software Update", label: "Unresponsive Touchscreen After Software Update" },
-    { value: "Bluetooth Connectivity Problems", label: "Bluetooth Connectivity Problems" },
-    { value: "OS Not Booting Up", label: "OS Not Booting Up" },
-    { value: "Device Not Responding to Fingerprint or Face Recognition", label: "Device Not Responding to Fingerprint or Face Recognition" },
-    { value: "Weak or No Wi-Fi Signal", label: "Weak or No Wi-Fi Signal" },
-    { value: "No Cellular Network/Signal", label: "No Cellular Network/Signal" },
-    { value: "Dropped Calls", label: "Dropped Calls" },
-    { value: "SIM Card Not Detected", label: "SIM Card Not Detected" },
-    { value: "No Internet Connection", label: "No Internet Connection" },
-    { value: "Bluetooth Not Pairing", label: "Bluetooth Not Pairing" },
-    { value: "GPS Not Working", label: "GPS Not Working" },
-    { value: "Mobile Data Not Working", label: "Mobile Data Not Working" },
-    { value: "Airplane Mode Stuck On", label: "Airplane Mode Stuck On" },
-    { value: "Install screen protector", label: "Install screen protector" },
-    { value: "Water Damage", label: "Water Damage" },
-    { value: "Dropped or Impact Damage", label: "Dropped or Impact Damage" },
-    { value: "Button Malfunctions", label: "Button Malfunctions" },
-    { value: "Frame or Chassis Damage", label: "Frame or Chassis Damage" },
-    { value: "Cracked Back Glass", label: "Cracked Back Glass" },
-    { value: "Bent or Warped Body", label: "Bent or Warped Body" },
-    { value: "Damage from Extreme Temperatures", label: "Damage from Extreme Temperatures" },
-    { value: "Overheating", label: "Overheating" },
-    { value: "Slow Processing/Freezing", label: "Slow Processing/Freezing" },
-    { value: "Faulty RAM or Storage", label: "Faulty RAM or Storage" },
-    { value: "Unresponsive Home Button or Volume Buttons", label: "Unresponsive Home Button or Volume Buttons" },
-    { value: "Power Button Malfunction", label: "Power Button Malfunction" },
-    { value: "Vibration Not Working", label: "Vibration Not Working" },
-    { value: "Fingerprint Sensor Issues", label: "Fingerprint Sensor Issues" },
-    { value: "Face Recognition Not Working", label: "Face Recognition Not Working" },
-    { value: "Sensors Not Responding", label: "Sensors Not Responding" },
-    { value: "App Not Installing or Updating", label: "App Not Installing or Updating" },
-    { value: "Phone Not Turning On", label: "Phone Not Turning On" },
-    { value: "Phone Restarting Randomly", label: "Phone Restarting Randomly" },
-    { value: "Phone Not Recognized by Computer", label: "Phone Not Recognized by Computer" },
-    { value: "Touchscreen Showing Ghost Touches", label: "Touchscreen Showing Ghost Touches" },
-    { value: "Software/Hardware Compatibility Issues", label: "Software/Hardware Compatibility Issues" },
-    { value: "Wi-Fi Calling Not Working", label: "Wi-Fi Calling Not Working" },
-    { value: "Bluetooth Device Disconnecting", label: "Bluetooth Device Disconnecting" },
 
-];
 
 const HHP = (customerProps: string | string[] | any) => {
     const { customerId, email } = customerProps?.customerProps;
@@ -150,6 +60,7 @@ const HHP = (customerProps: string | string[] | any) => {
     // Asset id
     const [assetId, setAssetId] = useState('')
     const [isRework, setIsRework] = useState<boolean>(false);
+    const [addRepairNoToTitle, setAddRepairNoToTitle] = useState<boolean>(false);
 
 
     const [fault, setFault] = useState("")
@@ -176,7 +87,7 @@ const HHP = (customerProps: string | string[] | any) => {
     // these will be send to our db as soon as a ticket is booked
     // some of the values will be stored in state from the result
     // this is just the warranty just a different variable (I am out of variable names, lol)
-    const { warranty, warrantyCode, ticketTypeId, localWarranty } = useCheckWarranty(modelNumber, serialNumber, IMEI)
+    const { warranty, warrantyCode, ticketTypeId, localWarranty, selectedWarranty, handleWarrantyChange } = useCheckWarranty(modelNumber, serialNumber, IMEI)
     const [adh, setADH] = useState("")
     useEffect(() => {
         const loadCustomerAssetInfo = () => {
@@ -193,14 +104,24 @@ const HHP = (customerProps: string | string[] | any) => {
         loadCustomerAssetInfo()
     }, [])
 
-
+    // Dynamic subject generation
+    const subject = () => {
+        if (isRework && addRepairNoToTitle) {
+            return `*Rework: ${job_repair_no} - ${fault}`;
+        } else if (isRework) {
+            return `*Rework: ${fault}`;
+        } else if (addRepairNoToTitle) {
+            return `*${job_repair_no} - ${fault}`;
+        }
+        return `*${fault}`;
+    };
     const createTicket = async (e: React.SyntheticEvent) => {
         e.preventDefault()
 
         const payload = {
             "customer_id": customerId, // only need this for creating a ticket on rs
             "problem_type": `${issue_type}`, // Will aways be HHP for handheld devices, no need to choose
-            "subject": isRework ? `*Rework: ${fault}` : `*${fault}`,
+            "subject": subject(),
             "status": "New", //  will always be 'New' for a recently created ticket
             "ticket_type_id": `${ticketTypeId}`,
             "user_id": `${user?.repairshopr_id}`,
@@ -281,7 +202,7 @@ const HHP = (customerProps: string | string[] | any) => {
             "date_booked": date_booked,
             "model": modelNumber,
             "warranty": adh === 'ADH' ? adh : localWarranty,
-            "fault": fault,
+            "fault": subject(),
             "imei": IMEI,
             "serial_number": serialNumber,
             "status": "New",
@@ -318,8 +239,8 @@ const HHP = (customerProps: string | string[] | any) => {
                 <AlertDialogServiceOrder openModal={openDialog} setOpenModal={setOpenDialog} customerEmail={email} />
             }
             <form onSubmit={createTicket}>
-                <div className="grid grid-cols-1 text-start md:grid-cols-3 gap-4 items-center mb-2">
-                    <div className='flex items-center gap-2'>
+                <div className="grid grid-cols-1 text-start md:grid-cols-4 gap-4 items-center mb-2">
+                    <div>
                         <Popover open={openFaultList} onOpenChange={setOpenFaultList}>
                             <PopoverTrigger asChild>
                                 <Button
@@ -329,7 +250,7 @@ const HHP = (customerProps: string | string[] | any) => {
                                     className="w-full justify-between"
                                 >
                                     {fault
-                                        ? faults.find((framework) => framework.value === fault)?.label
+                                        ? faults_hhp.find((framework) => framework.value === fault)?.label
                                         : "Select fault..."}
                                     <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                 </Button>
@@ -340,7 +261,7 @@ const HHP = (customerProps: string | string[] | any) => {
                                     <CommandList>
                                         <CommandEmpty>No faults found.</CommandEmpty>
                                         <CommandGroup>
-                                            {faults.map((framework) => (
+                                            {faults_hhp.map((framework) => (
                                                 <CommandItem
                                                     key={framework.value}
                                                     value={framework.value}
@@ -363,6 +284,8 @@ const HHP = (customerProps: string | string[] | any) => {
                                 </Command>
                             </PopoverContent>
                         </Popover>
+                    </div>
+                    <div>
                         <label className="ml-2 flex gap-2">
                             <input
                                 className="cursor-pointer"
@@ -371,6 +294,15 @@ const HHP = (customerProps: string | string[] | any) => {
                                 onChange={() => setIsRework((prev) => !prev)}
                             />
                             Rework?
+                        </label>
+                        <label className="ml-2 flex gap-2">
+                            <input
+                                className="cursor-pointer"
+                                type="checkbox"
+                                checked={addRepairNoToTitle}
+                                onChange={() => setAddRepairNoToTitle((prev) => !prev)}
+                            />
+                            Add repair no to fault?
                         </label>
                     </div>
                     <div>
@@ -383,10 +315,14 @@ const HHP = (customerProps: string | string[] | any) => {
                     </div>
 
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center mb-2">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center mb-2">
                     <div>
                         <Label htmlFor='job_repair_no' className='sr-only'>Job repair no</Label>
                         <Input type="text" name='job_repair_no' id='job_repair_no' placeholder='Job repair no' value={job_repair_no} onChange={(e) => setJobRepairNo(e.target.value)} />
+                    </div>
+                    <div>
+                        <Label htmlFor='password' className='sr-only'>Device password</Label>
+                        <Input type="password" name='password' id='password' placeholder='Device password' value={password} onChange={(e) => setPassword(e.target.value)} />
                     </div>
                     <div>
                         <Select
@@ -434,7 +370,7 @@ const HHP = (customerProps: string | string[] | any) => {
                     <Textarea placeholder='Special requirement' value={specialRequirement} onChange={(e) => setSpecialRequirement(e.target.value)}></Textarea>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-2">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-2 mb-2">
                     <div>
                         <Label htmlFor='IMEI' className='sr-only'>IMEI</Label>
                         <Input type="text" value={IMEI || ""} onChange={(e) => setIMEI(e.target.value)} name='IMEI number' id='IMEI' placeholder='IMEI' />
@@ -446,6 +382,33 @@ const HHP = (customerProps: string | string[] | any) => {
                     <div>
                         <Label htmlFor='serialNumber' className='sr-only'>Serial number</Label>
                         <Input type="text" value={serialNumber || ""} placeholder='Serial number' onChange={(e) => setSerialNumber(e.target.value)} name='serialNumber' id='serialNumber' />
+                    </div>
+                    <div className="relative">
+                        <Label htmlFor='localWarranty' className='sr-only'>Change warranty</Label>
+                        <select value={localWarranty} name="localWarranty" className="block w-full appearance-none rounded-md border border-gray-300 bg-white px-4 py-2 pr-8 text-sm shadow-sm focus:outline-none cursor-pointer [&>span]:line-clamp-1" onChange={handleWarrantyChange}>
+                            <option value="" disabled>Select Warranty Type</option>
+                            {warranties.map((option) => (
+                                <option key={option.id} value={option.warranty}>
+                                    {option.warranty}
+                                </option>
+                            ))}
+                        </select>
+                        <span
+                            className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                            >
+                                <path
+                                    fillRule="evenodd"
+                                    d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.72-3.72a.75.75 0 111.06 1.06l-4 4a.75.75 0 01-1.06 0l-4-4a.75.75 0 01.02-1.06z"
+                                    clipRule="evenodd"
+                                />
+                            </svg>
+                        </span>
                     </div>
                     <div className="flex gap-2 items-center justify-between cursor-pointer">
                         <label htmlFor='adh'>

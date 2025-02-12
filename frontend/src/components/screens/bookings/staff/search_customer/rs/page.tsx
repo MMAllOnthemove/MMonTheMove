@@ -70,16 +70,16 @@ const SearchCustomerRepairshoprScreen = () => {
             );
 
             if (data?.customers?.length > 0) {
-                const searchLower = searchCustomer.toLowerCase();
+                const searchLower = searchCustomer?.toLowerCase();
 
-                const exactMatchCustomer = data.customers.find((customer: any) => {
+                const exactMatchCustomer = data.customers?.find((customer: any) => {
                     const firstNameExact = customer.firstname?.toLowerCase() === searchLower;
                     const lastNameExact = customer.lastname?.toLowerCase() === searchLower;
                     const emailExact = customer.email?.toLowerCase() === searchLower;
                     const mobileExact = customer.mobile?.toLowerCase() === searchLower;
                     const phoneExact = customer.phone?.toLowerCase() === searchLower;
                     const fullNameExact =
-                        `${customer.firstname} ${customer.lastname}`.toLowerCase() === searchLower;
+                        `${customer.firstname} ${customer.lastname}`?.toLowerCase() === searchLower;
 
                     return firstNameExact || lastNameExact || emailExact || fullNameExact || mobileExact || phoneExact;
                 });
