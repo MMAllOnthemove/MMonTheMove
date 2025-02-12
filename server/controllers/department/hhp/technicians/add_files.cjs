@@ -65,8 +65,8 @@ const uploadTechnicianFiles = async (req, res) => {
             req.files.map(async (file, index) => {
                 // Sanitize filename and add a unique identifier
                 const sanitizedFileName = file.originalname
-                    .replace(/[^a-zA-Z0-9.-]/g, "_") // Replace special characters with _
-                    .toLowerCase();
+                    ?.replace(/[^a-zA-Z0-9.-]/g, "_") // Replace special characters with _
+                    ?.toLowerCase();
                 const uniqueFileName = `${ticket_number}-hhp-${
                     index + 1
                 }-${sanitizedFileName}`;

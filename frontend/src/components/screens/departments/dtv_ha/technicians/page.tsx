@@ -260,7 +260,7 @@ const DTVHATechniciansScreen = () => {
         // If "engineerFilter" is active, apply it
         if (engineerFilter) {
             return dtvhaTasks.filter((task: any) =>
-                task?.engineer?.toLowerCase()?.includes(engineerFilter.toLowerCase())
+                task?.engineer?.toLowerCase()?.includes(engineerFilter?.toLowerCase())
             );
         }
         return dtvhaTasks;

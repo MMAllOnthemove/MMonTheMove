@@ -762,6 +762,7 @@ export type IHHPSingleTask = {
     parts_issued_date: string;
     stores: boolean | null;
     parts_ordered_date: string | null;
+    phone_name?: string | null;
     completed_date: string | null;
     additional_info: string | null;
     collected_date: string | null;

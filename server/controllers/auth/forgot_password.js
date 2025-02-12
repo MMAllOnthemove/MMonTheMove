@@ -25,7 +25,7 @@ const transporter = nodemailer.createTransport({
     secure: true, // true for port 465, false for other ports
     auth: {
         user: `noreply@mmallonthemove.co.za`,
-        pass: `noreply@Password@2022@`,
+        pass: `hbegt`,
     },
     tls: {
         rejectUnauthorized: false, // Set to false for development, or if you encounter certificate issues
