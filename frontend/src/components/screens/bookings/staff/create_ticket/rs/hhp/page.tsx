@@ -39,7 +39,7 @@ import warranties from '@/lib/warranties';
 
 const HHP = (customerProps: string | string[] | any) => {
     const { customerId, email } = customerProps?.customerProps;
-    const { addTask } = useAddHHPTask();
+    const { addTask, addHHPTaskErrors } = useAddHHPTask();
     const { addAgentTask, addAgentTaskLoading, errors } = useAddAgentTask()
     const { user } = useUserLoggedIn()
     const { addCommentLocally } = useAddTaskCommentLocally()
@@ -241,6 +241,8 @@ const HHP = (customerProps: string | string[] | any) => {
             <form onSubmit={createTicket}>
                 <div className="grid grid-cols-1 text-start md:grid-cols-4 gap-4 items-center mb-2">
                     <div>
+                        <Label htmlFor='fault' className="text-gray-500">Select fault</Label>
+
                         <Popover open={openFaultList} onOpenChange={setOpenFaultList}>
                             <PopoverTrigger asChild>
                                 <Button
@@ -263,6 +265,7 @@ const HHP = (customerProps: string | string[] | any) => {
                                         <CommandGroup>
                                             {faults_hhp.map((framework) => (
                                                 <CommandItem
+                                                    id='fault'
                                                     key={framework.value}
                                                     value={framework.value}
                                                     onSelect={(currentValue) => {
@@ -286,7 +289,7 @@ const HHP = (customerProps: string | string[] | any) => {
                         </Popover>
                     </div>
                     <div>
-                        <label className="ml-2 flex gap-2">
+                        <label className="ml-2 flex gap-2 text-gray-500">
                             <input
                                 className="cursor-pointer"
                                 type="checkbox"
@@ -295,42 +298,44 @@ const HHP = (customerProps: string | string[] | any) => {
                             />
                             Rework?
                         </label>
-                        <label className="ml-2 flex gap-2">
+                        <label className="ml-2 flex gap-2 text-gray-500">
                             <input
                                 className="cursor-pointer"
                                 type="checkbox"
                                 checked={addRepairNoToTitle}
                                 onChange={() => setAddRepairNoToTitle((prev) => !prev)}
                             />
-                            Add repair no to fault?
+                            Add job repair no to fault?
                         </label>
                     </div>
                     <div>
-                        <Label htmlFor='serviceOrderNumber' className='sr-only'>Service order number</Label>
+                        <Label htmlFor='serviceOrderNumber' className="text-gray-500">Service order number</Label>
                         <Input type="number" name='serviceOrderNumber' id='serviceOrderNumber' placeholder='Service order number' value={serviceOrderNumber || ""} onChange={(e) => setServiceOrder(e.target.value)} />
                     </div>
                     <div>
-                        <Label htmlFor='itemCondition' className='sr-only'>Item condition</Label>
+                        <Label htmlFor='itemCondition' className="text-gray-500">Item condition</Label>
                         <Input type="text" name='itemCondition' id='itemCondition' placeholder='Item condition' value={itemCondition} onChange={(e) => setItemCondition(e.target.value)} />
                     </div>
 
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center mb-2">
                     <div>
-                        <Label htmlFor='job_repair_no' className='sr-only'>Job repair no</Label>
+                        <Label htmlFor='job_repair_no' className="text-gray-500">Job repair no</Label>
                         <Input type="text" name='job_repair_no' id='job_repair_no' placeholder='Job repair no' value={job_repair_no} onChange={(e) => setJobRepairNo(e.target.value)} />
                     </div>
                     <div>
-                        <Label htmlFor='password' className='sr-only'>Device password</Label>
-                        <Input type="password" name='password' id='password' placeholder='Device password' value={password} onChange={(e) => setPassword(e.target.value)} />
+                        <Label htmlFor='password' className="text-gray-500">Device password</Label>
+                        <Input type="text" name='password' id='password' placeholder='Device password' value={password} onChange={(e) => setPassword(e.target.value)} />
                     </div>
                     <div>
+                        <Label htmlFor='requires_backup' className="text-gray-500">Requires backup?</Label>
                         <Select
                             value={requires_backup}
                             onValueChange={(e) => setRequiresBackup(e)}
                             name='requires_backup'
+
                         >
-                            <SelectTrigger>
+                            <SelectTrigger className="text-gray-500">
                                 <SelectValue placeholder="Backup requires" />
                             </SelectTrigger>
                             <SelectContent>
@@ -343,10 +348,11 @@ const HHP = (customerProps: string | string[] | any) => {
                         </Select>
                     </div>
                     <div>
+                        <Label htmlFor='issue_type' className="text-gray-500">Issue type</Label>
                         <Select
                             value={issue_type || ""}
                             onValueChange={(e) => setIssueType(e)}
-                            name='issue_type'
+                            name='stores'
                         >
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Issue type" />
@@ -361,54 +367,52 @@ const HHP = (customerProps: string | string[] | any) => {
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
+                        {addHHPTaskErrors.stores && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.stores}</p>}
                     </div>
 
                 </div>
 
                 <div className="mb-2">
-                    <Label htmlFor='specialRequirement' className='sr-only'>Special requirement</Label>
+                    <Label htmlFor='specialRequirement' className="text-gray-500">Special requirement</Label>
                     <Textarea placeholder='Special requirement' value={specialRequirement} onChange={(e) => setSpecialRequirement(e.target.value)}></Textarea>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-2 mb-2">
                     <div>
-                        <Label htmlFor='IMEI' className='sr-only'>IMEI</Label>
-                        <Input type="text" value={IMEI || ""} onChange={(e) => setIMEI(e.target.value)} name='IMEI number' id='IMEI' placeholder='IMEI' />
+                        <Label htmlFor='imei' className="text-gray-500">IMEI</Label>
+                        <Input type="text" name="imei" value={IMEI || ""} onChange={(e) => setIMEI(e.target.value)} id='imei' placeholder='IMEI' />
                     </div>
+                    {addHHPTaskErrors.imei && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.imei}</p>}
                     <div>
-                        <Label htmlFor='model' className='sr-only'>Model</Label>
+                        <Label htmlFor='model' className="text-gray-500">Model</Label>
                         <Input type="text" value={modelNumber || ""} placeholder='Model number' onChange={(e) => setModelNumber(e.target.value)} name='model' id='model' />
                     </div>
                     <div>
-                        <Label htmlFor='serialNumber' className='sr-only'>Serial number</Label>
-                        <Input type="text" value={serialNumber || ""} placeholder='Serial number' onChange={(e) => setSerialNumber(e.target.value)} name='serialNumber' id='serialNumber' />
+                        <Label htmlFor='serial_number' className="text-gray-500">Serial number</Label>
+                        <Input type="text" value={serialNumber || ""} placeholder='Serial number' onChange={(e) => setSerialNumber(e.target.value)} name='serial_number' id='serial_number' />
+                        {addHHPTaskErrors.serial_number && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.serial_number}</p>}
+
                     </div>
-                    <div className="relative">
-                        <Label htmlFor='localWarranty' className='sr-only'>Change warranty</Label>
-                        <select value={localWarranty} name="localWarranty" className="block w-full appearance-none rounded-md border border-gray-300 bg-white px-4 py-2 pr-8 text-sm shadow-sm focus:outline-none cursor-pointer [&>span]:line-clamp-1" onChange={handleWarrantyChange}>
-                            <option value="" disabled>Select Warranty Type</option>
-                            {warranties.map((option) => (
-                                <option key={option.id} value={option.warranty}>
-                                    {option.warranty}
-                                </option>
-                            ))}
-                        </select>
-                        <span
-                            className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400"
+                    <div>
+                        <Label htmlFor='localWarranty' className="text-gray-500">Change warranty</Label>
+                        <Select
+                            value={localWarranty || ""}
+                            onValueChange={handleWarrantyChange}
+                            name='localWarranty'
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                            >
-                                <path
-                                    fillRule="evenodd"
-                                    d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.72-3.72a.75.75 0 111.06 1.06l-4 4a.75.75 0 01-1.06 0l-4-4a.75.75 0 01.02-1.06z"
-                                    clipRule="evenodd"
-                                />
-                            </svg>
-                        </span>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Change warranty" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectLabel>Warranties</SelectLabel>
+
+                                    {warranties.map((x: any) =>
+                                        (<SelectItem key={x.id} value={`${x.warranty}`}>{x?.warranty}</SelectItem>))
+                                    }
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
                     </div>
                     <div className="flex gap-2 items-center justify-between cursor-pointer">
                         <label htmlFor='adh'>

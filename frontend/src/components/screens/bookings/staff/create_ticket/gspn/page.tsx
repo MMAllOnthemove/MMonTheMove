@@ -1,7 +1,7 @@
 "use client"
-import dynamic from 'next/dynamic'
-
-import { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic';
+import { useRouter } from 'nextjs-toploader/app';
+import { useEffect, useState } from 'react';
 const Sidebar = dynamic(() =>
     import('@/components/sidebar/page'), { ssr: false }
 )
@@ -25,14 +25,14 @@ const CustomerInfoScreen = dynamic(() =>
     import('./multistep/customer_info'), { ssr: false }
 )
 
-import { Button } from '@/components/ui/button'
-import useUserLoggedIn from "@/hooks/useGetUser"
+import { Button } from '@/components/ui/button';
+import useUserLoggedIn from "@/hooks/useGetUser";
 
-import useCreateServiceOrder from '@/hooks/useCreateServiceOrder'
-import useGetCustomerLocally from '@/hooks/useGetCustomerLocally'
-import { datetimestamp } from '@/lib/date_formats'
-import moment from 'moment'
-import { useParams } from 'next/navigation'
+import useCreateServiceOrder from '@/hooks/useCreateServiceOrder';
+import useGetCustomerLocally from '@/hooks/useGetCustomerLocally';
+import { datetimestamp } from '@/lib/date_formats';
+import moment from 'moment';
+import { useParams } from 'next/navigation';
 
 const GSPNScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
@@ -51,7 +51,7 @@ const GSPNScreen = () => {
         setStep((prev) => Math.max(prev - 1, 1));
     };
 
-
+    const router = useRouter();
 
     const [model, setModel] = useState("")
     const [serial_number, setSerialNumber] = useState("")
@@ -219,6 +219,7 @@ const GSPNScreen = () => {
         setCountry("")
         // now we can clear assets from local storage
         if (typeof window !== 'undefined' && window.localStorage) localStorage.clear();
+        router.back()
     }
     return (
         <>
