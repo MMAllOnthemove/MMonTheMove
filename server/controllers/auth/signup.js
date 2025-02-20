@@ -26,7 +26,7 @@ const SignupUser = async (req, res) => {
 
         const { fullName, repairshopr_id, email, password, createdAt } =
             req.body;
-        let capitalizedEmail = email.toLowerCase();
+        let capitalizedEmail = email?.toLowerCase();
 
         // Check if domain is allowed
         const emailRegex = /\@allelectronics.co.za$/;

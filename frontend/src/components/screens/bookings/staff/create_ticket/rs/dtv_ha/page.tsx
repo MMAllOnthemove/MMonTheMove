@@ -103,7 +103,6 @@ const DTVHA = (customerProps: string | string[] | any) => {
         await sendTicketDataToOurDB(data?.ticket?.number, data?.ticket?.id)
         setTicketNumber(data?.ticket?.number)
         setepairshoprJobId(data?.ticket?.id)
-        // todo: trial and error, user will add attachments in the table 
         // we will now show the alert dialog to ask user if the wanna create an so or not
         // so we can make way for the alert dialog
         // setOpenAttachmentsModal(true)

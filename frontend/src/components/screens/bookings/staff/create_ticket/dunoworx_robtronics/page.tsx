@@ -1,16 +1,4 @@
 "use client"
-import PageTitle from '@/components/PageTitle/page';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
-import useUserLoggedIn from '@/hooks/useGetUser';
-import useIpaasGetSOInfoAll from '@/hooks/useIpaasGetSoInfoAll';
-import dynamic from 'next/dynamic';
-import React, { useState } from 'react';
-
-import Modal from '@/components/modal/page';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import useAddAgentTask from '@/hooks/useAddBookingAgentTask';
 import useAddTaskCommentLocally from '@/hooks/useAddCommentLocally';
 import useAddHHPTask from '@/hooks/useAddHHPTask';
@@ -18,12 +6,42 @@ import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
 import useCreateCustomerOnRepairshopr from '@/hooks/useCreateCustomer';
 import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
 import useCreateTicket from '@/hooks/useCreateTicket';
+import useIpaasGetSOInfoAll from '@/hooks/useIpaasGetSoInfoAll';
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
+import { cn } from "@/lib/utils"
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 import { assetTypes } from '@/lib/asset_types';
-import { capitalizeText } from '@/lib/capitalize';
+import React, { useState } from 'react'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import dynamic from 'next/dynamic';
 import { datetimestamp } from '@/lib/date_formats';
-import axios from 'axios';
+import PageTitle from '@/components/PageTitle/page';
+import useUserLoggedIn from '@/hooks/useGetUser';
 import toast from 'react-hot-toast';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import axios from 'axios';
+import { capitalizeText } from '@/lib/capitalize';
+import useCheckWarranty from '@/hooks/useCheckHHPWarranty';
 import warranties from '@/lib/warranties';
+import useFetchCustomer from '@/hooks/useSearchCustomerRS';
+import Modal from '@/components/modal/page';
+import faults_hhp from '@/lib/hhp_faults';
+import { useCreateAssets } from './add_assets';
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page')
 )
@@ -34,9 +52,12 @@ const Sidebar = dynamic(() =>
     import('@/components/sidebar/page')
 )
 
-const BookFromSOScreen = () => {
+
+const DunoworxRobtronicScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
-    const { getSOInfoAllTookan, loadingData } = useIpaasGetSOInfoAll();
+    const { customerSearchLoading, customer, checkIfCustomerWasHere } = useFetchCustomer();
+
+    const { createAssetsOnRepairshopr, createAssetLoading } = useCreateAssets()
     const { addTicket, createTicketLoading } = useCreateTicket()
     const { addAgentTask, addAgentTaskLoading, errors } = useAddAgentTask()
     const { addCustomer, createCustomerLoading } = useCreateCustomerOnRepairshopr()
@@ -45,95 +66,43 @@ const BookFromSOScreen = () => {
     const { addCustomerLocally } = useCreateCustomerLocally()
     const { addTask } = useAddHHPTask();
     const [search, setSearch] = useState("")
-    const [firstname, setFirstname] = useState("")
-    const [lastname, setLastname] = useState("")
-    const [email, setEmail] = useState("")
-    const [businessname, setBusinessName] = useState("")
-    const [phone, setPhone] = useState("")
-    const [phone_2, setPhone2] = useState("")
-    const [address, setAddress] = useState("")
-    const [address_2, setAddress2] = useState("")
-    const [city, setCity] = useState("")
-    const [state, setState] = useState("")
-    const [serviceOrder, setServiceOrder] = useState("")
-    const [fault, setFault] = useState("")
+    const [firstname, setFirstname] = useState<string | any>("")
+    const [lastname, setLastname] = useState<string | any>("")
+    const [email, setEmail] = useState<string | any>("")
+    const [businessname, setBusinessName] = useState<string | any>("")
+    const [phone, setPhone] = useState<string | any>("")
+    const [phone_2, setPhone2] = useState<string | any>("")
+    const [address, setAddress] = useState<string | any>("")
+    const [address_2, setAddress2] = useState<string | any>("")
+    const [city, setCity] = useState<string | any>("")
+    const [state, setState] = useState<string | any>("")
+    // const [serviceOrder, setServiceOrder] = useState<string | number | any>("")
+    const [fault, setFault] = useState<string | any>("")
     const [task_id, setTaskId] = useState("")
     const [newTicketId, setNewTicketId] = useState("")
-    const [imei, setIMEI] = useState("")
-    const [serialNumber, setSerialNumber] = useState("")
-    const [model, setModel] = useState("")
-    const [issue_type, setIssueType] = useState("");
-    const [password, setPassword] = useState("")
-    const [requires_backup, setRequiresBackup] = useState("")
-    const [itemCondition, setItemCondition] = useState("");
+    const [imei, setIMEI] = useState<string>("")
+    const [serialNumber, setSerialNumber] = useState<string>("")
+    const [model, setModel] = useState<string>("")
+    const [issue_type, setIssueType] = useState<string | any>("")
+    const [password, setPassword] = useState<string | any>("")
+    const [requires_backup, setRequiresBackup] = useState<string | number | any>("")
+    const [itemCondition, setItemCondition] = useState<string | number | any>("");
     const [specialRequirement, setSpecialRequirement] = useState("")
+    const [ticket_number, setTicket] = useState("")
     const [adh, setADH] = useState("")
-    const [warranty, setWarranty] = useState("");
-    const [ticketTypeId, setTicketTypeId] = useState<number | any>();
-    const [warrantyCode, setWarrantyCode] = useState<number | any>();
-    const [localWarranty, setLocalWarranty] = useState("");
+    const [customerId, setCustomerId] = useState<string | number | any>("")
     const [job_repair_no, setJobRepairNo] = useState("")
-    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setADH(e.target.checked ? 'ADH' : 'IW');
-    };
-    const hhp_issue_types = assetTypes.filter(asset => asset.value.includes("HHP"));
-    const handleGetSOInfo = async (serviceOrder: string) => {
-        if (!serviceOrder) return
-        try {
-            const data = await getSOInfoAllTookan(serviceOrder);
-            // const fullAddress = `${data.Return.EsBpInfo.CustAddrStreet1} ${data.Return.EsBpInfo.CustAddrStreet2} ${data.Return.EsBpInfo.CustCity} ${data.Return.EsBpInfo.CustCountry}`;
-            setFirstname(data.Return.EsBpInfo.CustFirstName);
-            setLastname(data.Return.EsBpInfo.CustLastName);
-            setEmail(data.Return.EsBpInfo.CustEmail);
-            setPhone(data.Return.EsBpInfo.CustMobilePhone || '');
-            setPhone2(data.Return.EsBpInfo.CustOfficePhone || '');
-            setAddress(data.Return.EsBpInfo.CustAddrStreet1);
-            setAddress2(data.Return.EsBpInfo.CustAddrStreet2);
-            setCity(data.Return.EsBpInfo.CustCity);
-            setState(data.Return.EsBpInfo.CustState);
-            setServiceOrder(data.Return.EsHeaderInfo.SvcOrderNo);
-            setFault(data.Return.EsModelInfo.DefectDesc);
-            setIMEI(data.Return.EsModelInfo.IMEI);
-            setSerialNumber(data.Return.EsModelInfo.SerialNo);
-            setModel(data.Return.EsModelInfo.Model);
-            const warranty_type = data?.Return.EsModelInfo?.WtyType;
-            setWarranty(warranty_type);
-
-            if (warranty_type === "LP") {
-                setTicketTypeId("21877");
-                setWarrantyCode("75130");
-                setLocalWarranty("IW");
-            } else if (warranty_type === "OW") {
-                setTicketTypeId("21878");
-                setWarrantyCode("69477");
-                setLocalWarranty("OOW");
-            }
-
-        } catch (error) {
-            if (process.env.NODE_ENV !== 'production') {
-                console.error(error)
-            }
-        }
-    };
-
-    const handleWarrantyChange = (
-        event: any
-    ) => {
-        setLocalWarranty(event);
-        // Update other state variables based on the selected warranty
-        if (event === "IW") {
-            setTicketTypeId("21877");
-            setWarrantyCode("75130");
-            setLocalWarranty("IW");
-        } else if (event === "OOW") {
-            setTicketTypeId("21878");
-            setWarrantyCode("69477");
-            setLocalWarranty("OOW");
-        }
-    };
     const [hhpFiles, setHHPFiles] = useState([]);
     const [hhpFilesUploading, setHHPFilesUploading] = useState(false);
     const [attachmentsModal, setAttachmentsModal] = useState(false)
+    const [phoneNumber, setPhoneNumber] = useState<string | null | any>("")
+    const [phoneNumber2, setPhoneNumber2] = useState<string | any>("")
+    const [zip, setZip] = useState<string | any>("")
+    const { warranty, warrantyCode, ticketTypeId, localWarranty, selectedWarranty, handleWarrantyChange } = useCheckWarranty(model, serialNumber, imei)
+    const [assetId, setAssetId] = useState('')
+    const [isRework, setIsRework] = useState<boolean>(false);
+    const [addRepairNoToTitle, setAddRepairNoToTitle] = useState<boolean>(false);
+    const [openFaultList, setOpenFaultList] = React.useState(false)
 
 
     const openModal = () => {
@@ -143,7 +112,21 @@ const BookFromSOScreen = () => {
         setAttachmentsModal(false)
     }
 
-
+    const lookupCustomer = async () => {
+        const exactMatchCustomer = await checkIfCustomerWasHere(search);
+        setCustomerId(exactMatchCustomer?.id);
+        setFirstname(exactMatchCustomer?.firstname);
+        setLastname(exactMatchCustomer?.lastname);
+        setBusinessName(exactMatchCustomer?.business_name);
+        setEmail(exactMatchCustomer?.email);
+        setPhoneNumber(exactMatchCustomer?.mobile);
+        setPhoneNumber2(exactMatchCustomer?.phone);
+        setAddress(exactMatchCustomer?.address);
+        setAddress2(exactMatchCustomer?.address_2);
+        setCity(exactMatchCustomer?.city);
+        setState(exactMatchCustomer?.state);
+        setZip(exactMatchCustomer?.zip);
+    }
 
     const handleCustomerSearchOrCreation = async (
         customerData: any,
@@ -180,7 +163,7 @@ const BookFromSOScreen = () => {
             address_2: customerData.address_2,
             city: customerData.city,
             state: customerData.state,
-            zip: "",
+            zip: customerData.zip,
         };
 
         const customer_id = await addCustomer(payload);
@@ -198,6 +181,17 @@ const BookFromSOScreen = () => {
     };
 
 
+    // Dynamic subject generation
+    const subject = () => {
+        if (isRework && addRepairNoToTitle) {
+            return `*Rework: ${job_repair_no} - ${fault}`;
+        } else if (isRework) {
+            return `*Rework: ${fault}`;
+        } else if (addRepairNoToTitle) {
+            return `*${job_repair_no} - ${fault}`;
+        }
+        return `*${fault}`;
+    };
     const createTicket = async (e: React.SyntheticEvent) => {
         e.preventDefault()
         const visit_date = datetimestamp
@@ -230,10 +224,8 @@ const BookFromSOScreen = () => {
         const assets = asset_data?.data?.assets.filter(
             (asset: any) => asset.customer_id == customer_id
         ) || []
-
         // Step 2: Search or Create Asset
         let asset_ids = assets.length ? assets.map((asset: any) => asset.id) : [];
-
         // Step 3: If no assets, create a new asset
         if (assets.length === 0) {
             const newAssetPayload = {
@@ -246,19 +238,19 @@ const BookFromSOScreen = () => {
                 "customer_id": customer_id,
                 "asset_serial": serialNumber
             };
+            const createdAsset = await createAssetsOnRepairshopr(newAssetPayload)
+            // const createdAsset = await axios.post(
+            //     `${process.env.NEXT_PUBLIC_REPAIRSHOPR_CREATE_ASSETS}`,
+            //     newAssetPayload,
+            //     {
+            //         headers: {
+            //             "Content-Type": "application/json",
+            //             Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
+            //         },
+            //     }
+            // );
 
-            const createdAsset = await axios.post(
-                `${process.env.NEXT_PUBLIC_REPAIRSHOPR_CREATE_ASSETS}`,
-                newAssetPayload,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
-                    },
-                }
-            );
-
-            asset_ids = [createdAsset?.data?.asset?.id]; // Add newly created asset ID
+            asset_ids = [createdAsset?.id]; // Add newly created asset ID
         }
 
 
@@ -267,13 +259,13 @@ const BookFromSOScreen = () => {
         const payload = {
             "customer_id": customer_id, // only need this for creating a ticket on rs
             "problem_type": issue_type, // Will aways be HHP for handheld devices, no need to choose
-            "subject": "*" + fault,
+            "subject": subject(),
             "status": "New", //  will always be 'New' for a recently created ticket
             "ticket_type_id": `${ticketTypeId}`,
             "user_id": `${user?.repairshopr_id}`,
             "properties": {
-                "Service Order No.": serviceOrder,
-                "Service Order No. ": serviceOrder,
+                "Service Order No.": "",
+                "Service Order No. ": "",
                 "Item Condition ": itemCondition,
                 "Item Condition": itemCondition,
                 "Backup Requires": requires_backup,
@@ -303,6 +295,8 @@ const BookFromSOScreen = () => {
         const data = await addTicket(payload)
         // we will grab the ticket id so we can send attachments to the correct ticket on rs
         setNewTicketId(data?.ticket?.id)
+        // grab the ticket number which will be used for adding attachements with the ticket name as the filename in the backend
+        setTicket(data?.ticket?.number)
 
 
         await sendTicketDataToOurDB(
@@ -359,7 +353,7 @@ const BookFromSOScreen = () => {
                 setIssueType("Carry In")
         }
         const payload = {
-            "service_order_no": serviceOrder,
+            "service_order_no": "",
             "date_booked": date_booked,
             "model": model,
             "warranty": adh === 'ADH' ? adh : localWarranty,
@@ -395,7 +389,6 @@ const BookFromSOScreen = () => {
         try {
             const formData = new FormData();
 
-            const ticket_number = serviceOrder
             const created_at = datetimestamp;
             Array.from(hhpFiles).forEach((file) => {
                 formData.append('files', file);
@@ -431,22 +424,10 @@ const BookFromSOScreen = () => {
             }
         }
     }
-
-    // search service order (ticket)
-    // get service order
-    // create customer in the rs customer api
-    // store customer details in our customers table
-    // store customer id from that in visits table
-    // if email or phone number exists
-    // get the customer id from that
-    // store it in state
-    // search it in the assets rs api (assets being model number, serial number)
-    // if it returns nothing
-    // proceed using the current assets user will create
-    // if it returns data, store the assets id in state
-    // continue filling out other form parameters
-
-
+    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setADH(e.target.checked ? 'ADH' : 'IW');
+    };
+    const hhp_issue_types = assetTypes.filter(asset => asset.value.includes("HHP"));
     return (
         <>
             {
@@ -457,10 +438,10 @@ const BookFromSOScreen = () => {
                         <Sidebar />
 
                         <main className="container mx-auto p-1">
-                            <PageTitle title="ticket" hasSpan={true} spanText={"Create"} />
+                            <PageTitle title="Dunoworx/Robtronics" hasSpan={false} />
                             <div className='mx-auto flex w-full max-w-[300px] gap-3'>
-                                <Input type="search" name="search" placeholder='Search service order' value={search} onChange={(e) => setSearch(e.target.value)} />
-                                <Button type="button" disabled={loadingData} onClick={() => handleGetSOInfo(search)}>{loadingData ? 'Searching...' : 'Search'}</Button>
+                                <Input type="search" name="search" placeholder='Search email' value={search} onChange={(e) => setSearch(e.target.value)} />
+                                <Button type="button" disabled={customerSearchLoading} onClick={lookupCustomer}>{customerSearchLoading ? 'Searching...' : 'Search'}</Button>
                             </div>
                             <div className='grid grid-cols-1 md:grid-cols-3 items-center gap-3 mb-3'>
                                 <div>
@@ -527,9 +508,77 @@ const BookFromSOScreen = () => {
                             </div>
                             <div className='grid grid-cols-1 md:grid-cols-4 items-center gap-3 mb-3'>
                                 <div>
+                                    <Label htmlFor='fault' className="text-gray-500">Select fault</Label>
+
+                                    <Popover open={openFaultList} onOpenChange={setOpenFaultList}>
+                                        <PopoverTrigger asChild>
+                                            <Button
+                                                variant="outline"
+                                                role="combobox"
+                                                aria-expanded={openFaultList}
+                                                className="w-full justify-between"
+                                            >
+                                                {fault
+                                                    ? faults_hhp.find((framework) => framework.value === fault)?.label
+                                                    : "Select fault..."}
+                                                <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-full p-0">
+                                            <Command>
+                                                <CommandInput placeholder="Search fault..." />
+                                                <CommandList>
+                                                    <CommandEmpty>No faults found.</CommandEmpty>
+                                                    <CommandGroup>
+                                                        {faults_hhp.map((framework) => (
+                                                            <CommandItem
+                                                                id='fault'
+                                                                key={framework.value}
+                                                                value={framework.value}
+                                                                onSelect={(currentValue) => {
+                                                                    setFault(currentValue === fault ? "" : currentValue)
+                                                                    setOpenFaultList(false)
+                                                                }}
+                                                            >
+                                                                <CheckIcon
+                                                                    className={cn(
+                                                                        "ml-auto h-4 w-4",
+                                                                        fault === framework.value ? "opacity-100" : "opacity-0"
+                                                                    )}
+                                                                />
+                                                                {framework.label}
+                                                            </CommandItem>
+                                                        ))}
+                                                    </CommandGroup>
+                                                </CommandList>
+                                            </Command>
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
+                                <div>
+                                    <label className="ml-2 flex gap-2 text-gray-500">
+                                        <input
+                                            className="cursor-pointer"
+                                            type="checkbox"
+                                            checked={isRework}
+                                            onChange={() => setIsRework((prev) => !prev)}
+                                        />
+                                        Rework?
+                                    </label>
+                                    <label className="ml-2 flex gap-2 text-gray-500">
+                                        <input
+                                            className="cursor-pointer"
+                                            type="checkbox"
+                                            checked={addRepairNoToTitle}
+                                            onChange={() => setAddRepairNoToTitle((prev) => !prev)}
+                                        />
+                                        Add job repair no to fault?
+                                    </label>
+                                </div>
+                                {/* <div>
                                     <Label htmlFor="fault" className="text-gray-500">Fault</Label>
                                     <Input type="text" name="fault" value={fault || ""} onChange={(e) => setFault(e.target.value)} />
-                                </div>
+                                </div> */}
                                 {/* <div>
                                     <Label htmlFor='warranty' className="text-gray-500">Warranty</Label>
                                     <Input type="text" name='warranty' id='warranty' placeholder='warranty' value={localWarranty} onChange={(e) => setLocalWarranty(e.target.value)} />
@@ -659,9 +708,7 @@ const BookFromSOScreen = () => {
             }
 
         </>
-
-
     )
 }
 
-export default BookFromSOScreen
+export default DunoworxRobtronicScreen

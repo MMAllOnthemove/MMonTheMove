@@ -42,5 +42,6 @@ const repairshopr_statuses = [
     { id: 41, _status: "Quote Rejected/Scrapping" },
     { id: 42, _status: "Storage 1" },
     { id: 43, _status: "Complete/RNR" },
+    { id: 44, _status: "BER" },
 ];
 export default repairshopr_statuses;

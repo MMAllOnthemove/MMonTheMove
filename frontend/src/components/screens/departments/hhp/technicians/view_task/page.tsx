@@ -549,30 +549,30 @@ const ViewHHPTaskScreen = () => {
                                             <h4 className="scroll-m-20 text-lg border-b pb-2 font-semibold tracking-tight">Customer info</h4>
 
                                             {
-                                                singleCustomerByRsIdLoading ? <p className="font-medium text-sm text-gray-600">Loading customer...</p> : 
-                                                <>
+                                                singleCustomerByRsIdLoading ? <p className="font-medium text-sm text-gray-600">Loading customer...</p> :
+                                                    <>
 
-                                                    <div className='flex items-center gap-4 md:justify-between my-2'>
-                                                        <h5 className="font-medium text-sm  text-gray-500">Customer</h5>
-                                                        <Link href="/" className="text-blue-600 text-sm font-semibold">{`${singleCustomerByRsId[0]?.first_name} ${singleCustomerByRsId[0]?.last_name}`}</Link>
-                                                    </div>
-                                                    <div className='flex items-center gap-4 md:justify-between mb-2'>
-                                                        <h5 className="font-medium text-sm  text-gray-500">Email</h5>
-                                                        <Link href="/" className="text-blue-600 font-medium text-sm">{`${singleCustomerByRsId[0]?.email}`}</Link>
-                                                    </div>
-                                                    <div className='flex items-center gap-4 md:justify-between mb-2'>
-                                                        <h5 className="font-medium text-sm  text-gray-500">Mobile</h5>
-                                                        <Link href="/" className="text-blue-600 font-medium text-sm">{`${singleCustomerByRsId[0]?.phone_number}`}</Link>
-                                                    </div>
-                                                    <div className='flex items-center gap-4 md:justify-between mb-2'>
-                                                        <h5 className="font-medium text-sm  text-gray-500">Phone</h5>
-                                                        <Link href="/" className="text-blue-600 font-medium text-sm">{`${singleCustomerByRsId[0]?.home_number}`}</Link>
-                                                    </div>
-                                                    <div className='flex items-center gap-4 md:justify-between'>
-                                                        <h5 className="font-medium text-sm  text-gray-500">Primary Address</h5>
-                                                        <Link href="/" className="text-blue-600 font-medium text-sm text-end">{`${singleCustomerByRsId[0]?.address ? singleCustomerByRsId[0]?.address : ''} \n ${singleCustomerByRsId[0]?.address_2 ? singleCustomerByRsId[0]?.address_2 : ''} ${singleCustomerByRsId[0]?.city ? singleCustomerByRsId[0]?.city : ''}`}</Link>
-                                                    </div>
-                                                </>
+                                                        <div className='flex items-center gap-4 md:justify-between my-2'>
+                                                            <h5 className="font-medium text-sm  text-gray-500">Customer</h5>
+                                                            <Link href="/" className="text-blue-600 text-sm font-semibold">{`${singleCustomerByRsId[0]?.first_name} ${singleCustomerByRsId[0]?.last_name}`}</Link>
+                                                        </div>
+                                                        <div className='flex items-center gap-4 md:justify-between mb-2'>
+                                                            <h5 className="font-medium text-sm  text-gray-500">Email</h5>
+                                                            <Link href="/" className="text-blue-600 font-medium text-sm">{`${singleCustomerByRsId[0]?.email}`}</Link>
+                                                        </div>
+                                                        <div className='flex items-center gap-4 md:justify-between mb-2'>
+                                                            <h5 className="font-medium text-sm  text-gray-500">Mobile</h5>
+                                                            <Link href="/" className="text-blue-600 font-medium text-sm">{`${singleCustomerByRsId[0]?.phone_number}`}</Link>
+                                                        </div>
+                                                        <div className='flex items-center gap-4 md:justify-between mb-2'>
+                                                            <h5 className="font-medium text-sm  text-gray-500">Phone</h5>
+                                                            <Link href="/" className="text-blue-600 font-medium text-sm">{`${singleCustomerByRsId[0]?.home_number}`}</Link>
+                                                        </div>
+                                                        <div className='flex items-center gap-4 md:justify-between'>
+                                                            <h5 className="font-medium text-sm  text-gray-500">Primary Address</h5>
+                                                            <Link href="/" className="text-blue-600 font-medium text-sm text-end">{`${singleCustomerByRsId[0]?.address ? singleCustomerByRsId[0]?.address : ''} \n ${singleCustomerByRsId[0]?.address_2 ? singleCustomerByRsId[0]?.address_2 : ''} ${singleCustomerByRsId[0]?.city ? singleCustomerByRsId[0]?.city : ''}`}</Link>
+                                                        </div>
+                                                    </>
                                             }
 
                                         </div>
@@ -721,9 +721,10 @@ const ViewHHPTaskScreen = () => {
                                             </div>
                                         </div>
                                         <div className='flex items-center gap-4 md:justify-between my-2'>
-                                            <div>
+                                            <div className='flex flex-col'>
                                                 <h5 className="font-medium text-sm text-gray-500">Model number</h5>
                                                 <Link href="/" className="font-medium text-sm">{hhpTask?.model}</Link>
+                                                <Link href="/" className="font-medium text-sm text-gray-500">{hhpTask?.phone_name}</Link>
                                             </div>
                                             <div>
                                                 <h5 className="font-medium text-sm text-gray-500">IMEI</h5>

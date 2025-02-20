@@ -43,7 +43,13 @@ const useAddHHPTask = () => {
             if (error?.response?.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {
-                toast(error.response.data.errors);
+                const errorMessages = Object.entries(error.response.data.errors)
+                    .map(([key, entry]) => `${entry}`)
+                    .join("\n");
+                toast(errorMessages, {
+                    duration: 10000,
+                });
+                // toast(error.response.data.errors);
                 setErrors(error.response.data.errors); // Set validation errors to state
             }
         } finally {

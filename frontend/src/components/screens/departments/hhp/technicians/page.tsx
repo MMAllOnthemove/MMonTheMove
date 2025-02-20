@@ -380,13 +380,13 @@ const TechniciansScreen = () => {
         // Apply "engineer" filter if active
         if (engineerFilter) {
             return hhpTasks.filter((task: any) =>
-                task?.engineer?.toLowerCase()?.includes(engineerFilter.toLowerCase())
+                task?.engineer?.toLowerCase()?.includes(engineerFilter?.toLowerCase())
             );
         }
         // Apply "status" filter if active
         if (statusFilter) {
             return hhpTasks.filter((task: any) =>
-                task?.unit_status?.toLowerCase()?.includes(statusFilter.toLowerCase())
+                task?.unit_status?.toLowerCase()?.includes(statusFilter?.toLowerCase())
             );
         }
 
@@ -669,9 +669,6 @@ const TechniciansScreen = () => {
 
         const id = modifyTaskModal?.id;
         const updated_at = datetimestamp;
-        // if (modifyTaskModal?.service_order_no !== service_order_no) {
-        //     setServiceOrder(service_order_no)
-        // }
 
         if (unit_status === "Parts Request 1st Approval") {
             setPartsRequested(true);
@@ -913,6 +910,13 @@ const TechniciansScreen = () => {
             ...repairshopr_payload,
             "status": 'Waiting for Parts',
         }
+        const id = modifyTaskModal?.id;
+        const updated_at = datetimestamp;
+        const updatePayload = {
+            // This goes to our in house db
+            id, updated_at, updated_by: user?.email, unit_status: "Waiting for Parts"
+        }
+        const changes = findChanges(modifyTaskModal, updatePayload)
 
         const commentPayload: RepairshorTicketComment = {
             "subject": "Parts Order",
@@ -938,6 +942,8 @@ const TechniciansScreen = () => {
                 // clear comment
                 setPartsOrderId("")
             }
+            await updateTask(id, changes)
+            closeModal()
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') {
                 console.error("comment parts_order_id", error)
@@ -1130,7 +1136,7 @@ const TechniciansScreen = () => {
                                     onClose={() => setOpenAddTaskModal(false)}
                                     title={"Add task"}
                                     content={
-                                        <Tabs defaultValue="gspn">
+                                        <Tabs defaultValue="repairshopr">
                                             <TabsList>
                                                 <TabsTrigger value="gspn">GSPN</TabsTrigger>
                                                 <TabsTrigger value="repairshopr">Repairshopr</TabsTrigger>

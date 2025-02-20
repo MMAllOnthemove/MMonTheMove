@@ -65,8 +65,8 @@ const uploadChecklistFiles = async (req, res) => {
                 // e.g. we have a directory inside 'files' called 'driver_app_checklists'
                 // we will now reference it as https://url.com/files/driver_app_checklists/filename
                 const sanitizedFileName = file.originalname
-                    .replace(/[^a-zA-Z0-9.-]/g, "_") // Replace special characters with _
-                    .toLowerCase();
+                    ?.replace(/[^a-zA-Z0-9.-]/g, "_") // Replace special characters with _
+                    ?.toLowerCase();
                 const uniqueFileName = `${car}-${date}-${
                     index + 1
                 }-${sanitizedFileName}`;

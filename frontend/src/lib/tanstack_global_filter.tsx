@@ -14,9 +14,9 @@ export const globalFilterFn = <TData extends Record<string, any>>(
         row.original.imei,
         row.original.status
     ]; // Add all fields you want to search
-    const combinedValue = searchableFields.join(" ").toLowerCase();
+    const combinedValue = searchableFields.join(" ")?.toLowerCase();
 
-    return combinedValue.includes(filterValue.toLowerCase());
+    return combinedValue.includes(filterValue?.toLowerCase());
 };
 // export const globalFilterFn = <TData extends Record<string, any>>(
 //     row: Row<TData>,

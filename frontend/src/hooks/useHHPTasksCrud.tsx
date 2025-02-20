@@ -86,7 +86,7 @@ export const useHHPTasksCrud = () => {
                     .map(([key, entry]) => `${entry}`)
                     .join('\n');
                 toast(errorMessages, {
-                    duration: 6000,
+                    duration: 10000,
                 });
                 setHHPAddTaskErrors(error.response.data.errors);
             }

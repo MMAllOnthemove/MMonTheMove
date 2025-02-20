@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 const useFetchHHPReports = () => {
     const [reportsLoading, setLoading] = useState(false);
@@ -32,18 +33,10 @@ const useFetchHHPReports = () => {
                     responseType: "blob",
                 }
             );
-
-            // Trigger file download
-            const url = window.URL.createObjectURL(new Blob([data]));
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", `report_${Date.now()}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-        } catch (err) {
+        } catch (err: any) {
             if (process.env.NODE_ENV !== "production") {
                 console.error("Error fetching reports:", err);
+                toast.error("Error fetching reports");
             }
             setError("Failed to fetch reports. Please try again.");
         } finally {

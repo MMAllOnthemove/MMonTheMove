@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.22] - 2025-02-20
+
+### Added
+
+-   book dunoworx/robtroncics screen
+-   route to customers today screen after so creation
+-   not updating so no on rs until user types something
+
+### Fixed
+
+-   change password field in create ticket to type text
+-   labels in create ticket to show always
+
+## [0.1.21] - 2025-02-12
+
+### Added
+
+-   show phone name in view single ticket
+-   password field for booking user device
+-   all terms and conditions for assembly
+-   can select warranty manually when creating ticket and book from so so as to void if necessary
+-   BER status
+-   dynamic fault generation catering for rework, adding job repair no to title
+
+### Fixed
+
+-   parts order id updating rs and not locally
+-   get reports was not working on empty data
+
 ## [0.1.20] - 2025-01-31
 
 ### Added
