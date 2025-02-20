@@ -669,9 +669,6 @@ const TechniciansScreen = () => {
 
         const id = modifyTaskModal?.id;
         const updated_at = datetimestamp;
-        // if (modifyTaskModal?.service_order_no !== service_order_no) {
-        //     setServiceOrder(service_order_no)
-        // }
 
         if (unit_status === "Parts Request 1st Approval") {
             setPartsRequested(true);
@@ -1139,7 +1136,7 @@ const TechniciansScreen = () => {
                                     onClose={() => setOpenAddTaskModal(false)}
                                     title={"Add task"}
                                     content={
-                                        <Tabs defaultValue="gspn">
+                                        <Tabs defaultValue="repairshopr">
                                             <TabsList>
                                                 <TabsTrigger value="gspn">GSPN</TabsTrigger>
                                                 <TabsTrigger value="repairshopr">Repairshopr</TabsTrigger>

@@ -95,13 +95,18 @@ export const menuItems = [
                 item: "All customers",
                 pageRoute: "/bookings/staff/customers",
             },
+            {
+                id: 22,
+                item: "Robtronics/Dunoworx booking",
+                pageRoute: "/bookings/staff/dunoworx_robtronics",
+            },
         ],
     },
     {
         label: "Bookings customers",
         sublinks: [
             {
-                id: 22,
+                id: 23,
                 item: "Begin process",
                 pageRoute: "/bookings/customers/welcome",
             },

@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.22] - 2025-02-20
+
+### Added
+
+-   book dunoworx/robtroncics screen
+-   route to customers today screen after so creation
+-   not updating so no on rs until user types something
+
+### Fixed
+
+-   change password field in create ticket to type text
+-   labels in create ticket to show always
+
 ## [0.1.21] - 2025-02-12
 
 ### Added

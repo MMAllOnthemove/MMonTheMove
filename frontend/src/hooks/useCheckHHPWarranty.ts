@@ -76,16 +76,14 @@ const useCheckWarranty = (
         checkWarranty();
     }, [imei, modelNumber, serialNumber]);
 
-    const handleWarrantyChange = (
-        event: React.ChangeEvent<HTMLSelectElement>
-    ) => {
-        setLocalWarranty(event.target.value);
+    const handleWarrantyChange = (event: any) => {
+        setLocalWarranty(event);
         // Update other state variables based on the selected warranty
-        if (event.target.value === "IW") {
+        if (event === "IW") {
             setTicketTypeId("21877");
             setWarrantyCode("75130");
             setLocalWarranty("IW");
-        } else if (event.target.value === "OOW") {
+        } else if (event === "OOW") {
             setTicketTypeId("21878");
             setWarrantyCode("69477");
             setLocalWarranty("OOW");
