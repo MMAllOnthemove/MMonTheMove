@@ -1,5 +1,6 @@
 import * as Yup from "yup";
 import { pool } from "../../db.js";
+import { io } from "../../services/io.js";
 
 const otpSchema = Yup.object({
     created_by: Yup.string()
@@ -16,6 +17,7 @@ const createOTP = async (req, res) => {
     // Validate request body
     await otpSchema.validate(req.body, { abortEarly: false });
     const { created_by, otp_code } = req.body;
+    console.log(created_by, otp_code);
     const created_at = new Date(
         Date.now() + 1000 * 60 * -new Date().getTimezoneOffset()
     )
@@ -32,12 +34,13 @@ const createOTP = async (req, res) => {
         if (hasOTPBeenUsed.rows.length > 0) {
             return res.status(401).json({ message: "OTP already exists" });
         } else {
-            await pool.query(
-                "INSERT INTO otp (created_by, otp_code, created_at) VALUES ($1, $2, $3)",
+            const { rows } = await pool.query(
+                "INSERT INTO otp (created_by, otp_code, created_at) VALUES ($1, $2, $3) returning otp_code",
                 [created_by, otp_code, created_at]
             );
             return res.status(201).json({
-                message: "Otp created, thank you!",
+                message: "New OTP added!",
+                otp: rows[0]?.otp_code,
             });
         }
     } catch (error) {

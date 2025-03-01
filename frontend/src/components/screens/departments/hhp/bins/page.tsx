@@ -11,6 +11,7 @@ import {
 import React, { useMemo } from 'react'
 import { getEngineerBinsData } from '@/lib/analytics_functions'
 import Link from 'next/link'
+import useSocket from '@/hooks/useSocket'
 const Sidebar = dynamic(() => import('@/components/sidebar/page'))
 const LoadingScreen = dynamic(() => import('@/components/loading_screen/page'))
 const PageTitle = dynamic(() => import('@/components/PageTitle/page'))
@@ -20,7 +21,7 @@ const BinsScreen = () => {
     const { engineerBinList, engineerBinListLoading, refetch } = useGetEngineerBins();
 
 
-
+    const { socket, isConnected } = useSocket()
 
     const calculateByStatus = useMemo(() => {
         return (engineer: string | null) => {
@@ -69,19 +70,12 @@ const BinsScreen = () => {
                                                         <p>Total Units: {task.units_count}</p>
                                                         <p>Ticket Numbers:</p>
                                                         <ul className="list-disc list-inside pl-4">
-                                                            <ul className="list-disc list-inside pl-4">
-                                                                {task.tickets?.map((ticket, i) => (
-                                                                    <li key={i}>
-                                                                        <Link
-                                                                            href={`https://allelectronics.repairshopr.com/tickets/${ticket.repairshopr_job_id}`}
-                                                                            target="_blank"
-                                                                            rel="noopener noreferrer"
-                                                                        >
-                                                                            {ticket.ticket_number}
-                                                                        </Link>
-                                                                    </li>
-                                                                ))}
-                                                            </ul>
+
+                                                            {task.tickets?.map((ticket, i) => (
+                                                                <li key={i}>
+                                                                    {ticket.ticket_number}
+                                                                </li>
+                                                            ))}
 
                                                         </ul>
                                                     </div>

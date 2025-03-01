@@ -54,7 +54,7 @@ import Modal from '@/components/modal/page'
 import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud'
 import columns from '@/lib/hhp_technicians_table_columns'
 import { globalFilterFn } from '@/lib/tanstack_global_filter'
-import { ModifyTaskModalTechnicians, RepairshorTicketComment, TAddPart, TechniciansTableData, TTaskParts } from '@/lib/types'
+import { ModifyTaskModalTechnicians, RepairshorTicketComment, TechniciansTableData } from '@/lib/types'
 import { CheckedState } from '@radix-ui/react-checkbox'
 import {
     ColumnFiltersState,
@@ -99,22 +99,21 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import useFetchHHPReports from '@/hooks/useFetchHHPReports'
 import useIpaasGetBranchStockOverview from '@/hooks/useGetBranchStockOverview'
+import useSocket from "@/hooks/useSocket"
+import useUpdateParts from "@/hooks/useUpdateParts"
 import openFullScreenPopup from '@/lib/openFullScreenPopup'
 import repairshopr_statuses from '@/lib/repairshopr_status'
 import repairshopr_statuses_techs from '@/lib/tech_rs_statuses'
 import { type_21877, type_21878 } from '@/lib/warranty_maps'
 import moment from 'moment'
-import UnitAssets from "./assets/page"
-import useUpdateParts from "@/hooks/useUpdateParts"
 const DateCalculationsScreen = dynamic(() =>
     import('./date_calculations/page'), { ssr: false }
 )
 
 
-
-
 const TechniciansScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
+    const { socket, isConnected } = useSocket()
     const { hhpTasks, fetchTasks, updateHHPTaskLoading, updateTask, deleteTask } = useHHPTasksCrud()
     const { updatePart, updatePartLoading } = useUpdateParts()
     const { reportsLoading, fetchReports, error } = useFetchHHPReports();
@@ -122,7 +121,6 @@ const TechniciansScreen = () => {
         fetchTasks();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
     const { updateRepairTicket } = useRepairshoprTicket()
     const { updateRepairTicketComment } = useRepairshoprComment()
     const { addRepairTicketFile } = useRepairshoprFile()
@@ -178,6 +176,7 @@ const TechniciansScreen = () => {
     const [rs_warranty, setRSWarranty] = useState<string | undefined>("")
     const [assigned_date, setAssignedDate] = useState("")
     const [in_progress_date, setInProgressDate] = useState("")
+
 
 
     // engineer filters
@@ -270,7 +269,7 @@ const TechniciansScreen = () => {
         setModifyTaskModalOpen(true);
         // by opening the modal, that will be the assessment_date and assessed_true
         // check if logged in user matches the engineer name, so only engineer can set auto assess
-        if (user?.full_name.toLowerCase().includes(row?.original?.engineer.toLowerCase())) {
+        if (user?.full_name?.toLowerCase()?.includes(row?.original?.engineer?.toLowerCase())) {
             const id = row?.original?.id;
             const created_by = user?.email
             const payload = { assessment_date: datetimestamp, units_assessed: true, created_by }
@@ -325,7 +324,8 @@ const TechniciansScreen = () => {
 
     };
     const handleDeleteRow = async (row: TechniciansTableData) => {
-        await deleteTask(row?.original?.id);
+        const userId = user?.user_unique_id
+        await deleteTask(row?.original?.id, userId);
 
     };
     const downloadReport = async () => {

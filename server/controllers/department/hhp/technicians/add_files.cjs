@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const pg = require("pg");
 const yup = require("yup");
-
+require("dotenv").config();
 const moment = require("moment");
 
 // create a connection to db as we cannot import a module in a common js file
@@ -72,6 +72,7 @@ const uploadTechnicianFiles = async (req, res) => {
                 }-${sanitizedFileName}`;
 
                 const remotePath = `/home/mmallonthemove/uploads/hhp/${uniqueFileName}`;
+                console.log("remotePath", remotePath);
 
                 try {
                     // Upload the file to SFTP

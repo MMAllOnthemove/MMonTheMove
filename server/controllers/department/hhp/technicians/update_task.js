@@ -1,5 +1,7 @@
 import { pool } from "../../../../db.js";
 import appLogs from "../../../logs/logs.js";
+import { io } from "../../../../services/io.js";
+import emitBinStatsUpdate from "../bin_dashboard/emit_bin_updates.js";
 
 export const UpdateTask = async (req, res) => {
     const { id } = req.params; // Assuming the ID is passed in the URL
@@ -32,9 +34,11 @@ export const UpdateTask = async (req, res) => {
             text: query,
             values: values,
         });
+
         const fetchResult = await pool.query(returnDataWithNewRow, [
             result?.rows[0]?.id,
         ]);
+        const updatedTask = fetchResult.rows[0];
         // Check if the update was successful
         if (result.rowCount === 0) {
             return res
@@ -42,9 +46,11 @@ export const UpdateTask = async (req, res) => {
                 .json({ error: "Task not found or no changes made" });
         }
         await appLogs("UPDATE", changes?.updated_by, req.body);
+        // io.emit("updateTask", updatedTask); // Notify clients about task update
+        emitBinStatsUpdate(); // Emit bin stats update
         return res.status(201).json({
             message: "HHP task updated",
-            task: fetchResult.rows[0],
+            task: updatedTask,
         });
     } catch (err) {
         if (process.env.NODE_ENV !== "production") {

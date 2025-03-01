@@ -497,3 +497,56 @@ create table logs (
     created_at text,
     changes jsonb
 )
+
+CREATE TABLE notifications (
+    id SERIAL PRIMARY KEY,
+    -- Unique identifier for the notification
+    user_id uuid NOT NULL,
+    -- User ID the notification is for
+    type VARCHAR(255) NOT NULL,
+    -- Type of the notification (e.g., 'task-assigned', 'task-updated')
+    message TEXT NOT NULL,
+    -- The actual notification message
+    status VARCHAR(20) DEFAULT 'unread',
+    -- Status of the notification ('read' or 'unread')
+    created_at text,
+    -- Timestamp for when the notification was created
+    updated_at text,
+    -- Timestamp for when the notification was last updated
+    FOREIGN KEY (user_id) REFERENCES company_people(user_unique_id) -- Assuming there's a 'users' table
+);
+
+CREATE TABLE products (
+    product_id bigserial, 
+    product__unique_id uuid NOT NULL unique,
+    id BIGINT PRIMARY KEY,
+    price_cost DECIMAL(10, 2) NOT NULL,
+    price_retail DECIMAL(10, 2) NOT NULL,
+    condition TEXT,
+    description TEXT,
+    maintain_stock BOOLEAN DEFAULT FALSE,
+    name VARCHAR(255) NOT NULL,
+    quantity INT DEFAULT 0,
+    warranty TEXT,
+    sort_order INT,
+    reorder_at INT,
+    disabled BOOLEAN DEFAULT FALSE,
+    taxable BOOLEAN DEFAULT TRUE,
+    product_category VARCHAR(255),
+    category_path VARCHAR(255),
+    upc_code VARCHAR(255) UNIQUE,
+    discount_percent DECIMAL(5, 2),
+    warranty_template_id BIGINT,
+    qb_item_id BIGINT,
+    desired_stock_level INT,
+    price_wholesale DECIMAL(10, 2) DEFAULT 0,
+    notes TEXT,
+    tax_rate_id BIGINT,
+    physical_location VARCHAR(255),
+    serialized BOOLEAN DEFAULT FALSE,
+    vendor_ids JSONB,
+    long_description TEXT,
+    since_updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    location_quantities JSONB,
+    photos JSONB
+);

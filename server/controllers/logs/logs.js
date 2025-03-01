@@ -5,7 +5,6 @@ import { datetimestamp } from "../../utils/datetimestamp.js";
 
 const appLogs = async (operation, changed_by, changes) => {
     const datetime = datetimestamp;
-
     try {
         const result = await pool.query(
             "INSERT INTO logs (operation, changed_by, created_at, changes) values ($1, $2, $3, $4)",

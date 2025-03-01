@@ -471,3 +471,56 @@ export const getEngineerBinsData = (data: any[]) => {
     );
     return groupedData;
 };
+// type FilterParams = {
+//     status: string; // Status to filter by (e.g., "Completed", "In Progress", etc.)
+//     startDate?: string;
+//     endDate?: string;
+// };
+
+// export const countUnitsByStatus = (
+//     data: any[],
+//     { status, startDate, endDate }: FilterParams
+// ) => {
+//     return data.reduce((count, item) => {
+//         // Ensure the item matches the required status
+//         if (item.unit_status !== status) return count;
+
+//         // If a date range is provided, count only items within that range
+//         if (startDate && endDate) {
+//             return isDateInRange(item.date_booked, startDate, endDate)
+//                 ? count + 1
+//                 : count;
+//         }
+
+//         // If no date range is provided, count all units with the given status
+//         return count + 1;
+//     }, 0);
+// };
+type FilterParams = {
+    status: string; // Status to filter by (e.g., "Completed", "In Progress", etc.)
+    startDate?: string;
+    endDate?: string;
+    engineer?: string;
+};
+
+export const countUnitsByStatus = (
+    data: any[],
+    { status, startDate, endDate, engineer }: FilterParams
+) => {
+    return data.reduce((count, item) => {
+        // Ensure the item matches the required status
+        if (item.unit_status !== status) return count;
+
+        // If a date range is provided, filter within that range
+        const isWithinDateRange =
+            !startDate ||
+            !endDate ||
+            isDateInRange(item.date_booked, startDate, endDate);
+
+        // If an engineer is selected and a date range exists, filter by engineer too
+        const matchesEngineer = engineer ? item.engineer === engineer : true;
+
+        // Only count if it satisfies all conditions
+        return isWithinDateRange && matchesEngineer ? count + 1 : count;
+    }, 0);
+};

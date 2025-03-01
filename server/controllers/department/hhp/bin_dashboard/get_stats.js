@@ -1,5 +1,5 @@
 import { pool } from "../../../../db.js";
-
+import { io } from "../../../../services/io.js";
 const GetBinStats = async (req, res) => {
     try {
         const { rows } = await pool.query(

@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { THHPTasks } from '@/lib/types';
 import toast from 'react-hot-toast';
+import socket from '@/socket';
 
 type TUpdateValues = {
     id?: string | number;
@@ -76,9 +77,10 @@ export const useHHPTasksCrud = () => {
                 }
             );
             setHHPTasks((prev: any) => [...prev, data?.task]);// Append new task
-            toast.success(`${data?.message}`);
+            // 🔴 Emit task creation event
+            socket.emit("addTask", data?.task);
+            // toast.success(`${data?.message}`);
         } catch (error: any) {
-            console.error("error", error)
             if (error?.response?.data?.message) {
                 toast.error(error.response.data.message);
             } else if (error?.response?.data?.errors) {
@@ -108,9 +110,13 @@ export const useHHPTasksCrud = () => {
                     withCredentials: true,
                 }
             );
-            // setHHPTasks((prev: any) => [...prev, data?.task])
-            await fetchTasks()
-            // setHHPTasks((prev: any) => prev.map((task: any) => (task.id === taskId ? data : task)));
+            // await fetchTasks()
+            setHHPTasks((prev: any) =>
+                prev.map((task: any) => (task.id === taskId ? data.task : task))
+            );
+
+            // 🔴 Emit task update event
+            socket.emit("updateTask", data?.task);
         } catch (error: any) {
             if (error) toast.error(error?.response?.data?.error);
         } finally {
@@ -119,18 +125,22 @@ export const useHHPTasksCrud = () => {
 
     };
 
-    const deleteTask = async (id: string) => {
-        if (!id) return;
+    const deleteTask = async (taskId: string, userId: string | undefined) => {
+        if (!taskId) return;
         setDeleteHHPTaskLoading(true)
         try {
-            const { data } = await axios.delete(
-                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/${id}`,
+            const response = await axios.delete(
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/${taskId}`,
                 {
                     withCredentials: true,
+                    headers: { "Content-Type": "application/json" }, // Ensure JSON format
+                    data: { userId }
                 }
             );
-            toast.success(`${data?.message}`);
-            setHHPTasks((prev: any) => prev.filter((task: any) => task.id !== id));
+            // // 🔴 Emit task delete event
+            // socket.emit("deleteTask", { taskId, deletedBy: userId });
+            setHHPTasks((prev: any) => prev.filter((task: any) => task.id !== taskId));
+            // toast.success(`Ticket: ${response?.data?.task?.ticket_number} has been deleted`, { position: 'bottom-right' });
         } catch (error: any) {
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
@@ -139,6 +149,31 @@ export const useHHPTasksCrud = () => {
             setDeleteHHPTaskLoading(false); // Stop loading
         }
     };
+    // 🔄 Listen for real-time updates
+    useEffect(() => {
+        socket.on("addTask", (task) => {
+            toast.success(`Ticket: ${task?.ticket_number} has been added`, { position: 'bottom-center' });
+            setHHPTasks((prev: any) => [...prev, task]); // Add assigned task
+        });
 
+        socket.on("updateTask", (updatedTask) => {
+            toast.success(`Ticket: ${updatedTask?.ticket_number} has been updated`, { position: 'bottom-center' });
+            setHHPTasks((prev: any) =>
+                prev.map((task: any) => (task.id === updatedTask.id ? updatedTask : task))
+            );
+        });
+
+        socket.on("deleteTask", ({ task, deletedBy, ticket_number }) => {
+            toast.success(`Ticket: ${ticket_number} has been deleted by ${deletedBy}`, { position: 'bottom-center', duration: 4000 });
+            setHHPTasks((prev: any) => prev.filter((task: any) => task.id !== task?.id));
+        });
+
+        return () => {
+            socket.off("task-assigned");
+            socket.off("addTask");
+            socket.off("updateTask");
+            socket.off("deleteTask");
+        };
+    }, []);
     return { hhpTasks, fetchTasks, hhpAddTaskLoading, addTask, hhpAddTaskErrors, updateHHPTaskLoading, updateTask, deleteHHPTaskLoading, deleteTask };
 };

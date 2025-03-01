@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.23] - 2025-02-20
+
+### Added
+
+-   kafkajs, socket io and client
+-   require('dotenv').config() where files are added (file.cjs)
+-   ` sql ALTER TABLE company_people ADD CONSTRAINT unique_user_unique_id UNIQUE (user_unique_id);`
+-   TABLE notifications
+-   add, delete, update realtime
+-   turn off clickable ticket numbers in enginee bin
+-   engineer bin updates in realtime
+-   otp add and get, realtime
+
 ## [0.1.22] - 2025-02-20
 
 ### Added

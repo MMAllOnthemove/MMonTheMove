@@ -12,14 +12,15 @@ import {
 } from "@/components/ui/dropdown-menu"
 import useUserLoggedIn from "@/hooks/useGetUser"
 import { menuItems } from "@/lib/sidebar_links"
-import { ChevronDownIcon, SlashIcon } from "@heroicons/react/24/outline"
+import { ChevronDownIcon, SlashIcon, } from "@heroicons/react/24/outline"
 import React, { useState } from "react"
 
-export default function Navbar() {
+export default function Navbar({ isConnected }: boolean | any) {
     // customize open on hover
     const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
-    const { user, isLoggedIn, loading } = useUserLoggedIn()
+    const { user } = useUserLoggedIn()
     const isAdmin = user?.user_role === "admin" // Assuming you have a role property in your user object
+
     return (
 
         <Breadcrumb>

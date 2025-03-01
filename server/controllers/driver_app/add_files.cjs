@@ -4,7 +4,7 @@ const fs = require("fs");
 const yup = require("yup");
 const pg = require("pg");
 const moment = require("moment");
-
+require("dotenv").config();
 // create a connection to db as we cannot import a module in a common js file
 
 const pool = new pg.Pool({
