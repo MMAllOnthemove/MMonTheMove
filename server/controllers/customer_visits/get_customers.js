@@ -1,5 +1,5 @@
 import { pool } from "../../db.js";
-
+import "dotenv/config";
 const getCustomers = async (req, res) => {
     try {
         const { rows } = await pool.query(

@@ -1,6 +1,6 @@
 const sftp = require("ssh2-sftp-client");
 const cors = require("cors");
-
+require("dotenv").config();
 const sftpConfig = {
     host: `${process.env.SFTP_HOST}`,
     port: process.env.SFTP_PORT,

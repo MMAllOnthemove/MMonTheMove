@@ -1,5 +1,5 @@
 import { pool } from "../../db.js";
-
+import "dotenv/config";
 const getComments = async (req, res) => {
     let { id, page = 1, limit = 10 } = req.query;
 

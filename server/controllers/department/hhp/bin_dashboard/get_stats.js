@@ -17,7 +17,6 @@ ORDER BY engineer, unit_status;
         );
         return res.status(200).json(rows);
     } catch (err) {
-        console.error("Error fetching bin stats:", err); // Logging for debugging
         return res.status(500).json({ error: "Failed to get bin stats" });
     }
 };

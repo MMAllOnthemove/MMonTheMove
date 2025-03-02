@@ -1,12 +1,10 @@
-import bcrypt from "bcrypt";
-import { pool } from "../../db.js";
 import "dotenv/config";
-import {
-    generateAccessToken,
-    generateRefreshToken,
-} from "../../utils/token_generate.js";
-import * as Yup from "yup";
 import nodemailer from "nodemailer";
+import * as Yup from "yup";
+import { pool } from "../../db.js";
+import {
+    generateAccessToken
+} from "../../utils/token_generate.js";
 // Login route
 // authentication
 

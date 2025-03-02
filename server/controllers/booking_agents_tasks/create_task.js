@@ -1,6 +1,7 @@
 import { pool } from "../../db.js";
 import * as Yup from "yup";
 import appLogs from "../logs/logs.js";
+import emitBookingStatsUpdate from "./emit_live_updates.js";
 
 const addAgentsSchema = Yup.object({
     ticket_number: Yup.string().required("Ticket number is required!"),
@@ -36,7 +37,7 @@ const addBookingAgentTask = async (req, res) => {
             return res.status(401).json({ message: "Task already exists" });
         } else {
             const { rows } = await pool.query(
-                "INSERT INTO booking_agents_tasks (ticket_number, created_by, booking_agent, created_at, original_ticket_date) VALUES ($1, $2, $3, $4, $5)",
+                "INSERT INTO booking_agents_tasks (ticket_number, created_by, booking_agent, created_at, original_ticket_date) VALUES ($1, $2, $3, $4, $5) returning *",
                 [
                     ticket_number,
                     created_by,
@@ -46,8 +47,10 @@ const addBookingAgentTask = async (req, res) => {
                 ]
             );
             await appLogs("INSERT", created_by, req.body);
+            emitBookingStatsUpdate();
             return res.status(201).json({
                 message: "Successfully created",
+                task: rows[0],
             });
         }
     } catch (error) {

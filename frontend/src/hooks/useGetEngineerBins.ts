@@ -28,8 +28,8 @@ const useGetEngineerBins = () => {
             return response?.data;
         } catch (error: any) {
             if (process.env.NODE_ENV !== "production") {
+                console.log(error);
             }
-            // console.error(error?.response?.data?.error);
         } finally {
             setLoading(false);
         }
@@ -38,7 +38,6 @@ const useGetEngineerBins = () => {
         refetch();
         // Listen for real-time bin stats updates
         socket.on("binStatsUpdated", (updatedStats) => {
-            console.log("Received binStatsUpdated event:", updatedStats);
             setData(updatedStats);
         });
 

@@ -4,19 +4,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import useAddAgentTask from '@/hooks/useAddBookingAgentTask';
 import useAddTaskCommentLocally from '@/hooks/useAddCommentLocally';
-import useAddHHPTask from '@/hooks/useAddHHPTask';
 import useCheckWarranty from '@/hooks/useCheckHHPWarranty';
 import useCreateTicket from '@/hooks/useCreateTicket';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import { assetTypes } from '@/lib/asset_types';
 import { datetimestamp } from '@/lib/date_formats';
-import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 
-import AlertDialogServiceOrder from './alert_dialog';
-import { cn } from "@/lib/utils"
 import {
     Command,
     CommandEmpty,
@@ -24,23 +19,29 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover"
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
+} from "@/components/ui/popover";
+import useBookingAgentsTasks from '@/hooks/useBookingAgentsTasks';
+import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud';
+import useSocket from '@/hooks/useSocket';
 import faults_hhp from '@/lib/hhp_faults';
+import { cn } from "@/lib/utils";
 import warranties from '@/lib/warranties';
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
+import AlertDialogServiceOrder from './alert_dialog';
 
 
 
 
 const HHP = (customerProps: string | string[] | any) => {
     const { customerId, email } = customerProps?.customerProps;
-    const { addTask, addHHPTaskErrors } = useAddHHPTask();
-    const { addAgentTask, addAgentTaskLoading, errors } = useAddAgentTask()
+    const { socket, isConnected } = useSocket()
+    const { addTask, hhpAddTaskErrors } = useHHPTasksCrud();
+    const { addAgentTask, addAgentTaskLoading, errors } = useBookingAgentsTasks()
     const { user } = useUserLoggedIn()
     const { addCommentLocally } = useAddTaskCommentLocally()
     const { addTicket, createTicketLoading } = useCreateTicket()
@@ -221,7 +222,7 @@ const HHP = (customerProps: string | string[] | any) => {
             "rs_warranty": warrantyCode,
             "ticket_type_id": ticket_type_id
         }
-        const res = await addTask(payload)
+        const res: any = await addTask(payload)
         setTaskId(res?.id)
 
 
@@ -241,7 +242,7 @@ const HHP = (customerProps: string | string[] | any) => {
             <form onSubmit={createTicket}>
                 <div className="grid grid-cols-1 text-start md:grid-cols-4 gap-4 items-center mb-2">
                     <div>
-                        <Label htmlFor='fault' className="text-gray-500">Select fault</Label>
+                        <Label htmlFor='fault' className="text-gray-500">Select fault *</Label>
 
                         <Popover open={openFaultList} onOpenChange={setOpenFaultList}>
                             <PopoverTrigger asChild>
@@ -249,7 +250,7 @@ const HHP = (customerProps: string | string[] | any) => {
                                     variant="outline"
                                     role="combobox"
                                     aria-expanded={openFaultList}
-                                    className="w-full justify-between"
+                                    className="w-full justify-between text-gray-500 border-red-500 focus:border-red-500 focus-visible:ring-0 focus:shadow-none focus:outline-none"
                                 >
                                     {fault
                                         ? faults_hhp.find((framework) => framework.value === fault)?.label
@@ -313,8 +314,8 @@ const HHP = (customerProps: string | string[] | any) => {
                         <Input type="number" name='serviceOrderNumber' id='serviceOrderNumber' placeholder='Service order number' value={serviceOrderNumber || ""} onChange={(e) => setServiceOrder(e.target.value)} />
                     </div>
                     <div>
-                        <Label htmlFor='itemCondition' className="text-gray-500">Item condition</Label>
-                        <Input type="text" name='itemCondition' id='itemCondition' placeholder='Item condition' value={itemCondition} onChange={(e) => setItemCondition(e.target.value)} />
+                        <Label htmlFor='itemCondition' className="text-gray-500">Item condition *</Label>
+                        <Input type="text" name='itemCondition' id='itemCondition' className="border-red-500 focus:border-red-500 focus-visible:ring-0 focus:shadow-none focus:outline-none" placeholder='Item condition' value={itemCondition} onChange={(e) => setItemCondition(e.target.value)} />
                     </div>
 
                 </div>
@@ -328,19 +329,19 @@ const HHP = (customerProps: string | string[] | any) => {
                         <Input type="text" name='password' id='password' placeholder='Device password' value={password} onChange={(e) => setPassword(e.target.value)} />
                     </div>
                     <div>
-                        <Label htmlFor='requires_backup' className="text-gray-500">Requires backup?</Label>
+                        <Label htmlFor='requires_backup' className="text-gray-500">Requires backup? *</Label>
                         <Select
                             value={requires_backup}
                             onValueChange={(e) => setRequiresBackup(e)}
                             name='requires_backup'
 
                         >
-                            <SelectTrigger className="text-gray-500">
-                                <SelectValue placeholder="Backup requires" />
+                            <SelectTrigger className="text-gray-500 border-red-500 focus:border-red-500 focus-visible:ring-0 focus:shadow-none focus:outline-none">
+                                <SelectValue placeholder="Backup requires *" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
-                                    <SelectLabel>Requires backup</SelectLabel>
+                                    <SelectLabel>Requires backup *</SelectLabel>
                                     <SelectItem value={`${ticketTypeId === "21877" ? '75129' : '69753'}`}>No</SelectItem>
                                     <SelectItem value={`${ticketTypeId === "21878" ? '75128' : '69752'}`}>Yes</SelectItem>
                                 </SelectGroup>
@@ -354,8 +355,8 @@ const HHP = (customerProps: string | string[] | any) => {
                             onValueChange={(e) => setIssueType(e)}
                             name='stores'
                         >
-                            <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Issue type" />
+                            <SelectTrigger className="text-gray-500 border-red-500 focus:border-red-500 focus-visible:ring-0 focus:shadow-none focus:outline-none">
+                                <SelectValue placeholder="Issue type *" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
@@ -367,7 +368,7 @@ const HHP = (customerProps: string | string[] | any) => {
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
-                        {addHHPTaskErrors.stores && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.stores}</p>}
+                        {hhpAddTaskErrors.stores && <p className="text-sm text-red-500 font-medium">{hhpAddTaskErrors.stores}</p>}
                     </div>
 
                 </div>
@@ -379,18 +380,18 @@ const HHP = (customerProps: string | string[] | any) => {
 
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-2 mb-2">
                     <div>
-                        <Label htmlFor='imei' className="text-gray-500">IMEI</Label>
-                        <Input type="text" name="imei" value={IMEI || ""} onChange={(e) => setIMEI(e.target.value)} id='imei' placeholder='IMEI' />
+                        <Label htmlFor='imei' className="text-gray-500">IMEI *</Label>
+                        <Input type="text" name="imei" className="border-red-500 focus:border-red-500 focus-visible:ring-0 focus:shadow-none focus:outline-none" value={IMEI || ""} onChange={(e) => setIMEI(e.target.value)} id='imei' placeholder='IMEI' />
                     </div>
-                    {addHHPTaskErrors.imei && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.imei}</p>}
+                    {hhpAddTaskErrors.imei && <p className="text-sm text-red-500 font-medium">{hhpAddTaskErrors.imei}</p>}
                     <div>
-                        <Label htmlFor='model' className="text-gray-500">Model</Label>
-                        <Input type="text" value={modelNumber || ""} placeholder='Model number' onChange={(e) => setModelNumber(e.target.value)} name='model' id='model' />
+                        <Label htmlFor='model' className="text-gray-500">Model *</Label>
+                        <Input type="text" value={modelNumber || ""} className="border-red-500 focus:border-red-500 focus-visible:ring-0 focus:shadow-none focus:outline-none" placeholder='Model number' onChange={(e) => setModelNumber(e.target.value)} name='model' id='model' />
                     </div>
                     <div>
-                        <Label htmlFor='serial_number' className="text-gray-500">Serial number</Label>
-                        <Input type="text" value={serialNumber || ""} placeholder='Serial number' onChange={(e) => setSerialNumber(e.target.value)} name='serial_number' id='serial_number' />
-                        {addHHPTaskErrors.serial_number && <p className="text-sm text-red-500 font-medium">{addHHPTaskErrors.serial_number}</p>}
+                        <Label htmlFor='serial_number' className="text-gray-500">Serial number *</Label>
+                        <Input type="text" value={serialNumber || ""} className="border-red-500 focus:border-red-500 focus-visible:ring-0 focus:shadow-none focus:outline-none" placeholder='Serial number' onChange={(e) => setSerialNumber(e.target.value)} name='serial_number' id='serial_number' />
+                        {hhpAddTaskErrors.serial_number && <p className="text-sm text-red-500 font-medium">{hhpAddTaskErrors.serial_number}</p>}
 
                     </div>
                     <div>

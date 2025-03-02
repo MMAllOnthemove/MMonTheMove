@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import useAddAgentTask from '@/hooks/useAddBookingAgentTask'
 import useUserLoggedIn from '@/hooks/useGetUser'
 import useRepairshoprFetchTicket from '@/hooks/useRepairshoprFetchTicket'
 import dynamic from 'next/dynamic'
@@ -38,7 +37,8 @@ const TableHead = dynamic(() =>
 )
 
 
-import useFetchAgentTasks from '@/hooks/useFetchBookingAgentsTasks'
+import useBookingAgentsTasks from "@/hooks/useBookingAgentsTasks"
+import useSocket from "@/hooks/useSocket"
 import { datetimestamp } from '@/lib/date_formats'
 import { TBookingAgentsTasksViewIndieList } from '@/lib/types'
 import moment from 'moment'
@@ -50,8 +50,13 @@ interface GroupedData {
 }
 const BookingAgentsReportScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
-    const { addAgentTask, addAgentTaskLoading, errors } = useAddAgentTask()
-    const { bookingAgentTasksList } = useFetchAgentTasks()
+    const { socket, isConnected } = useSocket()
+    const { fetchBookingAgentTasks,
+        addAgentTask,
+        addAgentTaskLoading,
+        bookingAgentTasksList,
+        bookingAgentTasksListLoading,
+        errors, } = useBookingAgentsTasks()
     const [searchTicket, setSearchTicket] = useState("")
     const [ticket_number, setTicketNumber] = useState<string | undefined>("")
     const [booking_agent, setBookingAgent] = useState<string | undefined>("")
@@ -92,22 +97,24 @@ const BookingAgentsReportScreen = () => {
     }, [searchTicket, fetchRSTicketData, user?.full_name, user?.repairshopr_id])
 
 
-    // Group tasks by name and calculate jobs count based on date range
     const filteredData = useMemo(() => {
-        if (!dateFrom || !dateTo) return []; // Show no data if dates are not selected
+        // Default to today's date if no date range is selected
+        const today = moment().format("YYYY-MM-DD");
+        const fromDate = dateFrom || today;
+        const toDate = dateTo || today;
+
         const filteredTasks = bookingAgentTasksList?.filter((ticket) => {
             const taskDate = moment(ticket.original_ticket_date).format("YYYY-MM-DD");
-            return (!dateFrom || taskDate >= dateFrom) && (!dateTo || taskDate <= dateTo);
+            return taskDate >= fromDate && taskDate <= toDate;
         });
 
-        // group tasks that have the same booking agent, so it does not show every entry, the add the entry to the jobs count
+        // Group tasks by booking agent
         const filtered = filteredTasks.reduce<GroupedData[]>((acc, ticket: any) => {
-            const existingGroup = acc.find(
-                (group: string | any) => group.booking_agent === ticket.booking_agent
-            );
+            const existingGroup = acc.find((group) => group.booking_agent === ticket.booking_agent);
+
             if (existingGroup) {
                 existingGroup.count = (existingGroup.count ?? 0) + 1;
-                existingGroup?.tickets?.push(ticket.ticket_number);
+                existingGroup.tickets.push(ticket.ticket_number);
             } else {
                 acc.push({
                     booking_agent: ticket.booking_agent,
@@ -118,15 +125,15 @@ const BookingAgentsReportScreen = () => {
 
             return acc;
         }, []);
-        // Sort grouped data by highest count
-        filtered.sort((a: number | any, b: number | any) => b.count - a.count);
-        return filtered
 
-    }, [bookingAgentTasksList, dateFrom, dateTo]); // Dependencies for recalculation
+        // Sort by highest count
+        filtered.sort((a: undefined | any, b: undefined | any) => b.count - a.count);
+        return filtered;
+    }, [bookingAgentTasksList, dateFrom, dateTo]);
 
     // Calculate total jobs count
     const totalJobsCount = useMemo(() => {
-        return filteredData.reduce((total, group: any) => total + group?.count, 0);
+        return filteredData.reduce((total: undefined | any, group: undefined | any) => total + group.count, 0);
     }, [filteredData]);
 
 
@@ -141,7 +148,7 @@ const BookingAgentsReportScreen = () => {
                         <main className='container p-1'>
 
                             <PageTitle title="tasks" hasSpan={true} spanText={"Booking agent"} />
-
+                            <p className="text-xs text-gray-500">{bookingAgentTasksListLoading ? 'Loading stats' : null}</p>
                             <section className="flex flex-col justify-center gap-3 py-4">
                                 <div className="flex gap-3 items-center justify-between flex-col lg:flex-row">
                                     <div className="flex gap-3 items-center">
@@ -179,23 +186,7 @@ const BookingAgentsReportScreen = () => {
                                             />
                                         </span>
                                     </div>
-                                    <span>
-                                        <Label
-                                            htmlFor='searchTicket'
-                                            className='sr-only'
-                                        >
-                                            Search ticket
-                                        </Label>
-                                        <Input
-                                            placeholder='Search ticket'
-                                            type="string"
-                                            id="searchTicket"
-                                            name="searchTicket"
-                                            onChange={(e) => setSearchTicket(e.target.value)}
-                                        />
-                                        {errors.ticket_number && <p className="text-sm text-red-500 font-medium">{errors.ticket_number}</p>}
 
-                                    </span>
                                 </div>
                             </section>
                             {

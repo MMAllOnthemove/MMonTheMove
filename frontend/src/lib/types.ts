@@ -736,7 +736,7 @@ export type TAssemblyTermTable = {
     };
 };
 export type IHHPSingleTask = {
-    id: string;
+    id: string | undefined | any;
     unique_id: string;
     service_order_no: string;
     date_booked: string;
@@ -748,18 +748,21 @@ export type IHHPSingleTask = {
     imei: string;
     job_repair_no: string;
     serial_number: string;
+    parts_order_id: string | null | undefined;
     repairshopr_status: string;
     repairshopr_customer_id: number | null | undefined;
     gspn_status: string;
     device_location: string | null;
     requires_backup: string | null;
     ticket_type_id?: string | null | any;
-    ticket_number: string;
+    ticket_number: string | undefined | any;
     department: string;
     job_added_by: string;
     assessment_date: string;
     parts_pending_date: string;
     parts_issued_date: string;
+    quote_accepted: boolean;
+    quote_rejected: boolean;
     stores: boolean | null;
     parts_ordered_date: string | null;
     phone_name?: string | null;

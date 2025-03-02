@@ -1,3 +1,4 @@
+import "dotenv/config";
 const LogoutUser = async (req, res) => {
     try {
         res.clearCookie("refreshToken", {

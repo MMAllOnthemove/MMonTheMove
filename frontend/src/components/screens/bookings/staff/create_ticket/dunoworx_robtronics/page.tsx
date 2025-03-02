@@ -1,14 +1,7 @@
 "use client"
-import useAddAgentTask from '@/hooks/useAddBookingAgentTask';
-import useAddTaskCommentLocally from '@/hooks/useAddCommentLocally';
-import useAddHHPTask from '@/hooks/useAddHHPTask';
-import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
-import useCreateCustomerOnRepairshopr from '@/hooks/useCreateCustomer';
-import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
-import useCreateTicket from '@/hooks/useCreateTicket';
-import useIpaasGetSOInfoAll from '@/hooks/useIpaasGetSoInfoAll';
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
-import { cn } from "@/lib/utils"
+import Modal from '@/components/modal/page';
+import PageTitle from '@/components/PageTitle/page';
+import { Button } from '@/components/ui/button';
 import {
     Command,
     CommandEmpty,
@@ -16,31 +9,38 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover"
-import { assetTypes } from '@/lib/asset_types';
-import React, { useState } from 'react'
+} from "@/components/ui/popover";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import dynamic from 'next/dynamic';
-import { datetimestamp } from '@/lib/date_formats';
-import PageTitle from '@/components/PageTitle/page';
-import useUserLoggedIn from '@/hooks/useGetUser';
-import toast from 'react-hot-toast';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import axios from 'axios';
-import { capitalizeText } from '@/lib/capitalize';
+import useAddTaskCommentLocally from '@/hooks/useAddCommentLocally';
+import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
+import useBookingAgentsTasks from '@/hooks/useBookingAgentsTasks';
 import useCheckWarranty from '@/hooks/useCheckHHPWarranty';
-import warranties from '@/lib/warranties';
+import useCreateCustomerOnRepairshopr from '@/hooks/useCreateCustomer';
+import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
+import useCreateTicket from '@/hooks/useCreateTicket';
+import useUserLoggedIn from '@/hooks/useGetUser';
+import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud';
 import useFetchCustomer from '@/hooks/useSearchCustomerRS';
-import Modal from '@/components/modal/page';
+import useSocket from '@/hooks/useSocket';
+import { assetTypes } from '@/lib/asset_types';
+import { capitalizeText } from '@/lib/capitalize';
+import { datetimestamp } from '@/lib/date_formats';
 import faults_hhp from '@/lib/hhp_faults';
+import { cn } from "@/lib/utils";
+import warranties from '@/lib/warranties';
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
+import axios from 'axios';
+import dynamic from 'next/dynamic';
+import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useCreateAssets } from './add_assets';
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page')
@@ -56,15 +56,15 @@ const Sidebar = dynamic(() =>
 const DunoworxRobtronicScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { customerSearchLoading, customer, checkIfCustomerWasHere } = useFetchCustomer();
-
+    const { socket, isConnected } = useSocket()
     const { createAssetsOnRepairshopr, createAssetLoading } = useCreateAssets()
     const { addTicket, createTicketLoading } = useCreateTicket()
-    const { addAgentTask, addAgentTaskLoading, errors } = useAddAgentTask()
+    const { addAgentTask, addAgentTaskLoading, errors } = useBookingAgentsTasks()
     const { addCustomer, createCustomerLoading } = useCreateCustomerOnRepairshopr()
     const { addRepairTicketFile } = useRepairshoprFile()
     const { addCommentLocally } = useAddTaskCommentLocally()
     const { addCustomerLocally } = useCreateCustomerLocally()
-    const { addTask } = useAddHHPTask();
+    const { addTask } = useHHPTasksCrud();
     const [search, setSearch] = useState("")
     const [firstname, setFirstname] = useState<string | any>("")
     const [lastname, setLastname] = useState<string | any>("")
@@ -376,7 +376,7 @@ const DunoworxRobtronicScreen = () => {
             "rs_warranty": warrantyCode,
             "ticket_type_id": ticket_type_id
         }
-        const res = await addTask(payload)
+        const res: any = await addTask(payload)
         setTaskId(res?.id)
 
     }

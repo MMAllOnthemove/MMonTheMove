@@ -2,6 +2,7 @@ import { pool } from "../../../db.js";
 import "dotenv/config";
 import * as Yup from "yup";
 import appLogs from "../../logs/logs.js";
+import emitLatestPartsAdded from "./emit_latest_parts.js";
 
 const AddPartSchema = Yup.object({
     task_row_id: Yup.number(),
@@ -55,8 +56,10 @@ const AddPart = async (req, res) => {
             ]
         );
         await appLogs("INSERT", created_by, req.body);
+        // emitLatestPartsAdded();
         return res.status(201).json({
             message: "Part added",
+            part: rows[0],
         });
     } catch (error) {
         // to get error for a specific field

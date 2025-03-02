@@ -1,5 +1,6 @@
+import socket from "@/socket";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const useDeletePart = () => {
@@ -15,7 +16,7 @@ const useDeletePart = () => {
                     withCredentials: true,
                 }
             );
-        
+
             if (response?.data) {
                 toast.success(`${response?.data?.message}`);
             }
@@ -27,7 +28,17 @@ const useDeletePart = () => {
             setLoading(false); // Stop loading
         }
     };
+    // 🔄 Listen for real-time updates
+    useEffect(() => {
+        // Listen for real-time emitLatestPartsAdded updates
+        socket.on("emitLatestPartsAdded", (updatedStats) => {
+            console.log("Received emitLatestPartsAdded event:", updatedStats);
+        });
 
+        return () => {
+            socket.off("emitLatestPartsAdded");
+        };
+    }, []);
     return { deletePart, deletePartLoading };
 };
 

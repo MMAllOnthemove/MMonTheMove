@@ -58,7 +58,6 @@ io.on("connection", (socket) => {
 
     // Broadcast when a task is updated
     socket.on("updateTask", (updatedTask) => {
-        console.log("updateTask", updatedTask);
         io.emit("updateTask", updatedTask); // Send to all clients
     });
 
@@ -84,8 +83,22 @@ io.on("connection", (socket) => {
     });
     // Broadcast when a new otp is added
     socket.on("addOtp", (task) => {
-        console.log("otp socket", task);
         io.emit("addOtp", task); // Send to all clients
+    });
+    // Broadcast when a new booking is added
+    socket.on("bookingAgentTask", (task) => {
+        io.emit("bookingAgentTask", task); // Send to all clients
+    });
+    // Broadcast when a new part is added
+    socket.on("addPart", (task) => {
+        io.emit("addPart", task); // Send to all clients
+    });
+    // Broadcast when a part is updated
+    socket.on("updatePart", (updatedPart) => {
+        io.emit("updateTask", updatedPart); // Send to all clients
+    });
+    socket.on("deletePart", (deletedPart) => {
+        io.emit("deletePart", deletedPart); // Send to all clients
     });
     // Handle disconnection
     socket.on("disconnect", () => {

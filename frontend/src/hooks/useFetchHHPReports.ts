@@ -35,7 +35,6 @@ const useFetchHHPReports = () => {
             );
         } catch (err: any) {
             if (process.env.NODE_ENV !== "production") {
-                console.error("Error fetching reports:", err);
                 toast.error("Error fetching reports");
             }
             setError("Failed to fetch reports. Please try again.");

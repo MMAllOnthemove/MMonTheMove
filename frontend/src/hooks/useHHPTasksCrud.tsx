@@ -34,6 +34,37 @@ interface AddTaskErrors {
     repeat_repair?: string;
     additional_info?: string;
 }
+type TAddTask = {
+    id?: string;
+    unique_id?: string;
+    service_order_no?: string | null;
+    qc_date?: string;
+    device_name?: string;
+    date_booked?: string;
+    created_at?: string | null;
+    model?: string | null;
+    warranty?: string | null;
+    engineer?: string | null;
+    fault?: string | null;
+    imei?: string | null;
+    serial_number?: string | null;
+    repairshopr_status?: string | null;
+    gspn_status?: string | null;
+    ticket_number?: string | null;
+    department?: string | null;
+    job_added_by?: string | null;
+    assessment_date?: string | null;
+    parts_pending_date?: string | null;
+    parts_issued_date?: string | null;
+    parts_pending?: string | null;
+    stores?: string | null;
+    parts_ordered_date?: string | null;
+    qc_complete?: string | boolean | null;
+    repairshopr_job_id?: string | number;
+    unit_status?: string | null;
+    qc_complete_date?: string | null;
+    repair_completed?: string | null;
+}
 
 export const useHHPTasksCrud = () => {
     const [hhpTasks, setHHPTasks] = useState<THHPTasks[] | any>([]);
@@ -65,7 +96,7 @@ export const useHHPTasksCrud = () => {
         }
     };
 
-    const addTask = async (values: any) => {
+    const addTask = async (values: TAddTask) => {
         setHHPAddTaskLoading(true)
         setHHPAddTaskErrors({})
         try {

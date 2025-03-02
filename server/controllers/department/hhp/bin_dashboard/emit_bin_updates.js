@@ -16,7 +16,8 @@ const emitBinStatsUpdate = async () => {
         `);
         io.emit("binStatsUpdated", rows);
     } catch (err) {
-        console.log("Error emitting bin stats update:", err);
+        if (process.env.NODE_ENV !== "production")
+            console.log("Error emitting bin stats update:", err);
     }
 };
 export default emitBinStatsUpdate;

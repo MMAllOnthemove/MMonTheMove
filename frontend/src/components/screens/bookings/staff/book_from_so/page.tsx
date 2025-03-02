@@ -11,19 +11,20 @@ import React, { useState } from 'react';
 import Modal from '@/components/modal/page';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import useAddAgentTask from '@/hooks/useAddBookingAgentTask';
 import useAddTaskCommentLocally from '@/hooks/useAddCommentLocally';
-import useAddHHPTask from '@/hooks/useAddHHPTask';
 import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
+import useBookingAgentsTasks from '@/hooks/useBookingAgentsTasks';
 import useCreateCustomerOnRepairshopr from '@/hooks/useCreateCustomer';
 import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
 import useCreateTicket from '@/hooks/useCreateTicket';
+import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud';
+import useSocket from '@/hooks/useSocket';
 import { assetTypes } from '@/lib/asset_types';
 import { capitalizeText } from '@/lib/capitalize';
 import { datetimestamp } from '@/lib/date_formats';
+import warranties from '@/lib/warranties';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import warranties from '@/lib/warranties';
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page')
 )
@@ -36,14 +37,15 @@ const Sidebar = dynamic(() =>
 
 const BookFromSOScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
+    const { socket, isConnected } = useSocket()
     const { getSOInfoAllTookan, loadingData } = useIpaasGetSOInfoAll();
     const { addTicket, createTicketLoading } = useCreateTicket()
-    const { addAgentTask, addAgentTaskLoading, errors } = useAddAgentTask()
+    const { addAgentTask, addAgentTaskLoading, errors } = useBookingAgentsTasks()
     const { addCustomer, createCustomerLoading } = useCreateCustomerOnRepairshopr()
     const { addRepairTicketFile } = useRepairshoprFile()
     const { addCommentLocally } = useAddTaskCommentLocally()
     const { addCustomerLocally } = useCreateCustomerLocally()
-    const { addTask } = useAddHHPTask();
+    const { addTask } = useHHPTasksCrud();
     const [search, setSearch] = useState("")
     const [firstname, setFirstname] = useState("")
     const [lastname, setLastname] = useState("")
@@ -57,7 +59,7 @@ const BookFromSOScreen = () => {
     const [state, setState] = useState("")
     const [serviceOrder, setServiceOrder] = useState("")
     const [fault, setFault] = useState("")
-    const [task_id, setTaskId] = useState("")
+    const [task_id, setTaskId] = useState<any>("")
     const [newTicketId, setNewTicketId] = useState("")
     const [imei, setIMEI] = useState("")
     const [serialNumber, setSerialNumber] = useState("")
@@ -382,7 +384,7 @@ const BookFromSOScreen = () => {
             "rs_warranty": warrantyCode,
             "ticket_type_id": ticket_type_id
         }
-        const res = await addTask(payload)
+        const res: any = await addTask(payload)
         setTaskId(res?.id)
 
     }

@@ -61,6 +61,7 @@ import { useMemo, useState } from 'react'
 import useSocket from '@/hooks/useSocket'
 import Modal from '@/components/modal/page'
 import useFetchEngineer from '@/hooks/useFetchEngineers'
+import { Button } from '@/components/ui/button'
 
 const DashboardScreen = () => {
     const { hhpTasks } = useHHPTasks()
@@ -113,6 +114,11 @@ const DashboardScreen = () => {
     const unitsBookedInMonthly = useMemo(() => Object.entries(getUnitsBookedOverTime(hhpTasks, dateFrom, dateTo)).map(([yearMonth, count]) => {
         return { yearMonth: moment(yearMonth).format('MMMM'), count };
     }), [hhpTasks, dateFrom, dateTo]);
+    const resetFilters = () => {
+        setEngineer(""); // Clear engineer filter
+        setDateFrom(""); // Clear date from filter
+        setDateTo(""); // Clear date to filter
+    };
 
 
     const engineerWorkload = useMemo(() =>
@@ -223,54 +229,59 @@ const DashboardScreen = () => {
                         <Sidebar />
                         <main className='container mx-auto p-1'>
                             <PageTitle title="Dashboard" hasSpan={true} spanText={"HHP"} />
-                            <div className="flex gap-3 items-center">
-                                <span>
-                                    {/* <Label
+                            <div className="flex items-center gap-5">
+                                <div className="flex gap-3 items-center">
+                                    <span>
+                                        {/* <Label
                                         htmlFor="dateFrom"
                                         className="sr-only dark:text-[#eee]"
                                     >
                                         Date from
                                     </Label> */}
-                                    <Input
-                                        type="date"
-                                        name="dateFrom"
-                                        value={dateFrom}
-                                        onChange={(e) => setDateFrom(e.target.value)}
-                                        className="cursor-pointer"
-                                        id="dateFrom"
-                                    />
-                                </span>
-                                <span>-</span>
-                                <span>
-                                    {/* <Label
+                                        <Input
+                                            type="date"
+                                            name="dateFrom"
+                                            value={dateFrom}
+                                            onChange={(e) => setDateFrom(e.target.value)}
+                                            className="cursor-pointer"
+                                            id="dateFrom"
+                                        />
+                                    </span>
+                                    <span>-</span>
+                                    <span>
+                                        {/* <Label
                                         htmlFor="dateTo"
                                         className="sr-only dark:text-[#eee]"
                                     >
                                         Date to
                                     </Label> */}
-                                    <Input
-                                        type="date"
-                                        name="dateTo"
-                                        value={dateTo}
-                                        onChange={(e) => setDateTo(e.target.value)}
-                                        className="cursor-pointer"
-                                        id="dateTo"
-                                    />
-                                </span>
+                                        <Input
+                                            type="date"
+                                            name="dateTo"
+                                            value={dateTo}
+                                            onChange={(e) => setDateTo(e.target.value)}
+                                            className="cursor-pointer"
+                                            id="dateTo"
+                                        />
+                                    </span>
+                                </div>
+
+                                <Select name="engineerFilter" value={engineer} onValueChange={(e) => setEngineer(e)}>
+                                    <SelectTrigger className="w-[400ppx] hidden md:flex">
+                                        <SelectValue placeholder="Technician" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel>Engineer</SelectLabel>
+                                            {engineerListFomatted.map((dep) => (
+                                                <SelectItem key={dep.id} value={`${dep.value}`}>{`${dep.label}`}</SelectItem>
+                                            ))}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <Button type="button" onClick={resetFilters}> Reset filters</Button>
+
                             </div>
-                            <Select name="engineerFilter" value={engineer} onValueChange={(e) => setEngineer(e)}>
-                                <SelectTrigger className="w-full hidden md:flex">
-                                    <SelectValue placeholder="Technician" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel>Engineer</SelectLabel>
-                                        {engineerListFomatted.map((dep) => (
-                                            <SelectItem key={dep.id} value={`${dep.value}`}>{`${dep.label}`}</SelectItem>
-                                        ))}
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
 
                             <div className="grid grid-cols-1 lg:grid-cols-4 items-center gap-3 py-3">
                                 <Card onClick={() => handleCardClick("Assigned to Tech")} className="flex flex-col cursor-pointer">

@@ -16,6 +16,7 @@ import GetBinStats from "../../../controllers/department/hhp/bin_dashboard/get_s
 
 router.post("/", limiter, authenticateToken, AddHHPTask);
 router.patch("/assess/:id", limiter, authenticateToken, UpdateAssessmentDate);
+
 router.get("/", authenticateToken, GetAllTasks);
 router.get("/:id", authenticateToken, GetTaskById);
 router.get("/engineer/bin", authenticateAdmin, GetBinStats);

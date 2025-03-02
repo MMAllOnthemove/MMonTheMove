@@ -1,4 +1,5 @@
 import { pool } from "../../db.js";
+import "dotenv/config";
 
 const getAttachments = async (req, res) => {
     let { id, page = 1, limit = 10 } = req.query;
@@ -32,7 +33,6 @@ const getAttachments = async (req, res) => {
             },
         });
     } catch (error) {
-        console.error("Error fetching attachments:", error);
         return res.status(500).json({
             message: "Could not get attachments",
             error:

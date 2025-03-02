@@ -1,5 +1,5 @@
 import { pool } from "../../db.js";
-
+import "dotenv/config";
 const getCustomerByRSId = async (req, res) => {
     const { id } = req.params;
     try {

@@ -1,5 +1,5 @@
 import { pool } from "../../../../db.js";
-
+import "dotenv/config";
 // GET all table info from database
 
 const GetAllTasks = async (req, res) => {

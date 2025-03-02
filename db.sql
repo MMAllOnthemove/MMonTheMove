@@ -128,6 +128,8 @@ create table technician_tasks (
     requires_backup text,
     rs_warranty text,
     ticket_type_id text,
+    quote_accepted boolean,
+    quote_rejected boolean,
     fault_category text
 );
 
@@ -496,9 +498,7 @@ create table logs (
     changed_by text,
     created_at text,
     changes jsonb
-)
-
-CREATE TABLE notifications (
+) CREATE TABLE notifications (
     id SERIAL PRIMARY KEY,
     -- Unique identifier for the notification
     user_id uuid NOT NULL,
@@ -517,7 +517,7 @@ CREATE TABLE notifications (
 );
 
 CREATE TABLE products (
-    product_id bigserial, 
+    product_id bigserial,
     product__unique_id uuid NOT NULL unique,
     id BIGINT PRIMARY KEY,
     price_cost DECIMAL(10, 2) NOT NULL,

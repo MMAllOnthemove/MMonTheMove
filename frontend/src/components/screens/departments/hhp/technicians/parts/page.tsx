@@ -48,9 +48,9 @@ type TPartsHHPUpdate = {
     submitPartOrderIdLoading: boolean;
     submitPartOrderId: (data: React.SyntheticEvent) => void;
     submitPartsUpdate: (data: React.SyntheticEvent) => void;
-    serial_number: string;
-    model: string;
-    imei: string;
+    serial_number: string | undefined;
+    model: string | undefined;
+    imei: string | undefined;
     part_data: TTaskParts[];
     deletePartLoading: boolean;
     issuedPartsLoading: boolean;
@@ -61,14 +61,14 @@ type TPartsHHPUpdate = {
         part_desc?: string;
         part_quantity?: string;
     }
-    stored_parts_order_id: string;
+    stored_parts_order_id: string | null | undefined;
     part_status: string;
     setPartStatus: (e: string) => void;
     in_stock: string | undefined;
     onSelectionChange: (selectedParts: string[]) => void;
     submitPartsIssued: (data: any) => void;
 }
-const Parts = ({  partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedPartsLoading, onSelectionChange, in_stock, partsExtraText, setPartsExtraText, deletePartLoading, parts_order_id, setPartsOrderId, stored_parts_order_id, submitPartOrderIdLoading, submitPartOrderId, part_data, handleDelete, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, model, imei, serial_number, errors, part_status, setPartStatus }: TPartsHHPUpdate) => {
+const Parts = ({ partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedPartsLoading, onSelectionChange, in_stock, partsExtraText, setPartsExtraText, deletePartLoading, parts_order_id, setPartsOrderId, stored_parts_order_id, submitPartOrderIdLoading, submitPartOrderId, part_data, handleDelete, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, model, imei, serial_number, errors, part_status, setPartStatus }: TPartsHHPUpdate) => {
     const [selectedParts, setSelectedParts] = useState<any[]>([]);
     const [selectAll, setSelectAll] = useState(false);
 
@@ -176,7 +176,7 @@ const Parts = ({  partsIssuedText, setIssuedExtraText, submitPartsIssued, issued
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-2">
-                    <AccordionTrigger>Added parts</AccordionTrigger>
+                    <AccordionTrigger>Parts used for unit</AccordionTrigger>
                     <AccordionContent>
                         <div className="my-3">
                             {part_data?.length > 0 && (
@@ -209,41 +209,7 @@ const Parts = ({  partsIssuedText, setIssuedExtraText, submitPartsIssued, issued
                             ) : null}
                         </div>
 
-                        <div className="mt-4">
 
-                            <div className="mb-3">
-                                <label htmlFor="part_status" className="text-sm font-medium mb-3">Select part status</label>
-                                <div className="relative">
-                                    <select className="block w-full appearance-none rounded-md border border-gray-300 bg-white px-4 py-2 pr-8 text-sm shadow-sm focus:outline-none cursor-pointer [&>span]:line-clamp-1" name="part_status" value={part_status} onChange={handlePartStatus}>
-                                        <option disabled value="">
-                                            Choose status
-                                        </option>
-                                        {repairshopr_part_statuses?.map((dep) => (
-                                            <option key={dep.id} value={`${dep._status}`}>
-                                                {dep._status}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <span
-                                        className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400"
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-5 w-5"
-                                            viewBox="0 0 20 20"
-                                            fill="currentColor"
-                                        >
-                                            <path
-                                                fillRule="evenodd"
-                                                d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.72-3.72a.75.75 0 111.06 1.06l-4 4a.75.75 0 01-1.06 0l-4-4a.75.75 0 01.02-1.06z"
-                                                clipRule="evenodd"
-                                            />
-                                        </svg>
-                                    </span>
-                                </div>
-                            </div>
-
-                        </div>
                     </AccordionContent>
                 </AccordionItem>
 
@@ -321,23 +287,9 @@ const Parts = ({  partsIssuedText, setIssuedExtraText, submitPartsIssued, issued
 
                     </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="item-5">
-                    <AccordionTrigger>Device info</AccordionTrigger>
-                    <AccordionContent>
-                        <div>
-                            <ul className="list-decimal list-inside">
-
-                                <li>Model: <span className="text-gray-600 font-medium">{model}</span></li>
-                                <li>IMEI: <span className="text-gray-600 font-medium">{imei}</span></li>
-                                <li>Serial number: <span className="text-gray-600 font-medium">{serial_number}</span></li>
-                                <li>Order id: <span className="text-gray-600 font-medium">{stored_parts_order_id}</span></li>
-                            </ul>
-                        </div>
-                    </AccordionContent>
-                </AccordionItem>
             </Accordion>
 
-            <Button className="w-full outline-none" type="button" onClick={submitPartsUpdate} disabled={submitPartsUpdateLoading}>{submitPartsUpdateLoading ? 'Loading...' : 'Update'}</Button>
+            <Button className="w-full outline-none" type="button" onClick={submitPartsUpdate} disabled={submitPartsUpdateLoading}>{submitPartsUpdateLoading ? 'Loading...' : 'Update parts section'}</Button>
 
         </div >
     )

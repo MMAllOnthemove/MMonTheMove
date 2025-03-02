@@ -10,7 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import useGetCustomerLocally from '@/hooks/useGetCustomerLocally'
 import useUserLoggedIn from '@/hooks/useGetUser'
 import { useParams } from 'next/navigation'
-import DTVHA from './dtv_ha/page'
 import HHP from './hhp/page'
 
 const CreateTicketRepairshoprScreen = () => {

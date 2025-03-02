@@ -2,8 +2,6 @@ import { IHHPSingleTask } from "@/lib/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-
-
 const useFetchHHPTaskById = (taskId: string | string[] | any) => {
     const [hhpTask, setHHPTask] = useState<IHHPSingleTask | null>(null);
     const [hhpTaskLoading, setLoading] = useState(false);

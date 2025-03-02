@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   turn off clickable ticket numbers in enginee bin
 -   engineer bin updates in realtime
 -   otp add and get, realtime
+-   border red to required fields in create ticket
+-   booking agents stats updates in realtime
+-   columns for quote rejected and quote accepted as booleans
+-   open ticket in new tab on
+-   to top button
+-   scrap the view summary and instead take users to the full page
 
 ## [0.1.22] - 2025-02-20
 

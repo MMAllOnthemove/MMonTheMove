@@ -17,7 +17,6 @@ const createOTP = async (req, res) => {
     // Validate request body
     await otpSchema.validate(req.body, { abortEarly: false });
     const { created_by, otp_code } = req.body;
-    console.log(created_by, otp_code);
     const created_at = new Date(
         Date.now() + 1000 * 60 * -new Date().getTimezoneOffset()
     )
