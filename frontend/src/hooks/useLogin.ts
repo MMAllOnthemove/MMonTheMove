@@ -27,6 +27,7 @@ const useLogin = () => {
                     withCredentials: true,
                 }
             );
+            console.log("response", response);
             if (response.status === 201) {
                 toast.success(`${response?.data?.message}`);
                 router.push("/");
