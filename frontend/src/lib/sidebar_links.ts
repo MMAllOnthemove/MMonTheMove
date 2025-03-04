@@ -95,11 +95,11 @@ export const menuItems = [
                 item: "All customers",
                 pageRoute: "/bookings/staff/customers",
             },
-            {
-                id: 22,
-                item: "Robtronics/Dunoworx booking",
-                pageRoute: "/bookings/staff/dunoworx_robtronics",
-            },
+            // {
+            //     id: 22,
+            //     item: "Robtronics/Dunoworx booking",
+            //     pageRoute: "/bookings/staff/dunoworx_robtronics",
+            // },
         ],
     },
     {

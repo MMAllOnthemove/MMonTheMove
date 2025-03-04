@@ -71,7 +71,7 @@ type TPartsHHPUpdate = {
 const Parts = ({ partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedPartsLoading, onSelectionChange, in_stock, partsExtraText, setPartsExtraText, deletePartLoading, parts_order_id, setPartsOrderId, stored_parts_order_id, submitPartOrderIdLoading, submitPartOrderId, part_data, handleDelete, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, model, imei, serial_number, errors, part_status, setPartStatus }: TPartsHHPUpdate) => {
     const [selectedParts, setSelectedParts] = useState<any[]>([]);
     const [selectAll, setSelectAll] = useState(false);
-
+   
 
     useEffect(() => {
         onSelectionChange(selectedParts); // Notify parent of changes

@@ -33,6 +33,16 @@ const useFetchHHPReports = () => {
                     responseType: "blob",
                 }
             );
+            // Create a download link for the Blob
+            const url = window.URL.createObjectURL(new Blob([data]));
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `report_${Date.now()}.csv`; // Set a filename
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url); // Clean up
+            toast.success("Report downloaded successfully!");
         } catch (err: any) {
             if (process.env.NODE_ENV !== "production") {
                 toast.error("Error fetching reports");

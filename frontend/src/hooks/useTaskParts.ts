@@ -43,12 +43,12 @@ const useTaskParts = (id?: string) => {
                     withCredentials: true,
                 }
             );
-            // setData((prev: any) => [...prev, response?.data?.part]);
+            setData((prev: any) => [...prev, response?.data?.part]);
             // 🔴 Emit task creation event
-            socket.emit("addPart", response?.data?.part);
-            // if (response.status === 201) {
-            //     toast.success(`${response?.data?.message}`);
-            // }
+            // socket.emit("addPart", response?.data?.part);
+            if (response.status === 201) {
+                toast.success(`${response?.data?.message}`);
+            }
         } catch (error: any) {
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
@@ -82,16 +82,16 @@ const useTaskParts = (id?: string) => {
             );
             // 🔴 Emit task update event
             socket.emit("updatePart", response?.data.part);
-            // toast.success(response?.data?.message);
+            toast.success(response?.data?.message);
             // return response.data;
         } catch (error: any) {
-           if (process.env.NODE_ENV !== "production") console.error(error);
+            if (process.env.NODE_ENV !== "production") console.error(error);
             // if (error) toast.error(error?.response?.data?.error);
         } finally {
             setUpdatePart(false); // Stop loading
         }
     };
-    const refetch = async () => {
+    const refetchPartsForThisTask = async () => {
         if (!id) return; // Exit if id is undefined
         try {
             setLoading(true);
@@ -138,16 +138,16 @@ const useTaskParts = (id?: string) => {
         }
     };
     useEffect(() => {
-        refetch();
-        socket.on("addPart", (part) => {
-            toast.success(
-                `${part?.created_by} added part: ${part?.part_name}`,
-                {
-                    position: "bottom-center",
-                }
-            );
-            setData((prev: any) => [...prev, part]); // Add assigned task
-        });
+        refetchPartsForThisTask();
+        // socket.on("addPart", (part) => {
+        //     toast.success(
+        //         `${part?.created_by} added part: ${part?.part_name}`,
+        //         {
+        //             position: "bottom-center",
+        //         }
+        //     );
+        //     setData((prev: any) => [...prev, part]); // Add assigned task
+        // });
         socket.on("updatePart", (updatedPart) => {
             setData((prev: any) =>
                 prev.map((part: any) =>
@@ -155,17 +155,12 @@ const useTaskParts = (id?: string) => {
                 )
             );
         });
-        // Listen for real-time emitLatestPartsAdded updates
-        // socket.on("emitLatestPartsAdded", (updatedStats) => {
-        //     console.log("Received emitLatestPartsAdded event:", updatedStats);
-        //     setData(updatedStats);
-        // });
         socket.on("deletePart", (deletedPart) => {
             setData((prev) => prev.filter((part) => part.id !== deletedPart));
         });
 
         return () => {
-            socket.off("addPart");
+            // socket.off("addPart");
             socket.off("updatePart");
             socket.off("emitLatestPartsAdded");
         };
@@ -176,6 +171,7 @@ const useTaskParts = (id?: string) => {
         taskPartsList,
         taskPartsListLoading,
         addThisPart,
+        refetchPartsForThisTask,
         addPartLoading,
         addPartErrors,
         updatePart,

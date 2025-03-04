@@ -56,7 +56,7 @@ const AddPart = async (req, res) => {
             ]
         );
         await appLogs("INSERT", created_by, req.body);
-        // emitLatestPartsAdded();
+
         return res.status(201).json({
             message: "Part added",
             part: rows[0],

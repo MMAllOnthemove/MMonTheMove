@@ -3,15 +3,6 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from '@/components/ui/textarea';
 import useAddTaskCommentLocally from '@/hooks/useAddCommentLocally';
 import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
@@ -99,13 +90,17 @@ const ViewHHPTaskScreen = () => {
     const [parts_ordered, setPartsOrdered] = useState<CheckedState | undefined>()
     const [submitPartsUpdateLoading, setSubmitPartsUpdateLoading] = useState(false)
     const [part_quantity, setPartQuantity] = useState<number | undefined>()
+    interface FileUpload {
+        file: File | any;
+        progress: number;
+    }
     const { taskPartsList,
         taskPartsListLoading,
         addThisPart,
         addPartLoading,
         addPartErrors,
         updatePart,
-        updatePartLoading, deletePart, deletePartLoading } = useTaskParts(hhpTask?.id)
+        updatePartLoading, deletePart, deletePartLoading, refetchPartsForThisTask } = useTaskParts(hhpTask?.id)
 
 
     // add part searched
@@ -116,6 +111,7 @@ const ViewHHPTaskScreen = () => {
         const created_by = user?.email
         const payload = { task_row_id, ticket_number, part_name, part_desc, part_quantity, created_at, created_by, compensation }
         await addThisPart(payload);
+        refetchPartsForThisTask()
         setSearchPart("")
         setPartName("")
         setPartDesc("")
@@ -152,6 +148,7 @@ const ViewHHPTaskScreen = () => {
             "comment": '*Parts ordered:\n' + parts_order_id,
             "created_at": created_at,
             "created_by": user?.full_name,
+            "ticket_number": hhpTask?.ticket_number
         }
         try {
 
@@ -176,7 +173,6 @@ const ViewHHPTaskScreen = () => {
         setIssuedPartsLoading(true)
         try {
             // this will send the parts as as list on repairshopr
-            // await updatePart(selectedIssuedParts?.id, changes)
 
             if (!selectedIssuedParts || selectedIssuedParts.length === 0) {
                 return;
@@ -217,6 +213,7 @@ const ViewHHPTaskScreen = () => {
                 "comment": '*' + reparshoprComment,
                 "created_at": created_at,
                 "created_by": user?.full_name,
+                "ticket_number": hhpTask?.ticket_number
             }
             if (comment) {
                 await updateRepairTicketComment(hhpTask?.repairshopr_job_id, commentPayload)
@@ -225,7 +222,6 @@ const ViewHHPTaskScreen = () => {
                 setIssuedExtraText("")
             }
 
-            // const changes = findChanges(, updatePayload)
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') {
                 console.error("comment part", error)
@@ -303,6 +299,7 @@ const ViewHHPTaskScreen = () => {
             "comment": "*QC analysis: " + qc_comment,
             "created_at": created_at,
             "created_by": user?.full_name,
+            "ticket_number": hhpTask?.ticket_number
         }
         try {
 
@@ -341,7 +338,7 @@ const ViewHHPTaskScreen = () => {
         fetchAttachments(page)
     }
     const { addRepairTicketFile } = useRepairshoprFile()
-    const [hhpFiles, setHHPFiles] = useState([]);
+    const [hhpFiles, setHHPFiles] = useState<FileUpload[]>([]);
     const [hhpFilesUploading, setHHPFilesUploading] = useState(false);
     const [engineer, setEngineer] = useState<string | undefined>("")
     const [repairshopr_id, setUserId] = useState<number | undefined>(); // To store the selected repairshopr user ID
@@ -388,6 +385,7 @@ const ViewHHPTaskScreen = () => {
                 "comment": '*' + reparshoprComment,
                 "created_at": created_at,
                 "created_by": user?.full_name,
+                "ticket_number": hhpTask?.ticket_number
             }
             if (comment) {
                 await updateRepairTicketComment(hhpTask?.repairshopr_job_id, commentPayload)
@@ -404,7 +402,7 @@ const ViewHHPTaskScreen = () => {
         }
     }
     const handleDeletePart = async (id: string | undefined, part_name: string, part_desc: string) => {
-
+        const created_at = datetimestamp;
         const comment = `Part ${part_name}${part_desc} deleted by ${user?.full_name}`
         const commentPayload: RepairshorTicketComment = {
             "subject": "Update",
@@ -413,9 +411,16 @@ const ViewHHPTaskScreen = () => {
             "hidden": true,
             "do_not_email": true
         }
+        const addCommentLocallyPayload = {
+            "task_id": hhpTask?.id,
+            "comment": '*' + comment,
+            "created_at": created_at,
+            "created_by": user?.full_name,
+            "ticket_number": hhpTask?.ticket_number
+        }
         await deletePart(id);
         try {
-            if (comment) await updateRepairTicketComment(hhpTask?.repairshopr_job_id, commentPayload)
+            if (comment) { await updateRepairTicketComment(hhpTask?.repairshopr_job_id, commentPayload); await addCommentLocally(addCommentLocallyPayload); fetchComments(1) }
 
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') console.error("error commenting deleted part", error)
@@ -593,7 +598,13 @@ const ViewHHPTaskScreen = () => {
     }
 
     const handleHHPFiles = (event: any) => {
-        setHHPFiles(event.target.files);
+        if (event.target.files) {
+            const selectedFiles = Array.from(event.target.files).map((file) => ({
+                file,
+                progress: 0,
+            }));
+            setHHPFiles(selectedFiles);
+        }
     };
 
     const handleTicketRSWarranty = async (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -693,30 +704,38 @@ const ViewHHPTaskScreen = () => {
             const ticket_number: any = hhpTask?.ticket_number;
             const task_id: any = hhpTask?.id;
             const created_at = datetimestamp;
-            Array.from(hhpFiles).forEach((file) => {
-                formData.append('files', file);
-            });
-            // Append ticket_number once
-            formData.append('ticket_number', ticket_number);
-            formData.append('task_id', task_id);
-            formData.append('created_at', created_at);
-            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/files`, formData, {
-                withCredentials: true,
-            })
 
-            if (data) {
-                toast.success(`${data?.message}`)
-                const repairshopr_payload = {
-                    files: data.fileUrls.map((url: any) => ({
-                        url: url,
-                        filename: url?.split('/')?.pop(), // Extract filename from URL
-                    })),
-                };
-                await addRepairTicketFile(hhpTask?.repairshopr_job_id, repairshopr_payload)
-                setHHPFiles([])
+            for (const fileObj of hhpFiles) {
+                formData.append('files', fileObj.file);
+
+                // Append ticket_number once
+                formData.append('ticket_number', ticket_number);
+                formData.append('task_id', task_id);
+                formData.append('created_at', created_at);
+                const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/files`, formData, {
+
+                    onUploadProgress: (progressEvent) => {
+                        const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total!);
+                        fileObj.progress = percent;
+                        setHHPFiles([...hhpFiles]);
+                    },
+                    withCredentials: true,
+                })
+
+                if (data) {
+                    toast.success(`${data?.message}`)
+                    const repairshopr_payload = {
+                        files: data.fileUrls.map((url: any) => ({
+                            url: url,
+                            filename: url?.split('/')?.pop(), // Extract filename from URL
+                        })),
+                    };
+                    await addRepairTicketFile(hhpTask?.repairshopr_job_id, repairshopr_payload)
+                    setHHPFiles([])
+                }
+                // setQCFilesUrls(data?.fileUrls)
+                setHHPFilesUploading(false)
             }
-            // setQCFilesUrls(data?.fileUrls)
-            setHHPFilesUploading(false)
         } catch (error: any) {
             toast.error(error?.response?.data?.error);
             setHHPFilesUploading(false)
@@ -742,6 +761,7 @@ const ViewHHPTaskScreen = () => {
             "comment": '*' + comment,
             "created_at": created_at,
             "created_by": user?.full_name,
+            "ticket_number": hhpTask?.ticket_number,
         }
         if (comment) {
             await updateRepairTicketComment(repairshopr_job_id, commentPayload)
@@ -758,7 +778,7 @@ const ViewHHPTaskScreen = () => {
             {
                 loading ? (<LoadingScreen />) : isLoggedIn ? (
                     <>
-                        <Sidebar />
+                        {/* <Sidebar /> */}
                         {/* modal for updating task */}
                         {
                             modifyTaskModalOpen &&
@@ -1003,9 +1023,23 @@ const ViewHHPTaskScreen = () => {
 
 
                                                 </div>
-                                            </div>
-                                            {/* hhpTask && hhpTask?.images?.map((x)  */}
 
+                                            </div>
+                                            {/* files being uploaded */}
+                                            <div className="mt-4">
+                                                {hhpFiles?.map((fileObj: any, index: any) => (
+                                                    <div key={index} className="mb-2 border p-2">
+                                                        <p className="font-medium text-sm">{fileObj.file.name}</p>
+                                                        <div className="w-full bg-gray-200 rounded h-2">
+                                                            <div
+                                                                className="bg-blue-500 h-2 rounded"
+                                                                style={{ width: `${fileObj.progress}%` }}
+                                                            />
+                                                        </div>
+                                                        <p className="text-xs text-gray-500">{fileObj.progress}%</p>
+                                                    </div>
+                                                ))}
+                                            </div>
                                             {
                                                 attachmentsList && attachmentsList?.map((x) => (
                                                     <div key={x?.id} className='flex items-center gap-4 md:justify-between my-2 border p-2'>
@@ -1020,7 +1054,7 @@ const ViewHHPTaskScreen = () => {
                                                                     className='rounded-sm shadow-sm'
                                                                 />
                                                                 <div>
-                                                                    <h5 className="font-medium text-sm">124724</h5>
+                                                                    <h5 className="font-medium text-sm">{hhpTask?.ticket_number}</h5>
                                                                     <p className="font-medium text-sm">{moment(x?.created_at).format("DD MMMM, YYYY HH:mm")}</p>
                                                                 </div>
                                                             </div>

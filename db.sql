@@ -498,7 +498,9 @@ create table logs (
     changed_by text,
     created_at text,
     changes jsonb
-) CREATE TABLE notifications (
+);
+
+CREATE TABLE notifications (
     id SERIAL PRIMARY KEY,
     -- Unique identifier for the notification
     user_id uuid NOT NULL,

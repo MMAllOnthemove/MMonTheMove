@@ -1,6 +1,6 @@
 // authUtils.js
 import jwt from "jsonwebtoken";
-
+import "dotenv/config";
 /**
  * Verifies the JWT token.
  * @param {string} token - The JWT token to verify.

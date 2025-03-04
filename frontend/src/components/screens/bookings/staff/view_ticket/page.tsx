@@ -347,6 +347,7 @@ const ViewTicketStaffScreen = () => {
             "comment": '*' + comment,
             "created_at": created_at,
             "created_by": user?.full_name,
+            "ticket_number": hhpTask?.ticket_number
         }
         if (comment) {
             await updateRepairTicketComment(repairshopr_job_id, commentPayload)

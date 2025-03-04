@@ -25,6 +25,7 @@ import { datetimestamp } from '@/lib/date_formats';
 import warranties from '@/lib/warranties';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { useCreateAssetsBookFromSO } from '@/hooks/useCreateAssetsBookFromSO';
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page')
 )
@@ -39,6 +40,7 @@ const BookFromSOScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { socket, isConnected } = useSocket()
     const { getSOInfoAllTookan, loadingData } = useIpaasGetSOInfoAll();
+    const { createAssetsOnRepairshopr, createAssetsBookFromSOLoading } = useCreateAssetsBookFromSO()
     const { addTicket, createTicketLoading } = useCreateTicket()
     const { addAgentTask, addAgentTaskLoading, errors } = useBookingAgentsTasks()
     const { addCustomer, createCustomerLoading } = useCreateCustomerOnRepairshopr()
@@ -83,7 +85,6 @@ const BookFromSOScreen = () => {
         if (!serviceOrder) return
         try {
             const data = await getSOInfoAllTookan(serviceOrder);
-            // const fullAddress = `${data.Return.EsBpInfo.CustAddrStreet1} ${data.Return.EsBpInfo.CustAddrStreet2} ${data.Return.EsBpInfo.CustCity} ${data.Return.EsBpInfo.CustCountry}`;
             setFirstname(data.Return.EsBpInfo.CustFirstName);
             setLastname(data.Return.EsBpInfo.CustLastName);
             setEmail(data.Return.EsBpInfo.CustEmail);
@@ -229,6 +230,7 @@ const BookFromSOScreen = () => {
                 },
             }
         );
+
         const assets = asset_data?.data?.assets.filter(
             (asset: any) => asset.customer_id == customer_id
         ) || []
@@ -249,16 +251,9 @@ const BookFromSOScreen = () => {
                 "asset_serial": serialNumber
             };
 
-            const createdAsset = await axios.post(
-                `${process.env.NEXT_PUBLIC_REPAIRSHOPR_CREATE_ASSETS}`,
-                newAssetPayload,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
-                    },
-                }
-            );
+
+
+            const createdAsset = await createAssetsOnRepairshopr(newAssetPayload)
 
             asset_ids = [createdAsset?.data?.asset?.id]; // Add newly created asset ID
         }
@@ -307,6 +302,7 @@ const BookFromSOScreen = () => {
         setNewTicketId(data?.ticket?.id)
 
 
+
         await sendTicketDataToOurDB(
             data?.ticket?.number,
             data?.ticket?.id,
@@ -328,6 +324,7 @@ const BookFromSOScreen = () => {
             "comment": `*${fault}`,
             "created_at": created_at,
             "created_by": user?.full_name,
+            "ticket_number": data?.ticket?.number,
         }
         await addCommentLocally(addCommentLocallyPayload)
         openModal() // open modal for attachments
@@ -631,6 +628,7 @@ const BookFromSOScreen = () => {
                                 <Label htmlFor='specialRequirement' className="text-gray-500">Special requirement</Label>
                                 <Textarea placeholder='Special requirement' name="specialRequirement" value={specialRequirement} onChange={(e) => setSpecialRequirement(e.target.value)}></Textarea>
                             </div>
+                            <p className="text-xs text-gray-500 text-center">{createAssetsBookFromSOLoading ? 'Creating assets' : null}</p>
 
                             <Button type="button" className="mt-2 w-full" disabled={createTicketLoading} onClick={createTicket}>
                                 {createTicketLoading ? 'Creating...' : 'Create ticket'}

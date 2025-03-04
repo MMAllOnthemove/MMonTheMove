@@ -155,7 +155,7 @@ const HHP = (customerProps: string | string[] | any) => {
             ]
 
         }
-
+        const created_at = datetimestamp;
         const data = await addTicket(payload)
         await sendTicketDataToOurDB(
             data?.ticket?.number,
@@ -163,11 +163,17 @@ const HHP = (customerProps: string | string[] | any) => {
             data?.ticket?.customer_id,
             data?.ticket?.ticket_type_id
         );
-
+        const addCommentLocallyPayload = {
+            "task_id": data?.ticket?.id,
+            "comment": `*${fault}`,
+            "created_at": created_at,
+            "created_by": user?.full_name,
+            "ticket_number": data?.ticket?.number,
+        }
         const bookingAgentsStatPayload = {
             ticket_number: data?.ticket?.number, created_by: user?.email, booking_agent: user?.full_name, created_at: datetimestamp, original_ticket_date: data?.ticket?.created_at, problemType: data?.ticket?.problem_type
         }
-
+        await addCommentLocally(addCommentLocallyPayload)
         await addAgentTask(bookingAgentsStatPayload); // adds it to the booking agent table, for reporting
         setOpenDialog(true)
     }

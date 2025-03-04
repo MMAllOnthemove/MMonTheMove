@@ -10,7 +10,9 @@ const addCommentSchema = Yup.object({
 });
 
 const addComment = async (req, res) => {
-    const { task_id, comment, created_at, created_by } = req.body;
+    const { task_id, comment, created_at, created_by, ticket_number } =
+        req.body;
+
     try {
         await addCommentSchema.validate(req.body, { abortEarly: false });
 
@@ -20,18 +22,14 @@ const addComment = async (req, res) => {
             [task_id, comment]
         );
 
-        if (existingComment.length > 0) {
-            return res.status(409).json({ message: "Comment already exists" });
-        } else {
-            const { rows } = await pool.query(
-                "INSERT INTO technician_tasks_comments (task_id, comment, created_at, created_by) VALUES ($1, $2, $3, $4)",
-                [task_id, comment, created_at, created_by]
-            );
-            await appLogs("INSERT", created_by, req.body);
-            return res.status(201).json({
-                message: "Successfully created",
-            });
-        }
+        const { rows } = await pool.query(
+            "INSERT INTO technician_tasks_comments (task_id, comment, created_at, created_by) VALUES ($1, $2, $3, $4)",
+            [task_id, comment, created_at, created_by]
+        );
+        await appLogs("INSERT", created_by, req.body, ticket_number);
+        return res.status(201).json({
+            message: "Successfully created",
+        });
     } catch (error) {
         // Handle validation or other errors
         const errors = {};

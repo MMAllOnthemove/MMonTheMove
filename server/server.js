@@ -90,12 +90,12 @@ io.on("connection", (socket) => {
         io.emit("bookingAgentTask", task); // Send to all clients
     });
     // Broadcast when a new part is added
-    socket.on("addPart", (task) => {
-        io.emit("addPart", task); // Send to all clients
-    });
+    // socket.on("addPart", (task) => {
+    //     io.emit("addPart", task); // Send to all clients
+    // });
     // Broadcast when a part is updated
     socket.on("updatePart", (updatedPart) => {
-        io.emit("updateTask", updatedPart); // Send to all clients
+        io.emit("updatePart", updatedPart); // Send to all clients
     });
     socket.on("deletePart", (deletedPart) => {
         io.emit("deletePart", deletedPart); // Send to all clients

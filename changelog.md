@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.24] - 2025-03-03
+
+### Added
+
+-   fetch comments immediately on view ticket scren
+-   fetch deletion comment immediately on delete
+-   show files being uploaded in hhp view ticket screen
+-   show engineer on clicked dashboard cards
+-   parts request 1st approval stat, replacing resolved
+-   alter table logs add column ticket_number text;
+-   default comment locally after booking tikcet, the one that has the fault
+-   robtronics/dunoworx booking turnt off, was adding wrong customers
+-   search via ticket number as well, tookan
+-   removed navbar from view ticket screen, less distractions
+
+### Fixed
+
+-   Now showing when asset is taken when booking from so screen
+-   updatePart was emitting the wrong event
+-   turnt off live emit for parts, uses regular fetching for immediate fetching of added parts
+-   checking if comment exists check
+-   shows extra ticket on dashboard when clicking card
+-   reporting stats not downloading
+-   displaying parts for all jobs instead of the correct ones
+-   reporting stats not showing
+-   displaying parts for all jobs instead of the correct ones
+-   not downloading reports
+
 ## [0.1.23] - 2025-02-20
 
 ### Added

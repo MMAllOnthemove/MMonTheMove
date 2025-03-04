@@ -62,6 +62,7 @@ import useSocket from '@/hooks/useSocket'
 import Modal from '@/components/modal/page'
 import useFetchEngineer from '@/hooks/useFetchEngineers'
 import { Button } from '@/components/ui/button'
+import isDateInRange from '@/lib/date_range'
 
 const DashboardScreen = () => {
     const { hhpTasks } = useHHPTasks()
@@ -143,10 +144,10 @@ const DashboardScreen = () => {
         value: user?.engineer_firstname + " " + user?.engineer_lastname,
         label: user?.engineer_firstname + " " + user?.engineer_lastname,
     }))
-    const completedUnits = useMemo(() => countUnitsByStatus(hhpTasks, { status: "Resolved", startDate: dateFrom, endDate: dateTo, engineer: engineer }), [hhpTasks, dateFrom, dateTo])
-    const completedData = [{ browser: "Resolved", visitors: completedUnits, fill: "oklch(0.627 0.194 149.214)" }]
-    const completedChartConfig = {
-        visitors: { label: "Resolved Jobs" },
+    const partsRequestUnits = useMemo(() => countUnitsByStatus(hhpTasks, { status: "Parts Request 1st Approval", startDate: dateFrom, endDate: dateTo, engineer: engineer }), [hhpTasks, dateFrom, dateTo, engineer])
+    const partsRequestData = [{ browser: "Parts Request 1st Approval", visitors: partsRequestUnits, fill: "oklch(0.627 0.194 149.214)" }]
+    const partsRequestChartConfig = {
+        visitors: { label: "Parts Request 1st Approval Jobs" },
     } satisfies ChartConfig
     const quotePendingUnits = useMemo(() => countUnitsByStatus(hhpTasks, { status: "Quote Pending", startDate: dateFrom, endDate: dateTo, engineer: engineer }), [hhpTasks, dateFrom, dateTo, engineer])
     const quotePendingData = [{ browser: "Quote Pending", visitors: quotePendingUnits, fill: "oklch(0.637 0.237 25.331)" }]
@@ -155,6 +156,7 @@ const DashboardScreen = () => {
     } satisfies ChartConfig
     const partsToOrderedUnits = useMemo(() => countUnitsByStatus(hhpTasks, { status: "Parts to be ordered", startDate: dateFrom, endDate: dateTo, engineer: engineer }), [hhpTasks, dateFrom, dateTo, engineer])
     const partsToOrderedData = [{ browser: "Parts to be ordered", visitors: partsToOrderedUnits, fill: "oklch(0.637 0.237 25.331)" }]
+
     const partsToOrderedChartConfig = {
         visitors: { label: "Parts to be ordered" },
     } satisfies ChartConfig
@@ -173,10 +175,10 @@ const DashboardScreen = () => {
     const inProgressChartConfig = {
         visitors: { label: "In Progress" },
     } satisfies ChartConfig
-    const assignedToTechUnits = useMemo(() => countUnitsByStatus(hhpTasks, { status: "In Progress", startDate: dateFrom, endDate: dateTo, engineer: engineer }), [hhpTasks, dateFrom, dateTo, engineer])
-    const assignedToTechData = [{ browser: "In Progress", visitors: inProgressUnits, fill: "oklch(0.723 0.219 149.579)" }]
+    const assignedToTechUnits = useMemo(() => countUnitsByStatus(hhpTasks, { status: "Assigned to Tech", startDate: dateFrom, endDate: dateTo, engineer: engineer }), [hhpTasks, dateFrom, dateTo, engineer])
+    const assignedToTechData = [{ browser: "Assigned to Tech", visitors: assignedToTechUnits, fill: "oklch(0.723 0.219 149.579)" }]
     const assignedToTechChartConfig = {
-        visitors: { label: "In Progress" },
+        visitors: { label: "Assigned to Tech" },
     } satisfies ChartConfig
     const qcUnitsUnits = useMemo(() => countUnitsByStatus(hhpTasks, { status: "QC", startDate: dateFrom, endDate: dateTo, engineer: engineer }), [hhpTasks, dateFrom, dateTo, engineer])
     const qcUnitsData = [{ browser: "QC", visitors: qcUnitsUnits, fill: "oklch(0.723 0.219 149.579)" }]
@@ -215,8 +217,19 @@ const DashboardScreen = () => {
     const handleCardClick = (status: string) => {
         setSelectedStatus(status);
 
-        // Filter tickets based on selected status
-        const filtered = hhpTasks?.filter((item: any) => item.unit_status === status);
+        // Apply the same filtering logic as countUnitsByStatus
+        const filtered = hhpTasks?.filter((item: any) => {
+            // Match status
+            if (item.unit_status !== status) return false;
+
+            // Check if item falls within the selected date range
+            const isWithinDateRange = !dateFrom || !dateTo || isDateInRange(item.date_booked, dateFrom, dateTo);
+
+            // Check if the engineer matches (if selected)
+            const matchesEngineer = engineer ? item.engineer === engineer : true;
+
+            return isWithinDateRange && matchesEngineer;
+        });
         setFilteredTickets(filtered);
         setIsStatusModalOpen(true)
     };
@@ -475,18 +488,21 @@ const DashboardScreen = () => {
                                     <Modal
                                         isVisible={isStatusModalOpen}
                                         onClose={() => setIsStatusModalOpen(false)}
-                                        title={selectedStatus}
+                                        title={`${selectedStatus} (${filteredTickets?.length})`}
                                         content={
 
                                             <>
                                                 {filteredTickets.length > 0 ? (
                                                     <ul className="space-y-2">
-                                                        {filteredTickets.map((ticket) => (
-                                                            <li key={ticket.ticket_number} className="p-2 border-b">
-                                                                <strong>Ticket:</strong> {ticket.ticket_number} |
-                                                                <strong> Date:</strong> {moment(ticket.date_booked).format("YYYY-MM-DD")} |
-                                                                <strong> Warranty:</strong> {ticket.warranty}
-                                                            </li>
+                                                        {filteredTickets.map((ticket, index: any) => (
+                                                            <Card key={ticket.ticket_number} className="p-2 rounded-sm">
+                                                                <p className="" >{index + 1}{`).`} <span>Ticket</span> {ticket.ticket_number} </p>
+                                                                <p className=""><span>Date booked:</span> {moment(ticket.date_booked).format("YYYY-MM-DD")}</p>
+                                                                <p className=""><span>Warranty:</span> {ticket.warranty}</p>
+                                                                <p className=""><span>Status:</span> {ticket.unit_status}</p>
+                                                                <p className=""><span>Engineer:</span> {ticket.engineer}</p>
+                                                            </Card >
+
                                                         ))}
                                                     </ul>
                                                 ) : (
@@ -640,18 +656,18 @@ const DashboardScreen = () => {
                                 </Card>
 
 
-                                <Card onClick={() => handleCardClick("Resolved")} className="flex flex-col cursor-pointer">
+                                <Card onClick={() => handleCardClick("Parts Request 1st Approval")} className="flex flex-col cursor-pointer">
                                     <CardHeader className="items-center pb-0">
-                                        <CardTitle>Completed Repairs</CardTitle>
+                                        <CardTitle>Parts Request 1st Approval</CardTitle>
                                         <CardDescription>Selected Date Range</CardDescription>
                                     </CardHeader>
                                     <CardContent className="flex-1 pb-0">
                                         <ChartContainer
-                                            config={completedChartConfig}
+                                            config={partsRequestChartConfig}
                                             className="mx-auto aspect-square max-h-[250px]"
                                         >
                                             <RadialBarChart
-                                                data={completedData}
+                                                data={partsRequestData}
                                                 startAngle={0}
                                                 endAngle={250}
                                                 innerRadius={80}
@@ -671,7 +687,7 @@ const DashboardScreen = () => {
                                                                 return (
                                                                     <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
                                                                         <tspan x={viewBox.cx} y={viewBox.cy} className="fill-foreground text-4xl font-bold">
-                                                                            {completedUnits.toLocaleString()}
+                                                                            {partsRequestUnits.toLocaleString()}
                                                                         </tspan>
                                                                         {/* <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 24} className="fill-muted-foreground">
                                                                             Completed

@@ -239,17 +239,6 @@ const DunoworxRobtronicScreen = () => {
                 "asset_serial": serialNumber
             };
             const createdAsset = await createAssetsOnRepairshopr(newAssetPayload)
-            // const createdAsset = await axios.post(
-            //     `${process.env.NEXT_PUBLIC_REPAIRSHOPR_CREATE_ASSETS}`,
-            //     newAssetPayload,
-            //     {
-            //         headers: {
-            //             "Content-Type": "application/json",
-            //             Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
-            //         },
-            //     }
-            // );
-
             asset_ids = [createdAsset?.id]; // Add newly created asset ID
         }
 
@@ -320,6 +309,7 @@ const DunoworxRobtronicScreen = () => {
             "comment": `*${fault}`,
             "created_at": created_at,
             "created_by": user?.full_name,
+            "ticket_number": data?.ticket?.number,
         }
         await addCommentLocally(addCommentLocallyPayload)
         openModal() // open modal for attachments
