@@ -60,11 +60,15 @@ const useCheckWarranty = (
                     if (data?.Return?.EvWtyType === "LP") {
                         setTicketTypeId("21877");
                         setWarrantyCode("75130");
-                        setLocalWarranty("IW");
+                        setLocalWarranty((prev) => {
+                            return "IW";
+                        });
                     } else if (data?.Return?.EvWtyType === "OW") {
                         setTicketTypeId("21878");
                         setWarrantyCode("69477");
-                        setLocalWarranty("OOW");
+                        setLocalWarranty((prev) => {
+                            return "OOW";
+                        });
                     }
                 }
             } catch (error) {
@@ -74,7 +78,7 @@ const useCheckWarranty = (
         };
 
         checkWarranty();
-    }, [imei, modelNumber, serialNumber]);
+    }, [imei, modelNumber, serialNumber, localWarranty]);
 
     const handleWarrantyChange = (event: any) => {
         setLocalWarranty(event);

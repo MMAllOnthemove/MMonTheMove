@@ -17,6 +17,12 @@ type TUpdateValues = {
     qc_date?: string;
     qc_complete?: string;
 };
+type TUpdateSO = {
+    updated_at?: string;
+    updated_by?: string;
+    service_order_no?: string;
+    unit_status?: string;
+};
 interface AddTaskErrors {
     date_booked?: string;
     model?: string;
@@ -72,6 +78,7 @@ export const useHHPTasksCrud = () => {
     const [hhpAddTaskLoading, setHHPAddTaskLoading] = useState(false);
     const [hhpAddTaskErrors, setHHPAddTaskErrors] = useState<AddTaskErrors>({});
     const [updateHHPTaskLoading, setUpdateHHPTaskLoading] = useState(false); // Loading state
+    const [updateHHPTaskSOLoading, setUpdateHHPTaskSOLoading] = useState(false); // Loading state
     const [deleteHHPTaskLoading, setDeleteHHPTaskLoading] = useState(false); // Loading state
 
     const fetchTasks = async () => {
@@ -84,6 +91,7 @@ export const useHHPTasksCrud = () => {
                 }
             );
             if (response?.data) {
+
                 setHHPTasks(response.data);
             }
             return response?.data;
@@ -110,6 +118,7 @@ export const useHHPTasksCrud = () => {
             setHHPTasks((prev: any) => [...prev, data?.task]);// Append new task
             // 🔴 Emit task creation event
             socket.emit("addTask", data?.task);
+            return data;
             // toast.success(`${data?.message}`);
         } catch (error: any) {
             if (error?.response?.data?.message) {
@@ -152,6 +161,33 @@ export const useHHPTasksCrud = () => {
             if (error) toast.error(error?.response?.data?.error);
         } finally {
             setUpdateHHPTaskLoading(false)
+        }
+
+    };
+    const updateTaskSO = async (taskId: string | number | undefined,
+        values: TUpdateSO) => {
+        if (!taskId) return;
+        setUpdateHHPTaskSOLoading(true);
+        try {
+            const { data } = await axios.patch(
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/so/` +
+                taskId,
+                values,
+                {
+                    withCredentials: true,
+                }
+            );
+            // await fetchTasks()
+            setHHPTasks((prev: any) =>
+                prev.map((task: any) => (task.id === taskId ? data.task : task))
+            );
+
+            // 🔴 Emit task update event
+            socket.emit("updateTask", data?.task);
+        } catch (error: any) {
+            if (error) toast.error(error?.response?.data?.error);
+        } finally {
+            setUpdateHHPTaskSOLoading(false)
         }
 
     };
@@ -206,5 +242,5 @@ export const useHHPTasksCrud = () => {
             socket.off("deleteTask");
         };
     }, []);
-    return { hhpTasks, fetchTasks, hhpAddTaskLoading, addTask, hhpAddTaskErrors, updateHHPTaskLoading, updateTask, deleteHHPTaskLoading, deleteTask };
+    return { hhpTasks, fetchTasks, hhpAddTaskLoading, addTask, hhpAddTaskErrors, updateHHPTaskLoading, updateTask, updateTaskSO, updateHHPTaskSOLoading, deleteHHPTaskLoading, deleteTask };
 };

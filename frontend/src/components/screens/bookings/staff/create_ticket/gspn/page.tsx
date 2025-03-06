@@ -9,6 +9,11 @@ const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page'),
     { ssr: false }
 )
+const Modal = dynamic(() =>
+    import('@/components/modal/page'),
+    { ssr: false }
+)
+
 const NotLoggedInScreen = dynamic(() =>
     import('@/components/not_logged_in/page'), { ssr: false }
 )
@@ -33,10 +38,14 @@ import useGetCustomerLocally from '@/hooks/useGetCustomerLocally';
 import { datetimestamp } from '@/lib/date_formats';
 import moment from 'moment';
 import { useParams } from 'next/navigation';
+import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 const GSPNScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { addServiceOrder, addServiceOrderLoading } = useCreateServiceOrder()
+    const { hhpTasks, fetchTasks, updateHHPTaskLoading, updateTask, deleteTask, updateTaskSO, updateHHPTaskSOLoading } = useHHPTasksCrud()
     const [step, setStep] = useState(1);
     const params = useParams()
     const { customer_email } = params;
@@ -87,6 +96,12 @@ const GSPNScreen = () => {
     const [state, setState] = useState("")
     const [zip, setZip] = useState("")
     const [country, setCountry] = useState("ZA")
+
+
+    const [newServiceOrder, setNewServiceOrder] = useState("")
+    const [ticket_number, setTicketNumber] = useState("")
+
+    const [openModal, setOpenModal] = useState(false)
 
     useEffect(() => {
         if (customer_email && singleCustomer) {
@@ -182,7 +197,12 @@ const GSPNScreen = () => {
                 "Country": `${country}`
             }
         }
-        await addServiceOrder(values)
+        const result = await addServiceOrder(values)
+
+        setNewServiceOrder(result?.Return?.EvSvcOrderNo);
+
+        setOpenModal(true)
+
 
         setModel("")
         setSerialNumber("")
@@ -221,6 +241,15 @@ const GSPNScreen = () => {
         if (typeof window !== 'undefined' && window.localStorage) localStorage.clear();
         router.back()
     }
+
+    const handleUpdateTicketSO = async () => {
+        const updated_at = datetimestamp;
+        const payload = {
+            service_order: newServiceOrder, updated_by: user?.email, updated_at, ticket_number
+        }
+
+        await updateTaskSO(ticket_number, payload)
+    }
     return (
         <>
             {
@@ -231,6 +260,29 @@ const GSPNScreen = () => {
                         <Sidebar />
                         <main className='container p-1'>
                             <PageTitle title="service order" hasSpan={true} spanText={"Create"} />
+
+                            {
+                                openModal &&
+
+                                <Modal isVisible={openModal}
+                                    onClose={() => setOpenModal(false)}
+                                    title="Update service order"
+                                    content={
+                                        <>
+                                            <div>
+                                                <Label htmlFor="newServiceOrder">Service Order</Label>
+                                                <Input name="newServiceOrder" value={newServiceOrder} onChange={(e) => setNewServiceOrder(e.target.value)} />
+                                            </div>
+                                            <div>
+                                                <Label htmlFor="ticket_number">Add ticket number to update</Label>
+                                                <Input name="ticket_number" value={ticket_number} onChange={(e) => setTicketNumber(e.target.value)} />
+                                            </div>
+                                            <Button type="button" className='mt-2' onClick={handleUpdateTicketSO} disabled={updateHHPTaskSOLoading}>{updateHHPTaskSOLoading ? 'Updating' : `Update ${ticket_number}`}</Button>
+
+                                        </>
+                                    }
+                                />
+                            }
 
                             {step === 1 && <ProductInfo model={model} setModel={setModel} serial_number={serial_number} setSerialNumber={setSerialNumber} imei={imei} setIMEI={setIMEI} purchase_date={purchase_date} setPurchaseDate={setPurchaseDate} wtyException={wtyException} setWtyException={setWtyException} wtyType={wtyType} setWtyType={setWtyType} accessory={accessory} setAccessory={setAccessory} defectDesc={defectDesc} setDefectDesc={setDefectDesc} remark={remark} setRemark={setRemark} />}
                             {step === 2 && <ProductInfoTwo model={model} symCode1={symCode1} setSymCode1={setSymCode1} symCode2={symCode2} setSymCode2={setSymCode2} symCode3={symCode3} setSymCode3={setSymCode3} serviceType={serviceType} setServiceType={setServiceType} tokenNo={tokenNo} setTokenNo={setTokenNo} requestDate={requestDate} setRequestDate={setRequestDate} requestTime={requestTime} setRequestTime={setRequestTime} unitReceiveDate={unitReceiveDate} setUnitReceieveDate={setUnitReceieveDate} unitReceiveTime={unitReceiveTime} setUnitReceieveTime={setUnitReceieveTime} firstAppDate={firstAppDate} setFirstAppDate={setFirstAppDate} firstAppTime={firstAppTime} setFirstAppTime={setFirstAppTime} repairReceiveDate={repairReceiveDate} setRepairReceiveDate={setRepairReceiveDate} repairReceiveTime={repairReceiveTime} setRepairReceiveTime={setRepairReceiveTime} />}

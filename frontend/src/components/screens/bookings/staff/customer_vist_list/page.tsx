@@ -1,6 +1,7 @@
 "use client"
-import useGetCustomerVisits from '@/hooks/useGetCustomerVisits';
+import useCustomerLocally from '@/hooks/useCustomerLocally';
 import useUserLoggedIn from '@/hooks/useGetUser';
+import useSocket from '@/hooks/useSocket';
 import columns from '@/lib/customer_visit_table';
 import { datetimestamp } from '@/lib/date_formats';
 import { TechniciansTableData } from '@/lib/types';
@@ -49,9 +50,8 @@ const Pagination = dynamic(() =>
 )
 const CustomerVistListScreen = () => {
     const today = moment(datetimestamp).format('YYYY-MM-DD');
-    const { customerVisitList } = useGetCustomerVisits(today)
-
-
+    const { customerVisitList } = useCustomerLocally(today)
+    const { socket, isConnected } = useSocket()
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const router = useRouter()
     // router.prefetch("/repairshopr_asset/")

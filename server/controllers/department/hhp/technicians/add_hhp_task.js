@@ -53,6 +53,7 @@ const AddHHPTask = async (req, res) => {
         rs_warranty,
         ticket_type_id,
     } = req.body;
+
     try {
         await AddHHPTaskSchema.validate(req.body, { abortEarly: false });
         const findIfExists = await pool.query(
@@ -67,7 +68,7 @@ const AddHHPTask = async (req, res) => {
             });
         } else {
             const { rows } = await pool.query(
-                "INSERT INTO technician_tasks (service_order_no, date_booked, model, warranty, engineer, fault, imei, serial_number, unit_status, ticket_number, department, job_added_by, stores, repairshopr_job_id, repeat_repair, created_at, additional_info, repairshopr_customer_id, job_repair_no, accessories_and_condition, requires_backup, rs_warranty, ticket_type_id) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23) returning *",
+                "INSERT INTO technician_tasks (service_order_no, date_booked, model, warranty, engineer, fault, imei, serial_number, unit_status, ticket_number, department, job_added_by, stores, repairshopr_job_id, repeat_repair, created_at, additional_info, repairshopr_customer_id, job_repair_no, accessories_and_condition, requires_backup, rs_warranty, ticket_type_id) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23) returning id",
                 [
                     service_order_no,
                     date_booked,
@@ -101,7 +102,6 @@ const AddHHPTask = async (req, res) => {
             await appLogs("INSERT", job_added_by, req.body);
             // io.emit("addTask", rows[0]); // Notify clients about task addition
             emitBinStatsUpdate(); // Call bin stats update function
-
             return res.status(201).json({
                 message: "HHP task created",
                 task: fetchResult.rows[0],

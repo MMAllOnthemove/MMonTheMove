@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useState } from "react";
 
 const useIpaasSOPartsInfo = () => {
     const ipaasApiUrl = process.env.NEXT_PUBLIC_IPAAS_API_SEARCH_PARTS;
@@ -8,6 +9,8 @@ const useIpaasSOPartsInfo = () => {
     const lang = process.env.NEXT_PUBLIC_LANG;
     const country = process.env.NEXT_PUBLIC_COUNTRY;
     const pac = process.env.NEXT_PUBLIC_PAC;
+
+    const [loadingPartInfo, setLoading] = useState(false);
 
     const getSOPartsInfo = async (partNumber: string) => {
         const options = {
@@ -22,6 +25,7 @@ const useIpaasSOPartsInfo = () => {
         };
         if (!partNumber) return;
         try {
+            setLoading(true);
             const response = await axios.post(`${ipaasApiUrl}`, options, {
                 headers: {
                     "Content-Type": "application/json",
@@ -34,10 +38,12 @@ const useIpaasSOPartsInfo = () => {
             if (process.env.NODE_ENV !== "production") {
                 console.error("Error fetching GSPN Info api:", error);
             }
+        } finally {
+            setLoading(false);
         }
     };
 
-    return { getSOPartsInfo };
+    return { getSOPartsInfo, loadingPartInfo };
 };
 
 export default useIpaasSOPartsInfo;

@@ -100,6 +100,12 @@ io.on("connection", (socket) => {
     socket.on("deletePart", (deletedPart) => {
         io.emit("deletePart", deletedPart); // Send to all clients
     });
+    // Broadcast when a new customer visit is added
+    // socket.on("addCustomerVisit", (customerVisit) => {
+    //     console.log("addCustomerVisit", customerVisit);
+    //     io.emit("addCustomerVisit", customerVisit); // Send to all clients
+    // });
+
     // Handle disconnection
     socket.on("disconnect", () => {
         console.log(`User disconnected: ${socket.userId}`);

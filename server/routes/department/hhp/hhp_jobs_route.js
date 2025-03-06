@@ -13,6 +13,7 @@ import deleteHHPTask from "../../../controllers/department/hhp/technicians/delet
 import { authenticateAdmin } from "../../../middleware/verify_admin.js";
 import { GetTaskByTicket } from "../../../controllers/department/hhp/technicians/get_tasks.js";
 import GetBinStats from "../../../controllers/department/hhp/bin_dashboard/get_stats.js";
+import { UpdateSOAfterBooking } from "../../../controllers/department/hhp/technicians/update_so_after_booking.js";
 
 router.post("/", limiter, authenticateToken, AddHHPTask);
 router.patch("/assess/:id", limiter, authenticateToken, UpdateAssessmentDate);
@@ -22,6 +23,7 @@ router.get("/:id", authenticateToken, GetTaskById);
 router.get("/engineer/bin", authenticateAdmin, GetBinStats);
 router.get("/ticket/:id", authenticateToken, GetTaskByTicket);
 router.patch("/:id", authenticateToken, UpdateTask);
+router.patch("/so/:id", authenticateToken, UpdateSOAfterBooking);
 router.delete("/:id", authenticateAdmin, deleteHHPTask);
 
 export { router };

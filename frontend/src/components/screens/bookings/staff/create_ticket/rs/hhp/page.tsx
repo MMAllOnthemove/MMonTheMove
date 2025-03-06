@@ -65,30 +65,15 @@ const HHP = (customerProps: string | string[] | any) => {
 
 
     const [fault, setFault] = useState("")
-    // const [customFault, setCustomFault] = useState('');
-    // const [isCustom, setIsCustom] = useState(false);
     const [openFaultList, setOpenFaultList] = React.useState(false)
 
-    // const handleSelectChange = (e) => {
-    //     setFault(e);
-    //     setIsCustom(false); // If the user selects from dropdown, reset the custom input
-    // };
-
-    // const handleInputChange = (e) => {
-    //     setCustomFault(e.target.value);
-    //     setFault(''); // Reset selected fault if the user types a custom one
-    // };
-
-    // const handleCustomFaultToggle = () => {
-    //     setIsCustom(!isCustom);
-    //     setFault(''); // Clear selection if they choose to type a custom fault
-    // };
-
+    const isFormValid = itemCondition && requires_backup && IMEI && serialNumber && modelNumber
 
     // these will be send to our db as soon as a ticket is booked
     // some of the values will be stored in state from the result
     // this is just the warranty just a different variable (I am out of variable names, lol)
     const { warranty, warrantyCode, ticketTypeId, localWarranty, selectedWarranty, handleWarrantyChange } = useCheckWarranty(modelNumber, serialNumber, IMEI)
+
     const [adh, setADH] = useState("")
     useEffect(() => {
         const loadCustomerAssetInfo = () => {
@@ -118,7 +103,6 @@ const HHP = (customerProps: string | string[] | any) => {
     };
     const createTicket = async (e: React.SyntheticEvent) => {
         e.preventDefault()
-
         const payload = {
             "customer_id": customerId, // only need this for creating a ticket on rs
             "problem_type": `${issue_type}`, // Will aways be HHP for handheld devices, no need to choose
@@ -164,8 +148,8 @@ const HHP = (customerProps: string | string[] | any) => {
             data?.ticket?.ticket_type_id
         );
         const addCommentLocallyPayload = {
-            "task_id": data?.ticket?.id,
-            "comment": `*${fault}`,
+            "task_id": `${task_id}`,
+            "comment": `* ${fault}`,
             "created_at": created_at,
             "created_by": user?.full_name,
             "ticket_number": data?.ticket?.number,
@@ -214,11 +198,11 @@ const HHP = (customerProps: string | string[] | any) => {
             "serial_number": serialNumber,
             "status": "New",
             "additional_info": specialRequirement,
-            "ticket_number": `${ticketNumber}`,
+            "ticket_number": `${ticketNumber} `,
             "department": department,
             "job_added_by": user?.email,
             "stores": issue_type,
-            "repairshopr_job_id": `${ticketId}`,
+            "repairshopr_job_id": `${ticketId} `,
             "repairshopr_customer_id": repairshoprCustomerId,
             "repeat_repair": repeat_repair,
             "created_at": created_at,
@@ -229,7 +213,7 @@ const HHP = (customerProps: string | string[] | any) => {
             "ticket_type_id": ticket_type_id
         }
         const res: any = await addTask(payload)
-        setTaskId(res?.id)
+        if (res?.id) setTaskId(res?.id)
 
 
     }
@@ -348,8 +332,8 @@ const HHP = (customerProps: string | string[] | any) => {
                             <SelectContent>
                                 <SelectGroup>
                                     <SelectLabel>Requires backup *</SelectLabel>
-                                    <SelectItem value={`${ticketTypeId === "21877" ? '75129' : '69753'}`}>No</SelectItem>
-                                    <SelectItem value={`${ticketTypeId === "21878" ? '75128' : '69752'}`}>Yes</SelectItem>
+                                    <SelectItem value={`${ticketTypeId === "21877" ? '75129' : '69753'} `}>No</SelectItem>
+                                    <SelectItem value={`${ticketTypeId === "21878" ? '75128' : '69752'} `}>Yes</SelectItem>
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
@@ -369,7 +353,7 @@ const HHP = (customerProps: string | string[] | any) => {
                                     <SelectLabel>Issue types</SelectLabel>
 
                                     {hhp_issue_types.map((x: any) =>
-                                        (<SelectItem key={x.value} value={`${x.value}`}>{x?.label}</SelectItem>))
+                                        (<SelectItem key={x.value} value={`${x.value} `}>{x?.label}</SelectItem>))
                                     }
                                 </SelectGroup>
                             </SelectContent>
@@ -435,7 +419,7 @@ const HHP = (customerProps: string | string[] | any) => {
                 </div>
                 {warranty ? <p className="text-lg font-semibold text-sky-700 md:text-xl text-center my-3">Unit is {warranty === "LP" ? "IW" : warranty}</p> : ""}
 
-                <Button type="submit" disabled={createTicketLoading}>
+                <Button type="submit" disabled={createTicketLoading || !isFormValid}>
                     {createTicketLoading ? 'Creating...' : 'Create ticket'}
                 </Button>
             </form>

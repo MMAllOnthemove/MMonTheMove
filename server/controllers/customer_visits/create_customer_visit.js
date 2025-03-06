@@ -70,14 +70,19 @@ const addCustomer = async (req, res) => {
         }
 
         // Insert visit
-        await pool.query(
-            "INSERT INTO customer_visits (customer_id, visit_date) VALUES ($1, $2)",
+        const { rows } = await pool.query(
+            "INSERT INTO customer_visits (customer_id, visit_date) VALUES ($1, $2) returning visit_date",
             [customerId, visit_date]
+        );
+        const getCustomerVisits = await pool.query(
+            "SELECT c.id AS customer_id, c.first_name || ' ' || c.last_name AS customer_name, c.email, c.phone_number AS phone, v.visit_date::date, COUNT(t.id) AS unit_count, ARRAY_AGG(t.ticket_number ORDER BY t.ticket_number DESC) AS ticket_numbers FROM customer_visits v JOIN customers c ON v.customer_id = c.id LEFT JOIN technician_tasks t ON t.date_booked::date = v.visit_date::date AND t.repairshopr_customer_id = c.repairshopr_customer_id  WHERE v.visit_date::date = $1 GROUP BY c.id, c.first_name, c.last_name, c.email, c.phone_number, v.visit_date::date ORDER BY v.visit_date::date DESC",
+            [rows[0].visit_date]
         );
         // add log
         await appLogs("INSERT", lowercaseEmail, req.body);
         return res.status(201).json({
             message: "Successfully added",
+            visit: getCustomerVisits.rows[0],
         });
     } catch (error) {
         // Handle validation or other errors

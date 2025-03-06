@@ -53,7 +53,6 @@ const uploadTechnicianFiles = async (req, res) => {
         if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
             return res.status(400).json({ error: "No files uploaded" });
         }
-        console.log("req.files", req.files);
         // const { files } = req.files;
         // Validate files using Yup schema
         await fileUploadSchema.validate({ files: req.files });
@@ -73,7 +72,6 @@ const uploadTechnicianFiles = async (req, res) => {
                 }-${sanitizedFileName}`;
 
                 const remotePath = `/home/mmallonthemove/uploads/hhp/${uniqueFileName}`;
-                console.log("remotePath", remotePath);
                 try {
                     // Upload the file to SFTP
                     await sftpClient.put(file.path, remotePath);

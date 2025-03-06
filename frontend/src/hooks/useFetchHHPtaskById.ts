@@ -29,11 +29,7 @@ const useFetchHHPTaskById = (taskId: string | string[] | any) => {
         }
     };
     useEffect(() => {
-        const delayFetch = setTimeout(() => {
-            refetch();
-        }, 5000); // 5-second delay
-
-        return () => clearTimeout(delayFetch); // Cleanup timeout if searchTicket changes
+        refetch();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [taskId]);

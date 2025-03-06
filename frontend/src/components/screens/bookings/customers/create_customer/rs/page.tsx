@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import useCreateCustomerOnRepairshopr from '@/hooks/useCreateCustomer'
-import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally'
 import { datetimestamp } from '@/lib/date_formats'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'nextjs-toploader/app'
@@ -13,6 +12,7 @@ const PageTitle = dynamic(() =>
 )
 
 import { Label } from '@/components/ui/label'
+import useCustomerLocally from '@/hooks/useCustomerLocally'
 import { capitalizeText } from '@/lib/capitalize'
 import provinces from '@/lib/provinces'
 import AlertDialogPassword from '../../modal/page'
@@ -36,7 +36,7 @@ const CreateCustomerRepairshoprScreen = () => {
     const [phoneDetails, setPhoneDetails] = useState([{ type: "mobile", number: "" }]);
 
     const { addCustomer, createCustomerLoading } = useCreateCustomerOnRepairshopr()
-    const { addCustomerLocally } = useCreateCustomerLocally()
+    const { addCustomerLocally } = useCustomerLocally()
     const handlePhoneChange = (
         index: number,
         field: keyof PhoneDetail, // Ensures field can only be "type" or "number"

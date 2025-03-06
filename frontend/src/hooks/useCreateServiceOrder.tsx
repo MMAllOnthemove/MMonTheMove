@@ -89,6 +89,7 @@ const useCreateServiceOrder = () => {
                         duration: 86400000, // 24 hours
                     }
                 );
+                return data;
             } else {
                 toast.error(data?.EtEhnErrInfo?.GspnWMsgCode);
             }

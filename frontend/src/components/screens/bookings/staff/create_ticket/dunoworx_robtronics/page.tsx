@@ -24,7 +24,7 @@ import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
 import useBookingAgentsTasks from '@/hooks/useBookingAgentsTasks';
 import useCheckWarranty from '@/hooks/useCheckHHPWarranty';
 import useCreateCustomerOnRepairshopr from '@/hooks/useCreateCustomer';
-import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
+import useCreateCustomerLocally from '@/hooks/useCustomerLocally';
 import useCreateTicket from '@/hooks/useCreateTicket';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud';
@@ -42,6 +42,7 @@ import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useCreateAssets } from './add_assets';
+import useCustomerLocally from '@/hooks/useCustomerLocally';
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page')
 )
@@ -63,7 +64,7 @@ const DunoworxRobtronicScreen = () => {
     const { addCustomer, createCustomerLoading } = useCreateCustomerOnRepairshopr()
     const { addRepairTicketFile } = useRepairshoprFile()
     const { addCommentLocally } = useAddTaskCommentLocally()
-    const { addCustomerLocally } = useCreateCustomerLocally()
+    const { addCustomerLocally } = useCustomerLocally()
     const { addTask } = useHHPTasksCrud();
     const [search, setSearch] = useState("")
     const [firstname, setFirstname] = useState<string | any>("")

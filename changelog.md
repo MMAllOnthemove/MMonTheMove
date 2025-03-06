@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.25] - 2025-03-05
+
+### Added
+
+-   loading effect for view ticket screen
+-   modal to add service order after booking
+-   black bg in customers welcome screen, Samsung logo, mm all logo text, mm phone number
+-   disable create ticket && create service order button until all necessary fields are filled
+-   search parts screen
+-   show part description in parts issued view ticket screen
+-   apk to view the app url by default for customer booking screen
+
+### Fixed
+
+-   not showing all statuses in view ticket
+-   open popup tab in full screen
+-   asset result display key in assets screen
+-   local warranty was not loading on create ticket
+
 ## [0.1.24] - 2025-03-03
 
 ### Added

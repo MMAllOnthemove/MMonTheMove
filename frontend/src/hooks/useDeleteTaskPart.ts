@@ -32,7 +32,7 @@ const useDeletePart = () => {
     useEffect(() => {
         // Listen for real-time emitLatestPartsAdded updates
         socket.on("emitLatestPartsAdded", (updatedStats) => {
-            console.log("Received emitLatestPartsAdded event:", updatedStats);
+            // console.log("Received emitLatestPartsAdded event:", updatedStats);
         });
 
         return () => {

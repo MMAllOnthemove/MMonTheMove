@@ -14,9 +14,10 @@ import { Textarea } from '@/components/ui/textarea';
 import useAddTaskCommentLocally from '@/hooks/useAddCommentLocally';
 import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
 import useBookingAgentsTasks from '@/hooks/useBookingAgentsTasks';
+import { useCreateAssetsBookFromSO } from '@/hooks/useCreateAssetsBookFromSO';
 import useCreateCustomerOnRepairshopr from '@/hooks/useCreateCustomer';
-import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
 import useCreateTicket from '@/hooks/useCreateTicket';
+import useCustomerLocally from '@/hooks/useCustomerLocally';
 import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud';
 import useSocket from '@/hooks/useSocket';
 import { assetTypes } from '@/lib/asset_types';
@@ -25,7 +26,6 @@ import { datetimestamp } from '@/lib/date_formats';
 import warranties from '@/lib/warranties';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { useCreateAssetsBookFromSO } from '@/hooks/useCreateAssetsBookFromSO';
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page')
 )
@@ -46,7 +46,7 @@ const BookFromSOScreen = () => {
     const { addCustomer, createCustomerLoading } = useCreateCustomerOnRepairshopr()
     const { addRepairTicketFile } = useRepairshoprFile()
     const { addCommentLocally } = useAddTaskCommentLocally()
-    const { addCustomerLocally } = useCreateCustomerLocally()
+    const { addCustomerLocally } = useCustomerLocally()
     const { addTask } = useHHPTasksCrud();
     const [search, setSearch] = useState("")
     const [firstname, setFirstname] = useState("")
@@ -80,6 +80,7 @@ const BookFromSOScreen = () => {
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setADH(e.target.checked ? 'ADH' : 'IW');
     };
+    const isFormValid = firstname && lastname && fault && itemCondition && requires_backup && imei && serialNumber && model
     const hhp_issue_types = assetTypes.filter(asset => asset.value.includes("HHP"));
     const handleGetSOInfo = async (serviceOrder: string) => {
         if (!serviceOrder) return
@@ -630,7 +631,7 @@ const BookFromSOScreen = () => {
                             </div>
                             <p className="text-xs text-gray-500 text-center">{createAssetsBookFromSOLoading ? 'Creating assets' : null}</p>
 
-                            <Button type="button" className="mt-2 w-full" disabled={createTicketLoading} onClick={createTicket}>
+                            <Button type="button" className="mt-2 w-full" disabled={createTicketLoading || !isFormValid} onClick={createTicket}>
                                 {createTicketLoading ? 'Creating...' : 'Create ticket'}
                             </Button>
 

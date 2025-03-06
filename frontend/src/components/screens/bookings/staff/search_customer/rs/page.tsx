@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
+import useCreateCustomerLocally from '@/hooks/useCustomerLocally';
 import useUpdateRepairshoprCustomer from '@/hooks/useUpdateRepairshoprCustomer';
 import { datetimestamp } from '@/lib/date_formats';
 import { Customer } from '@/lib/types';
@@ -29,8 +29,11 @@ import {
     DialogTitle
 } from "@/components/ui/dialog";
 import { capitalizeText } from '@/lib/capitalize';
+import useCustomerLocally from '@/hooks/useCustomerLocally';
+import useSocket from '@/hooks/useSocket';
 
 const SearchCustomerRepairshoprScreen = () => {
+    const { socket, isConnected } = useSocket()
     const [searchCustomer, setSearchCustomer] = useState("");
     const [result, setResult] = useState<Customer[] | any>([]);
     const [customerId, setCustomerId] = useState("")
@@ -45,7 +48,7 @@ const SearchCustomerRepairshoprScreen = () => {
     const [city, setCity] = useState("");
     const [state, setState] = useState("");
     const [zip, setZip] = useState("")
-    const { addCustomerLocally, createCustomerLocallyLoading } = useCreateCustomerLocally()
+    const { addCustomerLocally, createCustomerLocallyLoading } = useCustomerLocally()
     const { updateCustomer, updateCustomerRepairshoprLoading } = useUpdateRepairshoprCustomer()
     // this is the modal for editing customer details
     const [editModalOpen, setEditModalOpen] = useState(false);

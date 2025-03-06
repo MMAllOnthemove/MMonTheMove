@@ -55,6 +55,7 @@ export const menuItems = [
             { id: 12, item: "Add driver", pageRoute: "/drivers" },
             { id: 13, item: "Add car", pageRoute: "/cars" },
             { id: 14, item: "Add assembly term", pageRoute: "/assembly_terms" },
+            { id: 24, item: "Search parts", pageRoute: "/search_parts" },
         ],
     },
     {
