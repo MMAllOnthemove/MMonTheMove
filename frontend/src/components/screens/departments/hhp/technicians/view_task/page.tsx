@@ -18,13 +18,11 @@ import useRepairshoprComment from '@/hooks/useRepairshoprComment';
 import useRepairshoprTicket from '@/hooks/useRepairshoprTicket';
 import useSocket from "@/hooks/useSocket";
 import useTaskParts from '@/hooks/useTaskParts';
-import { assetTypes } from '@/lib/asset_types';
 import calculateDueDate from '@/lib/calculate_due_date';
 import { datetimestamp } from '@/lib/date_formats';
 import findChanges from '@/lib/find_changes';
 import openInNewTab from '@/lib/open_new_tab';
 import repairshopr_statuses from '@/lib/repairshopr_status';
-import repairshopr_statuses_techs from '@/lib/tech_rs_statuses';
 import { RepairshorTicketComment } from '@/lib/types';
 import { type_21877, type_21878 } from '@/lib/warranty_maps';
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
@@ -160,7 +158,6 @@ const ViewHHPTaskScreen = () => {
                 setPartsOrderId("")
             }
             await updateTask(id, changes)
-            closeModal()
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') {
                 console.error("comment parts_order_id", error)
@@ -185,13 +182,6 @@ const ViewHHPTaskScreen = () => {
                     console.error("Missing part ID:", part);
                     continue;
                 }
-
-                const updatePayload = {
-                    // id: part.id,
-                    seal_number: part.seal_number, // Ensure seal number is being sent
-                    checked: true, // If part is selected, send checked=true
-                };
-
                 await updatePart(part.id, part);
             }
             const partsList = selectedIssuedParts?.map((part: any, index: any) => {
@@ -210,7 +200,7 @@ const ViewHHPTaskScreen = () => {
             const created_at = datetimestamp;
             const addCommentLocallyPayload = {
                 "task_id": hhpTask?.id,
-                "comment": '*' + reparshoprComment,
+                "comment": '*' + comment,
                 "created_at": created_at,
                 "created_by": user?.full_name,
                 "ticket_number": hhpTask?.ticket_number

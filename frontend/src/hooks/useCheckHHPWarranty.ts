@@ -9,6 +9,9 @@ const useCheckWarranty = (
 ) => {
     const [warranty, setWarranty] = useState("");
     const [ticketTypeId, setTicketTypeId] = useState<number | any>();
+    const [ticketTypeIdManually, setTicketTypeIdManually] = useState<
+        number | any
+    >();
     const [warrantyCode, setWarrantyCode] = useState<number | any>();
     const [localWarranty, setLocalWarranty] = useState("");
     const [selectedWarranty, setSelectedWarranty] = useState("");
@@ -60,13 +63,13 @@ const useCheckWarranty = (
                     if (data?.Return?.EvWtyType === "LP") {
                         setTicketTypeId("21877");
                         setWarrantyCode("75130");
-                        setLocalWarranty((prev) => {
+                        setLocalWarranty(() => {
                             return "IW";
                         });
                     } else if (data?.Return?.EvWtyType === "OW") {
                         setTicketTypeId("21878");
                         setWarrantyCode("69477");
-                        setLocalWarranty((prev) => {
+                        setLocalWarranty(() => {
                             return "OOW";
                         });
                     }
@@ -81,16 +84,20 @@ const useCheckWarranty = (
     }, [imei, modelNumber, serialNumber, localWarranty]);
 
     const handleWarrantyChange = (event: any) => {
-        setLocalWarranty(event);
+        setSelectedWarranty(event);
         // Update other state variables based on the selected warranty
         if (event === "IW") {
-            setTicketTypeId("21877");
+            setTicketTypeIdManually("21877");
             setWarrantyCode("75130");
-            setLocalWarranty("IW");
+            setLocalWarranty(() => {
+                return "IW";
+            });
         } else if (event === "OOW") {
-            setTicketTypeId("21878");
+            setTicketTypeIdManually("21878");
             setWarrantyCode("69477");
-            setLocalWarranty("OOW");
+            setLocalWarranty(() => {
+                return "OOW";
+            });
         }
     };
 
@@ -101,6 +108,7 @@ const useCheckWarranty = (
         localWarranty,
         selectedWarranty,
         handleWarrantyChange,
+        ticketTypeIdManually,
         LPDate,
         PartsDate,
     };

@@ -72,7 +72,7 @@ const HHP = (customerProps: string | string[] | any) => {
     // these will be send to our db as soon as a ticket is booked
     // some of the values will be stored in state from the result
     // this is just the warranty just a different variable (I am out of variable names, lol)
-    const { warranty, warrantyCode, ticketTypeId, localWarranty, selectedWarranty, handleWarrantyChange } = useCheckWarranty(modelNumber, serialNumber, IMEI)
+    const { warranty, warrantyCode, ticketTypeId, localWarranty, selectedWarranty, ticketTypeIdManually, handleWarrantyChange } = useCheckWarranty(modelNumber, serialNumber, IMEI)
 
     const [adh, setADH] = useState("")
     useEffect(() => {
@@ -108,7 +108,7 @@ const HHP = (customerProps: string | string[] | any) => {
             "problem_type": `${issue_type}`, // Will aways be HHP for handheld devices, no need to choose
             "subject": subject(),
             "status": "New", //  will always be 'New' for a recently created ticket
-            "ticket_type_id": `${ticketTypeId}`,
+            "ticket_type_id": `${ticketTypeIdManually ?? ticketTypeId}`,
             "user_id": `${user?.repairshopr_id}`,
             "properties": {
                 "Service Order No.": serviceOrderNumber,
@@ -117,8 +117,8 @@ const HHP = (customerProps: string | string[] | any) => {
                 "Item Condition": itemCondition,
                 "Backup Requires": requires_backup,
                 "Backup Requires ": requires_backup,
-                "Warranty ": adh === 'ADH' && ticketTypeId === "21877" ? '75132' : warrantyCode, // ADH RS code
-                "Warranty": adh === 'ADH' && ticketTypeId === "21877" ? '75132' : warrantyCode, // ADH RS code
+                "Warranty ": selectedWarranty ?? (adh === 'ADH' && ticketTypeId === "21877" ? '75132' : warrantyCode), // ADH RS code
+                "Warranty": selectedWarranty ?? (adh === 'ADH' && ticketTypeId === "21877" ? '75132' : warrantyCode), // ADH RS code
                 "IMEI": `${IMEI}`,
                 "Job Repair No.": job_repair_no,
                 "Job Repair No.:": job_repair_no,
@@ -332,12 +332,16 @@ const HHP = (customerProps: string | string[] | any) => {
                             <SelectContent>
                                 <SelectGroup>
                                     <SelectLabel>Requires backup *</SelectLabel>
-                                    <SelectItem value={`${ticketTypeId === "21877" ? '75129' : '69753'} `}>No</SelectItem>
-                                    <SelectItem value={`${ticketTypeId === "21878" ? '75128' : '69752'} `}>Yes</SelectItem>
+                                    <SelectItem value={`${(ticketTypeIdManually ?? ticketTypeId) === "21877" ? '75129' : '69753'}`}>No</SelectItem>
+                                    <SelectItem value={`${(ticketTypeIdManually ?? ticketTypeId) === "21878" ? '75128' : '69752'}`}>Yes</SelectItem>
+
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
                     </div>
+                    {/* todo: remove */}
+
+                    <p>ticketTypeId {ticketTypeId}</p>
                     <div>
                         <Label htmlFor='issue_type' className="text-gray-500">Issue type</Label>
                         <Select
@@ -384,12 +388,16 @@ const HHP = (customerProps: string | string[] | any) => {
                         {hhpAddTaskErrors.serial_number && <p className="text-sm text-red-500 font-medium">{hhpAddTaskErrors.serial_number}</p>}
 
                     </div>
+                    {/* todo: uncomment */}
+                    <p>selectedWarranty {selectedWarranty}</p>
+                    <p>localWarranty {localWarranty}</p>
+                    <p>ticketTypeIdManually {ticketTypeIdManually}</p>
                     <div>
-                        <Label htmlFor='localWarranty' className="text-gray-500">Change warranty</Label>
+                        <Label htmlFor='selectedWarranty' className="text-gray-500">Change warranty</Label>
                         <Select
-                            value={localWarranty || ""}
+                            value={selectedWarranty || ""}
                             onValueChange={handleWarrantyChange}
-                            name='localWarranty'
+                            name='selectedWarranty'
                         >
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Change warranty" />

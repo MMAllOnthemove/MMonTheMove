@@ -100,6 +100,12 @@ io.on("connection", (socket) => {
     socket.on("deletePart", (deletedPart) => {
         io.emit("deletePart", deletedPart); // Send to all clients
     });
+    socket.on("addCarChecklist", (task) => {
+        io.emit("addCarChecklist", task); // Send to all clients
+    });
+    socket.on("updateCarChecklist", (task) => {
+        io.emit("updateCarChecklist", task); // Send to all clients
+    });
     // Broadcast when a new customer visit is added
     // socket.on("addCustomerVisit", (customerVisit) => {
     //     console.log("addCustomerVisit", customerVisit);

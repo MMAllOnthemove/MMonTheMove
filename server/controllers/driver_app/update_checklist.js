@@ -21,7 +21,7 @@ const updateChecklist = async (req, res) => {
         // Validate request body
         await updateChecklistSchema.validate(req.body, { abortEarly: false });
         const result = await pool.query(
-            "UPDATE vehicle_checklist SET mileage_after = $1, next_service_date = $2, next_service_kms = $3, license_disc_expiry = $4 WHERE id = $5",
+            "UPDATE vehicle_checklist SET mileage_after = $1, next_service_date = $2, next_service_kms = $3, license_disc_expiry = $4 WHERE id = $5 returning *",
             [
                 mileage_after,
                 next_service_date,
@@ -37,6 +37,7 @@ const updateChecklist = async (req, res) => {
         await appLogs("UPDATE", created_by, req.body);
         return res.status(200).json({
             message: "Successfully updated",
+            rows: result.rows[0],
         });
     } catch (error) {
         return res.status(500).json({ error: "Could not update, try again" });

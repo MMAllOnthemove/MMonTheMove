@@ -46,7 +46,7 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs"
 import useUpdateChecklist from "@/hooks/updateChecklist"
-import useFetchChecklists from '@/hooks/useGetChecklists'
+import useCarChecklist from '@/hooks/useAddChecklist'
 import useUserLoggedIn from '@/hooks/useGetUser'
 import openInNewTab from '@/lib/open_new_tab'
 import { VehicleInspection } from "@/lib/types"
@@ -63,13 +63,15 @@ import {
 } from "@tanstack/react-table"
 import moment from 'moment'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import useSocket from '@/hooks/useSocket'
 const CreateChecklistScreen = dynamic(() =>
     import('../create_checklist/page'), { ssr: false }
 )
 
 const ChecklistsScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
-    const { checklistList } = useFetchChecklists()
+    const { isConnected } = useSocket()
+    const { checklistList } = useCarChecklist()
     const [openAddModal, setOpenAddModal] = useState(false)
     const [mileage_after, setMileageAfter] = useState<string>('')
     const [next_service_date, setNextService] = useState<string>('')

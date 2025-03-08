@@ -23,19 +23,20 @@ const useIpaasGetBranchStockOverview = () => {
 
     const getBranchStockOverview = async (partNumber: string) => {
         const options = {
-            IvCompany: `${company}`,
-            IvLanguage: `${lang}`,
-            IvAscAcctno: `${ascCode}`,
-            IvAscCode: `${ascCode}`,
+            IvCompany: "C720",
+            IvLanguage: "EN",
+            IvAscAcctno: "1730640",
+            IvAscCode: "1730640",
             IvPartsCode: partNumber,
             IsCommonHeader: {
-                Company: `${company}`,
-                AscCode: `${ascCode}`,
-                Lang: `${lang}`,
-                Country: `${country}`,
-                Pac: `${pac}`,
+                Company: "C720",
+                AscCode: "1730640",
+                Lang: "EN",
+                Country: "ZA",
+                Pac: "999999920180502152340",
             },
         };
+
         if (!partNumber) return;
         try {
             setLoading(true);
@@ -45,7 +46,7 @@ const useIpaasGetBranchStockOverview = () => {
                     Authorization: `Bearer ${bearerToken}`,
                 },
             });
-            console.log("data", data);
+
             if (data?.EtStockInfo === null) {
                 // return `No stock ${data?.Return?.EvRetMsg}`;
                 return `No stock data found`;

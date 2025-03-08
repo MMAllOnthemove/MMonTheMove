@@ -33,10 +33,12 @@ import useUpdateChecklist from '@/hooks/updateChecklist'
 import openInNewTab from '@/lib/open_new_tab'
 import axios from 'axios'
 import toast from 'react-hot-toast'
+import useSocket from '@/hooks/useSocket'
 const SingleChecklistScreen = () => {
     const params = useParams(); // Fetch URL parameters
     const id = params?.id;
     const { user, isLoggedIn, loading } = useUserLoggedIn()
+    const { isConnected } = useSocket()
     const { checklist } = useFetchChecklist(id)
     const [mileage_after, setMileageAfter] = useState<string>('')
     const [next_service_kms, setNextServiceKms] = useState<string>('')
