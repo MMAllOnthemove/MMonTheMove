@@ -46,7 +46,7 @@ const CreateClaim = async (req, res) => {
                     created_at,
                 ]
             );
-            await appLogs("INSERT", created_by, req.body);
+            await appLogs("INSERT", created_by, req.body, ticket_number);
             return res.status(201).json({
                 message: "Successfully created",
             });

@@ -175,7 +175,7 @@ const SearchCustomerRepairshoprScreen = () => {
     };
 
     return (
-        <main className="flex justify-center items-center h-screen bg-orange-100">
+        <main className="flex justify-center items-center h-screen bg-gray-800">
             <Sidebar />
             {
                 editModalOpen &&

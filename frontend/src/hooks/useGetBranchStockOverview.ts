@@ -46,7 +46,7 @@ const useIpaasGetBranchStockOverview = () => {
                     Authorization: `Bearer ${bearerToken}`,
                 },
             });
-
+    
             if (data?.EtStockInfo === null) {
                 // return `No stock ${data?.Return?.EvRetMsg}`;
                 return `No stock data found`;

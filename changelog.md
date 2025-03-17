@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.26] - 2025-03-17
+
+### Added
+
+- is_old_part boolean column added in parts_for_tasks
+- show date booked, and how long since booked in engineer bin stats
+- minimize open new tab in engineer bin stats
+- change orange bg from search customers to drak gray
+
+
+### Fixed
+
+-   just have two buttons on customers booking welcome screen, no card in background
+-   not updating assessment date in view task
+-   Parts search is slow, because of asynchronously fetchingpart info and stock data, just delayed the latter until the former is done
+-   trim part search field
+
 ## [0.1.25] - 2025-03-05
 
 ### Added

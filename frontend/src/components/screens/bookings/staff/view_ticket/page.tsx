@@ -194,7 +194,7 @@ const ViewTicketStaffScreen = () => {
         const updated_at = datetimestamp;
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no: serviceOrder, accessories_and_condition: itemCondition, unit_status, updated_at, engineer, collected, stores: selected, collected_date, device_location: deviceLocation, job_repair_no: repairNo
+            id, service_order_no: serviceOrder, accessories_and_condition: itemCondition, unit_status, updated_at, engineer, collected, stores: selected, collected_date, device_location: deviceLocation, job_repair_no: repairNo, ticket_number: hhpTask?.ticket_number, updated_by: user?.email
         }
         const changes = findChanges(hhpTask, updatePayload)
         await updateRepairTicket(hhpTask?.repairshopr_job_id, problem_type_update);
@@ -219,7 +219,7 @@ const ViewTicketStaffScreen = () => {
         }
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no: serviceOrder, unit_status: selected, updated_at, engineer, collected, collected_date, stores: issue_type, device_location: deviceLocation, job_repair_no: repairNo
+            id, service_order_no: serviceOrder, unit_status: selected, updated_at, engineer, collected, collected_date, stores: issue_type, device_location: deviceLocation, job_repair_no: repairNo, ticket_number: hhpTask?.ticket_number, updated_by: user?.email
         }
         const changes = findChanges(hhpTask, updatePayload)
         await updateRepairTicket(hhpTask?.repairshopr_job_id, status_update);
@@ -243,7 +243,7 @@ const ViewTicketStaffScreen = () => {
         const updated_at = datetimestamp;
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no: serviceOrder, unit_status, updated_at, engineer: selected, collected, collected_date, stores: issue_type, device_location: deviceLocation, job_repair_no: repairNo
+            id, service_order_no: serviceOrder, unit_status, updated_at, engineer: selected, collected, collected_date, stores: issue_type, device_location: deviceLocation, job_repair_no: repairNo, ticket_number: hhpTask?.ticket_number, updated_by: user?.email
         }
 
         const changes = findChanges(hhpTask, updatePayload)
@@ -279,7 +279,7 @@ const ViewTicketStaffScreen = () => {
         const updated_at = datetimestamp;
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no: serviceOrder, unit_status, updated_at, engineer, warranty, rs_warranty, collected, stores: issue_type, collected_date, device_location: deviceLocation, job_repair_no: repairNo
+            id, service_order_no: serviceOrder, unit_status, updated_at, engineer, warranty, rs_warranty, collected, stores: issue_type, collected_date, device_location: deviceLocation, job_repair_no: repairNo, ticket_number: hhpTask?.ticket_number, updated_by: user?.email
         }
         const changes = findChanges(hhpTask, updatePayload)
         await updateRepairTicket(hhpTask?.repairshopr_job_id, ticket_type_id_update);

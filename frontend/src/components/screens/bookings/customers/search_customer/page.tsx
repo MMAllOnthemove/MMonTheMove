@@ -174,7 +174,7 @@ const SearchCustomerRepairshoprCustomerScreen = () => {
     };
 
     return (
-        <main className="flex justify-center items-center h-screen bg-orange-100">
+        <main className="flex justify-center items-center h-screen bg-gray-800">
             {
                 editModalOpen &&
                 <Dialog open={editModalOpen} onOpenChange={closeModal} >

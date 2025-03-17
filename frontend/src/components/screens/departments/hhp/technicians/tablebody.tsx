@@ -37,6 +37,8 @@ const TableBody = ({ table, handleRowClick, deleteRow, handleOpenSinglePage }: T
         setSelectedRowId(row.id)
     }
 
+    
+
     return (
         <tbody className="z-0">
             {table.getRowModel().rows.map((row: any) => (

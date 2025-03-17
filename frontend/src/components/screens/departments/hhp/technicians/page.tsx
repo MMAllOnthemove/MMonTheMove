@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import dynamic from 'next/dynamic'
-import { useRouter } from 'nextjs-toploader/app'
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page')
 )
@@ -41,20 +40,18 @@ import useAddPart from '@/hooks/useAddPart'
 import useRepairshoprFile from '@/hooks/useAddRepairshoprFile'
 import useDeletePart from '@/hooks/useDeleteTaskPart'
 import useFetchEngineer from '@/hooks/useFetchEngineers'
-import useFetchPartsForTask from '@/hooks/useTaskParts'
 import useUserLoggedIn from '@/hooks/useGetUser'
 import useIpaasSOPartsInfo from '@/hooks/useIpaasGetSOPartsInfo'
 import useRepairshoprComment from '@/hooks/useRepairshoprComment'
 import useRepairshoprTicket from '@/hooks/useRepairshoprTicket'
 import useUpdateAssessmentDate from '@/hooks/useUpdateAssessmentDate'
 import { datetimestamp } from '@/lib/date_formats'
-import findChanges from '@/lib/find_changes'
 
 import Modal from '@/components/modal/page'
 import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud'
 import columns from '@/lib/hhp_technicians_table_columns'
 import { globalFilterFn } from '@/lib/tanstack_global_filter'
-import { ModifyTaskModalTechnicians, RepairshorTicketComment, TechniciansTableData } from '@/lib/types'
+import { ModifyTaskModalTechnicians, TechniciansTableData } from '@/lib/types'
 import { CheckedState } from '@radix-ui/react-checkbox'
 import {
     ColumnFiltersState,
@@ -67,9 +64,7 @@ import {
     SortingState,
     useReactTable
 } from "@tanstack/react-table"
-import axios from 'axios'
 import React, { useEffect, useMemo, useState } from "react"
-import toast from 'react-hot-toast'
 const AddgspnHHPTask = dynamic(() =>
     import('./add/gspn/page')
 )
@@ -100,14 +95,13 @@ import { Label } from '@/components/ui/label'
 import useFetchHHPReports from '@/hooks/useFetchHHPReports'
 import useIpaasGetBranchStockOverview from '@/hooks/useGetBranchStockOverview'
 import useSocket from "@/hooks/useSocket"
+import useTaskParts from "@/hooks/useTaskParts"
 import useUpdateParts from "@/hooks/useUpdateParts"
 import openFullScreenPopup from '@/lib/openFullScreenPopup'
 import repairshopr_statuses from '@/lib/repairshopr_status'
 import repairshopr_statuses_techs from '@/lib/tech_rs_statuses'
-import { type_21877, type_21878 } from '@/lib/warranty_maps'
 import moment from 'moment'
-import openInNewTab from "@/lib/open_new_tab"
-import useTaskParts from "@/hooks/useTaskParts"
+import openEngineerBinsTab from "@/lib/openEngineerBinsTab"
 const DateCalculationsScreen = dynamic(() =>
     import('./date_calculations/page'), { ssr: false }
 )
@@ -119,10 +113,7 @@ const TechniciansScreen = () => {
     const { hhpTasks, fetchTasks, updateHHPTaskLoading, updateTask, deleteTask } = useHHPTasksCrud()
     const { updatePart, updatePartLoading } = useUpdateParts()
     const { reportsLoading, fetchReports, error } = useFetchHHPReports();
-    useEffect(() => {
-        fetchTasks();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+
     const { updateRepairTicket } = useRepairshoprTicket()
     const { updateRepairTicketComment } = useRepairshoprComment()
     const { addRepairTicketFile } = useRepairshoprFile()
@@ -156,7 +147,7 @@ const TechniciansScreen = () => {
     const [completed_date, setUnitCompleteDate] = useState<string | undefined>("")
     const [engineer, setEngineer] = useState("");
     const [engineerUserId, setEngineerUserId] = useState<string | number | undefined>("");
- 
+
     // for purpose of updating
     const [backup_requires_code, setBackupCode] = useState("")
     const [itemCondition, setCondition] = useState("")
@@ -215,7 +206,7 @@ const TechniciansScreen = () => {
 
     // parts
     const [search_part, setSearchPart] = useState("")
-  
+
     const { engineersList } = useFetchEngineer()
     // for filtering by engineer
     const engineerListFomatted = engineersList?.map((user) => ({
@@ -225,14 +216,21 @@ const TechniciansScreen = () => {
         label: user?.engineer_firstname + " " + user?.engineer_lastname,
     }))
 
-   
 
 
-    const handleOpenSinglePage = (row: TechniciansTableData) => {
+
+    const handleOpenSinglePage = async (row: TechniciansTableData) => {
         const data = row.original?.id
         // router.push(`/departments/hhp/technicians/${encodeURIComponent(data)}`)
         openFullScreenPopup(`/departments/hhp/technicians/${encodeURIComponent(data)}`)
+        if (user?.full_name?.toLowerCase()?.includes(row?.original?.engineer?.toLowerCase())) {
+            const id = row?.original?.id;
+            const created_by = user?.email
+            const payload = { assessment_date: datetimestamp, units_assessed: true, created_by, ticket_number: row?.original?.ticket_number }
+            await updateAssessmentDate(id, payload)
+        }
     }
+
     const handleRowClick = async (row: TechniciansTableData) => {
         setModifyTaskModal(row?.original);
         setModifyTaskModalOpen(true);
@@ -241,17 +239,18 @@ const TechniciansScreen = () => {
         if (user?.full_name?.toLowerCase()?.includes(row?.original?.engineer?.toLowerCase())) {
             const id = row?.original?.id;
             const created_by = user?.email
-            const payload = { assessment_date: datetimestamp, units_assessed: true, created_by }
+            const payload = { assessment_date: datetimestamp, units_assessed: true, created_by, ticket_number: row?.original?.ticket_number }
             await updateAssessmentDate(id, payload)
         }
 
     };
 
-   
-  
+
+
     const handleDeleteRow = async (row: TechniciansTableData) => {
         const userId = user?.user_unique_id
         await deleteTask(row?.original?.id, userId);
+        fetchTasks()
 
     };
     const downloadReport = async () => {
@@ -359,10 +358,10 @@ const TechniciansScreen = () => {
         onColumnFiltersChange: setColumnFilters,
     });
 
-  
-   
 
- 
+
+
+
     return (
         <>
             {
@@ -438,7 +437,7 @@ const TechniciansScreen = () => {
                                         user?.user_role === "admin" ?
                                             <>
 
-                                                <Button type="button" onClick={() => openFullScreenPopup('/departments/hhp/bins')}>Bin stats</Button>
+                                                    <Button type="button" onClick={() => openEngineerBinsTab('/departments/hhp/bins')}>Bin stats</Button>
                                                 <Button type="button" onClick={downloadReport} disabled={reportsLoading}>{reportsLoading ? 'Downloading...' : 'Get report'}</Button>
                                             </>
                                             : null
@@ -559,7 +558,7 @@ const TechniciansScreen = () => {
                                     }
                                 />
                             }
-                           
+
 
                         </main>
                     </>

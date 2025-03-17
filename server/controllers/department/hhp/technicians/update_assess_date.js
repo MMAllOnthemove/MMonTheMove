@@ -3,7 +3,8 @@ import appLogs from "../../../logs/logs.js";
 
 export const UpdateAssessmentDate = async (req, res) => {
     const { id } = req.params; // Assuming the ID is passed in the URL
-    const { assessment_date, units_assessed, created_by } = req.body; // Get the changed fields from the frontend
+    const { assessment_date, units_assessed, created_by, ticket_number } =
+        req.body; // Get the changed fields from the frontend
     if (!id) return;
     try {
         const query = await pool.query(
@@ -16,7 +17,7 @@ export const UpdateAssessmentDate = async (req, res) => {
         //         message: "Did not update assessment date",
         //     });
         // }
-        await appLogs("UPDATE", created_by, req.body);
+        await appLogs("UPDATE", created_by, req.body, ticket_number);
         return res.status(200).json({
             message: "HHP task updated",
         });

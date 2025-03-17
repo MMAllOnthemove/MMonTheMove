@@ -227,7 +227,7 @@ const Parts = ({ partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedP
                     <AccordionTrigger>Parts issued</AccordionTrigger>
                     <AccordionContent>
                         <div className="my-3">
-                            <Label htmlFor="partsIssuedText">Add comment to go with these parts</Label>
+                            <Label htmlFor="partsIssuedText">Add comment to go with these parts (just the techncian name)</Label>
                             <Textarea
                                 placeholder="Parts issued to: "
                                 name="partsIssuedText"
@@ -287,6 +287,7 @@ const Parts = ({ partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedP
 
                     </AccordionContent>
                 </AccordionItem>
+           
             </Accordion>
 
             <Button className="w-full outline-none" type="button" onClick={submitPartsUpdate} disabled={submitPartsUpdateLoading}>{submitPartsUpdateLoading ? 'Loading...' : 'Update parts section'}</Button>

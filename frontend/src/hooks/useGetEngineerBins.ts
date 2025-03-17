@@ -6,7 +6,15 @@ type TEngineerBins = {
     engineer: string | null;
     unit_status: string;
     units_count: string;
-    tickets: [];
+    difference: string;
+    tickets: [
+        {
+            ticket_number: string | number;
+            ticket_id: string | number;
+            date_booked: string;
+            difference: string ;
+        }
+    ];
 };
 
 const useGetEngineerBins = () => {

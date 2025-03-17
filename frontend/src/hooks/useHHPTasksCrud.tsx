@@ -16,6 +16,8 @@ type TUpdateValues = {
     parts_pending?: boolean;
     qc_date?: string;
     qc_complete?: string;
+    updatedByWho: string;
+    ticket_number?: string | number;
 };
 type TUpdateSO = {
     updated_at?: string;
@@ -150,7 +152,6 @@ export const useHHPTasksCrud = () => {
                     withCredentials: true,
                 }
             );
-            // await fetchTasks()
             setHHPTasks((prev: any) =>
                 prev.map((task: any) => (task.id === taskId ? data.task : task))
             );
@@ -177,7 +178,6 @@ export const useHHPTasksCrud = () => {
                     withCredentials: true,
                 }
             );
-            // await fetchTasks()
             setHHPTasks((prev: any) =>
                 prev.map((task: any) => (task.id === taskId ? data.task : task))
             );
@@ -218,6 +218,7 @@ export const useHHPTasksCrud = () => {
     };
     // 🔄 Listen for real-time updates
     useEffect(() => {
+        fetchTasks()
         socket.on("addTask", (task) => {
             toast.success(`Ticket: ${task?.ticket_number} has been added`, { position: 'bottom-center' });
             setHHPTasks((prev: any) => [...prev, task]); // Add assigned task
@@ -242,5 +243,5 @@ export const useHHPTasksCrud = () => {
             socket.off("deleteTask");
         };
     }, []);
-    return { hhpTasks, fetchTasks, hhpAddTaskLoading, addTask, hhpAddTaskErrors, updateHHPTaskLoading, updateTask, updateTaskSO, updateHHPTaskSOLoading, deleteHHPTaskLoading, deleteTask };
+    return { hhpTasks, hhpTasksLoading, fetchTasks, hhpAddTaskLoading, addTask, hhpAddTaskErrors, updateHHPTaskLoading, updateTask, updateTaskSO, updateHHPTaskSOLoading, deleteHHPTaskLoading, deleteTask };
 };

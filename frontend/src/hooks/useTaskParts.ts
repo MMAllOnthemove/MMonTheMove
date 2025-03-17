@@ -28,6 +28,8 @@ type TUpdateValues = {
 const useTaskParts = (id?: string) => {
     const [taskPartsList, setData] = useState<TTaskParts[]>([]);
     const [taskPartsListLoading, setLoading] = useState(true);
+    const [taskOldPartsList, setOldPartsData] = useState<TTaskParts[]>([]);
+    const [taskOldPartsListLoading, setOldPartsLoading] = useState(true);
     const [addPartLoading, setaddPartLoading] = useState(false); // Loading state
     const [addPartErrors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
     const [updatePartLoading, setUpdatePart] = useState(false); // Loading state
@@ -115,6 +117,30 @@ const useTaskParts = (id?: string) => {
             setLoading(false);
         }
     };
+    const getOldPartsForThisTask = async () => {
+        if (!id) return; // Exit if id is undefined
+        try {
+            setOldPartsLoading(true);
+            const response = await axios.get(
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/parts/old_parts/${id}`,
+                {
+                    withCredentials: true,
+                }
+            );
+            if (response?.data) {
+                setOldPartsData(response?.data);
+            }
+        } catch (error: any) {
+            if (
+                error?.response?.data?.error &&
+                process.env.NODE_ENV !== "production"
+            ) {
+                console.error(`${error?.response?.data?.error}`);
+            }
+        } finally {
+            setOldPartsLoading(false);
+        }
+    };
     const deletePart = async (id: string | undefined) => {
         if (!id) return;
         setDeletePartLoading(true);
@@ -139,6 +165,7 @@ const useTaskParts = (id?: string) => {
     };
     useEffect(() => {
         refetchPartsForThisTask();
+        getOldPartsForThisTask();
         // socket.on("addPart", (part) => {
         //     toast.success(
         //         `${part?.created_by} added part: ${part?.part_name}`,
@@ -170,6 +197,8 @@ const useTaskParts = (id?: string) => {
     return {
         taskPartsList,
         taskPartsListLoading,
+        taskOldPartsList,
+        taskOldPartsListLoading,
         addThisPart,
         refetchPartsForThisTask,
         addPartLoading,

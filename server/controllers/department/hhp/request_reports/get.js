@@ -45,7 +45,7 @@ const GetReport = async (req, res) => {
             INSERT INTO reports_download (downloaded_by, downloaded_at,filename) VALUES ($1, $2, $3)`,
             [downloaded_by, downloaded_at, fileName]
         );
-        await appLogs("INSERT", downloaded_by, req.query);
+        await appLogs("GET", downloaded_by, req.query);
 
         if (rows.length > 0) {
             // Use json2csv to convert JSON to CSV

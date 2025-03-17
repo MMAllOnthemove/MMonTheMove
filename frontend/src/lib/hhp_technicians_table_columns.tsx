@@ -130,10 +130,6 @@ const columns: ColumnDef<THHPTasks>[] =
             accessorKey: "parts_ordered_date",
         },
         {
-            header: "Parts pending",
-            accessorKey: "parts_pending_date",
-        },
-        {
             header: "Parts issue date",
             accessorKey: "parts_issued_date",
         },

@@ -25,6 +25,7 @@ export type TUpdateAssessmentDate = {
     assessment_date: string;
     units_assessed: boolean;
     created_by: string | undefined;
+    ticket_number: string|number;
 };
 export type PropertiesType = {
     IMEI?: string;

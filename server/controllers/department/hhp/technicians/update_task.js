@@ -45,7 +45,12 @@ export const UpdateTask = async (req, res) => {
                 .status(404)
                 .json({ error: "Task not found or no changes made" });
         }
-        await appLogs("UPDATE", changes?.updated_by, req.body);
+        await appLogs(
+            "UPDATE",
+            changes?.updated_by,
+            req.body,
+            changes?.ticket_number
+        );
         // io.emit("updateTask", updatedTask); // Notify clients about task update
         emitBinStatsUpdate(); // Emit bin stats update
         return res.status(201).json({

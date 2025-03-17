@@ -55,23 +55,28 @@ const SearchPartsScreen = () => {
     // search parts from ipaas
 
     const handleGetSOPartInfo = async (search_part: string) => {
+        // Trim whitespace from the search part
+        search_part = search_part.trim();
         if (!search_part) return;
         try {
-            const [data, stock] = await Promise.all([
-                getSOPartsInfo(search_part),
-                getBranchStockOverview(search_part),
-            ]);
+            // Fetch the part info and set it immediately
+            const data = await getSOPartsInfo(search_part);
+            setResult(data?.Return?.EsPartsInfo);
 
-            setResult(data?.Return?.EsPartsInfo)
-            setInStock(stock)
-            // setPartName(data?.Return?.EsPartsInfo?.PartsNo)
-            // setPartDesc(data?.Return?.EsPartsInfo?.PartsDescription)
+
+            const stock = await getBranchStockOverview(search_part);
+            setInStock(stock);
+
+
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') {
-                console.error(error)
+                console.error(error);
             }
         }
     };
+
+
+
 
 
     return (
@@ -97,34 +102,43 @@ const SearchPartsScreen = () => {
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-2">
-                                    <div className="flex justify-between items-center">
-                                        <h3>Part number</h3>
-                                        <h3>{result?.PartsNo}</h3>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <h3>Parts description</h3>
-                                        <h3>{result?.PartsDescription}</h3>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <h3>SalesStatus</h3>
-                                        <h3>{result?.SalesStatus}</h3>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <h3>StockAvalability</h3>
-                                        <h3>{result?.StockAvalability}</h3>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <h3>UnitPrice</h3>
-                                        <h3>{result?.UnitPrice}</h3>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <h3>RetailPrice</h3>
-                                        <h3>{result?.RetailPrice}</h3>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <h3>In stock</h3>
-                                        <h3>{part_in_stock}</h3>
-                                    </div>
+
+                                    {
+                                        loadingPartInfo ? <p className="text-gray-500 text-start text-sm">Loading part info...</p> :
+                                            <>
+                                                <div className="flex justify-between items-center">
+                                                    <h3>Part number</h3>
+                                                    <h3>{result?.PartsNo}</h3>
+                                                </div>
+                                                <div className="flex justify-between items-center">
+                                                    <h3>Parts description</h3>
+                                                    <h3>{result?.PartsDescription}</h3>
+                                                </div>
+                                                <div className="flex justify-between items-center">
+                                                    <h3>SalesStatus</h3>
+                                                    <h3>{result?.SalesStatus}</h3>
+                                                </div>
+                                                <div className="flex justify-between items-center">
+                                                    <h3>StockAvalability</h3>
+                                                    <h3>{result?.StockAvalability}</h3>
+                                                </div>
+                                                <div className="flex justify-between items-center">
+                                                    <h3>UnitPrice</h3>
+                                                    <h3>{result?.UnitPrice}</h3>
+                                                </div>
+                                                <div className="flex justify-between items-center">
+                                                    <h3>RetailPrice</h3>
+                                                    <h3>{result?.RetailPrice}</h3>
+                                                </div>
+                                            </>
+                                    }
+                                    {
+                                            stockOverviewListLoading ? <p className="text-gray-500 text-start text-sm">Loading stock info</p> : <div className="flex justify-between items-center">
+                                            <h3>In stock</h3>
+                                            <h3> {part_in_stock}</h3>
+                                        </div>
+                                    }
+
                                 </CardContent>
                             </Card>
 

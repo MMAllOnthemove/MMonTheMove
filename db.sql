@@ -93,7 +93,6 @@ create table technician_tasks (
     ticket_number text,
     department text,
     job_added_by text,
-    updated_by text,
     reassign_engineer text,
     parts_list text [],
     assessment_date text,
@@ -411,6 +410,7 @@ create table parts_for_tasks (
     part_unused boolean,
     credit_req_number text,
     part_issued boolean,
+    is_old_part boolean,
     FOREIGN KEY (task_row_id) REFERENCES technician_tasks(id) ON DELETE CASCADE
 );
 

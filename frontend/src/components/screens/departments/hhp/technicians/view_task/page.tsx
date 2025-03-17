@@ -117,6 +117,7 @@ const ViewHHPTaskScreen = () => {
         setPartQuantity(0)
     }
 
+
     // this will send the order no to rs
     const submitPartOrderId = async () => {
         setSubmitPartsOrderIdLoading(true)
@@ -128,7 +129,7 @@ const ViewHHPTaskScreen = () => {
         const updated_at = datetimestamp;
         const updatePayload = {
             // This goes to our in house db
-            id, updated_at, updated_by: user?.email, unit_status: "Waiting for Parts"
+            id, updated_at, updated_by: user?.email, unit_status: "Waiting for Parts",  ticket_number: hhpTask?.ticket_number
         }
         const changes = findChanges(hhpTask, updatePayload)
 
@@ -273,7 +274,7 @@ const ViewHHPTaskScreen = () => {
 
         const updatePayload = {
             // This goes to our in house db
-            id, updated_by: user?.email, updated_at, qc_comment, qc_date, qc_complete, unit_complete, completed_date, additional_info: additionalInfo
+            id, updated_by: user?.email, updated_at, qc_comment, qc_date, qc_complete, unit_complete, completed_date, additional_info: additionalInfo, ticket_number: hhpTask?.ticket_number
         }
         const changes = findChanges(hhpTask, updatePayload)
         const commentPayload: RepairshorTicketComment = {
@@ -461,7 +462,7 @@ const ViewHHPTaskScreen = () => {
         handleGetSOPartInfo(search_part)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [search_part])
-
+  
 
 
     useEffect(() => {
@@ -520,7 +521,7 @@ const ViewHHPTaskScreen = () => {
         const updated_at = datetimestamp;
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no: serviceOrder, accessories_and_condition: itemCondition, unit_status, updated_at, engineer, collected, stores: selected, collected_date, device_location: deviceLocation, job_repair_no: repairNo
+            id, service_order_no: serviceOrder, accessories_and_condition: itemCondition, unit_status, updated_at, engineer, collected, stores: selected, collected_date, device_location: deviceLocation, job_repair_no: repairNo, ticket_number: hhpTask?.ticket_number, updated_by: user?.email
         }
         const changes = findChanges(hhpTask, updatePayload)
         await updateRepairTicket(hhpTask?.repairshopr_job_id, problem_type_update);
@@ -547,7 +548,7 @@ const ViewHHPTaskScreen = () => {
         if (selected === "Quote Rejected") setQuoteRejected(true)
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no: serviceOrder, quote_accepted, quote_rejected, unit_status: selected, updated_at, engineer, collected, collected_date, stores: issue_type, device_location: deviceLocation, job_repair_no: repairNo
+            id, service_order_no: serviceOrder, quote_accepted, quote_rejected, unit_status: selected, updated_at, engineer, collected, collected_date, stores: issue_type, device_location: deviceLocation, job_repair_no: repairNo, ticket_number: hhpTask?.ticket_number, updated_by: user?.email
         }
         const changes = findChanges(hhpTask, updatePayload)
         await updateRepairTicket(hhpTask?.repairshopr_job_id, status_update);
@@ -573,7 +574,7 @@ const ViewHHPTaskScreen = () => {
         const updated_at = datetimestamp;
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no: serviceOrder, unit_status, updated_at, engineer: selected, collected, collected_date, stores: issue_type, device_location: deviceLocation, job_repair_no: repairNo
+            id, service_order_no: serviceOrder, unit_status, updated_at, engineer: selected, collected, collected_date, stores: issue_type, device_location: deviceLocation, job_repair_no: repairNo, ticket_number: hhpTask?.ticket_number, updated_by: user?.email
         }
 
         const changes = findChanges(hhpTask, updatePayload)
@@ -627,7 +628,7 @@ const ViewHHPTaskScreen = () => {
 
         const updatePayload = {
             // This goes to our in house db
-            id, updated_at, updated_by: user?.email, parts_issued, parts_issued_date, accessories_and_condition: itemCondition, parts_requested, parts_requested_date, parts_ordered, parts_order_id, parts_ordered_date, unit_status: part_status
+            id, updated_at, updated_by: user?.email, parts_issued, parts_issued_date, accessories_and_condition: itemCondition, parts_requested, parts_requested_date, parts_ordered, parts_order_id, parts_ordered_date, unit_status: part_status, ticket_number: hhpTask?.ticket_number
         }
 
         const changes = findChanges(hhpTask, updatePayload)
@@ -673,7 +674,7 @@ const ViewHHPTaskScreen = () => {
         const updated_at = datetimestamp;
         const updatePayload = {
             // This goes to our in house db
-            id, service_order_no: serviceOrder, unit_status, updated_at, engineer, warranty, rs_warranty, collected, additional_info: additionalInfo, stores: issue_type, collected_date, device_location: deviceLocation, job_repair_no: repairNo
+            id, service_order_no: serviceOrder, unit_status, updated_at, engineer, warranty, rs_warranty, collected, additional_info: additionalInfo, stores: issue_type, collected_date, device_location: deviceLocation, job_repair_no: repairNo, ticket_number: hhpTask?.ticket_number, updated_by: user?.email
         }
         const changes = findChanges(hhpTask, updatePayload)
         await updateRepairTicket(hhpTask?.repairshopr_job_id, ticket_type_id_update);

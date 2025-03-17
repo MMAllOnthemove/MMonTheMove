@@ -6,8 +6,11 @@ const GetAllTasks = async (req, res) => {
         const { rows } = await pool.query(
             `SELECT tt.*, COALESCE(d.marketing_name, '') AS phone_name FROM technician_tasks tt LEFT JOIN devices d ON LEFT(tt.model, 8) = LEFT(d.device_model, 8) AND d.company = 'Samsung' WHERE tt.department LIKE '%HHP%' GROUP BY tt.id, d.marketing_name ORDER BY tt.date_booked DESC`
         );
+
+
         return res.status(200).json(rows);
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             message: "Internal server error",
             error:

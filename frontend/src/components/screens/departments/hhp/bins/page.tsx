@@ -12,6 +12,7 @@ import React, { useMemo } from 'react'
 import { getEngineerBinsData } from '@/lib/analytics_functions'
 import Link from 'next/link'
 import useSocket from '@/hooks/useSocket'
+import moment from 'moment'
 const Sidebar = dynamic(() => import('@/components/sidebar/page'))
 const LoadingScreen = dynamic(() => import('@/components/loading_screen/page'))
 const PageTitle = dynamic(() => import('@/components/PageTitle/page'))
@@ -27,15 +28,19 @@ const BinsScreen = () => {
         return (engineer: string | null) => {
             if (!engineerBinList) return 0;
 
-            // Filter the data for the given engineer
-            const filteredData = engineerBinList.filter((x) => x.engineer === engineer);
+            const filteredData = engineerBinList.filter((x) => {
+                const isEngineerMatch =
+                    (engineer === null && (x.engineer === null || x.engineer === 'null')) || // Unassigned case
+                    x.engineer === engineer; // Normal engineer match
 
-            // Sum up the counts for the desired statuses
+                return isEngineerMatch;
+            });
+
             const totalCount = filteredData.reduce((acc, item) => {
                 if (
                     ['Assigned to Tech', 'New', 'In Progress', 'Parts Request 1st Approval'].includes(item.unit_status)
                 ) {
-                    return acc + Number(item.units_count); // Ensure `units_count` is treated as a number
+                    return acc + Number(item.units_count);
                 }
                 return acc;
             }, 0);
@@ -43,6 +48,7 @@ const BinsScreen = () => {
             return totalCount;
         };
     }, [engineerBinList]);
+
 
 
     // const calculatePartsToBeOrdered = [...engineerBinList]?.filter((x) => x?.unit_status === 'Parts to be ordered')
@@ -73,7 +79,9 @@ const BinsScreen = () => {
 
                                                             {task.tickets?.map((ticket, i) => (
                                                                 <li key={i}>
-                                                                    {ticket.ticket_number}
+                                                                    <span className="font-medium">{ticket.ticket_number}</span>({moment(ticket?.date_booked).format("YYYY-MM-DD")})  {ticket.difference?.includes('hours') || ticket.difference?.includes('minutes')
+                                                                        ? 'Few hours ago'
+                                                                        : `${ticket.difference} ago`}
                                                                 </li>
                                                             ))}
 
