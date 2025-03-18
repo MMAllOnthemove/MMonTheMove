@@ -110,17 +110,17 @@ export const useHHPTasksCrud = () => {
         setHHPAddTaskLoading(true)
         setHHPAddTaskErrors({})
         try {
-            const { data } = await axios.post(
+            const response = await axios.post(
                 `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs`,
                 values,
                 {
                     withCredentials: true,
                 }
             );
-            setHHPTasks((prev: any) => [...prev, data?.task]);// Append new task
+            setHHPTasks((prev: any) => [...prev, response?.data?.task]);// Append new task
             // 🔴 Emit task creation event
-            socket.emit("addTask", data?.task);
-            return data;
+            socket.emit("addTask", response?.data?.task);
+            return response;
             // toast.success(`${data?.message}`);
         } catch (error: any) {
             if (error?.response?.data?.message) {

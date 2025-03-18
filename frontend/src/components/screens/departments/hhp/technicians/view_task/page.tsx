@@ -81,11 +81,11 @@ const ViewHHPTaskScreen = () => {
     const [parts_order_id, setPartsOrderId] = useState("")
     const [submitPartOrderIdLoading, setSubmitPartsOrderIdLoading] = useState(false)
     const [partsExtraText, setPartsExtraText] = useState<string>('')
-    const [parts_issued, setPartsIssued] = useState<CheckedState | undefined>()
-    const [parts_requested, setPartsRequested] = useState<CheckedState | undefined>()
+    const [parts_issued, setPartsIssued] = useState<boolean | null>()
+    const [parts_requested, setPartsRequested] = useState<boolean | null>()
     const [parts_requested_date, setPartsRequestedDate] = useState<string | undefined>("")
     const [compensation, setCompensation] = useState<CheckedState | undefined | any | any>()
-    const [parts_ordered, setPartsOrdered] = useState<CheckedState | undefined>()
+    const [parts_ordered, setPartsOrdered] = useState<boolean | null>()
     const [submitPartsUpdateLoading, setSubmitPartsUpdateLoading] = useState(false)
     const [part_quantity, setPartQuantity] = useState<number | undefined>()
     interface FileUpload {
@@ -99,6 +99,143 @@ const ViewHHPTaskScreen = () => {
         addPartErrors,
         updatePart,
         updatePartLoading, deletePart, deletePartLoading, refetchPartsForThisTask } = useTaskParts(hhpTask?.id)
+
+    const {
+        attachmentsList,
+        attachmentsListLoading,
+        currentAttPage,
+        totalAttPages,
+        fetchAttachments,
+    } = useGetAttachments(id)
+    const { addCommentLocally, addCommentLoading } = useAddTaskCommentLocally()
+    const { updateRepairTicket } = useRepairshoprTicket()
+    const { updateRepairTicketComment } = useRepairshoprComment()
+
+    const handlePageChange = (page: number) => {
+        fetchComments(page);
+    };
+    const handleAttachmentsPageChange = (page: number) => {
+        fetchAttachments(page)
+    }
+    const { addRepairTicketFile } = useRepairshoprFile()
+    const [hhpFiles, setHHPFiles] = useState<FileUpload[]>([]);
+    const [hhpFilesUploading, setHHPFilesUploading] = useState(false);
+    const [engineer, setEngineer] = useState<string | undefined>("")
+    const [repairshopr_id, setUserId] = useState<number | undefined>(); // To store the selected repairshopr user ID
+    const [issue_type, setIssueType] = useState<string | null | undefined | any>("");
+    const { engineersList } = useFetchEngineer()
+    const { singleCustomerByRsId, singleCustomerByRsIdLoading } = useGetCustomerLocallyByRSId(hhpTask?.repairshopr_customer_id)
+    const [unit_status, setUnitStatus] = useState<string | undefined>("")
+    const [comment, setComment] = useState("")
+    const [imei, setIMEI] = useState<string | undefined>("")
+    const [rs_warranty, setRSWarranty] = useState<string | null>("")
+    const [itemCondition, setCondition] = useState<string | null>("")
+    const [serviceOrder, setServiceOrder] = useState<string | undefined>("")
+    const [additionalInfo, setAdditionalInfo] = useState<string | null>("")
+    const [backup_requires_code, setBackupCode] = useState<string | null>("")
+    const [repairNo, setRepairNo] = useState<string | undefined>("")
+    const [deviceLocation, setDeviceLocation] = useState<string | null>("")
+    const [modifyTaskModalOpen, setModifyTaskModalOpen] = useState(false);
+    const [quote_accepted, setQuoteAccepted] = useState(false)
+    const [quote_rejected, setQuoteRejected] = useState(false)
+    const [addPartOnRepairshoprLoading, setaddPartOnRepairshoprLoading] = useState(false)
+
+    const [collected, setCollected] = useState<string | undefined | null | any>(false)
+    const [collected_date, setCollectedDate] = useState<string | null>("")
+    const [warranty, setWarranty] = useState<string | null | undefined>("")
+    const [ticket_type_id, setTicketTypeId] = useState<string | number | undefined | null | any>("")
+    const [parts_issued_date, setPartsIssuedDate] = useState<string | undefined>("")
+    const [parts_ordered_date, setPartsOrderedDate] = useState<string | undefined>("")
+    // parts
+    const [search_part, setSearchPart] = useState("")
+    const [part_name, setPartName] = useState("")
+    const [part_desc, setPartDesc] = useState("")
+
+    // search parts from ipaas
+    useEffect(() => {
+        const handleGetSOPartInfo = async (search_part: string) => {
+            if (!search_part) return;
+            try {
+                const data = await getSOPartsInfo(search_part);
+                setPartName(data?.Return?.EsPartsInfo?.PartsNo)
+                setPartDesc(data?.Return?.EsPartsInfo?.PartsDescription)
+            } catch (error) {
+                if (process.env.NODE_ENV !== 'production') {
+                    console.error(error)
+                }
+            }
+        };
+        handleGetSOPartInfo(search_part)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [search_part])
+
+    const openModal = () => {
+        setModifyTaskModalOpen(true);
+    }
+    const closeModal = () => {
+        setModifyTaskModalOpen(false);
+    };
+
+
+
+    // for filtering by engineer
+    const engineerListFomatted = engineersList?.map((user) => ({
+        id: user?.id,
+        repairshopr_id: user?.repairshopr_id,
+        value: user?.engineer_firstname + " " + user?.engineer_lastname,
+        label: user?.engineer_firstname + " " + user?.engineer_lastname,
+    }))
+
+    useEffect(() => {
+        if (hhpTask) {
+            setTicketTypeId(hhpTask?.ticket_type_id)
+            setEngineer(hhpTask?.engineer)
+            setIssueType(hhpTask?.stores)
+            setUnitStatus(hhpTask?.unit_status)
+            setIMEI(hhpTask?.imei)
+            setRSWarranty(hhpTask?.rs_warranty)
+            setCondition(hhpTask?.accessories_and_condition)
+            setServiceOrder(hhpTask?.service_order_no)
+            setAdditionalInfo(hhpTask?.additional_info)
+            setBackupCode(hhpTask?.requires_backup)
+            setRepairNo(hhpTask?.job_repair_no)
+            setDeviceLocation(hhpTask?.device_location)
+            setCollected(hhpTask?.collected)
+            setCollectedDate(hhpTask?.collected_date)
+            setQuoteRejected(hhpTask?.quote_rejected)
+            setQuoteAccepted(hhpTask?.quote_accepted)
+            setWarranty(hhpTask?.warranty)
+            setPartsIssued(hhpTask?.parts_issued)
+            setPartsIssuedDate(hhpTask?.parts_issued_date)
+            setPartsOrderedDate(hhpTask?.parts_ordered_date)
+            setPartsOrdered(hhpTask?.parts_ordered)
+            // setUserId(hhpTask?.repairshopr_id)
+        }
+    }, [id, hhpTask])
+
+
+    const getRepairshoprPayload = () => ({
+        "user_id": repairshopr_id,
+        "status": unit_status,
+        "properties": {
+            "IMEI": imei,
+            "Warranty": rs_warranty,
+            "Warranty ": rs_warranty,
+            "Backup Requires": backup_requires_code,
+            "Backup Requires ": backup_requires_code,
+            "Item Condition": itemCondition,
+            "Item Condition ": itemCondition,
+            "Service Order No.": serviceOrder,
+            "Service Order No. ": serviceOrder,
+            "Special Requirement": additionalInfo,
+            "Special Requirement ": additionalInfo,
+            "Job Repair No.": repairNo,
+            "Job Repair No.:": repairNo,
+            "Location (BIN)": deviceLocation,
+        }
+    });
+
+
 
 
     // add part searched
@@ -122,14 +259,14 @@ const ViewHHPTaskScreen = () => {
     const submitPartOrderId = async () => {
         setSubmitPartsOrderIdLoading(true)
         const updateRSpayload = {
-            ...repairshopr_payload,
+            ...getRepairshoprPayload,
             "status": 'Waiting for Parts',
         }
         const id = hhpTask?.id;
         const updated_at = datetimestamp;
         const updatePayload = {
             // This goes to our in house db
-            id, updated_at, updated_by: user?.email, unit_status: "Waiting for Parts",  ticket_number: hhpTask?.ticket_number
+            id, updated_at, updated_by: user?.email, unit_status: "Waiting for Parts", ticket_number: hhpTask?.ticket_number
         }
         const changes = findChanges(hhpTask, updatePayload)
 
@@ -187,10 +324,13 @@ const ViewHHPTaskScreen = () => {
             }
             const partsList = selectedIssuedParts?.map((part: any, index: any) => {
 
-                return `${index + 1}. ${part.part_name} - Seal number:${part.seal_number}`;
+                if (part.seal_number.length > 0) return `${index + 1}. ${part.part_name} - Seal number:${part.seal_number}`;
+                else return `${index + 1}. ${part.part_name}`;
+
+
             }).join('\n');
 
-            const comment = `${partsIssuedText}\n\nParts issued to:\n${partsList}`;
+            const comment = `Parts issued to: ${partsIssuedText}\n\n${partsList}`;
             const commentPayload: RepairshorTicketComment = {
                 "subject": "Update",
                 "tech": user?.full_name,
@@ -311,46 +451,9 @@ const ViewHHPTaskScreen = () => {
         }
     }
 
-    const {
-        attachmentsList,
-        attachmentsListLoading,
-        currentAttPage,
-        totalAttPages,
-        fetchAttachments,
-    } = useGetAttachments(id)
-    const { addCommentLocally, addCommentLoading } = useAddTaskCommentLocally()
-    const { updateRepairTicket } = useRepairshoprTicket()
-    const { updateRepairTicketComment } = useRepairshoprComment()
 
-    const handlePageChange = (page: number) => {
-        fetchComments(page);
-    };
-    const handleAttachmentsPageChange = (page: number) => {
-        fetchAttachments(page)
-    }
-    const { addRepairTicketFile } = useRepairshoprFile()
-    const [hhpFiles, setHHPFiles] = useState<FileUpload[]>([]);
-    const [hhpFilesUploading, setHHPFilesUploading] = useState(false);
-    const [engineer, setEngineer] = useState<string | undefined>("")
-    const [repairshopr_id, setUserId] = useState<number | undefined>(); // To store the selected repairshopr user ID
-    const [issue_type, setIssueType] = useState<string | null | undefined | any>("");
-    const { engineersList } = useFetchEngineer()
-    const { singleCustomerByRsId, singleCustomerByRsIdLoading } = useGetCustomerLocallyByRSId(hhpTask?.repairshopr_customer_id)
-    const [unit_status, setUnitStatus] = useState<string | undefined>("")
-    const [comment, setComment] = useState("")
-    const [imei, setIMEI] = useState<string | undefined>("")
-    const [rs_warranty, setRSWarranty] = useState<string | null>("")
-    const [itemCondition, setCondition] = useState<string | null>("")
-    const [serviceOrder, setServiceOrder] = useState<string | undefined>("")
-    const [additionalInfo, setAdditionalInfo] = useState<string | null>("")
-    const [backup_requires_code, setBackupCode] = useState<string | null>("")
-    const [repairNo, setRepairNo] = useState<string | undefined>("")
-    const [deviceLocation, setDeviceLocation] = useState<string | null>("")
-    const [modifyTaskModalOpen, setModifyTaskModalOpen] = useState(false);
-    const [quote_accepted, setQuoteAccepted] = useState(false)
-    const [quote_rejected, setQuoteRejected] = useState(false)
-    const [part_status, setPartStatus] = useState("")
-    const [addPartOnRepairshoprLoading, setaddPartOnRepairshoprLoading] = useState(false)
+
+
     const addPartListToRepairshoprComment = async () => {
         setaddPartOnRepairshoprLoading(true)
         try {
@@ -419,102 +522,16 @@ const ViewHHPTaskScreen = () => {
         refetch(); // Refresh the list of parts
 
     };
-    const [collected, setCollected] = useState<string | undefined | null | any>(false)
-    const [collected_date, setCollectedDate] = useState<string | null>("")
-    const [warranty, setWarranty] = useState<string | null | undefined>("")
-    const [ticket_type_id, setTicketTypeId] = useState<string | number | undefined | null | any>("")
-    const [parts_issued_date, setPartsIssuedDate] = useState<string | undefined>("")
-    const [parts_ordered_date, setPartsOrderedDate] = useState<string | undefined>("")
-    // parts
-    const [search_part, setSearchPart] = useState("")
-    const [part_name, setPartName] = useState("")
-    const [part_desc, setPartDesc] = useState("")
-    const openModal = () => {
-        setModifyTaskModalOpen(true);
-    }
-    const closeModal = () => {
-        setModifyTaskModalOpen(false);
-    };
 
 
 
-    // for filtering by engineer
-    const engineerListFomatted = engineersList?.map((user) => ({
-        id: user?.id,
-        repairshopr_id: user?.repairshopr_id,
-        value: user?.engineer_firstname + " " + user?.engineer_lastname,
-        label: user?.engineer_firstname + " " + user?.engineer_lastname,
-    }))
-    // search parts from ipaas
-    useEffect(() => {
-        const handleGetSOPartInfo = async (search_part: string) => {
-            if (!search_part) return;
-            try {
-                const data = await getSOPartsInfo(search_part);
-                setPartName(data?.Return?.EsPartsInfo?.PartsNo)
-                setPartDesc(data?.Return?.EsPartsInfo?.PartsDescription)
-            } catch (error) {
-                if (process.env.NODE_ENV !== 'production') {
-                    console.error(error)
-                }
-            }
-        };
-        handleGetSOPartInfo(search_part)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [search_part])
-  
 
-
-    useEffect(() => {
-        if (hhpTask) {
-            setTicketTypeId(hhpTask?.ticket_type_id)
-            setEngineer(hhpTask?.engineer)
-            setIssueType(hhpTask?.stores)
-            setUnitStatus(hhpTask?.unit_status)
-            setIMEI(hhpTask?.imei)
-            setRSWarranty(hhpTask?.rs_warranty)
-            setCondition(hhpTask?.accessories_and_condition)
-            setServiceOrder(hhpTask?.service_order_no)
-            setAdditionalInfo(hhpTask?.additional_info)
-            setBackupCode(hhpTask?.requires_backup)
-            setRepairNo(hhpTask?.job_repair_no)
-            setDeviceLocation(hhpTask?.device_location)
-            setCollected(hhpTask?.collected)
-            setCollectedDate(hhpTask?.collected_date)
-            setQuoteRejected(hhpTask?.quote_rejected)
-            setQuoteAccepted(hhpTask?.quote_accepted)
-            // setUserId(hhpTask?.repairshopr_id)
-        }
-    }, [id, hhpTask])
-
-
-
-    const repairshopr_payload = {
-        "user_id": repairshopr_id,
-        "status": unit_status,
-        "properties": {
-            "IMEI": imei,
-            "Warranty": rs_warranty,
-            "Warranty ": rs_warranty,
-            "Backup Requires": backup_requires_code,
-            "Backup Requires ": backup_requires_code,
-            "Item Condition": itemCondition,
-            "Item Condition ": itemCondition,
-            "Service Order No.": serviceOrder,
-            "Service Order No. ": serviceOrder,
-            "Special Requirement": additionalInfo,
-            "Special Requirement ": additionalInfo,
-            "Job Repair No.": repairNo,
-            "Job Repair No.:": repairNo,
-            "Location (BIN)": deviceLocation,
-        }
-    }
 
     const updateIssueType = async (e: any) => {
         const selected = e;
         setIssueType(e)
         const problem_type_update = {
-            ...repairshopr_payload,
+            ...getRepairshoprPayload,
             "problem_type": selected,
         }
         const id = hhpTask?.id;
@@ -533,27 +550,86 @@ const ViewHHPTaskScreen = () => {
     }
     const updateStatus = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selected = e.target.value;
-        setUnitStatus(selected);
-        const status_update = {
-            ...repairshopr_payload,
-            "status": selected,
+        const now = datetimestamp;
+
+        // Local copies to avoid stale state
+        let newPartsOrdered = parts_ordered;
+        let newPartsOrderedDate = parts_ordered_date;
+        let newPartsIssued = parts_issued;
+        let newPartsIssuedDate = parts_issued_date;
+        let newPartsRequested = parts_requested;
+        let newPartsRequestedDate = parts_requested_date;
+        let newCollected = collected;
+        let newCollectedDate = collected_date;
+        let newQuoteAccepted = quote_accepted;
+        let newQuoteRejected = quote_rejected;
+
+        if (selected === 'Parts to be ordered') {
+            newPartsOrdered = true;
+            newPartsOrderedDate = now;
+            setPartsOrdered(true);
+            setPartsOrderedDate(now);
         }
-        const id = hhpTask?.id;
-        const updated_at = datetimestamp;
+        if (selected === 'Parts Issued') {
+            newPartsIssued = true;
+            newPartsIssuedDate = now;
+            setPartsIssued(true);
+            setPartsIssuedDate(now);
+        }
+        if (selected === 'Parts Request 1st Approval') {
+            newPartsRequested = true;
+            newPartsRequestedDate = now;
+            setPartsRequested(true);
+            setPartsRequestedDate(now);
+        }
         if (selected === "Resolved") {
+            newCollected = true;
+            newCollectedDate = now;
             setCollected(true);
-            setCollectedDate(datetimestamp)
+            setCollectedDate(now);
         }
-        if (selected === "Quote Approved") setQuoteAccepted(true)
-        if (selected === "Quote Rejected") setQuoteRejected(true)
+        if (selected === "Quote Approved") {
+            newQuoteAccepted = true;
+            setQuoteAccepted(true);
+        }
+        if (selected === "Quote Rejected") {
+            newQuoteRejected = true;
+            setQuoteRejected(true);
+        }
+
+        const status_update = {
+            ...getRepairshoprPayload,
+            status: selected,
+        };
+
+        const id = hhpTask?.id;
+        const updated_at = now;
+
         const updatePayload = {
-            // This goes to our in house db
-            id, service_order_no: serviceOrder, quote_accepted, quote_rejected, unit_status: selected, updated_at, engineer, collected, collected_date, stores: issue_type, device_location: deviceLocation, job_repair_no: repairNo, ticket_number: hhpTask?.ticket_number, updated_by: user?.email
-        }
-        const changes = findChanges(hhpTask, updatePayload)
+            id,
+            service_order_no: serviceOrder,
+            quote_accepted: newQuoteAccepted,
+            quote_rejected: newQuoteRejected,
+            parts_ordered_date: newPartsOrderedDate,
+            parts_issued_date: newPartsIssuedDate,
+            parts_issued: newPartsIssued,
+            parts_requested: newPartsRequested,
+            unit_status: selected,
+            updated_at,
+            engineer,
+            collected: newCollected,
+            collected_date: newCollectedDate,
+            stores: issue_type,
+            device_location: deviceLocation,
+            job_repair_no: repairNo,
+            ticket_number: hhpTask?.ticket_number,
+            updated_by: user?.email
+        };
+
+        const changes = findChanges(hhpTask, updatePayload);
         await updateRepairTicket(hhpTask?.repairshopr_job_id, status_update);
         if (Object.keys(changes).length > 0) {
-            await updateTask(id, changes)
+            await updateTask(id, changes);
         }
         refetch();
     }
@@ -565,7 +641,7 @@ const ViewHHPTaskScreen = () => {
         const userId = existingTech ? existingTech.repairshopr_id : null;
 
         const engineer_update = {
-            ...repairshopr_payload,
+            ...getRepairshoprPayload,
             "user_id": userId,
         };
 
@@ -599,6 +675,7 @@ const ViewHHPTaskScreen = () => {
     const handleTicketRSWarranty = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selected = e.target.value;
         const selectedWarranty = ticket_type_id === "21877" ? type_21877?.find((x) => x.code === selected) : type_21878?.find((x) => x.code === selected);
+
         setRSWarranty(selected);
         setWarranty(selectedWarranty?.warranty);
     }
@@ -621,14 +698,14 @@ const ViewHHPTaskScreen = () => {
         const updated_at = datetimestamp;
 
         const updateRSpayload = {
-            ...repairshopr_payload,
-            "status": part_status,
+            ...getRepairshoprPayload,
+            "status": unit_status,
         }
 
 
         const updatePayload = {
             // This goes to our in house db
-            id, updated_at, updated_by: user?.email, parts_issued, parts_issued_date, accessories_and_condition: itemCondition, parts_requested, parts_requested_date, parts_ordered, parts_order_id, parts_ordered_date, unit_status: part_status, ticket_number: hhpTask?.ticket_number
+            id, updated_at, updated_by: user?.email, parts_issued, parts_issued_date, accessories_and_condition: itemCondition, parts_requested, parts_requested_date, parts_ordered, parts_order_id, parts_ordered_date, unit_status, ticket_number: hhpTask?.ticket_number
         }
 
         const changes = findChanges(hhpTask, updatePayload)
@@ -665,19 +742,22 @@ const ViewHHPTaskScreen = () => {
         e.preventDefault()
 
         const ticket_type_id_update = {
-            ...repairshopr_payload,
+            ...getRepairshoprPayload,
             "Warranty": rs_warranty,
             "Warranty ": rs_warranty,
             "ticket_type_id": ticket_type_id,
         }
+        console.log("ticket_type_id_update", ticket_type_id_update)
+
         const id = hhpTask?.id;
         const updated_at = datetimestamp;
         const updatePayload = {
             // This goes to our in house db
             id, service_order_no: serviceOrder, unit_status, updated_at, engineer, warranty, rs_warranty, collected, additional_info: additionalInfo, stores: issue_type, collected_date, device_location: deviceLocation, job_repair_no: repairNo, ticket_number: hhpTask?.ticket_number, updated_by: user?.email
         }
+
         const changes = findChanges(hhpTask, updatePayload)
-        await updateRepairTicket(hhpTask?.repairshopr_job_id, ticket_type_id_update);
+        if (hhpTask?.repairshopr_job_id) await updateRepairTicket(hhpTask?.repairshopr_job_id, ticket_type_id_update);
         if (Object.keys(changes).length > 0) {
             await updateTask(id, changes)
         }
@@ -801,8 +881,6 @@ const ViewHHPTaskScreen = () => {
                                                         }
                                                     </select>
                                             }
-
-
                                             <span
                                                 className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400"
                                             >
@@ -1175,7 +1253,7 @@ const ViewHHPTaskScreen = () => {
                                                 <h4 className="scroll-m-20 text-lg font-semibold tracking-tight">Parts</h4>
 
                                             </div>
-                                            <Parts partsIssuedText={partsIssuedText} setIssuedExtraText={setIssuedExtraText} issuedPartsLoading={issuedPartsLoading} submitPartsIssued={addPartIssuedToRepairshoprComment} onSelectionChange={setSelectedIssuedParts} in_stock={part_in_stock} submitPartOrderId={submitPartOrderId} submitPartOrderIdLoading={submitPartOrderIdLoading} parts_order_id={parts_order_id} setPartsOrderId={setPartsOrderId} stored_parts_order_id={hhpTask?.parts_order_id} partsExtraText={partsExtraText} setPartsExtraText={setPartsExtraText} compensation={compensation} setCompensation={(e) => setCompensation(e)} deletePartLoading={deletePartLoading} part_data={taskPartsList} parts_requestedProp={parts_requested} setPartsRequestedProp={(e) => setPartsRequested(e)} setPartsRequestedDateProp={setPartsRequestedDate} parts_orderedProp={parts_ordered} setPartsOrderedProp={(e) => setPartsOrdered(e)} parts_issuedProp={parts_issued} setPartsIssuedProp={(e) => setPartsIssued(e)} setPartsIssuedDateProp={setPartsIssuedDate} setPartsOrderedDateProp={setPartsOrderedDate} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} handleDelete={handleDeletePart} addPartOnRepairshoprLoading={addPartOnRepairshoprLoading} addPartOnRepairshopr={addPartListToRepairshoprComment} imei={hhpTask?.imei} serial_number={hhpTask?.serial_number} model={hhpTask?.model} part_status={part_status} setPartStatus={setPartStatus} />
+                                            <Parts partsIssuedText={partsIssuedText} setIssuedExtraText={setIssuedExtraText} issuedPartsLoading={issuedPartsLoading} submitPartsIssued={addPartIssuedToRepairshoprComment} onSelectionChange={setSelectedIssuedParts} in_stock={part_in_stock} submitPartOrderId={submitPartOrderId} submitPartOrderIdLoading={submitPartOrderIdLoading} parts_order_id={parts_order_id} setPartsOrderId={setPartsOrderId} stored_parts_order_id={hhpTask?.parts_order_id} partsExtraText={partsExtraText} setPartsExtraText={setPartsExtraText} compensation={compensation} setCompensation={(e) => setCompensation(e)} deletePartLoading={deletePartLoading} part_data={taskPartsList} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} handleDelete={handleDeletePart} addPartOnRepairshoprLoading={addPartOnRepairshoprLoading} addPartOnRepairshopr={addPartListToRepairshoprComment} />
                                         </div>
                                         {/* assets */}
                                         {/* name should be auto filled by model istead of user (just to appease the rs api) */}

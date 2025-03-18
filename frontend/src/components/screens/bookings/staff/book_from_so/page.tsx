@@ -383,7 +383,7 @@ const BookFromSOScreen = () => {
             "ticket_type_id": ticket_type_id
         }
         const res: any = await addTask(payload)
-        setTaskId(res?.id)
+        setTaskId(res?.data?.id)
 
     }
     const handleHHPFiles = (event: any) => {

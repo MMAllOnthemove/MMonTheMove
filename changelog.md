@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - show date booked, and how long since booked in engineer bin stats
 - minimize open new tab in engineer bin stats
 - change orange bg from search customers to drak gray
+- show errors on add task if there are none do not close the modal
+- parts issued to: adding engineer name on top
+
 
 
 ### Fixed
@@ -21,6 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   not updating assessment date in view task
 -   Parts search is slow, because of asynchronously fetchingpart info and stock data, just delayed the latter until the former is done
 -   trim part search field
+-   removed navbar from engineer bins
+-   parts issued not working
+-   parts ordered and its date
 
 ## [0.1.25] - 2025-03-05
 

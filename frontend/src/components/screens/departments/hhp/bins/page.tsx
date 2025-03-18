@@ -60,7 +60,7 @@ const BinsScreen = () => {
                     <LoadingScreen />
                 ) : isLoggedIn && user?.user_role === "admin" ? (
                     <>
-                        <Sidebar />
+                        {/* <Sidebar /> */}
                         <main className='container p-1'>
                             <PageTitle title="bins" hasSpan={true} spanText={"Engineer"} />
                             <p className="text-sm text-sky-500 text-center font-medium">Based on New, Assigned, In Progress, Parts request tickets</p>

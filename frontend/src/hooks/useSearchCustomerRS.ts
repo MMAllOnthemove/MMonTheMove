@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Customer } from "@/lib/types";
+import toast from "react-hot-toast";
 
 type TSearchCustomer = {
     id: number | string;
@@ -53,9 +54,10 @@ const useFetchCustomer = () => {
             }
 
             return exactMatchCustomer; // Return the exact match customer
-        } catch (error) {
-            if (process.env.NODE_ENV !== "production") {
-                console.error("Error fetching customer data:", error);
+        } catch (error: any) {
+            if (error?.response?.data?.message.length > 0) {
+                const errors = error?.response?.data?.message;
+                toast.error(errors);
             }
         } finally {
             setIsLoading(false);

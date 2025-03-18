@@ -30,9 +30,9 @@ const TicketUpdaterScreen: React.FC = () => {
     //             { withCredentials: true }
     //         );
 
-    //         const filtered = tickets?.filter((x) => x.ticket_type_id === null || x.ticket_type_id === "" || x.ticket_type_id === 'null')
+    //         // const filtered = tickets?.filter((x) => x.ticket_type_id === null || x.ticket_type_id === "" || x.ticket_type_id === 'null')
     //         // const filtered = tickets?.filter((x: any) => x.stores === 'HHP (Robtronics)' && x.unit_status !== 'Resolved')
-    //         // const filtered = tickets?.filter((x) => x.id === '1397')
+    //         const filtered = tickets?.filter((x) => x.ticket_number === '128114')
 
     //         for (const ticket of filtered) {
     //             if (processedTickets.has(ticket.ticket_number)) {
@@ -94,26 +94,26 @@ const TicketUpdaterScreen: React.FC = () => {
     //             }));
 
     //         // Add comments locally if there are new ones
-    //         for (const comment of newComments) {
+    //         // for (const comment of newComments) {
 
-    //             const payload = {
-    //                 "task_id": ticket.id,
-    //                 "comment": '*' + comment?.body,
-    //                 "created_at": comment?.created_at,
-    //                 "created_by": comment?.tech,
-    //             }
-    //             await addCommentLocally(payload);
-    //             setLogs((prevLogs) => [
-    //                 ...prevLogs,
-    //                 `Added comment to ticket number: ${ticket.ticket_number}`,
-    //             ]);
-    //         }
+    //         //     const payload = {
+    //         //         "task_id": ticket.id,
+    //         //         "comment": '*' + comment?.body,
+    //         //         "created_at": comment?.created_at,
+    //         //         "created_by": comment?.tech,
+    //         //     }
+    //         //     await addCommentLocally(payload);
+    //         //     setLogs((prevLogs) => [
+    //         //         ...prevLogs,
+    //         //         `Added comment to ticket number: ${ticket.ticket_number}`,
+    //         //     ]);
+    //         // }
 
     //         // update comments
     //         const changes = {
-    //             service_order_no: serviceOrderNumber,
-    //             repairshopr_customer_id: secondSystemTicket?.customer_id,
-    //             engineer: secondSystemTicket.user?.full_name,
+    //             // service_order_no: serviceOrderNumber,
+    //             // repairshopr_customer_id: secondSystemTicket?.customer_id,
+    //             // engineer: secondSystemTicket.user?.full_name,
     //             warranty: secondSystemTicket.ticket_type_name === "In Warranty"
     //                 ? "IW"
     //                 : "OOW",
@@ -137,42 +137,66 @@ const TicketUpdaterScreen: React.FC = () => {
     //                     .map((comment: any) =>
     //                         moment(comment.created_at).format("YYYY-MM-DD HH:mm:ss")
     //                     )[0] || "",
-    //             unit_complete: secondSystemTicket.comments.some((comment: any) =>
-    //                 comment.body.toLowerCase().includes("qc pass")
-    //             ),
-    //             completed_date:
+    //             parts_ordered: secondSystemTicket.comments.some((comment: any) =>
+    //                 comment.body.toLowerCase().includes("parts added")
+    //             )
+    //                 && true,
+    //             parts_ordered_date:
     //                 secondSystemTicket.comments
     //                     .filter((comment: any) =>
-    //                         comment.body.toLowerCase().includes("qc pass")
+    //                         comment.body.toLowerCase().includes("parts added")
     //                     )
     //                     .map((comment: any) =>
     //                         moment(comment.created_at).format("YYYY-MM-DD HH:mm:ss")
     //                     )[0] || "",
-    //             accessories_and_condition: accessories_and_condition,
-    //             requires_backup: requires_backup,
-    //             rs_warranty: rs_warranty,
-    //             ticket_type_id: ticket_type_id
+    //             // parts_issued: secondSystemTicket.comments.some((comment: any) =>
+    //             //     comment.body.toLowerCase().includes("parts issued")
+    //             // )
+    //             //     && true,
+    //             // parts_issued_date:
+    //             //     secondSystemTicket.comments
+    //             //         .filter((comment: any) =>
+    //             //             comment.body.toLowerCase().includes("parts issued")
+    //             //         )
+    //             //         .map((comment: any) =>
+    //             //             moment(comment.created_at).format("YYYY-MM-DD HH:mm:ss")
+    //             //         )[0] || "",
+    //             // unit_complete: secondSystemTicket.comments.some((comment: any) =>
+    //             //     comment.body.toLowerCase().includes("qc pass")
+    //             // ),
+    //             // completed_date:
+    //             //     secondSystemTicket.comments
+    //             //         .filter((comment: any) =>
+    //             //             comment.body.toLowerCase().includes("qc pass")
+    //             //         )
+    //             //         .map((comment: any) =>
+    //             //             moment(comment.created_at).format("YYYY-MM-DD HH:mm:ss")
+    //             //         )[0] || "",
+    //             // accessories_and_condition: accessories_and_condition,
+    //             // requires_backup: requires_backup,
+    //             // rs_warranty: rs_warranty,
+    //             // ticket_type_id: ticket_type_id
     //         };
 
 
     //         // Compare changes before updating
     //         if (
-    //             serviceOrderNumber !== changes.service_order_no ||
-    //             ticket.engineer !== changes.engineer ||
-    //             ticket.warranty !== changes.warranty ||
-    //             location !== changes.device_location ||
-    //             job_repair_no !== changes.job_repair_no ||
-    //             ticket.date_booked !== changes.date_booked ||
-    //             ticket.additional_info !== changes.additional_info ||
-    //             ticket.unit_status !== changes.unit_status ||
-    //             ticket.qc_complete !== changes.qc_complete ||
-    //             ticket.qc_date !== changes.qc_date ||
-    //             ticket.unit_complete !== changes.unit_complete ||
-    //             ticket.completed_date !== changes.completed_date ||
-    //             ticket.accessories_and_condition != changes.accessories_and_condition ||
-    //             ticket.requires_backup != changes.requires_backup ||
-    //             ticket.rs_warranty != changes.rs_warranty ||
-    //             ticket_type_id
+    //             // serviceOrderNumber !== changes.service_order_no ||
+    //             // ticket.engineer !== changes.engineer ||
+    //             // ticket.warranty !== changes.warranty ||
+    //             // location !== changes.device_location ||
+    //             // job_repair_no !== changes.job_repair_no ||
+    //             // ticket.date_booked !== changes.date_booked ||
+    //             // ticket.additional_info !== changes.additional_info ||
+    //             // ticket.unit_status !== changes.unit_status ||
+    //             // ticket.qc_complete !== changes.qc_complete ||
+    //             // ticket.qc_date !== changes.qc_date ||
+    //             // ticket.unit_complete !== changes.unit_complete ||
+    //             // ticket.completed_date !== changes.completed_date ||
+    //             // ticket.accessories_and_condition != changes.accessories_and_condition ||
+    //             // ticket.requires_backup != changes.requires_backup ||
+    //             // ticket.rs_warranty != changes.rs_warranty ||
+    //             ticket_type_id || ticket.parts_ordered !== changes.parts_ordered || ticket.parts_ordered_date !== changes.parts_ordered_date || ticket.warranty !== changes.warranty
 
     //         ) {
     //             await updateHHPTask(ticket.id, changes);
@@ -194,18 +218,20 @@ const TicketUpdaterScreen: React.FC = () => {
     //     }
     // };
 
-    return null
+    return (
+        <div>
+            <h1>Ticket Updater</h1>
+            {/* <ul>
+                {logs.map((log, index) => (
+                    <li key={index}>
+                        {log}
+                    </li>
+                ))}
+            </ul> */}
+        </div>
+    )
 
-    // <div>
-    //     <h1>Ticket Updater</h1>
-    //     <ul>
-    //         {logs.map((log, index) => (
-    //             <li key={index}>
-    //                 {log}
-    //             </li>
-    //         ))}
-    //     </ul>
-    // </div>
+
 
 
 };

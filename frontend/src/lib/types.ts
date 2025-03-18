@@ -762,10 +762,10 @@ export type IHHPSingleTask = {
     assessment_date: string;
     parts_pending_date: string;
     parts_issued_date: string;
+    parts_ordered_date: string;
     quote_accepted: boolean;
     quote_rejected: boolean;
     stores: boolean | null;
-    parts_ordered_date: string | null;
     phone_name?: string | null;
     completed_date: string | null;
     additional_info: string | null;
@@ -778,8 +778,9 @@ export type IHHPSingleTask = {
     unit_status: string;
     unit_complete: boolean;
     collected: string | boolean;
-    parts_pending: string | boolean;
-    parts_issued: string | boolean;
+    parts_pending: null | boolean;
+    parts_ordered: null | boolean;
+    parts_issued: null | boolean;
     compensation: string | boolean;
     images?: {
         image_id: number;

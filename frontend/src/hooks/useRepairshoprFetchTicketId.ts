@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const useRepairshoprFetchTicketId = (repairId?: string | number) => {
     const [fetchRSTicketDataById, setData] = useState("");
@@ -17,12 +18,10 @@ const useRepairshoprFetchTicketId = (repairId?: string | number) => {
             );
 
             if (data?.ticket?.id == repairId) setData(data);
-        } catch (error) {
-            if (process.env.NODE_ENV !== "production") {
-                console.error(
-                    "Error fetching repairshopr ticket api data by id:",
-                    error
-                );
+        } catch (error: any) {
+            if (error?.response?.data?.message.length > 0) {
+                const errors = error?.response?.data?.message;
+                toast.error(errors);
             }
         }
     };

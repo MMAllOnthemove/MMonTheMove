@@ -10,16 +10,23 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import useFetchEngineer from "@/hooks/useFetchEngineers";
 import { datetimestamp } from '@/lib/date_formats';
 import repairshopr_part_statuses from "@/lib/parts_status";
 import { TTaskParts } from '@/lib/types';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { CheckedState } from '@radix-ui/react-checkbox';
 import React, { useEffect, useState } from 'react';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 type TPartsHHPUpdate = {
-    parts_orderedProp: CheckedState | undefined
-    parts_issuedProp: CheckedState | undefined
-    parts_requestedProp: CheckedState | undefined
     compensation: CheckedState | undefined | any | any
     search_part: string;
     parts_order_id: string | null | undefined;
@@ -33,13 +40,7 @@ type TPartsHHPUpdate = {
     setPartDesc: (data: string) => void;
     part_quantity: number | undefined;
     setPartQuantity: (data: number | undefined) => void;
-    setPartsOrderedProp: (data: CheckedState | undefined) => void;
-    setPartsOrderedDateProp: (data: string) => void;
-    setPartsIssuedProp: (data: CheckedState | undefined) => void;
-    setPartsRequestedProp: (data: CheckedState | undefined) => void;
     setCompensation: (data: CheckedState | undefined | any | null) => void;
-    setPartsRequestedDateProp: (data: string) => void;
-    setPartsIssuedDateProp: (data: string) => void;
     addPartLoading: boolean;
     addPartOnRepairshoprLoading: boolean;
     submitPartsUpdateLoading: boolean;
@@ -48,9 +49,6 @@ type TPartsHHPUpdate = {
     submitPartOrderIdLoading: boolean;
     submitPartOrderId: (data: React.SyntheticEvent) => void;
     submitPartsUpdate: (data: React.SyntheticEvent) => void;
-    serial_number: string | undefined;
-    model: string | undefined;
-    imei: string | undefined;
     part_data: TTaskParts[];
     deletePartLoading: boolean;
     issuedPartsLoading: boolean;
@@ -62,13 +60,11 @@ type TPartsHHPUpdate = {
         part_quantity?: string;
     }
     stored_parts_order_id: string | null | undefined;
-    part_status: string;
-    setPartStatus: (e: string) => void;
     in_stock: string | undefined;
     onSelectionChange: (selectedParts: string[]) => void;
     submitPartsIssued: (data: any) => void;
 }
-const Parts = ({ partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedPartsLoading, onSelectionChange, in_stock, partsExtraText, setPartsExtraText, deletePartLoading, parts_order_id, setPartsOrderId, stored_parts_order_id, submitPartOrderIdLoading, submitPartOrderId, part_data, handleDelete, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, model, imei, serial_number, errors, part_status, setPartStatus }: TPartsHHPUpdate) => {
+const Parts = ({ partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedPartsLoading, onSelectionChange, in_stock, partsExtraText, setPartsExtraText, deletePartLoading, parts_order_id, setPartsOrderId, submitPartOrderIdLoading, submitPartOrderId, part_data, handleDelete, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, errors }: TPartsHHPUpdate) => {
     const [selectedParts, setSelectedParts] = useState<any[]>([]);
     const [selectAll, setSelectAll] = useState(false);
 
@@ -106,24 +102,18 @@ const Parts = ({ partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedP
         );
     };
 
+    const { engineersList } = useFetchEngineer()
+    // for filtering by engineer
+    const engineerListFomatted = engineersList?.map((user) => ({
+        id: user?.id,
+        repairshopr_id: user?.repairshopr_id,
+        value: user?.engineer_firstname + " " + user?.engineer_lastname,
+        label: user?.engineer_firstname + " " + user?.engineer_lastname,
+    }))
 
 
 
-    const handlePartStatus = (e: React.SyntheticEvent | any) => {
-        setPartStatus(e.target.value)
-        if (e.target.value === 'Parts to be ordered') {
-            setPartsOrderedProp(true);
-            setPartsOrderedDateProp(datetimestamp)
-        }
-        if (e.target.value === 'Parts Issued') {
-            setPartsIssuedProp(true);
-            setPartsIssuedDateProp(datetimestamp)
-        }
-        if (e.target.value === 'Parts Request 1st Approval') {
-            setPartsRequestedProp(true);
-            setPartsRequestedDateProp(datetimestamp)
-        }
-    }
+  
     const handleCompensation = (e: React.SyntheticEvent | any) => {
         if (!compensation) {
             setCompensation(e);
@@ -226,7 +216,21 @@ const Parts = ({ partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedP
                 <AccordionItem value="item-4">
                     <AccordionTrigger>Parts issued</AccordionTrigger>
                     <AccordionContent>
-                        <div className="my-3">
+                        {/* instead of typing out the engineer, just select them */}
+                        <Select name="partsIssuedText" value={partsIssuedText} onValueChange={(e) => setIssuedExtraText(e)}>
+                            <SelectTrigger className="w-full hidden md:flex mb-2">
+                                <SelectValue placeholder="Issue parts to who" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectLabel>Engineer</SelectLabel>
+                                    {engineerListFomatted.map((dep) => (
+                                        <SelectItem key={dep.id} value={`${dep.value}`}>{`${dep.label}`}</SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        {/* <div className="my-3">
                             <Label htmlFor="partsIssuedText">Add comment to go with these parts (just the techncian name)</Label>
                             <Textarea
                                 placeholder="Parts issued to: "
@@ -234,7 +238,7 @@ const Parts = ({ partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedP
                                 value={partsIssuedText}
                                 onChange={(e) => setIssuedExtraText(e.target.value)}
                             />
-                        </div>
+                        </div> */}
                         <div>
                             <label>
                                 <input type="checkbox" checked={selectAll} onChange={handleSelectAll} />
@@ -283,14 +287,14 @@ const Parts = ({ partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedP
                                 })}
                             </ul>
                         </div>
-                        <Button className="w-full mt-2" type="button" onClick={submitPartsIssued} disabled={issuedPartsLoading}>{issuedPartsLoading ? 'Adding...' : 'Send parts issued to ticket'} </Button>
+                        <Button className="w-full mt-2" type="button" onClick={submitPartsIssued} disabled={issuedPartsLoading}>{issuedPartsLoading ? 'Adding...' : 'Publish parts as comment on repairshopr'} </Button>
 
                     </AccordionContent>
                 </AccordionItem>
            
             </Accordion>
 
-            <Button className="w-full outline-none" type="button" onClick={submitPartsUpdate} disabled={submitPartsUpdateLoading}>{submitPartsUpdateLoading ? 'Loading...' : 'Update parts section'}</Button>
+            <Button className="w-full outline-none bg-sky-600"  type="button" onClick={submitPartsUpdate} disabled={submitPartsUpdateLoading}>{submitPartsUpdateLoading ? 'Loading...' : 'Save parts section'}</Button>
 
         </div >
     )

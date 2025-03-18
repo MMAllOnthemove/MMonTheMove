@@ -37,16 +37,9 @@ export const useCreateAssets = () => {
                 return assetId;
             }
         } catch (error: any) {
-            if (error?.response?.data) {
-                const { success, message, params } = error.response.data;
-                if (!success && message) {
-                    if (Array.isArray(message)) {
-                        const errorMessages = message.join("\n");
-                        toast(errorMessages, { duration: 6000 });
-                    } else {
-                        toast(message, { duration: 6000 });
-                    }
-                }
+            if (error?.response?.data?.message.length > 0) {
+                const errors = error?.response?.data?.message;
+                toast.error(errors);
             }
         } finally {
             setCreateAssetLoading(false);

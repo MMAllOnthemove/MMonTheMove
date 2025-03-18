@@ -213,7 +213,7 @@ const HHP = (customerProps: string | string[] | any) => {
             "ticket_type_id": ticket_type_id
         }
         const res: any = await addTask(payload)
-        if (res?.id) setTaskId(res?.id)
+        if (res?.data?.id) setTaskId(res?.data?.id)
 
 
     }
@@ -339,9 +339,6 @@ const HHP = (customerProps: string | string[] | any) => {
                             </SelectContent>
                         </Select>
                     </div>
-                    {/* todo: remove */}
-
-                    <p>ticketTypeId {ticketTypeId}</p>
                     <div>
                         <Label htmlFor='issue_type' className="text-gray-500">Issue type</Label>
                         <Select

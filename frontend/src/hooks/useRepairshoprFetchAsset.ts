@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const useRepairshoprFetchAsset = (assetId: string | number) => {
     const [fetchRSByAssetData, setData] = useState("");
@@ -18,12 +19,10 @@ const useRepairshoprFetchAsset = (assetId: string | number) => {
                 );
 
                 if (data?.ticket?.id == assetId) setData(data);
-            } catch (error) {
-                if (process.env.NODE_ENV !== "production") {
-                    console.error(
-                        "Error fetching adding HHP task by GSPNError fetching adding HHP task by GSPN:",
-                        error
-                    );
+            } catch (error: any) {
+                if (error?.response?.data?.message.length > 0) {
+                    const errors = error?.response?.data?.message;
+                    toast.error(errors);
                 }
             }
         };

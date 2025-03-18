@@ -7,6 +7,7 @@ export const UpdateTask = async (req, res) => {
     const { id } = req.params; // Assuming the ID is passed in the URL
     if (!id) return;
     const changes = req.body; // Get the changed fields from the frontend
+    console.log("changes", changes);
     // Check if there are changes
     if (Object.keys(changes).length === 0) {
         return res.status(400).json({ error: "No changes provided" });

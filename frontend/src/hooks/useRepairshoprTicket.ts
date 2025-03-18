@@ -19,16 +19,14 @@ const useRepairshoprTicket = () => {
                     },
                 }
             );
-
+            console.log("updateRepairTicket", response?.data);
             if (response.data) {
                 return response.data;
             }
-        } catch (error) {
-            if (process.env.NODE_ENV !== "production") {
-                console.error(
-                    "Error updating repairshopr ticket by id:",
-                    error
-                );
+        } catch (error: any) {
+            if (error?.response?.data?.message.length > 0) {
+                const errors = error?.response?.data?.message;
+                toast.error(errors);
             }
         }
     };
