@@ -15,14 +15,12 @@ export const UpdateSOAfterBooking = async (req, res) => {
             "select * from technician_tasks  WHERE ticket_number = $1",
             [query.rows[0]?.ticket_number]
         );
-        console.log("so updated", query.rows);
         await appLogs("UPDATE", updated_by, req.body, id, ticket_number);
         return res.status(200).json({
             message: "HHP task updated",
             task: getDataBack.rows[0],
         });
     } catch (error) {
-        console.log(error);
         return res.status(500).json({ error: "Could not update, try again" });
     }
 };

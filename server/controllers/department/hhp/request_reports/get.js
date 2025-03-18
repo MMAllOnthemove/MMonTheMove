@@ -62,7 +62,6 @@ const GetReport = async (req, res) => {
             return res.status(400).json({ message: "No data found" });
         }
     } catch (err) {
-        console.log("report download error", err);
         return res.status(500).json({
             message: "Error fetching reports",
         });

@@ -116,7 +116,6 @@ const AddHHPTask = async (req, res) => {
             });
             return res.status(400).json({ errors });
         }
-        console.log("errors", errors);
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };

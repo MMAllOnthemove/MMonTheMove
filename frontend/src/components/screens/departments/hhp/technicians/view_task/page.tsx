@@ -675,7 +675,6 @@ const ViewHHPTaskScreen = () => {
     const handleTicketRSWarranty = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selected = e.target.value;
         const selectedWarranty = ticket_type_id === "21877" ? type_21877?.find((x) => x.code === selected) : type_21878?.find((x) => x.code === selected);
-
         setRSWarranty(selected);
         setWarranty(selectedWarranty?.warranty);
     }
@@ -747,7 +746,6 @@ const ViewHHPTaskScreen = () => {
             "Warranty ": rs_warranty,
             "ticket_type_id": ticket_type_id,
         }
-        console.log("ticket_type_id_update", ticket_type_id_update)
 
         const id = hhpTask?.id;
         const updated_at = datetimestamp;
@@ -950,27 +948,17 @@ const ViewHHPTaskScreen = () => {
                                                 <div className='flex items-center gap-4 md:justify-between my-2'>
                                                     <h5 className="font-medium text-sm text-gray-500">Status</h5>
                                                     <div className="relative">
-                                                        {isLoggedIn && user?.user_role === "admin" ?
-                                                            <select name='unit_status' className="block w-full appearance-none rounded-md border border-gray-300 bg-white px-4 py-2 pr-8 text-sm shadow-sm focus:outline-none cursor-pointer [&>span]:line-clamp-1" value={unit_status || ''}
-                                                                onChange={updateStatus}>
-                                                                <option disabled value={""}>Select status</option>
-                                                                {
-                                                                    repairshopr_statuses?.map((x) => (
 
-                                                                        <option key={`${x?.id}`} value={`${x?._status}`}>{x?._status}</option>
-                                                                    ))
-                                                                }
-                                                            </select> :
-                                                            <select name='unit_status' className="block w-full appearance-none rounded-md border border-gray-300 bg-white px-4 py-2 pr-8 text-sm shadow-sm focus:outline-none cursor-pointer [&>span]:line-clamp-1" value={unit_status || ''}
-                                                                onChange={updateStatus}>
-                                                                <option disabled value={""}>Select status</option>
-                                                                {
-                                                                    repairshopr_statuses?.map((x) => (
+                                                        <select name='unit_status' className="block w-full appearance-none rounded-md border border-gray-300 bg-white px-4 py-2 pr-8 text-sm shadow-sm focus:outline-none cursor-pointer [&>span]:line-clamp-1" value={unit_status || ''}
+                                                            onChange={updateStatus}>
+                                                            <option disabled value={""}>Select status</option>
+                                                            {
+                                                                repairshopr_statuses?.map((x) => (
 
-                                                                        <option key={`${x?.id}`} value={`${x?._status}`}>{x?._status}</option>
-                                                                    ))
-                                                                }
-                                                            </select>}
+                                                                    <option key={`${x?.id}`} value={`${x?._status}`}>{x?._status}</option>
+                                                                ))
+                                                            }
+                                                        </select>
                                                         <span
                                                             className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400"
                                                         >

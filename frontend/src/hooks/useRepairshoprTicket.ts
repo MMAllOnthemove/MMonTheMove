@@ -19,7 +19,6 @@ const useRepairshoprTicket = () => {
                     },
                 }
             );
-            console.log("updateRepairTicket", response?.data);
             if (response.data) {
                 return response.data;
             }
