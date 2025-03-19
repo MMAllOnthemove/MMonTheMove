@@ -37,6 +37,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import Parts from '../parts/page';
 import QC from '../qc/page';
+import useAddCommentsLocally from '@/hooks/useCommentsLocally';
 
 const BackToTop = dynamic(() =>
     import('@/components/toTopButton/page')
@@ -63,7 +64,7 @@ const ViewHHPTaskScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { hhpTasks, fetchTasks, updateHHPTaskLoading, updateTask, deleteTask } = useHHPTasksCrud()
     const { hhpTask, refetch, hhpTaskLoading } = useFetchHHPTaskById(id ? decodeURIComponent(Array.isArray(id) ? id[0] : id) : null)
-    const { commentsList, commentsListLoading, totalPages, currentPage, fetchComments } = useGetComments(id)
+    const { commentsList, commentsListLoading, totalPages, currentPage, fetchComments } = useAddCommentsLocally(id)
     const [reparshoprComment, setRepairshoprComment] = useState("")
     const { getSOPartsInfo } = useIpaasSOPartsInfo()
     const [qc_comment, setQCFailReason] = useState('')
@@ -97,8 +98,11 @@ const ViewHHPTaskScreen = () => {
         addThisPart,
         addPartLoading,
         addPartErrors,
-        updatePart,
-        updatePartLoading, deletePart, deletePartLoading, refetchPartsForThisTask } = useTaskParts(hhpTask?.id)
+        addOldPartLoading,
+        addOldPartErrors,
+        addThisOldPart,
+        updatePart, taskOldPartsList, taskOldPartsListLoading,
+        updatePartLoading, deletePart, deletePartLoading, refetchPartsForThisTask, getOldPartsForThisTask } = useTaskParts(hhpTask?.id)
 
     const {
         attachmentsList,
@@ -107,7 +111,7 @@ const ViewHHPTaskScreen = () => {
         totalAttPages,
         fetchAttachments,
     } = useGetAttachments(id)
-    const { addCommentLocally, addCommentLoading } = useAddTaskCommentLocally()
+    const { addCommentLocally, addCommentLoading } = useAddCommentsLocally()
     const { updateRepairTicket } = useRepairshoprTicket()
     const { updateRepairTicketComment } = useRepairshoprComment()
 
@@ -151,6 +155,13 @@ const ViewHHPTaskScreen = () => {
     const [part_name, setPartName] = useState("")
     const [part_desc, setPartDesc] = useState("")
 
+    // old parts
+    const [search_old_part, setSearchOldPart] = useState("")
+    const [old_part_name, setPartOldName] = useState("")
+    const [old_part_desc, setPartOldDesc] = useState("")
+    const [selectedOldParts, setSelectedOldParts] = useState<any>([]);
+    const [oldPartsLoading, setOldPartsLoading] = useState<boolean>(false);
+
     // search parts from ipaas
     useEffect(() => {
         const handleGetSOPartInfo = async (search_part: string) => {
@@ -168,6 +179,24 @@ const ViewHHPTaskScreen = () => {
         handleGetSOPartInfo(search_part)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [search_part])
+
+    // search old parts from ipaas
+    useEffect(() => {
+        const handleGetSOPartInfo = async (search_old_part: string) => {
+            if (!search_old_part) return;
+            try {
+                const data = await getSOPartsInfo(search_old_part);
+                setPartOldName(data?.Return?.EsPartsInfo?.PartsNo)
+                setPartOldDesc(data?.Return?.EsPartsInfo?.PartsDescription)
+            } catch (error) {
+                if (process.env.NODE_ENV !== 'production') {
+                    console.error(error)
+                }
+            }
+        };
+        handleGetSOPartInfo(search_old_part)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [search_old_part])
 
     const openModal = () => {
         setModifyTaskModalOpen(true);
@@ -253,14 +282,46 @@ const ViewHHPTaskScreen = () => {
         setCompensation(false)
         setPartQuantity(0)
     }
+    // add old part searched
+    const addOldPart = async () => {
+        const task_row_id = hhpTask?.id;
+        const ticket_number = hhpTask?.ticket_number
+        const created_at = datetimestamp;
+        const created_by = user?.email
+        const is_old_part = true
+        const payload = { task_row_id, ticket_number, old_part_name, old_part_desc, is_old_part, created_at, created_by }
+        await addThisOldPart(payload);
+        getOldPartsForThisTask()
+        setSearchPart("")
+        setPartOldName("")
+        setPartOldDesc("")
+    }
 
 
     // this will send the order no to rs
     const submitPartOrderId = async () => {
         setSubmitPartsOrderIdLoading(true)
         const updateRSpayload = {
-            ...getRepairshoprPayload,
+            "user_id": repairshopr_id,
             "status": 'Waiting for Parts',
+            "properties": {
+                "IMEI": imei,
+                "Warranty": rs_warranty,
+                "Warranty ": rs_warranty,
+                "Backup Requires": backup_requires_code,
+                "Backup Requires ": backup_requires_code,
+                "Item Condition": itemCondition,
+                "Item Condition ": itemCondition,
+                "Service Order No.": serviceOrder,
+                "Service Order No. ": serviceOrder,
+                "Special Requirement": additionalInfo,
+                "Special Requirement ": additionalInfo,
+                "Job Repair No.": repairNo,
+                "Job Repair No.:": repairNo,
+                "Location (BIN)": deviceLocation,
+                "ticket_type_id": ticket_type_id,
+            }
+
         }
         const id = hhpTask?.id;
         const updated_at = datetimestamp;
@@ -324,8 +385,8 @@ const ViewHHPTaskScreen = () => {
             }
             const partsList = selectedIssuedParts?.map((part: any, index: any) => {
 
-                if (part.seal_number.length > 0) return `${index + 1}. ${part.part_name} - Seal number:${part.seal_number}`;
-                else return `${index + 1}. ${part.part_name}`;
+                if (part.seal_number.length > 0) return `${index + 1}. ${part.part_name} ${part.part_desc} - Seal number:${part.seal_number}`;
+                else return `${index + 1}. ${part.part_name} ${part.part_desc}`;
 
 
             }).join('\n');
@@ -359,6 +420,59 @@ const ViewHHPTaskScreen = () => {
             }
         } finally {
             setIssuedPartsLoading(false); // Stop loading
+        }
+    }
+    const addOldPartToRepairshoprComment = async () => {
+        setOldPartsLoading(true)
+        try {
+            // this will send the parts as as list on repairshopr
+
+            if (!selectedOldParts || selectedOldParts?.length === 0) {
+                return;
+            }
+
+            // Loop through selected parts and send updates
+            for (const part of selectedOldParts) {
+                if (!part.id) {
+                    console.error("Missing part ID:", part);
+                    continue;
+                }
+                await updatePart(part.id, part);
+            }
+
+            const partsList = selectedOldParts?.map((part: any, index: any) => {
+                return `${index + 1}. ${part.part_name} ${part.part_desc}`;
+            }).join('\n');
+
+            const comment = `Old parts returned:\n\n${partsList}`;
+            const commentPayload: RepairshorTicketComment = {
+                "subject": "Update",
+                "tech": user?.full_name,
+                "body": '*' + comment,
+                "hidden": true,
+                "do_not_email": true
+            }
+            const created_at = datetimestamp;
+            const addCommentLocallyPayload = {
+                "task_id": hhpTask?.id,
+                "comment": '*' + comment,
+                "created_at": created_at,
+                "created_by": user?.full_name,
+                "ticket_number": hhpTask?.ticket_number
+
+            }
+
+            if (comment) {
+                await updateRepairTicketComment(hhpTask?.repairshopr_job_id, commentPayload)
+                await addCommentLocally(addCommentLocallyPayload)
+            }
+
+        } catch (error) {
+            if (process.env.NODE_ENV !== 'production') {
+                console.error("comment part", error)
+            }
+        } finally {
+            setOldPartsLoading(false); // Stop loading
         }
     }
     const handleQCFiles = (event: any) => {
@@ -531,8 +645,27 @@ const ViewHHPTaskScreen = () => {
         const selected = e;
         setIssueType(e)
         const problem_type_update = {
-            ...getRepairshoprPayload,
+            "user_id": repairshopr_id,
+            "status": unit_status,
             "problem_type": selected,
+            "properties": {
+                "IMEI": imei,
+                "Warranty": rs_warranty,
+                "Warranty ": rs_warranty,
+                "Backup Requires": backup_requires_code,
+                "Backup Requires ": backup_requires_code,
+                "Item Condition": itemCondition,
+                "Item Condition ": itemCondition,
+                "Service Order No.": serviceOrder,
+                "Service Order No. ": serviceOrder,
+                "Special Requirement": additionalInfo,
+                "Special Requirement ": additionalInfo,
+                "Job Repair No.": repairNo,
+                "Job Repair No.:": repairNo,
+                "Location (BIN)": deviceLocation,
+                "ticket_type_id": ticket_type_id,
+            }
+
         }
         const id = hhpTask?.id;
         const updated_at = datetimestamp;
@@ -598,8 +731,26 @@ const ViewHHPTaskScreen = () => {
         }
 
         const status_update = {
-            ...getRepairshoprPayload,
+            "user_id": repairshopr_id,
             status: selected,
+            "properties": {
+                "IMEI": imei,
+                "Warranty": rs_warranty,
+                "Warranty ": rs_warranty,
+                "Backup Requires": backup_requires_code,
+                "Backup Requires ": backup_requires_code,
+                "Item Condition": itemCondition,
+                "Item Condition ": itemCondition,
+                "Service Order No.": serviceOrder,
+                "Service Order No. ": serviceOrder,
+                "Special Requirement": additionalInfo,
+                "Special Requirement ": additionalInfo,
+                "Job Repair No.": repairNo,
+                "Job Repair No.:": repairNo,
+                "Location (BIN)": deviceLocation,
+                "ticket_type_id": ticket_type_id,
+            }
+
         };
 
         const id = hhpTask?.id;
@@ -641,8 +792,25 @@ const ViewHHPTaskScreen = () => {
         const userId = existingTech ? existingTech.repairshopr_id : null;
 
         const engineer_update = {
-            ...getRepairshoprPayload,
             "user_id": userId,
+            "status": unit_status,
+            "properties": {
+                "IMEI": imei,
+                "Warranty": rs_warranty,
+                "Warranty ": rs_warranty,
+                "Backup Requires": backup_requires_code,
+                "Backup Requires ": backup_requires_code,
+                "Item Condition": itemCondition,
+                "Item Condition ": itemCondition,
+                "Service Order No.": serviceOrder,
+                "Service Order No. ": serviceOrder,
+                "Special Requirement": additionalInfo,
+                "Special Requirement ": additionalInfo,
+                "Job Repair No.": repairNo,
+                "Job Repair No.:": repairNo,
+                "Location (BIN)": deviceLocation,
+                "ticket_type_id": ticket_type_id,
+            }
         };
 
         setEngineer(selected);
@@ -697,8 +865,25 @@ const ViewHHPTaskScreen = () => {
         const updated_at = datetimestamp;
 
         const updateRSpayload = {
-            ...getRepairshoprPayload,
+            "user_id": repairshopr_id,
             "status": unit_status,
+            "properties": {
+                "IMEI": imei,
+                "Warranty": rs_warranty,
+                "Warranty ": rs_warranty,
+                "Backup Requires": backup_requires_code,
+                "Backup Requires ": backup_requires_code,
+                "Item Condition": itemCondition,
+                "Item Condition ": itemCondition,
+                "Service Order No.": serviceOrder,
+                "Service Order No. ": serviceOrder,
+                "Special Requirement": additionalInfo,
+                "Special Requirement ": additionalInfo,
+                "Job Repair No.": repairNo,
+                "Job Repair No.:": repairNo,
+                "Location (BIN)": deviceLocation,
+                "ticket_type_id": ticket_type_id,
+            }
         }
 
 
@@ -741,10 +926,25 @@ const ViewHHPTaskScreen = () => {
         e.preventDefault()
 
         const ticket_type_id_update = {
-            ...getRepairshoprPayload,
-            "Warranty": rs_warranty,
-            "Warranty ": rs_warranty,
-            "ticket_type_id": ticket_type_id,
+            "user_id": repairshopr_id,
+            "status": unit_status,
+            "properties": {
+                "IMEI": imei,
+                "Warranty": rs_warranty,
+                "Warranty ": rs_warranty,
+                "Backup Requires": backup_requires_code,
+                "Backup Requires ": backup_requires_code,
+                "Item Condition": itemCondition,
+                "Item Condition ": itemCondition,
+                "Service Order No.": serviceOrder,
+                "Service Order No. ": serviceOrder,
+                "Special Requirement": additionalInfo,
+                "Special Requirement ": additionalInfo,
+                "Job Repair No.": repairNo,
+                "Job Repair No.:": repairNo,
+                "Location (BIN)": deviceLocation,
+                "ticket_type_id": ticket_type_id,
+            }
         }
 
         const id = hhpTask?.id;
@@ -1106,13 +1306,15 @@ const ViewHHPTaskScreen = () => {
 
                                                             <div className="flex flex-col">
                                                                 <div className="flex gap-3 items-center cursor-pointer" onClick={() => openInNewTab(x?.image_url)}>
-                                                                    <Image
-                                                                        width={50}
-                                                                        height={50}
-                                                                        alt={`Ticket image`}
-                                                                        src={x?.image_url}
-                                                                        className='rounded-sm shadow-sm'
-                                                                    />
+                                                                    <div className="w-[40px] h-[40px] overflow-hidden">
+                                                                        <Image
+                                                                            width={50}
+                                                                            height={50}
+                                                                            alt={`Ticket image`}
+                                                                            src={x?.image_url}
+                                                                            className='rounded-sm shadow-sm'
+                                                                        />
+                                                                    </div>
                                                                     <div>
                                                                         <h5 className="font-medium text-sm">{hhpTask?.ticket_number}</h5>
                                                                         <p className="font-medium text-sm">{moment(x?.created_at).format("DD MMMM, YYYY HH:mm")}</p>
@@ -1126,7 +1328,7 @@ const ViewHHPTaskScreen = () => {
 
                                                 {
                                                     attachmentsListLoading ? <p>Loading...</p> :
-                                                        <>
+                                                        <div className="flex gap-2">
 
                                                             {[...Array(totalAttPages)]?.map((_, index) => (
                                                                 <Button
@@ -1138,7 +1340,7 @@ const ViewHHPTaskScreen = () => {
                                                                     {index + 1}
                                                                 </Button>
                                                             ))}
-                                                        </>
+                                                        </div>
                                                 }
 
                                             </div>
@@ -1241,7 +1443,7 @@ const ViewHHPTaskScreen = () => {
                                                 <h4 className="scroll-m-20 text-lg font-semibold tracking-tight">Parts</h4>
 
                                             </div>
-                                            <Parts partsIssuedText={partsIssuedText} setIssuedExtraText={setIssuedExtraText} issuedPartsLoading={issuedPartsLoading} submitPartsIssued={addPartIssuedToRepairshoprComment} onSelectionChange={setSelectedIssuedParts} in_stock={part_in_stock} submitPartOrderId={submitPartOrderId} submitPartOrderIdLoading={submitPartOrderIdLoading} parts_order_id={parts_order_id} setPartsOrderId={setPartsOrderId} stored_parts_order_id={hhpTask?.parts_order_id} partsExtraText={partsExtraText} setPartsExtraText={setPartsExtraText} compensation={compensation} setCompensation={(e) => setCompensation(e)} deletePartLoading={deletePartLoading} part_data={taskPartsList} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} handleDelete={handleDeletePart} addPartOnRepairshoprLoading={addPartOnRepairshoprLoading} addPartOnRepairshopr={addPartListToRepairshoprComment} />
+                                            <Parts oldPartsLoading={oldPartsLoading} submitPartsOld={addOldPartToRepairshoprComment} old_part_errors={addOldPartErrors} addOldPartLoading={addOldPartLoading} addOldPart={addOldPart} old_parts_data={taskOldPartsList} onSelectionChangeOldParts={setSelectedOldParts} search_old_part={search_old_part} setSearchOldPart={setSearchOldPart} old_part_desc={old_part_desc} setPartOldDesc={setPartOldDesc} partsIssuedText={partsIssuedText} setIssuedExtraText={setIssuedExtraText} issuedPartsLoading={issuedPartsLoading} submitPartsIssued={addPartIssuedToRepairshoprComment} onSelectionChange={setSelectedIssuedParts} in_stock={part_in_stock} submitPartOrderId={submitPartOrderId} submitPartOrderIdLoading={submitPartOrderIdLoading} parts_order_id={parts_order_id} setPartsOrderId={setPartsOrderId} stored_parts_order_id={hhpTask?.parts_order_id} partsExtraText={partsExtraText} setPartsExtraText={setPartsExtraText} compensation={compensation} setCompensation={(e) => setCompensation(e)} deletePartLoading={deletePartLoading} part_data={taskPartsList} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} handleDelete={handleDeletePart} addPartOnRepairshoprLoading={addPartOnRepairshoprLoading} addPartOnRepairshopr={addPartListToRepairshoprComment} />
                                         </div>
                                         {/* assets */}
                                         {/* name should be auto filled by model istead of user (just to appease the rs api) */}

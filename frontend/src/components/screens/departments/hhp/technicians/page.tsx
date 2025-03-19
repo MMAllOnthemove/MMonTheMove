@@ -102,6 +102,7 @@ import repairshopr_statuses from '@/lib/repairshopr_status'
 import repairshopr_statuses_techs from '@/lib/tech_rs_statuses'
 import moment from 'moment'
 import openEngineerBinsTab from "@/lib/openEngineerBinsTab"
+import useAddCommentsLocally from "@/hooks/useCommentsLocally"
 const DateCalculationsScreen = dynamic(() =>
     import('./date_calculations/page'), { ssr: false }
 )
@@ -117,7 +118,7 @@ const TechniciansScreen = () => {
     const { updateRepairTicket } = useRepairshoprTicket()
     const { updateRepairTicketComment } = useRepairshoprComment()
     const { addRepairTicketFile } = useRepairshoprFile()
-    const { addCommentLocally } = useAddTaskCommentLocally()
+    const { addCommentLocally } = useAddCommentsLocally()
     const [modifyTaskModal, setModifyTaskModal] = useState<ModifyTaskModalTechnicians | any>();
     const [modifyTaskModalOpen, setModifyTaskModalOpen] = useState(false);
     // parts for row clicked

@@ -36,6 +36,7 @@ import { router as hhp_reports } from "./routes/request_reports/index.js";
 import { router as stores } from "./routes/stores/index.js";
 import { router as assembly_terms } from "./routes/terms_and_conditions/index.js";
 import { router as add_images_checklist } from "./routes/tools/index.js";
+import { router as addAttachments } from "./controllers/tools/add_ticket_images_router.js";
 const { router: fileRoutes } = QCfileRoutesModule;
 const { router: dtvFiles } = dtvhaFiles;
 
@@ -106,6 +107,10 @@ io.on("connection", (socket) => {
     socket.on("updateCarChecklist", (task) => {
         io.emit("updateCarChecklist", task); // Send to all clients
     });
+    socket.on("addTicketComment", (task) => {
+        io.emit("addTicketComment", task); // Send to all clients
+    });
+
     // Broadcast when a new customer visit is added
     // socket.on("addCustomerVisit", (customerVisit) => {
     //     console.log("addCustomerVisit", customerVisit);
@@ -146,6 +151,7 @@ app.use("/engineers", engineers);
 app.use("/stores", stores);
 app.use("/booking_agents", booking_agents);
 app.use("/claims", claims);
+app.use("/attachments", addAttachments);
 app.use("/checklists", checklists);
 app.use("/drivers", drivers);
 app.use("/otp", otp);

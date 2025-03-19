@@ -575,6 +575,7 @@ export type TTaskParts = {
     created_at: string;
     created_by: string;
     updated_at: string | null;
+    is_old_part?: boolean;
     stock_availability?: string;
     sales_status?: string;
 };

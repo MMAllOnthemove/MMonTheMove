@@ -22,3 +22,5 @@ frontend/src/app/strip_char/page.tsx
 frontend/src/app/hhp_tasks_auto_update/page.tsx
 frontend/src/app/hhp_tasks_audit/page.tsx
 py/
+frontend/src/app/dev/transfer_attachments/page.tsx
+frontend/src/components/screens/dev/auto_update.tsx

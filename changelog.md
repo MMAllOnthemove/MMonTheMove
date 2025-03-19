@@ -5,18 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.27] - 2025-03-19
+
+### Added
+
+-   attachment querying shows 5 each pagination
+-   better responsiveness for attachments display
+-   column part_returned boolean
+
+### Fixed
+
+-   not updating ticket on repairshopr, each function will have it's own payload with the key being updated, instead of using on global one
+-   update not working
+-   comment in parts not adding automatically
+
 ## [0.1.26] - 2025-03-17
 
 ### Added
 
-- is_old_part boolean column added in parts_for_tasks
-- show date booked, and how long since booked in engineer bin stats
-- minimize open new tab in engineer bin stats
-- change orange bg from search customers to drak gray
-- show errors on add task if there are none do not close the modal
-- parts issued to: adding engineer name on top
-
-
+-   is_old_part boolean column added in parts_for_tasks
+-   show date booked, and how long since booked in engineer bin stats
+-   minimize open new tab in engineer bin stats
+-   change orange bg from search customers to drak gray
+-   show errors on add task if there are none do not close the modal
+-   parts issued to: adding engineer name on top
 
 ### Fixed
 

@@ -63,6 +63,7 @@ import { Input } from '@/components/ui/input'
 import Modal from '@/components/modal/page'
 import { Textarea } from '@/components/ui/textarea'
 import useSearchStorage from '@/hooks/useSearchStorage'
+import useAddCommentsLocally from '@/hooks/useCommentsLocally'
 const ViewTicketStaffScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const [search, setSearch] = useSearchStorage("");
@@ -77,7 +78,7 @@ const ViewTicketStaffScreen = () => {
 
     const { hhpTask, refetch, hhpTaskLoading } = useFetchHHPTaskByTicket(search)
 
-    const { commentsList, commentsListLoading, totalPages, currentPage, fetchComments } = useGetComments(hhpTask?.id)
+    const { commentsList, commentsListLoading, totalPages, currentPage, fetchComments } = useAddCommentsLocally(hhpTask?.id)
 
     const {
         attachmentsList,
@@ -87,7 +88,7 @@ const ViewTicketStaffScreen = () => {
         fetchAttachments,
     } = useGetAttachments(hhpTask?.id)
     const { updateHHPTaskLoading, updateTask } = useHHPTasksCrud()
-    const { addCommentLocally, addCommentLoading } = useAddTaskCommentLocally()
+    const { addCommentLocally, addCommentLoading } = useAddCommentsLocally()
     const { updateRepairTicket } = useRepairshoprTicket()
     const { updateRepairTicketComment } = useRepairshoprComment()
     const { addRepairTicketFile } = useRepairshoprFile()

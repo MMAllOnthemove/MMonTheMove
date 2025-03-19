@@ -54,7 +54,6 @@ const addBookingAgentTask = async (req, res) => {
             });
         }
     } catch (error) {
-        console.log("error booking agent task", error);
         // to get error for a specific field
         const errors = {};
         if (error.inner) {

@@ -43,6 +43,7 @@ import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useCreateAssets } from './add_assets';
 import useCustomerLocally from '@/hooks/useCustomerLocally';
+import useAddCommentsLocally from '@/hooks/useCommentsLocally';
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page')
 )
@@ -63,7 +64,7 @@ const DunoworxRobtronicScreen = () => {
     const { addAgentTask, addAgentTaskLoading, errors } = useBookingAgentsTasks()
     const { addCustomer, createCustomerLoading } = useCreateCustomerOnRepairshopr()
     const { addRepairTicketFile } = useRepairshoprFile()
-    const { addCommentLocally } = useAddTaskCommentLocally()
+    const { addCommentLocally } = useAddCommentsLocally()
     const { addCustomerLocally } = useCustomerLocally()
     const { addTask } = useHHPTasksCrud();
     const [search, setSearch] = useState("")

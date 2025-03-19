@@ -26,6 +26,7 @@ import { datetimestamp } from '@/lib/date_formats';
 import warranties from '@/lib/warranties';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import useAddCommentsLocally from '@/hooks/useCommentsLocally';
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page')
 )
@@ -45,7 +46,7 @@ const BookFromSOScreen = () => {
     const { addAgentTask, addAgentTaskLoading, errors } = useBookingAgentsTasks()
     const { addCustomer, createCustomerLoading } = useCreateCustomerOnRepairshopr()
     const { addRepairTicketFile } = useRepairshoprFile()
-    const { addCommentLocally } = useAddTaskCommentLocally()
+    const { addCommentLocally } = useAddCommentsLocally()
     const { addCustomerLocally } = useCustomerLocally()
     const { addTask } = useHHPTasksCrud();
     const [search, setSearch] = useState("")

@@ -410,6 +410,7 @@ create table parts_for_tasks (
     part_unused boolean,
     credit_req_number text,
     part_issued boolean,
+    part_returned boolean,
     is_old_part boolean,
     FOREIGN KEY (task_row_id) REFERENCES technician_tasks(id) ON DELETE CASCADE
 );

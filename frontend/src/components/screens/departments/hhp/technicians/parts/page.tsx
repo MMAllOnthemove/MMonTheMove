@@ -50,8 +50,16 @@ type TPartsHHPUpdate = {
     submitPartOrderId: (data: React.SyntheticEvent) => void;
     submitPartsUpdate: (data: React.SyntheticEvent) => void;
     part_data: TTaskParts[];
+    search_old_part: string;
+    setSearchOldPart: (data: string) => void;
+    old_part_desc: string;
+    setPartOldDesc: (data: string) => void;
+    addOldPartLoading: boolean;
+    addOldPart: (data: React.SyntheticEvent) => void;
+    old_parts_data: TTaskParts[];
     deletePartLoading: boolean;
     issuedPartsLoading: boolean;
+    oldPartsLoading: boolean;
     // 3 arguments so we know which part was deleted
     handleDelete: (data: string, part_name: string, part_desc: string) => void;
     errors: {
@@ -59,29 +67,42 @@ type TPartsHHPUpdate = {
         part_desc?: string;
         part_quantity?: string;
     }
+    old_part_errors: {
+        old_part_name?: string;
+        old_part_desc?: string;
+    }
     stored_parts_order_id: string | null | undefined;
     in_stock: string | undefined;
     onSelectionChange: (selectedParts: string[]) => void;
+    onSelectionChangeOldParts: (selectedOldParts: string[]) => void;
     submitPartsIssued: (data: any) => void;
+    submitPartsOld: (data: any) => void;
 }
-const Parts = ({ partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedPartsLoading, onSelectionChange, in_stock, partsExtraText, setPartsExtraText, deletePartLoading, parts_order_id, setPartsOrderId, submitPartOrderIdLoading, submitPartOrderId, part_data, handleDelete, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, errors }: TPartsHHPUpdate) => {
+const Parts = ({ oldPartsLoading, submitPartsOld, old_part_errors, onSelectionChangeOldParts, old_parts_data, search_old_part, setSearchOldPart, old_part_desc, setPartOldDesc, addOldPartLoading, addOldPart, partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedPartsLoading, onSelectionChange, in_stock, partsExtraText, setPartsExtraText, deletePartLoading, parts_order_id, setPartsOrderId, submitPartOrderIdLoading, submitPartOrderId, part_data, handleDelete, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, errors }: TPartsHHPUpdate) => {
     const [selectedParts, setSelectedParts] = useState<any[]>([]);
     const [selectAll, setSelectAll] = useState(false);
 
-
+    const [selectedOldParts, setSelectedOldParts] = useState<any[]>([]);
+    const [selectAllOldParts, setSelectAllOldParts] = useState(false);
     useEffect(() => {
         onSelectionChange(selectedParts); // Notify parent of changes
     }, [selectedParts, onSelectionChange]);
 
+
+    useEffect(() => {
+        onSelectionChangeOldParts(selectedOldParts); // Notify parent of changes
+    }, [selectedOldParts, onSelectionChangeOldParts]);
+
     // Toggle single part selection
     // Toggle part selection
-    const handlePartChange = (partId: string, partName: string) => {
+    const handlePartChange = (partId: string, partName: string, partDesc: string) => {
         setSelectedParts((prevSelectedParts) =>
             prevSelectedParts.some((p) => p.id === partId)
                 ? prevSelectedParts.filter((p) => p.id !== partId)
-                : [...prevSelectedParts, { id: partId, part_name: partName, seal_number: "", part_issued: true }]
+                : [...prevSelectedParts, { id: partId, part_name: partName, seal_number: "", part_issued: true, part_desc: partDesc }]
         );
     };
+
 
     // Handle Select All
     const handleSelectAll = () => {
@@ -102,6 +123,29 @@ const Parts = ({ partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedP
         );
     };
 
+
+    // Toggle single old part selection
+    // Toggle old part selection
+    const handleOldPartChange = (partId: string, partName: string, partDesc: string) => {
+        setSelectedOldParts((prevSelectedParts) =>
+            prevSelectedParts.some((p) => p.id === partId)
+                ? prevSelectedParts.filter((p) => p.id !== partId)
+                : [...prevSelectedParts, { id: partId, part_name: partName, part_desc: partDesc }]
+        );
+    };
+
+
+    // Handle Select All old parts
+    const handleSelectAllOldParts = () => {
+        if (selectAllOldParts) {
+            setSelectedOldParts([]); // Deselect all
+        } else {
+            setSelectedOldParts(old_parts_data?.map((part) => ({ id: part.id, part_name: part.part_name }))); // Select all old parts
+        }
+        setSelectAllOldParts(!selectAllOldParts);
+    };
+
+
     const { engineersList } = useFetchEngineer()
     // for filtering by engineer
     const engineerListFomatted = engineersList?.map((user) => ({
@@ -113,7 +157,7 @@ const Parts = ({ partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedP
 
 
 
-  
+
     const handleCompensation = (e: React.SyntheticEvent | any) => {
         if (!compensation) {
             setCompensation(e);
@@ -255,7 +299,7 @@ const Parts = ({ partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedP
                                                 <input
                                                     type="checkbox"
                                                     checked={isSelected}
-                                                    onChange={() => handlePartChange(part.id, part.part_name)}
+                                                    onChange={() => handlePartChange(part.id, part.part_name, part.part_desc)}
                                                 />
                                                 {part.part_name} {part.part_desc}
                                             </label>
@@ -291,10 +335,54 @@ const Parts = ({ partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedP
 
                     </AccordionContent>
                 </AccordionItem>
-           
+                <AccordionItem value="item-5">
+                    <AccordionTrigger>Old parts returned</AccordionTrigger>
+                    <AccordionContent>
+                        <div>
+                            <div className="mb-2">
+
+                                <Input type="text" placeholder="Part name" name="old_part_name" value={search_old_part} className={`${old_part_errors.old_part_name ? 'border border-red-500' : 'border outline-none shadow-none'}`} onChange={(e) => setSearchOldPart(e.target.value)} />
+                                {/* {errors.part_name && <p className="text-sm text-red-500 font-medium">{errors.part_name}</p>} */}
+                            </div>
+                            <div className="mb-2">
+                                <Input type="text" className="text-xs" placeholder="Part desc" name="part_desc" disabled value={old_part_desc || ''} onChange={(e) => setPartOldDesc(e.target.value)} />
+                                {old_part_errors.old_part_desc && <p className="text-sm text-red-500 font-medium">{old_part_errors.old_part_desc}</p>}
+
+                            </div>
+                            <Button className="w-full my-2 bg-red-500" type="button" onClick={addOldPart} disabled={addOldPartLoading}>{addOldPartLoading ? 'Adding...' : 'Add old part'} </Button>
+
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" checked={selectAllOldParts} onChange={handleSelectAllOldParts} />
+                                Select All
+                            </label>
+                            <ul>
+                                {old_parts_data?.map((part: any) => {
+                                    const isSelected = selectedOldParts.some((p) => p.id === part.id);
+                                    const sealNumber = selectedOldParts.find((p) => p.id === part.id)?.seal_number || "";
+
+                                    return (
+                                        <li key={part.id} className="flex gap-2 items-center">
+                                            <label>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={isSelected}
+                                                    onChange={() => handleOldPartChange(part.id, part.part_name, part.part_desc)}
+                                                />
+                                                {part.part_name} {part.part_desc}
+                                            </label>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                        <Button className="w-full mt-2" type="button" onClick={submitPartsOld} disabled={oldPartsLoading}>{oldPartsLoading ? 'Adding...' : 'Publish old parts as comment on repairshopr'} </Button>
+                    </AccordionContent>
+                </AccordionItem>
             </Accordion>
 
-            <Button className="w-full outline-none bg-sky-600"  type="button" onClick={submitPartsUpdate} disabled={submitPartsUpdateLoading}>{submitPartsUpdateLoading ? 'Loading...' : 'Save parts section'}</Button>
+            <Button className="outline-none bg-sky-600" type="button" onClick={submitPartsUpdate} disabled={submitPartsUpdateLoading}>{submitPartsUpdateLoading ? 'Loading...' : 'Save parts section changes'}</Button>
 
         </div >
     )

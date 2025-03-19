@@ -33,6 +33,7 @@ import { cn } from "@/lib/utils";
 import warranties from '@/lib/warranties';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
 import AlertDialogServiceOrder from './alert_dialog';
+import useAddCommentsLocally from '@/hooks/useCommentsLocally';
 
 
 
@@ -43,7 +44,7 @@ const HHP = (customerProps: string | string[] | any) => {
     const { addTask, hhpAddTaskErrors } = useHHPTasksCrud();
     const { addAgentTask, addAgentTaskLoading, errors } = useBookingAgentsTasks()
     const { user } = useUserLoggedIn()
-    const { addCommentLocally } = useAddTaskCommentLocally()
+    const { addCommentLocally } = useAddCommentsLocally()
     const { addTicket, createTicketLoading } = useCreateTicket()
     const [itemCondition, setItemCondition] = useState("");
     const [specialRequirement, setSpecialRequirement] = useState("")
