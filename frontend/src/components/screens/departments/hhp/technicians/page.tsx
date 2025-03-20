@@ -438,7 +438,7 @@ const TechniciansScreen = () => {
                                         user?.user_role === "admin" ?
                                             <>
 
-                                                    <Button type="button" onClick={() => openEngineerBinsTab('/departments/hhp/bins')}>Bin stats</Button>
+                                                <Button type="button" onClick={() => openEngineerBinsTab('/departments/hhp/bins')}>Bin stats</Button>
                                                 <Button type="button" onClick={downloadReport} disabled={reportsLoading}>{reportsLoading ? 'Downloading...' : 'Get report'}</Button>
                                             </>
                                             : null

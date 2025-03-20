@@ -16,14 +16,7 @@ const GetBinStats = async (req, res) => {
             `
 SELECT 
     engineer, 
-    date_booked, 
     unit_status,
-    CASE 
-        WHEN CURRENT_DATE - date_booked::date <= 0 THEN 
-            CONCAT(EXTRACT(HOUR FROM NOW() - date_booked::date), ' hours')
-        ELSE 
-            CONCAT(CURRENT_DATE - date_booked::date, ' days')
-    END AS difference_overall,
     COUNT(*)::INTEGER AS units_count, 
     ARRAY_AGG(
         jsonb_build_object(
@@ -32,18 +25,22 @@ SELECT
             'date_booked', date_booked,
             'difference', 
                 CASE 
-                    WHEN CURRENT_DATE - date_booked::date <= 0 THEN 
-                        CONCAT(EXTRACT(HOUR FROM NOW() - date_booked::date), ' hours')
+                    WHEN CURRENT_DATE = date_booked::date THEN 
+                        CONCAT(EXTRACT(HOUR FROM NOW() - date_booked::date) ::INT, ' hours')
                     ELSE 
-                        CONCAT(CURRENT_DATE - date_booked::date, ' days')
+                        CONCAT((CURRENT_DATE - date_booked::date), ' days')
                 END
         ) 
         ORDER BY date_booked DESC
     ) AS tickets 
 FROM technician_tasks 
-WHERE unit_status IN ('New', 'In Progress', 'Customer Reply', 'Assigned to Tech', 
-                      'Parts Request 1st Approval', 'Parts to be ordered', 'Waiting for Parts') 
-GROUP BY engineer, unit_status, date_booked;
+WHERE unit_status IN (
+    'New', 'In Progress', 'Customer Reply', 'Assigned to Tech', 
+    'Parts Request 1st Approval', 'Parts to be ordered', 'Waiting for Parts'
+) 
+GROUP BY engineer, unit_status
+ORDER BY engineer, unit_status;
+
 
 
 `

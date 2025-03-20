@@ -21,6 +21,7 @@ const useRepairshoprComment = () => {
 
             return response.data;
         } catch (error: any) {
+             console.error("useRepairshoprComment error", error);
             if (error?.response?.data?.message.length > 0) {
                 const errors = error?.response?.data?.message;
                 toast.error(errors);

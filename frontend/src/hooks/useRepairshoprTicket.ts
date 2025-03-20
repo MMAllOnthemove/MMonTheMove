@@ -23,6 +23,7 @@ const useRepairshoprTicket = () => {
                 return response.data;
             }
         } catch (error: any) {
+            console.error("useRepairshoprTicket error", error);
             if (error?.response?.data?.message.length > 0) {
                 const errors = error?.response?.data?.message;
                 toast.error(errors);

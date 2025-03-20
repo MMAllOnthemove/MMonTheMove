@@ -60,6 +60,7 @@ const useTaskParts = (id?: string) => {
                 toast.success(`${response?.data?.message}`);
             }
         } catch (error: any) {
+            console.error("addThisPart error", error);
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {
@@ -87,6 +88,7 @@ const useTaskParts = (id?: string) => {
                 toast.success(`${response?.data?.message}`);
             }
         } catch (error: any) {
+            console.error("addThisOldPart error", error);
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {
@@ -121,6 +123,7 @@ const useTaskParts = (id?: string) => {
             toast.success(response?.data?.message);
             // return response.data;
         } catch (error: any) {
+            console.error("updatePart error", error);
             if (error) toast.error(error?.response?.data?.error);
         } finally {
             setUpdatePart(false); // Stop loading
@@ -140,6 +143,7 @@ const useTaskParts = (id?: string) => {
                 setData(response?.data);
             }
         } catch (error: any) {
+            console.error("refetchPartsForThisTask error", error);
             if (
                 error?.response?.data?.error &&
                 process.env.NODE_ENV !== "production"
@@ -164,6 +168,7 @@ const useTaskParts = (id?: string) => {
                 setOldPartsData(response?.data);
             }
         } catch (error: any) {
+            console.error("getOldPartsForThisTask error", error);
             if (
                 error?.response?.data?.error &&
                 process.env.NODE_ENV !== "production"
@@ -189,6 +194,7 @@ const useTaskParts = (id?: string) => {
             //     toast.success(`${response?.data?.message}`);
             // }
         } catch (error: any) {
+            console.error("deletePart error", error);
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.error}`);
             }

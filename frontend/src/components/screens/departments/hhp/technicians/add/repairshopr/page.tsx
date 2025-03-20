@@ -183,7 +183,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
         e.preventDefault()
         const job_added_by = user?.email
         const created_at = datetimestamp;
-
+        const trimmed_ticket = `${ticket_number}`?.trim()
         const payload = {
             service_order_no,
             date_booked,
@@ -194,7 +194,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
             imei: imei ?? repairshoprIMEI,
             serial_number,
             status,
-            ticket_number,
+            ticket_number: trimmed_ticket,
             department,
             job_added_by,
             stores,

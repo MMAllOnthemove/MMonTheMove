@@ -71,7 +71,7 @@ const uploadTechnicianFiles = async (req, res) => {
                     index + 1
                 }-${sanitizedFileName}`;
 
-                const remotePath = `/home/mmallonthemove/uploads/hhp/${uniqueFileName}`;
+                const remotePath = `/home/mmallonthemove/uploads/hhp/${file.originalname}`;
                 try {
                     // Upload the file to SFTP
                     await sftpClient.put(file.path, remotePath);
@@ -87,14 +87,14 @@ const uploadTechnicianFiles = async (req, res) => {
                         }
                     });
                     // the file being added
-                    const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/hhp/${uniqueFileName}`;
+                    const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/hhp/${file.originalname}`;
                     // add the file url of this task into our db
                     await pool.query(
                         "INSERT INTO technician_tasks_images (task_id, image_url, created_at) values ($1, $2, $3)",
                         [task_id, fileBeingAdded, created_at]
                     );
                     // Construct and return the file URL
-                    return `https://repair.mmallonthemove.co.za/files/hhp/${uniqueFileName}`;
+                    return `https://repair.mmallonthemove.co.za/files/hhp/${file.originalname}`;
                 } catch (uploadError) {
                     console.error("Error uploading file:", uploadError);
                     // Remove the temporary file from local storage even on delete

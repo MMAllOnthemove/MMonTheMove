@@ -42,6 +42,7 @@ const useAddCommentsLocally = (
             socket.emit("addTicketComment", response?.data?.task);
             return response?.data;
         } catch (error: any) {
+            console.error("addCommentLocally error", error);
             if (error?.response?.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {
@@ -70,6 +71,7 @@ const useAddCommentsLocally = (
             }
             return data;
         } catch (error: any) {
+             console.error("fetchComments error", error);
             if (error) toast.error(error?.response?.data?.error);
         } finally {
             setCommentsListLoading(false);

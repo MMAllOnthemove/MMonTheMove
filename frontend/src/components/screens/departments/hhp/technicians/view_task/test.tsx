@@ -63,7 +63,6 @@ const ViewHHPTaskScreen = () => {
     const { hhpTasks, fetchTasks, updateHHPTaskLoading, updateTask, deleteTask } = useHHPTasksCrud()
     const { hhpTask, refetch, hhpTaskLoading } = useFetchHHPTaskById(id ? decodeURIComponent(Array.isArray(id) ? id[0] : id) : null)
     const { commentsList, commentsListLoading, totalPages, currentPage, fetchComments } = useAddCommentsLocally(id)
-    console.log("comments", commentsList)
     const [reparshoprComment, setRepairshoprComment] = useState("")
     const { getSOPartsInfo } = useIpaasSOPartsInfo()
     const [qc_comment, setQCFailReason] = useState('')
@@ -1475,13 +1474,15 @@ const ViewHHPTaskScreen = () => {
                                             <div className="border-b pb-2">
                                                 <h4 className="scroll-m-20 text-lg  font-semibold tracking-tight">Ticket comments (communication)</h4>
                                             </div>
+                                            {/* textarea */}
+                                            {/* <RichTextEditor content={newComment} onChange={setNewComment} /> */}
                                             <Textarea value={comment} onChange={(e) => setComment(e.target.value)} className='my-2 outline-none focus:outline-none focus:border-none focus-visible:outline-none focus-visible:border-none' name="comment" placeholder="Add comment..." cols={3} />
                                             <Button type="button" disabled={addCommentLoading} onClick={handleComment}>{addCommentLoading ? 'Loading...' : 'Submit comment'}</Button>
                                             <div>
                                                 <div className='w-full my-2'>
                                                     <div>
-                                                        {commentsList?.map((comment: any, idx: number) => (
-                                                            <div key={comment?.unique_id || comment?.id || `comment-${idx}`} className="border border-gray-200 rounded p-2 mb-2">
+                                                        {commentsList?.map((comment: any) => (
+                                                            <div key={comment.id} className="border border-gray-200 rounded p-2 mb-2">
                                                                 <div className='flex justify-between items-center'>
                                                                     <h5 className="font-medium text-sm  text-gray-500">{comment?.created_by}</h5>
                                                                     <h4></h4>
@@ -1497,7 +1498,6 @@ const ViewHHPTaskScreen = () => {
                                                         ))}
                                                     </div>
                                                 </div>
-
 
 
                                                 <div>
