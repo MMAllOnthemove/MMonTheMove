@@ -139,6 +139,7 @@ const SignupScreen = () => {
                             />
 
                             <Button
+                                data-testid="toggle-password"
                                 type="button"
                                 onClick={togglePassword}
                                 className="bg-transparent border-none outline-none shadow-none hover:bg-transparent"

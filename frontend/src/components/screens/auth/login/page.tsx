@@ -64,6 +64,7 @@ export default function LoginScreen() {
                             <Button
                                 type="button"
                                 onClick={togglePassword}
+                                data-testid="toggle-password"
                                 className="bg-transparent border-none outline-none shadow-none hover:bg-transparent"
                             >
                                 <span>

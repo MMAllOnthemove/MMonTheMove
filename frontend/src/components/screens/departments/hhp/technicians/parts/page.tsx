@@ -205,7 +205,7 @@ const Parts = ({ oldPartsLoading, submitPartsOld, old_part_errors, onSelectionCh
 
 
                         </div>
-                        <Button className="w-full mt-2" type="button" onClick={addPart} disabled={addPartLoading}>{addPartLoading ? 'Adding...' : 'Add part'} </Button>
+                        <Button data-btn="add_part" className="w-full mt-2" type="button" onClick={addPart} disabled={addPartLoading}>{addPartLoading ? 'Adding...' : 'Add part'} </Button>
 
                     </AccordionContent>
                 </AccordionItem>

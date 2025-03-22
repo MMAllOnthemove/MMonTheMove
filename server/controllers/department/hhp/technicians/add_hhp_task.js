@@ -22,7 +22,7 @@ const AddHHPTaskSchema = Yup.object({
     additional_info: Yup.string(),
     stores: Yup.string().required("Select service type"),
     repairshopr_job_id: Yup.string().required("Repairshopr job id is missing"),
-    repeat_repair: Yup.string().required("This field is required"),
+    repeat_repair: Yup.string().required("Is it a repeat repair?"),
     units_assessed: Yup.boolean(),
 });
 

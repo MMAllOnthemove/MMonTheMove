@@ -63,7 +63,7 @@ const ViewHHPTaskScreen = () => {
     const { hhpTasks, fetchTasks, updateHHPTaskLoading, updateTask, deleteTask } = useHHPTasksCrud()
     const { hhpTask, refetch, hhpTaskLoading } = useFetchHHPTaskById(id ? decodeURIComponent(Array.isArray(id) ? id[0] : id) : null)
     const { commentsList, commentsListLoading, totalPages, currentPage, fetchComments } = useAddCommentsLocally(id)
-    console.log("comments", commentsList)
+
     const [reparshoprComment, setRepairshoprComment] = useState("")
     const { getSOPartsInfo } = useIpaasSOPartsInfo()
     const [qc_comment, setQCFailReason] = useState('')
@@ -142,7 +142,7 @@ const ViewHHPTaskScreen = () => {
     const [quote_accepted, setQuoteAccepted] = useState(false)
     const [quote_rejected, setQuoteRejected] = useState(false)
     const [addPartOnRepairshoprLoading, setaddPartOnRepairshoprLoading] = useState(false)
-
+    const [qcSubmitLoading, setQCSubmitLoading] = useState(false)
     const [collected, setCollected] = useState<string | undefined | null | any>(false)
     const [collected_date, setCollectedDate] = useState<string | null>("")
     const [warranty, setWarranty] = useState<string | null | undefined>("")
@@ -546,7 +546,7 @@ const ViewHHPTaskScreen = () => {
             "ticket_number": hhpTask?.ticket_number
         }
         try {
-
+            setQCSubmitLoading(true)
             if (Object.keys(changes).length > 0) {
                 await updateTask(id, changes)
                 if (qc_comment?.length > 0) {
@@ -561,6 +561,8 @@ const ViewHHPTaskScreen = () => {
             if (process.env.NODE_ENV !== 'production') {
                 console.error("error in qc techincians screen", error)
             }
+        } finally {
+            setQCSubmitLoading(false)
         }
     }
 
@@ -1110,9 +1112,10 @@ const ViewHHPTaskScreen = () => {
                                             </div>
                                             <div>
                                                 <Label htmlFor="additionalInfo">Special requirement</Label>
-                                                <Textarea value={additionalInfo || ""} onChange={(e) => setAdditionalInfo(e.target.value)} />
+                                                <Textarea name="additionalInfo" value={additionalInfo || ""} onChange={(e) => setAdditionalInfo(e.target.value)} />
                                             </div>
                                         </div>
+
                                         <Button type="button" className='mt-2' onClick={updateTicket} disabled={updateHHPTaskLoading}>{updateHHPTaskLoading ? 'Updating' : `Update ${hhpTask?.ticket_number}`}</Button>
                                     </>
                                 }
@@ -1127,7 +1130,7 @@ const ViewHHPTaskScreen = () => {
                                 <div className="flex flex-col md:flex-row justify-between items-center gap-2">
                                     <div className='py-2 md:py-3 px-1 md:px-3'>
                                         <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">#{hhpTask?.ticket_number}</h1>
-                                        <h3 className='scroll-m-20 text-lg font-semibold tracking-tight'>{hhpTask?.fault}</h3>
+                                        <h3 data-fault={hhpTask?.fault} className='scroll-m-20 text-lg font-semibold tracking-tight'>{hhpTask?.fault}</h3>
                                     </div>
 
                                 </div>
@@ -1230,23 +1233,23 @@ const ViewHHPTaskScreen = () => {
 
                                                             <div className='flex items-center gap-4 md:justify-between my-2'>
                                                                 <h5 className="font-medium text-sm  text-gray-500">Customer</h5>
-                                                                <Link href="/" className="text-blue-600 text-sm font-semibold">{`${singleCustomerByRsId[0]?.first_name} ${singleCustomerByRsId[0]?.last_name}`}</Link>
+                                                                <p className="text-gray-800 text-sm font-semibold">{`${singleCustomerByRsId[0]?.first_name} ${singleCustomerByRsId[0]?.last_name}`}</p>
                                                             </div>
                                                             <div className='flex items-center gap-4 md:justify-between mb-2'>
                                                                 <h5 className="font-medium text-sm  text-gray-500">Email</h5>
-                                                                <Link href="/" className="text-blue-600 font-medium text-sm">{`${singleCustomerByRsId[0]?.email}`}</Link>
+                                                                <p className="text-gray-800 text-sm font-semibold">{`${singleCustomerByRsId[0]?.email}`}</p>
                                                             </div>
                                                             <div className='flex items-center gap-4 md:justify-between mb-2'>
                                                                 <h5 className="font-medium text-sm  text-gray-500">Mobile</h5>
-                                                                <Link href="/" className="text-blue-600 font-medium text-sm">{`${singleCustomerByRsId[0]?.phone_number}`}</Link>
+                                                                <p className="text-gray-800 text-sm font-semibold">{`${singleCustomerByRsId[0]?.phone_number}`}</p>
                                                             </div>
                                                             <div className='flex items-center gap-4 md:justify-between mb-2'>
                                                                 <h5 className="font-medium text-sm  text-gray-500">Phone</h5>
-                                                                <Link href="/" className="text-blue-600 font-medium text-sm">{`${singleCustomerByRsId[0]?.home_number}`}</Link>
+                                                                <p className="text-gray-800 text-sm font-semibold">{`${singleCustomerByRsId[0]?.home_number}`}</p>
                                                             </div>
                                                             <div className='flex items-center gap-4 md:justify-between'>
                                                                 <h5 className="font-medium text-sm  text-gray-500">Primary Address</h5>
-                                                                <Link href="/" className="text-blue-600 font-medium text-sm text-end">{`${singleCustomerByRsId[0]?.address ? singleCustomerByRsId[0]?.address : ''} \n ${singleCustomerByRsId[0]?.address_2 ? singleCustomerByRsId[0]?.address_2 : ''} ${singleCustomerByRsId[0]?.city ? singleCustomerByRsId[0]?.city : ''}`}</Link>
+                                                                <p className="text-blue-600 font-medium text-sm text-end">{`${singleCustomerByRsId[0]?.address ? singleCustomerByRsId[0]?.address : ''} \n ${singleCustomerByRsId[0]?.address_2 ? singleCustomerByRsId[0]?.address_2 : ''} ${singleCustomerByRsId[0]?.city ? singleCustomerByRsId[0]?.city : ''}`}</p>
                                                             </div>
                                                         </>
                                                 }
@@ -1351,7 +1354,7 @@ const ViewHHPTaskScreen = () => {
                                         <div className="py-2 px-3">
                                             <div className='flex justify-between items-center border-b pb-2'>
                                                 <h4 className="scroll-m-20 text-lg font-semibold tracking-tight">Custom fields</h4>
-                                                <Button variant="outline" type="button" onClick={openModal}>Edit</Button>
+                                                <Button data-testid="edit-button-view-ticket" variant="outline" type="button" onClick={openModal}>Edit</Button>
                                             </div>
 
                                             <div className="row flex items-center justify-between border-b py-2">
@@ -1380,7 +1383,7 @@ const ViewHHPTaskScreen = () => {
                                                     <p className="font-medium text-sm"></p>
                                                 </div>
                                                 <div>
-                                                    <h5 className="font-medium text-sm text-gray-500 text-end">Location (BIN)</h5>
+                                                    <h5 className="font-medium text-sm text-gray-500 text-end">Location</h5>
                                                     <p className="font-medium text-sm text-end">{hhpTask?.device_location}</p>
                                                 </div>
                                             </div>
@@ -1434,7 +1437,7 @@ const ViewHHPTaskScreen = () => {
 
                                                 </div>
                                             </div>
-                                            <QC qcUpdateLoading={updateHHPTaskLoading} qc_fail_reasonProp={qc_comment} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} setUnitCompleteDateProp={setUnitCompleteDate} setUnitCompleteProp={setUnitComplete} submitQC={handleQCSubmit} />
+                                            <QC qcUpdateLoading={qcSubmitLoading} qc_fail_reasonProp={qc_comment} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} setUnitCompleteDateProp={setUnitCompleteDate} setUnitCompleteProp={setUnitComplete} submitQC={handleQCSubmit} />
                                         </div>
                                         {/* Parts */}
                                         <div className="py-2 px-3">

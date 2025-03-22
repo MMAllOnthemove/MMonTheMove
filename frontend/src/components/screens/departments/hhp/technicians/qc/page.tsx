@@ -58,11 +58,11 @@ const QC = ({ qcUpdateLoading, setUnitCompleteProp, setUnitCompleteDateProp, qc_
                     onChange={handleQCcheck}
                 /> Pass
             </div>
-            <Textarea className='mb-3' placeholder="Reason for QC failing/passing." value={qc_fail_reasonProp} onChange={setQCFailReasonProp} />
+            <Textarea name="qc_comment" className='mb-3' placeholder="Reason for QC failing/passing." value={qc_fail_reasonProp} onChange={setQCFailReasonProp} />
 
 
 
-            <Button className="w-full outline-none" type="submit" onClick={submitQC} disabled={qcUpdateLoading}>{qcUpdateLoading ? 'Updating...' : 'Update Quality control'}</Button>
+            <Button data-qc='qc_submit' className="w-full outline-none" type="submit" onClick={submitQC} disabled={qcUpdateLoading}>{qcUpdateLoading ? 'Updating...' : 'Update Quality control'}</Button>
         </form>
 
     )
