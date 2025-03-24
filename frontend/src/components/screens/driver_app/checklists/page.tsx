@@ -72,20 +72,25 @@ const ChecklistsScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { isConnected } = useSocket()
     const { checklistList } = useCarChecklist()
+    console.log("checklistList", checklistList)
     const [openAddModal, setOpenAddModal] = useState(false)
     const [mileage_after, setMileageAfter] = useState<string>('')
     const [next_service_date, setNextService] = useState<string>('')
     const [openClickedRow, setOpenClickedRow] = useState<boolean | null | any>();
 
     const todaysDate = moment().format('YYYY-MM-DD');
+
     const [openChecklistSummaryRow, setOpenChecklistSummaryRow] = useState(null); // Track which row is open
     const { updateChecklist, loadUpdateChecklist } = useUpdateChecklist()
     const [todaysCheckList, setTodaysChecklist] = useState<VehicleInspection[]>([]);
     const [oldCheckList, setOldChecklist] = useState<VehicleInspection[]>([]);
+
+
     const handleChecklistSummaryRowClick = (rowKey: any) => {
         // Toggle open/close for the clicked row
         setOpenChecklistSummaryRow(openChecklistSummaryRow === rowKey ? null : rowKey);
     };
+
     const handleRowClick = useCallback(
         (row: any) => {
             setOpenClickedRow(row?.original);

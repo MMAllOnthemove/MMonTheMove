@@ -69,7 +69,7 @@ const ViewHHPTaskScreen = () => {
     const [qc_comment, setQCFailReason] = useState('')
     const [qc_complete, setQCComplete] = useState<string>('')
     const [qc_date, setQCCompleteDate] = useState<string | undefined>("")
-    const [qcFiles, setQCFiles] = useState([]);
+    const [qcFiles, setQCFiles] = useState<FileUpload[]>([]);
     const [qcFilesUploading, setQCFilesUploading] = useState(false);
     const [completed_date, setUnitCompleteDate] = useState<string | undefined>("")
     const [unit_complete, setUnitComplete] = useState<boolean>(false)
@@ -475,7 +475,14 @@ const ViewHHPTaskScreen = () => {
         }
     }
     const handleQCFiles = (event: any) => {
-        setQCFiles(event.target.files);
+        if (event.target.files) {
+            const selectedFiles = Array.from(event.target.files)?.map((file) => ({
+                file,
+                progress: 0,
+            }));
+            setQCFiles(selectedFiles);
+        }
+
     };
     // submit qc files to backend and repairshopr
     const submitQCFiles = async () => {
@@ -485,30 +492,38 @@ const ViewHHPTaskScreen = () => {
             const ticket_number = hhpTask?.ticket_number;
             const task_id = hhpTask?.id;
             const created_at = datetimestamp;
-            Array.from(qcFiles).forEach((file) => {
-                formData.append('files', file);
-            });
-            // Append ticket_number once
-            formData.append('ticket_number', ticket_number);
-            formData.append('task_id', task_id);
-            formData.append('created_at', created_at);
-            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/files/qc`, formData, {
-                withCredentials: true,
-            })
 
-            if (data) {
-                toast.success(`${data?.message}`)
-                const repairshopr_payload = {
-                    files: data.fileUrls.map((url: any) => ({
-                        url: url,
-                        filename: url.split('/').pop(), // Extract filename from URL
-                    })),
-                };
-                await addRepairTicketFile(hhpTask?.repairshopr_job_id, repairshopr_payload)
-                setQCFiles([])
+            for (const fileObj of qcFiles) {
+                formData.append('files', fileObj.file);
+
+                // Append ticket_number once
+                formData.append('ticket_number', ticket_number);
+                formData.append('task_id', task_id);
+                formData.append('created_at', created_at);
+
+                const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/files/qc`, formData, {
+                    onUploadProgress: (progressEvent) => {
+                        const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total!);
+                        fileObj.progress = percent;
+                        setQCFiles([...qcFiles]);
+                    },
+                    withCredentials: true,
+                })
+                if (data) {
+                    toast.success(`${data?.message}`)
+                    const repairshopr_payload = {
+                        files: data.fileUrls.map((url: any) => ({
+                            url: url,
+                            filename: url.split('/').pop(), // Extract filename from URL
+                        })),
+                    };
+                    await addRepairTicketFile(hhpTask?.repairshopr_job_id, repairshopr_payload)
+                    setQCFiles([])
+                }
+                // setQCFilesUrls(data?.fileUrls)
+                setQCFilesUploading(false)
+
             }
-            // setQCFilesUrls(data?.fileUrls)
-            setQCFilesUploading(false)
         } catch (error: any) {
             toast.error(error?.response?.data?.error);
             setQCFilesUploading(false)
@@ -1249,7 +1264,7 @@ const ViewHHPTaskScreen = () => {
                                                             </div>
                                                             <div className='flex items-center gap-4 md:justify-between'>
                                                                 <h5 className="font-medium text-sm  text-gray-500">Primary Address</h5>
-                                                                <p className="text-blue-600 font-medium text-sm text-end">{`${singleCustomerByRsId[0]?.address ? singleCustomerByRsId[0]?.address : ''} \n ${singleCustomerByRsId[0]?.address_2 ? singleCustomerByRsId[0]?.address_2 : ''} ${singleCustomerByRsId[0]?.city ? singleCustomerByRsId[0]?.city : ''}`}</p>
+                                                                <p className="text-gray-800 text-sm font-semibold text-end">{`${singleCustomerByRsId[0]?.address ? singleCustomerByRsId[0]?.address : ''} \n ${singleCustomerByRsId[0]?.address_2 ? singleCustomerByRsId[0]?.address_2 : ''} ${singleCustomerByRsId[0]?.city ? singleCustomerByRsId[0]?.city : ''}`}</p>
                                                             </div>
                                                         </>
                                                 }
@@ -1437,6 +1452,21 @@ const ViewHHPTaskScreen = () => {
 
                                                 </div>
                                             </div>
+                                            {/* files being uploaded */}
+                                            <div className="mt-4">
+                                                {qcFiles?.map((fileObj: any, index: any) => (
+                                                    <div key={index} className="mb-2 border p-2">
+                                                        <p className="font-medium text-sm">{fileObj.file.name}</p>
+                                                        <div className="w-full bg-gray-200 rounded h-2">
+                                                            <div
+                                                                className="bg-blue-500 h-2 rounded"
+                                                                style={{ width: `${fileObj.progress}%` }}
+                                                            />
+                                                        </div>
+                                                        <p className="text-xs text-gray-500">{fileObj.progress}%</p>
+                                                    </div>
+                                                ))}
+                                            </div>
                                             <QC qcUpdateLoading={qcSubmitLoading} qc_fail_reasonProp={qc_comment} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} setUnitCompleteDateProp={setUnitCompleteDate} setUnitCompleteProp={setUnitComplete} submitQC={handleQCSubmit} />
                                         </div>
                                         {/* Parts */}
@@ -1476,7 +1506,7 @@ const ViewHHPTaskScreen = () => {
 
                                         <div className="py-2 px-3">
                                             <div className="border-b pb-2">
-                                                <h4 className="scroll-m-20 text-lg  font-semibold tracking-tight">Ticket comments (communication)</h4>
+                                                <h4 className="scroll-m-20 text-lg font-semibold tracking-tight">Ticket comments (communication)</h4>
                                             </div>
                                             <Textarea value={comment} onChange={(e) => setComment(e.target.value)} className='my-2 outline-none focus:outline-none focus:border-none focus-visible:outline-none focus-visible:border-none' name="comment" placeholder="Add comment..." cols={3} />
                                             <Button type="button" disabled={addCommentLoading} onClick={handleComment}>{addCommentLoading ? 'Loading...' : 'Submit comment'}</Button>

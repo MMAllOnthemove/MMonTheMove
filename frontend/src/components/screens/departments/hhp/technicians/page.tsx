@@ -135,40 +135,11 @@ const TechniciansScreen = () => {
     const [parts_issued, setPartsIssued] = useState<CheckedState | undefined>()
     const [openAddTaskModal, setOpenAddTaskModal] = useState(false)
     const [openSortTableColumnsModal, setSortTableColumns] = useState(false)
-    const [parts_ordered_date, setPartsOrderedDate] = useState<string | undefined>("")
-    const [parts_ordered, setPartsOrdered] = useState<CheckedState | undefined>()
-    const [compensation, setCompensation] = useState<CheckedState | undefined | any | any>()
-    const [parts_requested, setPartsRequested] = useState<CheckedState | undefined>()
-    const [parts_requested_date, setPartsRequestedDate] = useState<string | undefined>("")
-    const [qc_complete, setQCComplete] = useState<string>('')
-    const [partsExtraText, setPartsExtraText] = useState<string>('')
-    const [qc_comment, setQCFailReason] = useState('')
-    const [qc_date, setQCCompleteDate] = useState<string | undefined>("")
-    const [unit_complete, setUnitComplete] = useState<boolean>(false)
-    const [completed_date, setUnitCompleteDate] = useState<string | undefined>("")
     const [engineer, setEngineer] = useState("");
-    const [engineerUserId, setEngineerUserId] = useState<string | number | undefined>("");
-
-    // for purpose of updating
-    const [backup_requires_code, setBackupCode] = useState("")
-    const [itemCondition, setCondition] = useState("")
-    const [imei, setIMEI] = useState<string | undefined>("")
-    const [specialRequirement, setSpecialRequirement] = useState("")
-    const [job_repair_no, setJobRepairNo] = useState("")
-    const [locationBin, setLocationBin] = useState("")
-    const [collected, setCollected] = useState(false)
-    const [collected_date, setCollectedDate] = useState("")
     const { updateAssessmentDate } = useUpdateAssessmentDate()
-    const [device_location, setDeviceLocation] = useState("")
-    const [add_job_repair_no, setAddJobRepairNo] = useState("")
     const [dateFrom, setDateFrom] = useState("")
     const [dateTo, setDateTo] = useState("")
-    const [warranty, setWarranty] = useState<string | undefined>("")
-    const [ticket_type_id, setTicketTypeId] = useState<string | number | undefined | null | any>("")
-    const [rs_warranty, setRSWarranty] = useState<string | undefined>("")
-    const [assigned_date, setAssignedDate] = useState("")
-    const [in_progress_date, setInProgressDate] = useState("")
-
+ 
 
 
     // engineer filters

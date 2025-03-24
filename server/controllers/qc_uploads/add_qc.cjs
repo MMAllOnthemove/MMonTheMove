@@ -61,11 +61,6 @@ const uploadQCFile = async (req, res) => {
         // Upload all files and remove local temporary files afterward
         const fileUrls = await Promise.all(
             req.files.map(async (file, index) => {
-                // Because we have 'files' as a directory pointing to '/uploads' folder in our root
-                // we will only reference it as 'files'
-                // e.g. we have a directory inside 'files' called 'hhp/qc'
-                // we will now reference it as https://url.com/files/hhp/qc/filename
-                // Sanitize filename and add a unique identifier
                 const sanitizedFileName = file.originalname
                     ?.replace(/[^a-zA-Z0-9.-]/g, "_") // Replace special characters with _
                     ?.toLowerCase();
@@ -73,7 +68,8 @@ const uploadQCFile = async (req, res) => {
                     index + 1
                 }-${sanitizedFileName}`;
 
-                const remotePath = `/home/mmallonthemove/uploads/hhp/${uniqueFileName}`;
+                const remotePath = `/var/www/uploads/hhp/${uniqueFileName}`;
+                console.log("remotePath", remotePath);
                 try {
                     await sftpClient.put(file.path, remotePath);
                     // Remove temporary file from local storage
@@ -98,6 +94,16 @@ const uploadQCFile = async (req, res) => {
                 } catch (error) {
                     if (process.env.NODE_ENV !== "production")
                         console.error("Error uploading file:", error);
+                    // Remove the temporary file from local storage even on delete
+                    fs.unlink(file.path, (err) => {
+                        if (err) {
+                            console.error(
+                                "Error deleting file:",
+                                file.path,
+                                err
+                            );
+                        }
+                    });
                     // throw new Error(
                     //     `Failed to upload file: ${file.originalname}`
                     // );
@@ -109,6 +115,7 @@ const uploadQCFile = async (req, res) => {
             .status(201)
             .json({ message: "Files uploaded", fileUrls: fileUrls });
     } catch (err) {
+        console.log("qc upload", err);
         if (err instanceof yup.ValidationError) {
             res.status(400).json({
                 message: "Please check your files and try again",

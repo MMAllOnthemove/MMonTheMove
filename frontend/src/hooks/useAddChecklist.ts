@@ -83,6 +83,7 @@ const useCarChecklist = () => {
                     withCredentials: true,
                 }
             );
+    
             if (response?.data) {
                 setchecklist(response?.data);
             }
@@ -124,7 +125,7 @@ const useCarChecklist = () => {
         }
     };
     useEffect(() => {
-        // refetchChecklists();
+        refetchChecklists();
         socket.on("addCarChecklist", (task) => {
             setchecklist((prev: any) => [...prev, task]); // Add assigned task
         });

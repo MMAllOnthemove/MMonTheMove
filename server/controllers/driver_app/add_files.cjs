@@ -71,7 +71,7 @@ const uploadChecklistFiles = async (req, res) => {
                     index + 1
                 }-${sanitizedFileName}`;
 
-                const remotePath = `/home/mmallonthemove/uploads/driver_app_checklists/${uniqueFileName}`;
+                const remotePath = `/var/www/uploads/driver_app_checklists/${uniqueFileName}`;
                 try {
                     await sftpClient.put(file.path, remotePath);
 
@@ -98,6 +98,16 @@ const uploadChecklistFiles = async (req, res) => {
                 } catch (uploadError) {
                     if (process.env.NODE_ENV !== "production")
                         console.error("Error uploading file:", uploadError);
+                    // Remove the temporary file from local storage even on delete
+                    fs.unlink(file.path, (err) => {
+                        if (err) {
+                            console.error(
+                                "Error deleting file:",
+                                file.path,
+                                err
+                            );
+                        }
+                    });
                     // throw new Error(
                     //     `Failed to upload file: ${file.originalname}`
                     // );

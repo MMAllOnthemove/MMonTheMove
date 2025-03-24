@@ -56,7 +56,6 @@ const uploadTechnicianFiles = async (req, res) => {
         // const { files } = req.files;
         // Validate files using Yup schema
         await fileUploadSchema.validate({ files: req.files });
-
         // connect to server
         await sftpClient.connect(sftpConfig);
 
@@ -71,7 +70,7 @@ const uploadTechnicianFiles = async (req, res) => {
                     index + 1
                 }-${sanitizedFileName}`;
 
-                const remotePath = `/home/mmallonthemove/uploads/hhp/${file.originalname}`;
+                const remotePath = `/var/www/uploads/hhp/${uniqueFileName}`;
                 try {
                     // Upload the file to SFTP
                     await sftpClient.put(file.path, remotePath);
@@ -87,14 +86,14 @@ const uploadTechnicianFiles = async (req, res) => {
                         }
                     });
                     // the file being added
-                    const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/hhp/${file.originalname}`;
+                    const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/hhp/${uniqueFileName}`;
                     // add the file url of this task into our db
                     await pool.query(
                         "INSERT INTO technician_tasks_images (task_id, image_url, created_at) values ($1, $2, $3)",
                         [task_id, fileBeingAdded, created_at]
                     );
                     // Construct and return the file URL
-                    return `https://repair.mmallonthemove.co.za/files/hhp/${file.originalname}`;
+                    return `https://repair.mmallonthemove.co.za/files/hhp/${uniqueFileName}`;
                 } catch (uploadError) {
                     console.error("Error uploading file:", uploadError);
                     // Remove the temporary file from local storage even on delete

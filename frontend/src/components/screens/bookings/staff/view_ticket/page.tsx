@@ -1,6 +1,6 @@
 "use client"
-import React, { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
+import React, { useEffect, useState } from 'react'
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page')
 )
@@ -11,12 +11,17 @@ const PageTitle = dynamic(() =>
     import('@/components/PageTitle/page')
 )
 
-import { EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
-const Sidebar = dynamic(() =>
-    import('@/components/sidebar/page')
-)
-import Image from 'next/image';
-import Link from 'next/link';
+import Modal from '@/components/modal/page'
+import ManagementSearchForm from '@/components/search_field/page'
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
     Select,
     SelectContent,
@@ -25,45 +30,37 @@ import {
     SelectLabel,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion"
-import useUserLoggedIn from '@/hooks/useGetUser'
-import useFetchHHPTaskById from '@/hooks/useFetchHHPtaskById'
-import useGetComments from '@/hooks/useGetLocalComments'
-import useGetAttachments from '@/hooks/useGetAttachments'
-import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud'
-import useGetCustomerLocallyByRSId from '@/hooks/useGetCustomerLocallyByRSId'
-import useFetchEngineer from '@/hooks/useFetchEngineers'
-import useAddTaskCommentLocally from '@/hooks/useAddCommentLocally'
-import useRepairshoprComment from '@/hooks/useRepairshoprComment'
+} from "@/components/ui/select"
+import { Textarea } from '@/components/ui/textarea'
 import useRepairshoprFile from '@/hooks/useAddRepairshoprFile'
+import useAddCommentsLocally from '@/hooks/useCommentsLocally'
+import useFetchEngineer from '@/hooks/useFetchEngineers'
+import useFetchHHPTaskByTicket from '@/hooks/useFetchHHPTaskByTicket'
+import useGetAttachments from '@/hooks/useGetAttachments'
+import useGetCustomerLocallyByRSId from '@/hooks/useGetCustomerLocallyByRSId'
+import useUserLoggedIn from '@/hooks/useGetUser'
+import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud'
+import useRepairshoprComment from '@/hooks/useRepairshoprComment'
 import useRepairshoprTicket from '@/hooks/useRepairshoprTicket'
-import { RepairshorTicketComment } from '@/lib/types'
+import useSearchStorage from '@/hooks/useSearchStorage'
+import { assetTypes } from '@/lib/asset_types'
+import calculateDueDate from '@/lib/calculate_due_date'
 import { datetimestamp } from '@/lib/date_formats'
 import findChanges from '@/lib/find_changes'
-import axios from 'axios'
-import toast from 'react-hot-toast'
-import ManagementSearchForm from '@/components/search_field/page'
-import { assetTypes } from '@/lib/asset_types'
-import { Button } from '@/components/ui/button'
-import { type_21877, type_21878 } from '@/lib/warranty_maps'
-import useFetchHHPTaskByTicket from '@/hooks/useFetchHHPTaskByTicket'
-import repairshopr_statuses_techs from '@/lib/tech_rs_statuses'
-import repairshopr_statuses from '@/lib/repairshopr_status'
-import calculateDueDate from '@/lib/calculate_due_date'
-import moment from 'moment'
 import openInNewTab from '@/lib/open_new_tab'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import Modal from '@/components/modal/page'
-import { Textarea } from '@/components/ui/textarea'
-import useSearchStorage from '@/hooks/useSearchStorage'
-import useAddCommentsLocally from '@/hooks/useCommentsLocally'
+import repairshopr_statuses from '@/lib/repairshopr_status'
+import repairshopr_statuses_techs from '@/lib/tech_rs_statuses'
+import { RepairshorTicketComment } from '@/lib/types'
+import { type_21877, type_21878 } from '@/lib/warranty_maps'
+import { EllipsisHorizontalIcon } from '@heroicons/react/24/outline'
+import axios from 'axios'
+import moment from 'moment'
+import Image from 'next/image'
+import Link from 'next/link'
+import toast from 'react-hot-toast'
+const Sidebar = dynamic(() =>
+    import('@/components/sidebar/page')
+)
 const ViewTicketStaffScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const [search, setSearch] = useSearchStorage("");
@@ -363,7 +360,8 @@ const ViewTicketStaffScreen = () => {
         <>
 
             {
-                loading ? (<LoadingScreen />) : isLoggedIn ? (<>
+                loading ? (<LoadingScreen />) : isLoggedIn ? (
+                <>
                     <Sidebar />
                     {/* modal for updating task */}
                     {
