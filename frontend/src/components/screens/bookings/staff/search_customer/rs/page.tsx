@@ -142,7 +142,8 @@ const SearchCustomerRepairshoprScreen = () => {
         const payload = {
             "firstname": firstname,
             "lastname": lastname,
-            "businessname": businessname,
+            "business_name": businessname,
+            "business_then_name": businessname,
             "email": email,
             "phone": phoneNumber,
             "mobile": phoneNumber2,
@@ -208,6 +209,15 @@ const SearchCustomerRepairshoprScreen = () => {
                                         type="text"
                                     />
                                 </div>
+                            </div>
+                            <div className='mb-1'>
+                                <Label htmlFor="businessname">Business name</Label>
+                                <Input
+                                    type="text"
+                                    value={businessname || ''}
+                                    onChange={(e) => setBusinessname(e.target.value)}
+                                    autoComplete='false'
+                                />
                             </div>
                             <div className='mb-1'>
                                 <Label htmlFor="email">Email</Label>

@@ -21,22 +21,30 @@ const limiter = rateLimit({
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-
 // File filter to allow images, videos, and PDFs
 const fileFilter = (req, file, cb) => {
-  const allowedMimeTypes = [
-    'image/jpeg', 'image/png', 'image/gif',
-    'video/mp4', 'video/avi', 'video/mov',
-    'application/pdf' // Add PDF MIME type
-  ];
-  
-  if (allowedMimeTypes.includes(file.mimetype)) {
-    cb(null, true); // Accept the file
-  } else {
-    cb(new Error('Invalid file type. Only images, videos, and PDFs are allowed.'), false); // Reject the file
-  }
-};
+    const allowedMimeTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+        "video/mp4",
+        "video/avi",
+        "video/mov",
+        "application/pdf", // Add PDF MIME type
+    ];
 
+    if (allowedMimeTypes.includes(file.mimetype)) {
+        cb(null, true); // Accept the file
+    } else {
+        cb(
+            new Error(
+                "Invalid file type. Only images, videos, and PDFs are allowed."
+            ),
+            false
+        ); // Reject the file
+    }
+};
 
 const upload = multer({
     dest: "./uploads/",

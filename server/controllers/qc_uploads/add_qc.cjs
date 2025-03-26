@@ -69,7 +69,6 @@ const uploadQCFile = async (req, res) => {
                 }-${sanitizedFileName}`;
 
                 const remotePath = `/var/www/uploads/hhp/${uniqueFileName}`;
-                console.log("remotePath", remotePath);
                 try {
                     await sftpClient.put(file.path, remotePath);
                     // Remove temporary file from local storage
@@ -115,7 +114,6 @@ const uploadQCFile = async (req, res) => {
             .status(201)
             .json({ message: "Files uploaded", fileUrls: fileUrls });
     } catch (err) {
-        console.log("qc upload", err);
         if (err instanceof yup.ValidationError) {
             res.status(400).json({
                 message: "Please check your files and try again",

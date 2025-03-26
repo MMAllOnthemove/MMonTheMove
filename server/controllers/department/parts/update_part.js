@@ -51,12 +51,10 @@ export const UpdatePart = async (req, res) => {
 
         await appLogs("UPDATE", changes?.updated_by, updates); // Log only changed fields
         emitLatestPartsAdded();
-        return res
-            .status(200)
-            .json({
-                message: "Part updated successfully",
-                part: result.rows[0],
-            });
+        return res.status(200).json({
+            message: "Part updated successfully",
+            part: result.rows[0],
+        });
     } catch (err) {
         return res.status(500).json({ error: "Could not update, try again" });
     }

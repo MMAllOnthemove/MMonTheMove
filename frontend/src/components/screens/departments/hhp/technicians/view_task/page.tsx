@@ -424,9 +424,9 @@ const ViewHHPTaskScreen = () => {
                     console.error("Missing part ID:", part);
                     continue;
                 }
+
                 await updatePart(part.id, part);
             }
-
             const partsList = selectedOldParts?.map((part: any, index: any) => {
                 return `${index + 1}. ${part.part_name} ${part.part_desc}`;
             }).join('\n');
@@ -1209,7 +1209,7 @@ const ViewHHPTaskScreen = () => {
                                                     <p className="font-medium text-sm">{issue_type}</p>
                                                 </div>
                                                 <div className='flex items-center gap-4 md:justify-between mb-2'>
-                                                    <h5 className="font-medium text-sm text-gray-500">Booked by</h5>
+                                                    <h5 id="booked_by" className="font-medium text-sm text-gray-500">Booked by</h5>
                                                     <p className="font-medium text-sm">{hhpTask?.created_by}</p>
                                                 </div>
                                                 <div className='flex items-center gap-4 md:justify-between mb-2'>
@@ -1352,7 +1352,7 @@ const ViewHHPTaskScreen = () => {
                                             <div className='flex justify-between items-center border-b pb-2'>
                                                 <h4 className="scroll-m-20 text-lg font-semibold tracking-tight">Custom fields</h4>
                                                 <div className="flex gap-2">
-                                                    <Button data-testid="edit-button-view-ticket" variant="outline" type="button" disabled={true}>Create service order</Button>
+                                                    <Button data-testid="service-order-button" variant="outline" type="button" disabled={true}>Create service order</Button>
                                                     <Button data-testid="edit-button-view-ticket" variant="outline" type="button" onClick={openModal}>Edit</Button>
                                                 </div>
                                             </div>
@@ -1460,7 +1460,7 @@ const ViewHHPTaskScreen = () => {
                                                 <h4 className="scroll-m-20 text-lg font-semibold tracking-tight">Parts</h4>
 
                                             </div>
-                                            <Parts oldPartsLoading={oldPartsLoading} submitPartsOld={addOldPartToRepairshoprComment} old_part_errors={addOldPartErrors} addOldPartLoading={addOldPartLoading} addOldPart={addOldPart} old_parts_data={taskOldPartsList} onSelectionChangeOldParts={setSelectedOldParts} search_old_part={search_old_part} setSearchOldPart={setSearchOldPart} old_part_desc={old_part_desc} setPartOldDesc={setPartOldDesc} partsIssuedText={partsIssuedText} setIssuedExtraText={setIssuedExtraText} issuedPartsLoading={issuedPartsLoading} submitPartsIssued={addPartIssuedToRepairshoprComment} onSelectionChange={setSelectedIssuedParts} in_stock={part_in_stock} submitPartOrderId={submitPartOrderId} submitPartOrderIdLoading={submitPartOrderIdLoading} parts_order_id={parts_order_id} setPartsOrderId={setPartsOrderId} stored_parts_order_id={hhpTask?.parts_order_id} partsExtraText={partsExtraText} setPartsExtraText={setPartsExtraText} compensation={compensation} setCompensation={(e) => setCompensation(e)} deletePartLoading={deletePartLoading} part_data={taskPartsList} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} handleDelete={handleDeletePart} addPartOnRepairshoprLoading={addPartOnRepairshoprLoading} addPartOnRepairshopr={addPartListToRepairshoprComment} />
+                                            <Parts oldPartsLoading={oldPartsLoading} submitPartsOld={addOldPartToRepairshoprComment} onSelectionChangeOldParts={setSelectedOldParts} partsIssuedText={partsIssuedText} setIssuedExtraText={setIssuedExtraText} issuedPartsLoading={issuedPartsLoading} submitPartsIssued={addPartIssuedToRepairshoprComment} onSelectionChange={setSelectedIssuedParts} in_stock={part_in_stock} submitPartOrderId={submitPartOrderId} submitPartOrderIdLoading={submitPartOrderIdLoading} parts_order_id={parts_order_id} setPartsOrderId={setPartsOrderId} stored_parts_order_id={hhpTask?.parts_order_id} partsExtraText={partsExtraText} setPartsExtraText={setPartsExtraText} compensation={compensation} setCompensation={(e) => setCompensation(e)} deletePartLoading={deletePartLoading} part_data={taskPartsList} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} handleDelete={handleDeletePart} addPartOnRepairshoprLoading={addPartOnRepairshoprLoading} addPartOnRepairshopr={addPartListToRepairshoprComment} />
                                         </div>
                                         {/* assets */}
                                         {/* name should be auto filled by model istead of user (just to appease the rs api) */}

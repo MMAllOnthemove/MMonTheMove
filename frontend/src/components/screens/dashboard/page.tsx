@@ -1,23 +1,9 @@
 "use client"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import dynamic from 'next/dynamic'
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page'), { ssr: false }
 )
-const NotLoggedInScreen = dynamic(() =>
-    import('@/components/not_logged_in/page'), { ssr: false }
-)
-const PageTitle = dynamic(() =>
-    import('@/components/PageTitle/page'), { ssr: false }
-)
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-
-import {
-    Label,
-    PolarGrid,
-    PolarRadiusAxis,
-    RadialBar,
-    RadialBarChart,
-} from "recharts"
 import {
     Select,
     SelectContent,
@@ -27,45 +13,34 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+const NotLoggedInScreen = dynamic(() =>
+    import('@/components/not_logged_in/page'), { ssr: false }
+)
+const PageTitle = dynamic(() =>
+    import('@/components/PageTitle/page'), { ssr: false }
+)
+
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle
+} from "@/components/ui/card"
 const Sidebar = dynamic(() =>
     import('@/components/sidebar/page'), { ssr: false }
 )
 const Pagination = dynamic(() =>
     import('@/components/table_pagination/page'), { ssr: false }
 )
-import { ChartConfig, ChartContainer } from "@/components/ui/chart"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import { Input } from '@/components/ui/input'
 // import { Label } from '@/components/ui/label'
+import useFetchEngineer from '@/hooks/useFetchEngineers'
 import useUserLoggedIn from '@/hooks/useGetUser'
 import useHHPTasks from '@/hooks/useHHPTasks'
-import { calculateAverageRepairTime, countTechniciansByStatus, countUnitsByStatus, getAveragePartsPendingTime, getCompletionRate, getFrequentFaults, getRepairByEngineer, getUnitsBookedOverTime, getWarrantyStatusBreakdown, partsIssuedRate } from '@/lib/analytics_functions'
-import engineerWorkColumns from '@/lib/engineer_workload_table_columns'
-import columns from '@/lib/frequent_faults__table_columns'
-import { ArrowTrendingUpIcon } from '@heroicons/react/24/outline'
-import {
-    SortingState,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    useReactTable
-} from "@tanstack/react-table"
-import moment from 'moment'
-import { useMemo, useState } from 'react'
 import useSocket from '@/hooks/useSocket'
-import Modal from '@/components/modal/page'
-import useFetchEngineer from '@/hooks/useFetchEngineers'
-import { Button } from '@/components/ui/button'
-import isDateInRange from '@/lib/date_range'
-import repairshopr_statuses from '@/lib/repairshopr_status'
+import { calculateAverageRepairTime } from '@/lib/analytics_functions'
+import { useMemo, useState } from 'react'
+import { Input } from "@/components/ui/input"
 
 const DashboardScreen = () => {
     const { hhpTasks } = useHHPTasks()
@@ -77,10 +52,9 @@ const DashboardScreen = () => {
     const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
     const [filteredTickets, setFilteredTickets] = useState<any[]>([]);
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
-    const [engineer, setEngineer] = useState<string | undefined>("")
+    const [engineer, setEngineer] = useState<string | null | undefined | any>();
     const [unit_status, setUnitStatus] = useState<string | undefined>("")
     const averageRepairTime = useMemo(() => calculateAverageRepairTime(hhpTasks, dateFrom, dateTo), [hhpTasks, dateFrom, dateTo])
-    const [selectedTechnician, setSelectedTechnician] = useState<string | null>(null);
     // show tasks by engineer which are complete
     const handleEngineerTasksTable = (row: any) => {
         const list = row?.original;
@@ -94,29 +68,8 @@ const DashboardScreen = () => {
         value: user?.engineer_firstname + " " + user?.engineer_lastname,
         label: user?.engineer_firstname + " " + user?.engineer_lastname,
     }))
-    // trial and error
-    const techniciansData = useMemo(() => countTechniciansByStatus(hhpTasks, { unit_status, startDate: dateFrom, endDate: dateTo, technician: selectedTechnician }), [hhpTasks, unit_status, dateFrom, dateTo, selectedTechnician]);
 
 
-    const handleCardClick = (status: string) => {
-        setSelectedStatus(status);
-
-        // Apply the same filtering logic as countUnitsByStatus
-        const filtered = hhpTasks?.filter((item: any) => {
-            // Match status
-            if (item.unit_status !== status) return false;
-
-            // Check if item falls within the selected date range
-            const isWithinDateRange = !dateFrom || !dateTo || isDateInRange(item.date_booked, dateFrom, dateTo);
-
-            // Check if the engineer matches (if selected)
-            const matchesEngineer = engineer ? item.engineer === engineer : true;
-
-            return isWithinDateRange && matchesEngineer;
-        });
-        setFilteredTickets(filtered);
-        setIsStatusModalOpen(true)
-    };
 
     // Function to filter tasks based on the selected date range and technician
     const isDateInRange = (date: string, start: string | null, end: string | null) => {
@@ -133,16 +86,24 @@ const DashboardScreen = () => {
         }, {} as Record<string, number>);
     }, [hhpTasks]);
 
-    // Compute filtered counts based on filters
+    // Compute filtered job counts
     const filteredJobCounts = useMemo(() => {
-        return hhpTasks.reduce((acc, task) => {
-            if (!isDateInRange(task.date_booked, dateFrom, dateTo)) return acc;
-            if (selectedTechnician && task.engineer !== selectedTechnician) return acc;
+        const counts: Record<string, number> = {};
 
-            acc[task.unit_status] = (acc[task.unit_status] || 0) + 1;
-            return acc;
-        }, {} as Record<string, number>);
-    }, [hhpTasks, dateFrom, dateTo, selectedTechnician]);
+        hhpTasks.forEach((task) => {
+            if (!isDateInRange(task.date_booked, dateFrom, dateTo)) return;
+            if (engineer && task.engineer !== engineer) return;
+
+            counts[task.unit_status] = (counts[task.unit_status] || 0) + 1;
+        });
+
+        // Ensure all statuses from the original job list are included, setting missing ones to zero
+        Object.keys(jobCountsByStatus).forEach((status) => {
+            if (!counts[status]) counts[status] = 0;
+        });
+
+        return counts;
+    }, [hhpTasks, dateFrom, dateTo, engineer, jobCountsByStatus]);
 
     // Extract list of jobs under the selected status
     const selectedStatusJobs = useMemo(() => {
@@ -150,15 +111,10 @@ const DashboardScreen = () => {
             (task) =>
                 task.unit_status === selectedStatus &&
                 isDateInRange(task.date_booked, dateFrom, dateTo) &&
-                (!selectedTechnician || task.engineer === selectedTechnician)
+                (!engineer || task.engineer === engineer)
         );
-    }, [hhpTasks, selectedStatus, dateFrom, dateTo, selectedTechnician]);
+    }, [hhpTasks, selectedStatus, dateFrom, dateTo, engineer]);
 
-    // Extract unique engineers for filtering
-    const engineers = useMemo(() => {
-        const uniqueEngineers = new Set(hhpTasks.map((task) => task.engineer));
-        return Array.from(uniqueEngineers);
-    }, [hhpTasks]);
 
 
     return (
@@ -171,33 +127,35 @@ const DashboardScreen = () => {
                             <PageTitle title="Dashboard" hasSpan={true} spanText={"HHP"} />
                             <div>
                                 {/* Filters */}
-                                <div className="flex gap-4">
-                                    <select onChange={(e) => setUnitStatus(e.target.value)} className="border p-2 rounded">
-                                        <option value="Complete">Complete</option>
-                                        <option value="Assigned to Tech">Assigned to Tech</option>
-                                    </select>
-                                    <input type="date" onChange={(e) => setDateFrom(e.target.value)} className="border p-2 rounded" />
-                                    <input type="date" onChange={(e) => setDateTo(e.target.value)} className="border p-2 rounded" />
-                                    <select onChange={(e) => setEngineer(e.target.value)} className="border p-2 rounded">
-                                        <option value="">All Technicians</option>
-                                        {engineers.map((tech) => (
-                                            <option key={tech} value={tech}>
-                                                {tech}
-                                            </option>
-                                        ))}
-                                    </select>
+                                <div className="grid lg:grid-cols-3 gap-4 mb-2">
+                                    <Input type="date" onChange={(e) => setDateFrom(e.target.value)} className="cursor-pointer" />
+                                    <Input type="date" onChange={(e) => setDateTo(e.target.value)} className="cursor-pointer" />
+
+                                    <Select name="engineer" value={engineer} onValueChange={(e) => setEngineer(e || null)}>
+                                        <SelectTrigger className="">
+                                            <SelectValue placeholder="Technician" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Engineer</SelectLabel>
+                                                {engineerListFomatted.map((dep) => (
+                                                    <SelectItem key={dep.id} value={`${dep.value}`}>{`${dep.label}`}</SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
-                                <div className="grid grid-cols-3 gap-4">
+                                <div className="grid lg:grid-cols-3 gap-4">
                                     {Object.entries(jobCountsByStatus).map(([status, totalCount]) => {
-                                        const filteredCount = filteredJobCounts[status] || 0;
+                                        const filteredCount = filteredJobCounts[status] ?? 0; // Ensure zero is shown if no jobs match
                                         return (
-                                            <Card key={status} className="cursor-pointer">
+                                            <Card key={status} className="cursor-pointer" onClick={() => setSelectedStatus(status)}>
                                                 <CardHeader>
                                                     <CardTitle>{status}</CardTitle>
                                                     <CardDescription>Total Jobs</CardDescription>
                                                 </CardHeader>
                                                 <CardContent>
-                                                    <div className="text-4xl font-bold">{filteredCount > 0 ? filteredCount : totalCount}</div>
+                                                    <div className="text-4xl font-bold">{filteredCount}</div>
                                                 </CardContent>
                                             </Card>
                                         );
@@ -209,20 +167,22 @@ const DashboardScreen = () => {
                                 <Dialog open={!!selectedStatus} onOpenChange={() => setSelectedStatus(null)}>
                                     <DialogContent>
                                         <DialogHeader>
-                                            <DialogTitle>Jobs under "{selectedStatus}"</DialogTitle>
+                                            <DialogTitle>Jobs under &quot;{selectedStatus}&quot;</DialogTitle>
                                         </DialogHeader>
                                         <div className="mt-2 max-h-80 overflow-auto">
                                             <table className="w-full border-collapse">
                                                 <thead>
                                                     <tr className="border-b">
+                                                        <th className="p-2 text-left"></th>
                                                         <th className="p-2 text-left">Ticket Number</th>
                                                         <th className="p-2 text-left">Engineer</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {selectedStatusJobs.length > 0 ? (
-                                                        selectedStatusJobs.map((task) => (
+                                                        selectedStatusJobs.map((task: any, idx: any) => (
                                                             <tr key={task.id} className="border-b">
+                                                                <td className="p-2">{idx + 1}</td>
                                                                 <td className="p-2">{task.ticket_number}</td>
                                                                 <td className="p-2">{task.engineer}</td>
                                                             </tr>

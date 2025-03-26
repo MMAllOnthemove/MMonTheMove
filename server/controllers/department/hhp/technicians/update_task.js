@@ -57,7 +57,6 @@ export const UpdateTask = async (req, res) => {
             task: updatedTask,
         });
     } catch (err) {
-        console.log("error", err);
         if (process.env.NODE_ENV !== "production") {
             console.error("Error updating record:", err);
         }

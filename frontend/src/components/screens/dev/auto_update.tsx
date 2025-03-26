@@ -177,7 +177,7 @@ const TicketUpdaterScreen: React.FC = () => {
                 requires_backup: requires_backup,
                 rs_warranty: rs_warranty,
                 ticket_type_id: ticket_type_id,
-                created_by: secondSystemTicket.comments.filter((x) => x.subject === "Initial Issue").map((x) => x.tech)[0]
+                created_by: secondSystemTicket.comments.filter((x: string | undefined | any) => x.subject === "Initial Issue").map((x: string | undefined | any) => x.tech)[0]
             };
 
 

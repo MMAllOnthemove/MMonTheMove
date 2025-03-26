@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.30] - 2025-03-25
+
+### Added
+
+-   add a select dropdown to update technician and also store booking agent
+-   search customer and create customer (staff) requests business name
+
+### Fixed
+
+-   update dashboard to instead show techncians filterable by status
+
 ## [0.1.29] - 2025-03-24
 
 ### Added

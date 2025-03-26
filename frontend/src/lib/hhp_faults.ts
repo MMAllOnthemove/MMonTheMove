@@ -37,6 +37,10 @@ const faults_hhp = [
         value: "Overheating While Charging",
         label: "Overheating While Charging",
     },
+    {
+        value: "No power",
+        label: "No power",
+    },
     { value: "Charging Port Damage", label: "Charging Port Damage" },
     {
         value: "Wireless Charging Not Working",

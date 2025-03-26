@@ -72,7 +72,6 @@ const ChecklistsScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { isConnected } = useSocket()
     const { checklistList } = useCarChecklist()
-    console.log("checklistList", checklistList)
     const [openAddModal, setOpenAddModal] = useState(false)
     const [mileage_after, setMileageAfter] = useState<string>('')
     const [next_service_date, setNextService] = useState<string>('')

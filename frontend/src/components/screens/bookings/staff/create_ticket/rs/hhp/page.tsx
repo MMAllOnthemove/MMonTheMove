@@ -387,10 +387,6 @@ const HHP = (customerProps: string | string[] | any) => {
                         {hhpAddTaskErrors.serial_number && <p className="text-sm text-red-500 font-medium">{hhpAddTaskErrors.serial_number}</p>}
 
                     </div>
-                    {/* todo: uncomment */}
-                    <p>selectedWarranty {selectedWarranty}</p>
-                    <p>localWarranty {localWarranty}</p>
-                    <p>ticketTypeIdManually {ticketTypeIdManually}</p>
                     <div>
                         <Label htmlFor='selectedWarranty' className="text-gray-500">Change warranty</Label>
                         <Select

@@ -25,6 +25,7 @@ type TUpdateValues = {
     created_at?: string;
     created_by: string;
     updated_at: string | null;
+    is_old_part?: boolean | null;
     stock_availability?: string;
     sales_status?: string;
 };
