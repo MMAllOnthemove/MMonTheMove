@@ -6,6 +6,8 @@ import { authenticateToken } from "../../middleware/verify.js";
 
 const router = express.Router();
 
-router.post("/", limiter, authenticateToken, addComment);
+// todo: remove and uncomment correct one
+router.post("/", addComment);
+// router.post("/", limiter, authenticateToken, addComment);
 router.get("/", authenticateToken, getComments);
 export { router };

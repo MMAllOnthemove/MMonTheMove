@@ -1,6 +1,5 @@
 import { pool } from "../../../../db.js";
 import appLogs from "../../../logs/logs.js";
-import { io } from "../../../../services/io.js";
 import emitBinStatsUpdate from "../bin_dashboard/emit_bin_updates.js";
 
 export const UpdateTask = async (req, res) => {
@@ -58,6 +57,7 @@ export const UpdateTask = async (req, res) => {
             task: updatedTask,
         });
     } catch (err) {
+        console.log("error", err);
         if (process.env.NODE_ENV !== "production") {
             console.error("Error updating record:", err);
         }

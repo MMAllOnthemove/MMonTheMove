@@ -381,7 +381,8 @@ const BookFromSOScreen = () => {
             "accessories_and_condition": itemCondition,
             "requires_backup": requires_backup,
             "rs_warranty": warrantyCode,
-            "ticket_type_id": ticket_type_id
+            "ticket_type_id": ticket_type_id,
+            "created_by": user?.full_name
         }
         const res: any = await addTask(payload)
         setTaskId(res?.data?.id)

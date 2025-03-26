@@ -72,6 +72,7 @@ type TAddTask = {
     unit_status?: string | null;
     qc_complete_date?: string | null;
     repair_completed?: string | null;
+    created_by?: string | null
 }
 
 export const useHHPTasksCrud = () => {

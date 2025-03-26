@@ -532,3 +532,39 @@ export const countUnitsByStatus = (
         return isWithinDateRange && matchesEngineer ? count + 1 : count;
     }, 0);
 };
+export const countTechniciansByStatus = (
+    data: any[],
+    {
+        unit_status,
+        startDate,
+        endDate,
+        technician,
+    }: {
+        unit_status: string | undefined;
+        startDate: string | null;
+        endDate: string | null;
+        technician?: string | null;
+    }
+) => {
+    const isDateInRange = (
+        date: string,
+        start: string | null,
+        end: string | null
+    ) => {
+        if (!start || !end) return true;
+        const jobDate = new Date(date).getTime();
+        return (
+            jobDate >= new Date(start).getTime() &&
+            jobDate <= new Date(end).getTime()
+        );
+    };
+
+    return data.reduce((acc, task) => {
+        if (task.unit_status !== unit_status) return acc;
+        if (!isDateInRange(task.date_booked, startDate, endDate)) return acc;
+        if (technician && task.engineer !== technician) return acc;
+
+        acc[task.engineer] = (acc[task.engineer] || 0) + 1;
+        return acc;
+    }, {} as Record<string, number>);
+};

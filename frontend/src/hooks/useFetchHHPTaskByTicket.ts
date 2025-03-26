@@ -18,6 +18,7 @@ type IHHPTask = {
     repairshopr_status: string;
     repairshopr_customer_id: number | null | undefined;
     gspn_status: string;
+    created_by: string | null;
     device_location: string | null;
     requires_backup: string | null;
     ticket_type_id?: string | null | any;

@@ -227,8 +227,8 @@ const Parts = ({ oldPartsLoading, submitPartsOld, old_part_errors, onSelectionCh
                         </div>
                         <div>
                             {part_data?.length > 0 ? part_data?.map((item: any) => (
-                                <div key={item.id}>
-                                    <p className="flex items-center justify-between border-b border-grey-50 text-xs leading-3" >
+                                <div key={item?.id}>
+                                    <p id={item?.part_name} className="flex items-center justify-between border-b border-grey-50 text-xs leading-3" >
                                         ({item.part_name}) / <span className="text-ellipsis overflow-hidden whitespace-nowrap">{item?.part_desc} /</span>({item?.part_quantity}) <button type="button" disabled={deletePartLoading} onClick={() => handleDelete(item.id, item?.part_name, item?.part_desc)}>{deletePartLoading ? '...' : <XMarkIcon className="h-4 w-4" />}</button>
                                     </p>
                                 </div>

@@ -33,9 +33,9 @@ const TicketUpdaterScreen: React.FC = () => {
 
             // const filtered = tickets?.filter((x) => x.ticket_type_id === null || x.ticket_type_id === "" || x.ticket_type_id === 'null')
             // const filtered = tickets?.filter((x: any) => x.stores === 'HHP (Robtronics)' && x.unit_status !== 'Resolved')
-            // const filtered = tickets?.filter((x) => x.ticket_number === '128114')
+            const filtered = tickets?.filter((x) => x.created_by === null)
 
-            for (const ticket of tickets) {
+            for (const ticket of filtered) {
                 if (processedTickets.has(ticket.ticket_number)) {
                     setLogs((prevLogs) => [
                         ...prevLogs,
@@ -176,7 +176,8 @@ const TicketUpdaterScreen: React.FC = () => {
                 accessories_and_condition: accessories_and_condition,
                 requires_backup: requires_backup,
                 rs_warranty: rs_warranty,
-                ticket_type_id: ticket_type_id
+                ticket_type_id: ticket_type_id,
+                created_by: secondSystemTicket.comments.filter((x) => x.subject === "Initial Issue").map((x) => x.tech)[0]
             };
 
 
@@ -197,6 +198,7 @@ const TicketUpdaterScreen: React.FC = () => {
                 ticket.accessories_and_condition != changes.accessories_and_condition ||
                 ticket.requires_backup != changes.requires_backup ||
                 ticket.rs_warranty != changes.rs_warranty ||
+                ticket.created_by !== changes.created_by ||
                 ticket_type_id || ticket.parts_ordered !== changes.parts_ordered || ticket.parts_ordered_date !== changes.parts_ordered_date || ticket.warranty !== changes.warranty
 
             ) {

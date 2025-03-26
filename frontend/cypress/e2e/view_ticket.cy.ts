@@ -13,7 +13,7 @@ describe("View and update single ticket", () => {
     });
 
     it("should update ticket details end to end", () => {
-        cy.visit("http://localhost:3000/departments/hhp/technicians/2613");
+        cy.visit("http://localhost:3000/view");
         // Interact with status select
         cy.get('select[name="unit_status"]')
             .first()
@@ -55,18 +55,40 @@ describe("View and update single ticket", () => {
             .should("be.visible")
             .click();
 
-        // // Quality Control
-        // cy.get('textarea[name="qc_comment"]').type("Test qc comment");
-        // cy.contains("Update Quality Control").click();
+        // Quality Control
+        cy.get('[type="radio"]').check("Pass");
+        cy.get('textarea[name="qc_comment"]').type("Test qc comment");
+        cy.get('button[type="submit"]')
+            .contains("Update Quality control")
+            .click();
 
-        // // Add part
-        // cy.get('input[name="part_name"]').type("GH82-33133A");
-        // cy.get('input[name="part_desc"]').should(
-        //     "have.value",
-        //     "SVC FRONT MODULE-FRAME(E/ZA),SM-F731"
-        // );
-        // cy.get('input[name="part_quantity"]').type("1");
-        // cy.contains("Add part").click();
+        // Parts section
+        // Add part
+        // opening the accordion it is located under
+
+        // Ensure trigger is present
+        cy.contains("Search and add part").should("exist").click();
+        cy.get('input[name="part_name"]').type("GH82-33133A");
+        cy.wait(5000);
+        cy.get('input[name="part_desc"]').should(
+            "have.value",
+            "SVC FRONT MODULE-FRAME(E/ZA),SM-F731"
+        );
+        cy.wait(3000);
+        cy.get('input[name="part_quantity"]')
+            .focus()
+            .type("{selectall}1", { force: true });
+
+        cy.wait(3000);
+        cy.contains("Add part").click();
+        cy.wait(5000);
+        // close it
+        cy.contains("Search and add part").should("exist").click();
+
+        cy.contains("Parts used for unit").should("exist").click();
+        cy.get("p#GH82-33133A").contains("GH82-33133A");
+        cy.get("button[type='button']").contains("Send to ticket");
+        cy.contains("Parts used for unit").should("exist").click();
 
         // // Comment
         // cy.get('textarea[name="partsExtraText"]').type("Testing...");

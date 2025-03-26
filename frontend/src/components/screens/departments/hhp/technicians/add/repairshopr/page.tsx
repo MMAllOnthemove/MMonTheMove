@@ -206,7 +206,8 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
             requires_backup,
             rs_warranty,
             repairshopr_customer_id,
-            ticket_type_id
+            ticket_type_id,
+            created_by: user?.full_name
         }
         const userIdPayload = {
             "user_id": repairshopr_id,

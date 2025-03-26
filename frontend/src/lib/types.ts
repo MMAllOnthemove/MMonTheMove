@@ -25,7 +25,7 @@ export type TUpdateAssessmentDate = {
     assessment_date: string;
     units_assessed: boolean;
     created_by: string | undefined;
-    ticket_number: string|number;
+    ticket_number: string | number;
 };
 export type PropertiesType = {
     IMEI?: string;
@@ -765,6 +765,7 @@ export type IHHPSingleTask = {
     parts_issued_date: string;
     parts_ordered_date: string;
     quote_accepted: boolean;
+    created_by: string | null;
     quote_rejected: boolean;
     stores: boolean | null;
     phone_name?: string | null;

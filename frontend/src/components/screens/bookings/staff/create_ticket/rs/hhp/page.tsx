@@ -211,7 +211,8 @@ const HHP = (customerProps: string | string[] | any) => {
             "accessories_and_condition": itemCondition,
             "requires_backup": requires_backup,
             "rs_warranty": warrantyCode,
-            "ticket_type_id": ticket_type_id
+            "ticket_type_id": ticket_type_id,
+            "created_by": user?.full_name
         }
         const res: any = await addTask(payload)
         if (res?.data?.id) setTaskId(res?.data?.id)

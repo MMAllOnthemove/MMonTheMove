@@ -200,11 +200,10 @@ const ViewHHPTaskScreen = () => {
     const openModal = () => {
         setModifyTaskModalOpen(true);
     }
+
     const closeModal = () => {
         setModifyTaskModalOpen(false);
     };
-
-
 
     // for filtering by engineer
     const engineerListFomatted = engineersList?.map((user) => ({
@@ -264,8 +263,6 @@ const ViewHHPTaskScreen = () => {
     });
 
 
-
-
     // add part searched
     const addPart = async () => {
         const task_row_id = hhpTask?.id;
@@ -295,7 +292,6 @@ const ViewHHPTaskScreen = () => {
         setPartOldName("")
         setPartOldDesc("")
     }
-
 
     // this will send the order no to rs
     const submitPartOrderId = async () => {
@@ -347,7 +343,6 @@ const ViewHHPTaskScreen = () => {
             "ticket_number": hhpTask?.ticket_number
         }
         try {
-
             if (parts_order_id) {
                 await updateRepairTicketComment(hhpTask?.repairshopr_job_id, commentPayload)
                 await addCommentLocally(addCommentLocallyPayload)
@@ -368,12 +363,9 @@ const ViewHHPTaskScreen = () => {
         setIssuedPartsLoading(true)
         try {
             // this will send the parts as as list on repairshopr
-
             if (!selectedIssuedParts || selectedIssuedParts.length === 0) {
                 return;
             }
-
-
             // Loop through selected parts and send updates
             for (const part of selectedIssuedParts) {
                 if (!part.id) {
@@ -386,8 +378,6 @@ const ViewHHPTaskScreen = () => {
 
                 if (part.seal_number.length > 0) return `${index + 1}. ${part.part_name} ${part.part_desc} - Seal number:${part.seal_number}`;
                 else return `${index + 1}. ${part.part_name} ${part.part_desc}`;
-
-
             }).join('\n');
 
             const comment = `Parts issued to: ${partsIssuedText}\n\n${partsList}`;
@@ -412,7 +402,6 @@ const ViewHHPTaskScreen = () => {
                 // clear comment
                 setIssuedExtraText("")
             }
-
         } catch (error) {
             if (process.env.NODE_ENV !== 'production') {
                 console.error("comment part", error)
@@ -429,7 +418,6 @@ const ViewHHPTaskScreen = () => {
             if (!selectedOldParts || selectedOldParts?.length === 0) {
                 return;
             }
-
             // Loop through selected parts and send updates
             for (const part of selectedOldParts) {
                 if (!part.id) {
@@ -495,7 +483,6 @@ const ViewHHPTaskScreen = () => {
 
             for (const fileObj of qcFiles) {
                 formData.append('files', fileObj.file);
-
                 // Append ticket_number once
                 formData.append('ticket_number', ticket_number);
                 formData.append('task_id', task_id);
@@ -522,7 +509,6 @@ const ViewHHPTaskScreen = () => {
                 }
                 // setQCFilesUrls(data?.fileUrls)
                 setQCFilesUploading(false)
-
             }
         } catch (error: any) {
             toast.error(error?.response?.data?.error);
@@ -538,7 +524,6 @@ const ViewHHPTaskScreen = () => {
         const id = hhpTask?.id;
         const updated_at = datetimestamp;
         const created_at = datetimestamp;
-
 
         const updatePayload = {
             // This goes to our in house db
@@ -580,8 +565,6 @@ const ViewHHPTaskScreen = () => {
             setQCSubmitLoading(false)
         }
     }
-
-
 
 
     const addPartListToRepairshoprComment = async () => {
@@ -654,9 +637,6 @@ const ViewHHPTaskScreen = () => {
     };
 
 
-
-
-
     const updateIssueType = async (e: any) => {
         const selected = e;
         setIssueType(e)
@@ -681,7 +661,6 @@ const ViewHHPTaskScreen = () => {
                 "Location (BIN)": deviceLocation,
                 "ticket_type_id": ticket_type_id,
             }
-
         }
         const id = hhpTask?.id;
         const updated_at = datetimestamp;
@@ -695,8 +674,8 @@ const ViewHHPTaskScreen = () => {
             await updateTask(id, changes)
         }
         refetch();
-
     }
+
     const updateStatus = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selected = e.target.value;
         const now = datetimestamp;
@@ -766,7 +745,6 @@ const ViewHHPTaskScreen = () => {
                 "Location (BIN)": deviceLocation,
                 "ticket_type_id": ticket_type_id,
             }
-
         };
 
         const id = hhpTask?.id;
@@ -1144,8 +1122,8 @@ const ViewHHPTaskScreen = () => {
 
                                 <div className="flex flex-col md:flex-row justify-between items-center gap-2">
                                     <div className='py-2 md:py-3 px-1 md:px-3'>
-                                        <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">#{hhpTask?.ticket_number}</h1>
-                                        <h3 data-fault={hhpTask?.fault} className='scroll-m-20 text-lg font-semibold tracking-tight'>{hhpTask?.fault}</h3>
+                                        <h1 data-testid="ticket_number" className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">#{hhpTask?.ticket_number}</h1>
+                                        <h3 data-testid="fault" className='scroll-m-20 text-lg font-semibold tracking-tight'>{hhpTask?.fault}</h3>
                                     </div>
 
                                 </div>
@@ -1229,6 +1207,10 @@ const ViewHHPTaskScreen = () => {
                                                 <div className='flex items-center gap-4 md:justify-between mb-2'>
                                                     <h5 className="font-medium text-sm text-gray-500">Type</h5>
                                                     <p className="font-medium text-sm">{issue_type}</p>
+                                                </div>
+                                                <div className='flex items-center gap-4 md:justify-between mb-2'>
+                                                    <h5 className="font-medium text-sm text-gray-500">Booked by</h5>
+                                                    <p className="font-medium text-sm">{hhpTask?.created_by}</p>
                                                 </div>
                                                 <div className='flex items-center gap-4 md:justify-between mb-2'>
                                                     <h5 className="font-medium text-sm text-gray-500">Due date</h5>
@@ -1369,7 +1351,10 @@ const ViewHHPTaskScreen = () => {
                                         <div className="py-2 px-3">
                                             <div className='flex justify-between items-center border-b pb-2'>
                                                 <h4 className="scroll-m-20 text-lg font-semibold tracking-tight">Custom fields</h4>
-                                                <Button data-testid="edit-button-view-ticket" variant="outline" type="button" onClick={openModal}>Edit</Button>
+                                                <div className="flex gap-2">
+                                                    <Button data-testid="edit-button-view-ticket" variant="outline" type="button" disabled={true}>Create service order</Button>
+                                                    <Button data-testid="edit-button-view-ticket" variant="outline" type="button" onClick={openModal}>Edit</Button>
+                                                </div>
                                             </div>
 
                                             <div className="row flex items-center justify-between border-b py-2">
