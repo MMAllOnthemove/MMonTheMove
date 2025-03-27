@@ -33,7 +33,7 @@ const TicketUpdaterScreen: React.FC = () => {
 
             // const filtered = tickets?.filter((x) => x.ticket_type_id === null || x.ticket_type_id === "" || x.ticket_type_id === 'null')
             // const filtered = tickets?.filter((x: any) => x.stores === 'HHP (Robtronics)' && x.unit_status !== 'Resolved')
-            const filtered = tickets?.filter((x) => x.created_by === null)
+            const filtered = tickets?.filter((x: any) => x.created_by === null)
 
             for (const ticket of filtered) {
                 if (processedTickets.has(ticket.ticket_number)) {

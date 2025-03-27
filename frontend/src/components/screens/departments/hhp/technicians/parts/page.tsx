@@ -351,7 +351,7 @@ const Parts = ({ oldPartsLoading, submitPartsOld, onSelectionChangeOldParts, par
                                             <>
                                                 {part?.is_old_part ? (
                                                     <span className="ml-2 text-sm text-green-700">
-                                                        old
+                                                        Old parts
                                                     </span>
                                                 ) : null}
                                             </>

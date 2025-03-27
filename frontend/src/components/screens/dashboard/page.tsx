@@ -80,7 +80,7 @@ const DashboardScreen = () => {
 
     // Compute total job count per status
     const jobCountsByStatus = useMemo(() => {
-        return hhpTasks.reduce((acc, task) => {
+        return hhpTasks.reduce((acc: any, task: any) => {
             acc[task.unit_status] = (acc[task.unit_status] || 0) + 1;
             return acc;
         }, {} as Record<string, number>);
@@ -90,7 +90,7 @@ const DashboardScreen = () => {
     const filteredJobCounts = useMemo(() => {
         const counts: Record<string, number> = {};
 
-        hhpTasks.forEach((task) => {
+        hhpTasks.forEach((task: any) => {
             if (!isDateInRange(task.date_booked, dateFrom, dateTo)) return;
             if (engineer && task.engineer !== engineer) return;
 
@@ -108,7 +108,7 @@ const DashboardScreen = () => {
     // Extract list of jobs under the selected status
     const selectedStatusJobs = useMemo(() => {
         return hhpTasks.filter(
-            (task) =>
+            (task: any) =>
                 task.unit_status === selectedStatus &&
                 isDateInRange(task.date_booked, dateFrom, dateTo) &&
                 (!engineer || task.engineer === engineer)
