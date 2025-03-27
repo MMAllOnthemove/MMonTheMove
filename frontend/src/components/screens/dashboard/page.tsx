@@ -9,6 +9,8 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
+import HHPDashboardTable from './hhp/technicians/table'
+
 const HHPDashboardCards = dynamic(() =>
     import('./hhp/technicians/cards'), { ssr: false }
 )
@@ -39,13 +41,11 @@ const DashboardScreen = () => {
                             <PageTitle title="Dashboard" hasSpan={true} spanText={"HHP"} />
                             <Tabs defaultValue="table_view" className="w-full">
                                 <TabsList className="grid w-[400px] grid-cols-2">
-                                    <TabsTrigger value="table_view">Account</TabsTrigger>
+                                    <TabsTrigger value="table_view">Table view</TabsTrigger>
                                     <TabsTrigger value="card_view">Card view</TabsTrigger>
                                 </TabsList>
                                 <TabsContent value="table_view">
-                                    <div className="w-full border">
-                                        <p>Account</p>
-                                    </div>
+                                    <HHPDashboardTable />
                                 </TabsContent>
                                 <TabsContent value="card_view">
                                     <HHPDashboardCards />

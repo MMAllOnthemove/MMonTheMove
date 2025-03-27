@@ -64,10 +64,10 @@ const BinsScreen = () => {
     const { hhpTasks } = useHHPTasksCrud()
 
     // Function to calculate engineer bins
-    function calculateEngineerBins(repairJobs) {
-        const bins = {};
+    function calculateEngineerBins(repairJobs: any) {
+        const bins: any = {};
 
-        repairJobs.forEach(job => {
+        repairJobs.forEach((job: any) => {
             const { engineer, engineer_code, unit_status, date_booked, ticket_number } = job;
 
             // Only process jobs where the status is in allowedStatuses AND the engineer is in the list
@@ -76,8 +76,8 @@ const BinsScreen = () => {
             }
 
             // Calculate difference in days from the booking date
-            const dateBooked = new Date(date_booked);
-            const currentDate = new Date();
+            const dateBooked: any = new Date(date_booked);
+            const currentDate: any = new Date();
             const differenceInDays = Math.floor((currentDate - dateBooked) / (1000 * 3600 * 24));
 
             // Initialize engineer bin if not exists
@@ -132,13 +132,13 @@ const BinsScreen = () => {
                                             </AccordionTrigger>
                                             <AccordionContent>
                                                 <div className='space-y-4'>
-                                                    {Object.entries(statuses).map(([status, data]) => (
+                                                    {Object.entries(statuses).map(([status, data]: any) => (
                                                         <div key={status} className='p-4 border rounded-lg shadow-sm bg-gray-50'>
                                                             <p className='font-medium'>Status: {status}</p>
-                                                            <p>Total Units: {data.units_count}</p>
+                                                            <p>Total Units: {data?.units_count}</p>
                                                             <p>Ticket Numbers:</p>
                                                             <ul className='list-disc list-inside pl-4'>
-                                                                {data.tickets.map((ticket, i) => (
+                                                                {data?.tickets.map((ticket: any, i: any) => (
                                                                     <li key={i}>
                                                                         <span className='font-medium'>{ticket.ticket_id}</span>
                                                                         ({moment(ticket.date_booked).format('YYYY-MM-DD')})

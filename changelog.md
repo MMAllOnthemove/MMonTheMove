@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 -   allow more faults in create ticket screen
+-   table view for qc_complete jobs (count them as 'Complete')
 
 ### Fixed
 
