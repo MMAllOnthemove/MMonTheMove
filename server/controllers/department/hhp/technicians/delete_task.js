@@ -26,7 +26,7 @@ const deleteHHPTask = async (req, res) => {
             deletedBy: matchUser?.rows[0]?.email,
             ticket_number: getTicketRow.rows[0]?.ticket_number,
         });
-        emitBinStatsUpdate(); // Emit bin stats update
+        await emitBinStatsUpdate(); // Emit bin stats update
         return res.status(200).json({
             message: "Successfully deleted!",
             task: getTicketRow.rows[0],

@@ -51,7 +51,7 @@ export const UpdateTask = async (req, res) => {
             changes?.ticket_number
         );
         // io.emit("updateTask", updatedTask); // Notify clients about task update
-        emitBinStatsUpdate(); // Emit bin stats update
+        await emitBinStatsUpdate();
         return res.status(201).json({
             message: "HHP task updated",
             task: updatedTask,

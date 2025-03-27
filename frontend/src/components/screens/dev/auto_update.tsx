@@ -95,20 +95,20 @@ const TicketUpdaterScreen: React.FC = () => {
                 }));
 
             // Add comments locally if there are new ones
-            // for (const comment of newComments) {
+            for (const comment of newComments) {
 
-            //     const payload = {
-            //         "task_id": ticket.id,
-            //         "comment": '*' + comment?.body,
-            //         "created_at": comment?.created_at,
-            //         "created_by": comment?.tech,
-            //     }
-            //     await addCommentLocally(payload);
-            //     setLogs((prevLogs) => [
-            //         ...prevLogs,
-            //         `Added comment to ticket number: ${ticket.ticket_number}`,
-            //     ]);
-            // }
+                const payload = {
+                    "task_id": ticket.id,
+                    "comment": '*' + comment?.body,
+                    "created_at": comment?.created_at,
+                    "created_by": comment?.tech,
+                }
+                await addCommentLocally(payload);
+                setLogs((prevLogs) => [
+                    ...prevLogs,
+                    `Added comment to ticket number: ${ticket.ticket_number}`,
+                ]);
+            }
 
             // update comments
             const changes = {

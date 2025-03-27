@@ -66,7 +66,9 @@ const HHP = (customerProps: string | string[] | any) => {
 
 
     const [fault, setFault] = useState("")
-    const [openFaultList, setOpenFaultList] = React.useState(false)
+    const [extraFault, setExtraFault] = useState("")
+    const [openExtraFault, setOpenExtraFault] = useState(false)
+    const [openFaultList, setOpenFaultList] = useState(false)
 
     const isFormValid = itemCondition && requires_backup && IMEI && serialNumber && modelNumber
 
@@ -93,17 +95,34 @@ const HHP = (customerProps: string | string[] | any) => {
 
     // Dynamic subject generation
     const subject = () => {
+        if (isRework && addRepairNoToTitle && openExtraFault) {
+            return `*Rework: ${job_repair_no} - ${fault}, extra - ${extraFault}`;
+        }
         if (isRework && addRepairNoToTitle) {
             return `*Rework: ${job_repair_no} - ${fault}`;
-        } else if (isRework) {
-            return `*Rework: ${fault}`;
-        } else if (addRepairNoToTitle) {
+        }
+        if (isRework && openExtraFault) {
+            return `*Rework: ${fault}, extra - ${extraFault}`;
+        }
+        if (addRepairNoToTitle && openExtraFault) {
+            return `*${job_repair_no} - ${fault}, extra - ${extraFault}`;
+        }
+        if (addRepairNoToTitle) {
             return `*${job_repair_no} - ${fault}`;
         }
+        if (isRework) {
+            return `*Rework: ${fault}`;
+        }
+        if (openExtraFault) {
+            return `*${fault}, extra - ${extraFault}`;
+        }
+
         return `*${fault}`;
     };
+
     const createTicket = async (e: React.SyntheticEvent) => {
         e.preventDefault()
+
         const payload = {
             "customer_id": customerId, // only need this for creating a ticket on rs
             "problem_type": `${issue_type}`, // Will aways be HHP for handheld devices, no need to choose
@@ -282,7 +301,7 @@ const HHP = (customerProps: string | string[] | any) => {
                         </Popover>
                     </div>
                     <div>
-                        <label className="ml-2 flex gap-2 text-gray-500">
+                        <label className="ml-2 flex gap-2 text-gray-800 text-sm">
                             <input
                                 className="cursor-pointer"
                                 type="checkbox"
@@ -291,7 +310,7 @@ const HHP = (customerProps: string | string[] | any) => {
                             />
                             Rework?
                         </label>
-                        <label className="ml-2 flex gap-2 text-gray-500">
+                        <label className="ml-2 flex gap-2 text-gray-800 text-sm">
                             <input
                                 className="cursor-pointer"
                                 type="checkbox"
@@ -299,6 +318,15 @@ const HHP = (customerProps: string | string[] | any) => {
                                 onChange={() => setAddRepairNoToTitle((prev) => !prev)}
                             />
                             Add job repair no to fault?
+                        </label>
+                        <label className="ml-2 flex gap-2 text-gray-800 text-sm">
+                            <input
+                                className="cursor-pointer"
+                                type="checkbox"
+                                checked={openExtraFault}
+                                onChange={() => setOpenExtraFault((prev) => !prev)}
+                            />
+                            Add extra text to fault?
                         </label>
                     </div>
                     <div>
@@ -311,6 +339,12 @@ const HHP = (customerProps: string | string[] | any) => {
                     </div>
 
                 </div>
+                {
+                    openExtraFault && <div>
+                        <Label htmlFor='extraFault' className="text-gray-500">Add more faults</Label>
+                        <Input type="text" name='extraFault' id='extraFault' placeholder='Add more faults' value={extraFault} onChange={(e) => setExtraFault(e.target.value)} />
+                    </div>
+                }
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center mb-2">
                     <div>
                         <Label htmlFor='job_repair_no' className="text-gray-500">Job repair no</Label>
@@ -421,6 +455,7 @@ const HHP = (customerProps: string | string[] | any) => {
                     </div>
                 </div>
                 {warranty ? <p className="text-lg font-semibold text-sky-700 md:text-xl text-center my-3">Unit is {warranty === "LP" ? "IW" : warranty}</p> : ""}
+
 
                 <Button type="submit" disabled={createTicketLoading || !isFormValid}>
                     {createTicketLoading ? 'Creating...' : 'Create ticket'}

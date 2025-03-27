@@ -102,14 +102,13 @@ const AddHHPTask = async (req, res) => {
             ]);
             await appLogs("INSERT", job_added_by, req.body);
             // io.emit("addTask", rows[0]); // Notify clients about task addition
-            emitBinStatsUpdate(); // Call bin stats update function
+            await emitBinStatsUpdate(); // Call bin stats update function
             return res.status(201).json({
                 message: "HHP task created",
                 task: fetchResult.rows[0],
             });
         }
     } catch (error) {
-      
         // Handle validation or other errors
         const errors = {};
         if (error.inner) {

@@ -22,15 +22,19 @@ const addComment = async (req, res) => {
             [task_id, comment]
         );
 
-        const { rows } = await pool.query(
-            "INSERT INTO technician_tasks_comments (task_id, comment, created_at, created_by) VALUES ($1, $2, $3, $4) returning *",
-            [task_id, comment, created_at, created_by]
-        );
-        await appLogs("INSERT", created_by, req.body, ticket_number);
-        return res.status(201).json({
-            message: "Successfully created",
-            rows: rows[0],
-        });
+        if (existingComment.length > 0) {
+            return res.status(500).json({ message: "comment exists" });
+        } else {
+            const { rows } = await pool.query(
+                "INSERT INTO technician_tasks_comments (task_id, comment, created_at, created_by) VALUES ($1, $2, $3, $4) returning *",
+                [task_id, comment, created_at, created_by]
+            );
+            await appLogs("INSERT", created_by, req.body, ticket_number);
+            return res.status(201).json({
+                message: "Successfully created",
+                rows: rows[0],
+            });
+        }
     } catch (error) {
         // Handle validation or other errors
         const errors = {};
