@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.32] - 2025-03-28
+
+### Added
+
+-   create service order from view ticket
+-   show hhp techs in home screen
+-   add columns quote_accepted_date and quote_rejected_date
+-   quote_accepted, quote_rejected radio in view ticket (updateable)
+-   assigned to tech date
+-   clicking on bin stats tickets, opens them in view
+-   view invoices from rs in view ticket
+-   Udpate so number to said ticket after creating it, in view ticket
+-   dashboard table, sortable columns, columns should be independently clickable
+
+### Fixed
+
+-   uploading in view tickets was not working accordingly
+
+
 ## [0.1.31] - 2025-03-27
 
 ### Added

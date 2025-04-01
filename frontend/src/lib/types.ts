@@ -754,6 +754,9 @@ export type IHHPSingleTask = {
     repairshopr_status: string;
     repairshopr_customer_id: number | null | undefined;
     gspn_status: string;
+    quote_rejected_date?: string | null | undefined;
+    quote_accepted_date?: string | null | undefined;
+    assigned_date?: string | undefined;
     device_location: string | null;
     requires_backup: string | null;
     ticket_type_id?: string | null | any;
@@ -812,4 +815,8 @@ export type IHHPSingleTask = {
         compensation: boolean;
     }[];
     repairshopr_job_id: string;
+};
+export type TDashboardRowData = {
+    engineer: string;
+    [key: string]: any[] | string; // Other keys will hold ticket lists
 };

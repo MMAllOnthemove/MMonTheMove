@@ -45,6 +45,7 @@ const GetTaskByTicket = async (req, res) => {
         );
         return res.status(200).json(rows);
     } catch (err) {
+        console.log("get by ticket error", err);
         return res.status(500).json({
             message: "Internal server error",
             error:
@@ -52,5 +53,4 @@ const GetTaskByTicket = async (req, res) => {
         });
     }
 };
-
 export { GetAllTasks, GetTaskById, GetTaskByTicket };

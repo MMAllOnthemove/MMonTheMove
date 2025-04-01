@@ -201,7 +201,7 @@ const GSPNScreen = () => {
 
         setNewServiceOrder(result?.Return?.EvSvcOrderNo);
 
-        setOpenModal(true)
+        setOpenModal((prev) => !prev)
 
 
         setModel("")

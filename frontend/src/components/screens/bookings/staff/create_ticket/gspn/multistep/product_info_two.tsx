@@ -21,7 +21,7 @@ const FormWrapper = dynamic(() =>
 )
 
 type TProductInfo = {
-    model: string
+    model: string | undefined
     symCode1: string;
     setSymCode1: (value: string) => void
     symCode2: string;
@@ -78,7 +78,7 @@ const ProductInfoTwo = ({ model, symCode1, setSymCode1, symCode2, setSymCode2, s
     const [symCode3Options, setSymCode3Options] = useState<any>([]);
     // const [selectedSymCode3, setSelectedSymCode3] = useState("");
     useEffect(() => {
-        const handleSymptomCodes = async (model: string) => {
+        const handleSymptomCodes = async (model: string | undefined) => {
             if (!model) return;
             try {
                 const data = await getCustomerCodes(model);
@@ -159,7 +159,7 @@ const ProductInfoTwo = ({ model, symCode1, setSymCode1, symCode2, setSymCode2, s
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 items-center">
 
                 <div>
-                    <label htmlFor='symCode1' className='text-sm font-medium text-gray-900'>SymCode1:</label>
+                    <label htmlFor='symCode1' className='text-sm font-medium text-gray-900'>SymCode1: <small>(customer symptom 1)</small></label>
                     <Select value={symCode1}
                         name="symCode1"
                         onValueChange={(e) =>
@@ -179,7 +179,7 @@ const ProductInfoTwo = ({ model, symCode1, setSymCode1, symCode2, setSymCode2, s
                     </Select>
                 </div>
                 <div>
-                    <label htmlFor='symCode2' className='text-sm font-medium text-gray-900'>SymCode2:</label>
+                    <label htmlFor='symCode2' className='text-sm font-medium text-gray-900'>SymCode2: <small>(customer symptom 2)</small></label>
                     <Select value={symCode2}
                         name="symCode2"
                         disabled={!symCode2Options.length}
@@ -200,7 +200,7 @@ const ProductInfoTwo = ({ model, symCode1, setSymCode1, symCode2, setSymCode2, s
                     </Select>
                 </div>
                 <div>
-                    <label htmlFor='symCode3' className='text-sm font-medium text-gray-900'>SymCode3:</label>
+                    <label htmlFor='symCode3' className='text-sm font-medium text-gray-900'>SymCode3: <small>(customer symptom 3)</small></label>
                     <Select value={symCode3}
                         name="symCode3"
                         disabled={!symCode3Options.length}
@@ -243,7 +243,7 @@ const ProductInfoTwo = ({ model, symCode1, setSymCode1, symCode2, setSymCode2, s
                     </Select>
                 </div>
                 <div>
-                    <label htmlFor='tokenNo' className='text-sm font-medium text-gray-900'>Token No</label>
+                    <label htmlFor='tokenNo' className='text-sm font-medium text-gray-900'>Token No <small>(Only if service type is &apos;Carry In&apos;)</small></label>
                     <div className="flex items-center gap-1">
                         <Input type="text" id='tokenNo' name='tokenNo' value={tokenNo} disabled
                             onChange={(e) => setTokenNo(e.target.value)} />

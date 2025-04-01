@@ -128,7 +128,9 @@ create table technician_tasks (
     rs_warranty text,
     ticket_type_id text,
     quote_accepted boolean,
+    quote_accepted_date text,
     quote_rejected boolean,
+    quote_rejected_date text,
     fault_category text
 );
 

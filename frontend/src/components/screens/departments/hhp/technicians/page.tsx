@@ -179,9 +179,10 @@ const TechniciansScreen = () => {
     // parts
     const [search_part, setSearchPart] = useState("")
 
-    const { engineersList } = useFetchEngineer()
+    const { engineersList } = useFetchEngineer();
+    const hhpTechs = engineersList?.filter((x)=> x.department === "HHP")
     // for filtering by engineer
-    const engineerListFomatted = engineersList?.map((user) => ({
+    const engineerListFomatted = hhpTechs?.map((user) => ({
         id: user?.id,
         repairshopr_id: user?.repairshopr_id,
         value: user?.engineer_firstname + " " + user?.engineer_lastname,

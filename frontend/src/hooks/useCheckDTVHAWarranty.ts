@@ -3,7 +3,10 @@ import axios from "axios";
 import moment from "moment";
 import toast from "react-hot-toast";
 
-const useCheckWarranty = (modelNumber: string, serialNumber: string) => {
+const useCheckWarranty = (
+    modelNumber: string | undefined,
+    serialNumber: string | undefined
+) => {
     const [warranty, setWarranty] = useState("");
     const [ticketTypeId, setTicketTypeId] = useState<number | any>();
     const [warrantyCode, setWarrantyCode] = useState<number | any>();

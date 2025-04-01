@@ -15,6 +15,8 @@ type TUpdateValues = {
     parts_issued?: boolean;
     parts_pending?: boolean;
     qc_date?: string;
+    quote_accepted_date?: string;
+    quote_rejected_date?: string;
     qc_complete?: string;
     updatedByWho: string;
     ticket_number?: string | number;

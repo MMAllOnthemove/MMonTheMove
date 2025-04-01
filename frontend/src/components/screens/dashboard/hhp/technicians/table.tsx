@@ -1,134 +1,307 @@
-"use client"
-import { useState } from "react";
-import moment from "moment";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import useHHPTasks from '@/hooks/useHHPTasks';
+"use client";
+import React, { useState, useMemo } from "react";
+import { useReactTable, ColumnDef, getCoreRowModel, flexRender, ColumnFiltersState, ColumnOrderState, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, PaginationState, SortingState } from "@tanstack/react-table";
+import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogHeader, DialogDescription } from "@/components/ui/dialog";
+import { useHHPTasksCrud } from "@/hooks/useHHPTasksCrud";
 import useFetchEngineer from "@/hooks/useFetchEngineers";
+import moment from "moment";
+import repairshopr_statuses_techs from "@/lib/tech_rs_statuses";
+import { TDashboardRowData } from "@/lib/types";
+import groupedDataFunction from "@/lib/group_tickets_hhp_dahboard_table";
+import ManagementSearchForm from "@/components/search_field/page";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+const repairshopr_statuses = [
+    ...repairshopr_statuses_techs,
+    { id: 19, _status: "QC Passed" }, // Add QC Passed status
+];
+
+
+
+
 
 const HHPDashboardTable = () => {
-    const [selectedEngineer, setSelectedEngineer] = useState(null);
-    const [fromDate, setFromDate] = useState("");
-    const [toDate, setToDate] = useState("");
-
-    const { hhpTasks } = useHHPTasks();
+    const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+    const [selectedEngineer, setSelectedEngineer] = useState<string | null>(null);
+    const [selectedTickets, setSelectedTickets] = useState<any[]>([]);
+    const [fromDate, setFromDate] = useState<string | null>(null);
+    const [toDate, setToDate] = useState<string | null>(null);
     const { engineersList } = useFetchEngineer();
+    const [openSortTableColumnsModal, setSortTableColumns] = useState(false)
+    const { hhpTasks, hhpTasksLoading } = useHHPTasksCrud()
+    const hhpTechs = engineersList?.filter((x) => x.department === "HHP")
+    // Group tickets by engineer and unit_status
+    // Group tickets by engineer and unit_status
+    const groupedData: TDashboardRowData[] = useMemo(() => {
+        const grouped: { [key: string]: TDashboardRowData } = {};
 
-    const hhpTechs = engineersList?.filter((x) => x.department === 'HHP');
-    const engineerLookup = new Set(hhpTechs.map(e => `${e.engineer_firstname} ${e.engineer_lastname}`));
+        hhpTasks
+            .filter((ticket: any) => {
+                // Filter by engineer (only include engineers in the engineersList)
+                return hhpTechs.some((engineer) => `${engineer?.engineer_firstname} ${engineer?.engineer_lastname}` === ticket.engineer);
+            })
+            .filter((ticket: any) => {
+                // Filter by date range
+                const ticketDate = new Date(ticket.date_booked);
+                const from = fromDate ? new Date(fromDate) : null;
+                const to = toDate ? new Date(toDate) : null;
 
-    const isInDateRange = (date: string) => {
-        if (!fromDate && !toDate) return true;
-        const jobDate = moment(date);
-        return jobDate.isBetween(moment(fromDate).startOf("day"), moment(toDate).endOf("day"), null, "[]");
-    };
+                if (from && ticketDate < from) return false;
+                if (to && ticketDate > to) return false;
 
-    // Filter jobs based on engineers and date range, plus qc_complete filter
-    const filteredJobs = hhpTasks.filter((job: any) =>
-        engineerLookup.has(job.engineer) &&
-        isInDateRange(job.date_booked) &&
-        job.qc_complete === "Pass" // Make sure only "Pass" jobs are included
-    );
+                return true;
+            })
+            .forEach((ticket: any) => {
+                if (!grouped[ticket.engineer]) {
+                    grouped[ticket.engineer] = { engineer: ticket.engineer };
+                }
+                // Group by unit_status (e.g., 'New', 'In Progress', etc.)
+                if (!grouped[ticket.engineer][ticket.unit_status]) {
+                    grouped[ticket.engineer][ticket.unit_status] = [];
+                }
+                (grouped[ticket.engineer][ticket.unit_status] as any[]).push(ticket);
 
-    // Group by engineer and calculate completed units
-    const engineers = filteredJobs.reduce((acc: any, job: any) => {
-        const engineer = acc.find((e: any) => e.engineer === job.engineer);
-        if (engineer) {
-            engineer.tickets.push(job);
-            engineer.completed_units++; // Only increase completed_units if "Pass"
-        } else {
-            acc.push({
-                engineer: job.engineer,
-                completed_units: 1, // First "Pass" job increases completed_units
-                tickets: [job],
+                // Handle the qc_complete field as its own status if it's 'Pass'
+                if (ticket.qc_complete === 'Pass') {
+                    const qcStatus = 'QC Passed';
+                    if (!grouped[ticket.engineer][qcStatus]) {
+                        grouped[ticket.engineer][qcStatus] = [];
+                    }
+                    (grouped[ticket.engineer][qcStatus] as any[]).push(ticket);
+                }
             });
-        }
-        return acc;
-    }, []);
+        return Object.values(grouped);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [fromDate, hhpTechs, toDate]);
 
-    const totalCompleted = engineers.reduce((sum: any, e: any) => sum + e.completed_units, 0);
 
-    // Sort engineers by completed units in descending order
-    const sortedEngineers = engineers.sort((a: any, b: any) => b.completed_units - a.completed_units);
+    // Create columns dynamically
+    const columns: ColumnDef<TDashboardRowData>[] = [
+        { header: "Engineer", accessorKey: "engineer" },
+        ...repairshopr_statuses.map(({ _status }) => ({
+            header: _status,
+            accessorKey: _status,
+            cell: ({ row }: any) => {
+                const tickets = row.original[_status] as any[] | undefined;
+                const count = tickets?.length || 0;
 
+                return (
+                    <button
+                        onClick={() => {
+                            setSelectedStatus(_status);
+                            setSelectedEngineer(row.original.engineer as string);
+                            setSelectedTickets(tickets || []);
+                        }}
+                        className={`w-full h-full px-2 py-1 rounded ${count > 0 ? "bg-blue-100 hover:bg-blue-200 cursor-pointer" : "text-gray-400"}`}
+                    >
+                        {count}
+                    </button>
+                );
+            },
+        })),
+    ];
+
+    // Table sorting
+    const [sorting, setSorting] = useState<SortingState>([]);
+
+    // Table filtering
+    const [filtering, setFiltering] = useState("");
+
+
+    // Table column visibility 
+    const [columnVisibility, setColumnVisibility] = useState({})
+
+    // Table column order
+    const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>([])
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+
+    const [pagination, setPagination] = useState<PaginationState>({
+        pageIndex: 0,
+        pageSize: 10,
+    })
+
+
+    // Initialize table instance
+    const table = useReactTable({
+        data: groupedData,
+        columns,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        state: {
+            sorting: sorting,
+            globalFilter: filtering,
+            pagination,
+            columnVisibility,
+            columnOrder,
+            columnFilters
+        },
+        onColumnVisibilityChange: setColumnVisibility,
+        onColumnOrderChange: setColumnOrder,
+        onSortingChange: setSorting,
+        onGlobalFilterChange: setFiltering,
+        onPaginationChange: setPagination,
+        onColumnFiltersChange: setColumnFilters,
+    });
 
     return (
-        <>
-            <div className="p-4">
-                {/* Filters */}
-                <div className="flex gap-4 mb-4">
-                    <div>
-                        <label className="block text-sm font-medium">From Date</label>
-                        <Input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium">To Date</label>
-                        <Input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} />
-                    </div>
+        <div>
+            <h1 className="text-xl font-bold mb-4">Repair Jobs by Engineer & Status</h1>
+            <div className="flex justify-between items-center gap-3 mb-3">
+                <div className="flex-grow min-w-[200px]">
+                    <ManagementSearchForm
+                        filtering={filtering}
+                        setFiltering={(e) => setFiltering(e.target.value)}
+                    />
                 </div>
+                {/* Date Filters */}
+                <div className="flex items-center">
+                    <Input
+                        type="date"
+                        value={fromDate || ""}
+                        onChange={(e) => setFromDate(e.target.value)}
+                        className="mr-2 p-2 border border-gray-300 rounded"
+                    />
+                    <Input
+                        type="date"
+                        value={toDate || ""}
+                        onChange={(e) => setToDate(e.target.value)}
+                        className="p-2 border border-gray-300 rounded"
+                    />
+                </div>
+                <Button type="button" onClick={() => setSortTableColumns(true)} className="hidden md:block">Sort columns</Button>
 
-                {/* Table */}
-                <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg">
-                    <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-                        <caption>HHP tasks completed</caption>
-                        <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] uppercase font-semibold">
-                            <tr>
-                                <th className="px-4 py-3 font-semibold">Engineer</th>
-                                <th className="px-4 py-3 font-semibold">Completed Units</th>
-                            </tr>
-                        </thead>
-                        <tbody className="z-0">
-                            {sortedEngineers.map((engineer: any) => (
-                                <Dialog key={engineer.engineer}>
-                                    <DialogTrigger asChild>
-                                        <TableRow
-                                            onClick={() => setSelectedEngineer(engineer)}
-                                            className="cursor-pointer hover:bg-gray-100"
-                                        >
-                                            <TableCell>{engineer.engineer}</TableCell>
-                                            <TableCell>{engineer.completed_units}</TableCell>
-                                        </TableRow>
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                        <div className="h-[400px] overflow-auto">
-                                            <h2 className="text-lg font-semibold">{engineer.engineer}'s Tickets</h2>
-                                            <Table>
-                                                <TableHeader>
-                                                    <TableRow>
-                                                        <TableHead>#</TableHead>
-                                                        <TableHead>Ticket Number</TableHead>
-                                                        <TableHead>Date Booked</TableHead>
-                                                    </TableRow>
-                                                </TableHeader>
-                                                <TableBody>
-                                                    {engineer.tickets
-                                                        .filter((ticket: any) => isInDateRange(ticket.date_booked)) // Only filter by date
-                                                        .map((ticket: any, index: number) => (
-                                                            <TableRow key={ticket.ticket_number}>
-                                                                <TableCell>{index + 1}</TableCell>
-                                                                <TableCell>{ticket.ticket_number}</TableCell>
-                                                                <TableCell>{moment(ticket.date_booked).format("YYYY-MM-DD HH:mm")}</TableCell>
-                                                            </TableRow>
-                                                        ))}
-                                                </TableBody>
-                                            </Table>
-                                        </div>
-                                    </DialogContent>
-                                </Dialog>
-                            ))}
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td className="px-4 py-3 font-semibold">Total</td>
-                                <td className="px-4 py-3 font-semibold">{totalCompleted}</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
             </div>
-        </>
+            {
+                openSortTableColumnsModal &&
+                <Dialog open={openSortTableColumnsModal} onOpenChange={() => setSortTableColumns(false)} >
+                    {/* <DialogTrigger>Open</DialogTrigger> */}
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Sort columns</DialogTitle>
+                            <DialogDescription>
+                                Toggle columns you want/do not want
+                            </DialogDescription>
+                        </DialogHeader>
+
+                        <div className="inline-block border border-black shadow rounded">
+                            <div className="px-1 border-b border-black">
+                                <label>
+                                    <input
+                                        className='bg-sky-600 cursor-pointer checked:bg-slate-950 focus:bg-slate-950'
+                                        {...{
+                                            type: 'checkbox',
+                                            checked: table.getIsAllColumnsVisible(),
+                                            onChange: table.getToggleAllColumnsVisibilityHandler(),
+                                        }}
+                                    />{' '}
+                                    Show them all
+                                </label>
+                            </div>
+                            {table.getAllLeafColumns().map(column => {
+                                return (
+                                    <div key={column.id} className="px-1">
+                                        <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
+                                            <input
+                                                className='bg-sky-600 cursor-pointer checked:bg-slate-950 focus:bg-slate-950'
+                                                {...{
+                                                    type: 'checkbox',
+                                                    checked: column.getIsVisible(),
+                                                    onChange: column.getToggleVisibilityHandler(),
+                                                }}
+                                            />{' '}
+                                            {column?.columnDef?.header as any}
+
+                                        </label>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </DialogContent>
+                </Dialog>
+            }
+            <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg">
+                <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
+                    <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] uppercase font-semibold">
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <tr key={headerGroup.id} className="font-semibold">
+                                {headerGroup.headers.map((header) => {
+                                    return (
+                                        <th
+                                            key={header.id}
+                                            className="px-4 py-3 cursor-pointer  font-semibold"
+                                        >
+                                            {header.isPlaceholder ? null : (
+                                                <div
+                                                    {...{
+                                                        className: header.column.getCanSort()
+                                                            ? "cursor-pointer select-none"
+                                                            : "",
+                                                        onClick:
+                                                            header.column.getToggleSortingHandler(),
+                                                    }}
+                                                >
+                                                    {flexRender(
+                                                        header.column.columnDef.header,
+                                                        header.getContext()
+                                                    )}
+                                                    {{
+                                                        asc: " 👇",
+                                                        desc: " 👆",
+                                                    }[header.column.getIsSorted() as string] ??
+                                                        null}
+                                                </div>
+                                            )}
+                                        </th>
+                                    );
+                                })}
+
+                            </tr>
+                        ))}
+                    </thead>
+                    {
+                        hhpTasksLoading ? <p className="px-3 text-center">Loading...</p> :
+
+                            <tbody className="z-0">
+                                {table.getRowModel().rows.map((row) => (
+                                    <tr key={row.id} className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]">
+                                        {row.getVisibleCells().map((cell) => (
+                                            <td key={cell.id} className="px-4 py-3 font-medium text-sm">
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                    }
+                </table>
+            </div>
+
+            {/* Ticket List Modal */}
+            <Dialog open={!!selectedStatus} onOpenChange={() => setSelectedStatus(null)}>
+                <DialogContent>
+                    <DialogTitle>
+                        {selectedEngineer} - {selectedStatus} Tickets
+                    </DialogTitle>
+                    <div className="overflow-auto h-[400px]">
+                        <ul className="mt-2">
+                            {selectedTickets.length > 0 ? (
+                                selectedTickets.map((ticket, index: number) => (
+                                    <li key={ticket.ticket_number} className="border p-2 rounded mb-2">
+                                        {index + 1}  <strong>{ticket.ticket_number}</strong> - Booked on: {moment(ticket.date_booked).format("YYYY-MM-DD")}
+                                    </li>
+                                ))
+                            ) : (
+                                <p>No tickets found.</p>
+                            )}
+                        </ul>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        </div>
     );
-}
+};
 
 export default HHPDashboardTable;
