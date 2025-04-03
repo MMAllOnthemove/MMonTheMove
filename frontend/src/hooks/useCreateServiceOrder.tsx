@@ -77,32 +77,46 @@ const useCreateServiceOrder = () => {
                     },
                 }
             );
+            console.log("gspn response data", data);
+
             if (data?.Return?.EvSvcOrderNo) {
                 toast.success(
                     (t) => (
-                        <span className='flex gap-2 justify-between'>
+                        <span className="flex gap-2 justify-between">
                             Service order no: {data?.Return?.EvSvcOrderNo}
-                            <button className='outline-none border-none bg-transparent cursor-pointer' onClick={() => toast.dismiss(t.id)}>&#10006;</button>
+                            <button
+                                className="outline-none border-none bg-transparent cursor-pointer"
+                                onClick={() => toast.dismiss(t.id)}
+                            >
+                                &#10006;
+                            </button>
                         </span>
                     ),
-                    {
-                        duration: 86400000, // 24 hours
-                    }
+                    { duration: 86400000 } // 24 hours
                 );
                 return data;
-            } else {
+            }
+
+            // Handle error messages
+            if (data?.EtEhnErrInfo?.GspnWMsgCode) {
                 toast.error(data?.EtEhnErrInfo?.GspnWMsgCode);
+            }
+
+            if (Array.isArray(data?.EtErrInfo?.results) && data?.EtErrInfo?.results.length > 0) {
+                data.EtErrInfo.results.forEach((error: any) => {
+                    toast.error(error.ErrMsg || "An error occurred");
+                });
             }
 
             return data;
         } catch (error: any) {
-            if (process.env.NODE_ENV !== "production")
-                console.error("service order error", error);
-            // toast.error(`${error}`);
+            console.error("Service order error", error);
+            toast.error("Failed to create service order. Please try again.");
         } finally {
             setLoading(false);
         }
     };
+
 
     return { addServiceOrder, addServiceOrderLoading };
 };

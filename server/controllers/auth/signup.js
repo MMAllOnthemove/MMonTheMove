@@ -82,6 +82,11 @@ const SignupUser = async (req, res) => {
         const refreshToken = generateRefreshToken(userForToken);
 
         await appLogs("INSERT", capitalizedEmail, user);
+        // Store token in the database
+        await pool.query(
+            `INSERT INTO tokens (user_id, token, auth_type) VALUES ($1, $2, $3)`,
+            [user.user_id, refreshToken, "signup"]
+        );
 
         // Set refresh token in the cookie (secure for production)
         res.cookie("refreshToken", refreshToken, {

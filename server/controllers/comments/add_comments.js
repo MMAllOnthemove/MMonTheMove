@@ -21,7 +21,7 @@ const addComment = async (req, res) => {
             "SELECT * FROM technician_tasks_comments WHERE task_id = $1 AND comment = $2 limit 1",
             [task_id, comment]
         );
-
+        // todo: remove
         if (existingComment.length > 0) {
             return res.status(500).json({ message: "comment exists" });
         } else {
@@ -36,6 +36,7 @@ const addComment = async (req, res) => {
             });
         }
     } catch (error) {
+        console.log("error add comment", error);
         // Handle validation or other errors
         const errors = {};
         if (error.inner) {

@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.33] - 2025-04-02
+
+### Added
+
+-   auth_type_enum, tokens table, alter table company_people add column user_role user_role_enum
+-   ADD CONSTRAINT unique_token_user_id UNIQUE (user_id)
+-   hide ‘add task’ button
+-   Show quote approved date and time in view ticket
+-   hhp_quality_control
+-   total in dashboard hhp table
+-   reset filters in hhp dashboard table
+-   show assets at the top in view ticket
+
+### Fixed
+
+- gspn error handling when booking
+- hhp dashboard glitching
+
 ## [0.1.32] - 2025-03-28
 
 ### Added
@@ -22,7 +40,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 -   uploading in view tickets was not working accordingly
-
 
 ## [0.1.31] - 2025-03-27
 

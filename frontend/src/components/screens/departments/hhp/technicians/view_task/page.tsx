@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import useQCToTable from '@/hooks/addQCToTable';
 import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
 import useAddCommentsLocally from '@/hooks/useCommentsLocally';
 import useFetchEngineer from '@/hooks/useFetchEngineers';
@@ -17,7 +18,6 @@ import useRepairshoprComment from '@/hooks/useRepairshoprComment';
 import useRepairshoprTicket from '@/hooks/useRepairshoprTicket';
 import useSocket from "@/hooks/useSocket";
 import useTaskParts from '@/hooks/useTaskParts';
-import calculateDueDate from '@/lib/calculate_due_date';
 import { datetimestamp } from '@/lib/date_formats';
 import findChanges from '@/lib/find_changes';
 import openInNewTab from '@/lib/open_new_tab';
@@ -65,7 +65,7 @@ const ViewHHPTaskScreen = () => {
     const { hhpTasks, fetchTasks, updateHHPTaskLoading, updateTask, deleteTask } = useHHPTasksCrud()
     const { hhpTask, refetch, hhpTaskLoading } = useFetchHHPTaskById(id ? decodeURIComponent(Array.isArray(id) ? id[0] : id) : null)
     const { commentsList, commentsListLoading, totalPages, currentPage, fetchComments } = useAddCommentsLocally(id)
-
+    const { addQCToTable } = useQCToTable()
     const [reparshoprComment, setRepairshoprComment] = useState("")
     const { getSOPartsInfo } = useIpaasSOPartsInfo()
     const [qc_comment, setQCFailReason] = useState('')
@@ -595,8 +595,16 @@ const ViewHHPTaskScreen = () => {
             "created_by": user?.full_name,
             "ticket_number": hhpTask?.ticket_number
         }
+        const addQCToTablePayload = {
+            ticket_number: hhpTask?.ticket_number,
+            qc_complete,
+            qc_comment,
+            created_at,
+            created_by: user?.email
+        }
         try {
             setQCSubmitLoading(true)
+            await addQCToTable(addQCToTablePayload)
             if (Object.keys(changes).length > 0) {
                 await updateTask(id, changes)
                 if (qc_comment?.length > 0) {
@@ -1299,6 +1307,19 @@ const ViewHHPTaskScreen = () => {
                                                             <h5 className="font-medium text-sm text-gray-500">Assigned date</h5>
                                                             <p className="font-medium text-sm">{moment(hhpTask?.assigned_date).format("lll")}</p>
                                                         </div>
+                                                        {
+                                                            hhpTask?.quote_accepted === true && <div className='flex items-center gap-4 md:justify-between mb-2'>
+                                                                <h5 className="font-medium text-sm text-gray-500">Quote approved date</h5>
+                                                                <p className="font-medium text-sm">{hhpTask?.quote_accepted_date ? moment(hhpTask?.quote_accepted_date).format("lll") : "No date"}</p>
+                                                            </div>
+                                                        }
+                                                        {
+                                                            hhpTask?.quote_rejected === true && <div className='flex items-center gap-4 md:justify-between mb-2'>
+                                                                <h5 className="font-medium text-sm text-gray-500">Quote rejected date</h5>
+                                                                <p className="font-medium text-sm">{hhpTask?.quote_rejected_date ? moment(hhpTask?.quote_rejected_date).format("lll") : "No date"}</p>
+                                                            </div>
+                                                        }
+
                                                         <div className='flex items-center gap-4 md:justify-between mb-2'>
                                                             <h5 className="font-medium text-sm text-gray-500">Invoices</h5>
                                                             <Button variant="outline" onClick={() => setViewInvoicesModal(true)}>View</Button>
@@ -1464,6 +1485,32 @@ const ViewHHPTaskScreen = () => {
                                             </div>
                                             {/* column 2 */}
                                             <div className="px-3 py-2 flex flex-col gap-7">
+                                                {/* assets */}
+                                                {/* name should be auto filled by model istead of user (just to appease the rs api) */}
+                                                <div className="py-2 px-3">
+                                                    <div className="flex justify-between items-center border-b pb-2">
+                                                        <h4 className="scroll-m-20 text-lg font-semibold tracking-tight">Product information (Assets)</h4>
+                                                        <div className="flex gap-3">
+                                                            <Button variant="outline" type="button" disabled>New</Button>
+                                                            <Button variant="outline" type="button" disabled>Add existing</Button>
+                                                        </div>
+                                                    </div>
+                                                    <div className='flex items-center gap-4 md:justify-between my-2'>
+                                                        <div className='flex flex-col'>
+                                                            <h5 className="font-medium text-sm text-gray-500">Model number</h5>
+                                                            <Link href="/" className="font-medium text-sm">{hhpTask?.model}</Link>
+                                                            <Link href="/" className="font-medium text-sm text-gray-500">{hhpTask?.phone_name}</Link>
+                                                        </div>
+                                                        <div>
+                                                            <h5 className="font-medium text-sm text-gray-500">IMEI</h5>
+                                                            <p className="font-medium text-sm">{hhpTask?.imei}</p>
+                                                        </div>
+                                                        <div>
+                                                            <h5 className="font-medium text-sm text-gray-500">Serial number</h5>
+                                                            <p className="font-medium text-sm">{hhpTask?.serial_number}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div className="py-2 px-3">
                                                     <div className='flex justify-between items-center border-b pb-2'>
                                                         <h4 className="scroll-m-20 text-lg font-semibold tracking-tight">Custom fields</h4>
@@ -1578,32 +1625,7 @@ const ViewHHPTaskScreen = () => {
                                                     </div>
                                                     <Parts oldPartsLoading={oldPartsLoading} submitPartsOld={addOldPartToRepairshoprComment} onSelectionChangeOldParts={setSelectedOldParts} partsIssuedText={partsIssuedText} setIssuedExtraText={setIssuedExtraText} issuedPartsLoading={issuedPartsLoading} submitPartsIssued={addPartIssuedToRepairshoprComment} onSelectionChange={setSelectedIssuedParts} in_stock={part_in_stock} submitPartOrderId={submitPartOrderId} submitPartOrderIdLoading={submitPartOrderIdLoading} parts_order_id={parts_order_id} setPartsOrderId={setPartsOrderId} stored_parts_order_id={hhpTask?.parts_order_id} partsExtraText={partsExtraText} setPartsExtraText={setPartsExtraText} compensation={compensation} setCompensation={(e) => setCompensation(e)} deletePartLoading={deletePartLoading} part_data={taskPartsList} submitPartsUpdate={handlePartsSubmit} search_part={search_part} setSearchPart={setSearchPart} part_desc={part_desc} setPartDesc={setPartDesc} part_quantity={part_quantity} setPartQuantity={setPartQuantity} addPart={addPart} addPartLoading={addPartLoading} submitPartsUpdateLoading={submitPartsUpdateLoading} errors={addPartErrors} handleDelete={handleDeletePart} addPartOnRepairshoprLoading={addPartOnRepairshoprLoading} addPartOnRepairshopr={addPartListToRepairshoprComment} />
                                                 </div>
-                                                {/* assets */}
-                                                {/* name should be auto filled by model istead of user (just to appease the rs api) */}
-                                                <div className="py-2 px-3">
-                                                    <div className="flex justify-between items-center border-b pb-2">
-                                                        <h4 className="scroll-m-20 text-lg font-semibold tracking-tight">Product information (Assets)</h4>
-                                                        <div className="flex gap-3">
-                                                            <Button variant="outline" type="button" disabled>New</Button>
-                                                            <Button variant="outline" type="button" disabled>Add existing</Button>
-                                                        </div>
-                                                    </div>
-                                                    <div className='flex items-center gap-4 md:justify-between my-2'>
-                                                        <div className='flex flex-col'>
-                                                            <h5 className="font-medium text-sm text-gray-500">Model number</h5>
-                                                            <Link href="/" className="font-medium text-sm">{hhpTask?.model}</Link>
-                                                            <Link href="/" className="font-medium text-sm text-gray-500">{hhpTask?.phone_name}</Link>
-                                                        </div>
-                                                        <div>
-                                                            <h5 className="font-medium text-sm text-gray-500">IMEI</h5>
-                                                            <p className="font-medium text-sm">{hhpTask?.imei}</p>
-                                                        </div>
-                                                        <div>
-                                                            <h5 className="font-medium text-sm text-gray-500">Serial number</h5>
-                                                            <p className="font-medium text-sm">{hhpTask?.serial_number}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
+
 
                                                 <div className="py-2 px-3">
                                                     <div className="border-b pb-2">

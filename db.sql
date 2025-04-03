@@ -4,6 +4,8 @@ create type login_method_enum as ENUM('password', 'oauth', 'sso');
 
 create type login_status_enum as ENUM('success', 'failure');
 
+create type user_role_enum as ENUM('admin', 'manager', 'employee', 'guest');
+
 CREATE TABLE company_people (
     user_id BIGSERIAL PRIMARY KEY,
     user_unique_id uuid DEFAULT gen_random_uuid(),
@@ -13,12 +15,24 @@ CREATE TABLE company_people (
     department text,
     created_at text,
     updated_at text,
-    user_role text,
+    user_role user_role_enum,
     reset_token VARCHAR(255),
     repairshopr_id INTEGER,
     permissions text,
     gspn_username varchar(30),
     reset_token_expires_at text
+);
+
+create type auth_type_enum as ENUM('login', 'signup');
+
+create table tokens (
+    id BIGSERIAL PRIMARY KEY,
+    token_unique_id uuid DEFAULT gen_random_uuid(),
+    token text,
+    user_id int unique,
+    created_at text,
+    auth_type auth_type_enum,
+    FOREIGN KEY (user_id) REFERENCES company_people(user_id)
 );
 
 CREATE TABLE login_history (
@@ -132,6 +146,16 @@ create table technician_tasks (
     quote_rejected boolean,
     quote_rejected_date text,
     fault_category text
+);
+
+create table hhp_quality_control (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    ticket_number text,
+    qc_complete text,
+    reason text,
+    created_at text,
+    created_by text
 );
 
 create table technician_tasks_images (

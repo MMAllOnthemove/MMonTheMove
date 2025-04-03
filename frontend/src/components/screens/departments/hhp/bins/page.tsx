@@ -116,60 +116,48 @@ const BinsScreen = () => {
 
     return (
         <>
+
+
             {
-                loading ? (
-                    <LoadingScreen />
-                ) : isLoggedIn && user?.user_role === "admin" ? (
-                    <>
-                        {/* <Sidebar /> */}
-                        <main className='container p-1'>
-                            <PageTitle title="bins" hasSpan={true} spanText={"Engineer"} />
-                            <p className="text-sm text-sky-500 text-center font-medium">Based on New, Assigned, In Progress, Parts request tickets</p>
-                            {
-                                hhpTasksLoading ? <p>Loading stats</p> :
+                hhpTasksLoading ? <p>Loading stats</p> :
 
-                                    <Accordion type='single' collapsible>
-                                        {Object.entries(engineerBins).map(([engineer, statuses]: any) => {
-                                            const totalUnits = Object.values(statuses).reduce((sum: number, stat: any) => sum + stat?.units_count, 0);
-                                            return (
-                                                <AccordionItem key={engineer} value={engineer}>
-                                                    <AccordionTrigger>
-                                                        {engineer} ({totalUnits})
-                                                    </AccordionTrigger>
-                                                    <AccordionContent>
-                                                        <div className='space-y-4'>
-                                                            {Object.entries(statuses).map(([status, data]: any) => (
-                                                                <div key={status} className='p-4 border rounded-lg shadow-sm bg-gray-50'>
-                                                                    <p className='font-medium'>Status: {status}</p>
-                                                                    <p>Total Units: {data?.units_count}</p>
-                                                                    <p>Ticket Numbers:</p>
-                                                                    <ol className=' pl-4'>
-                                                                        {data?.tickets.map((ticket: any, i: any) => (
-                                                                            <li key={ticket.id} className="mb-2">
-                                                                                <span className='font-medium'>{ticket?.ticket_number}</span>
-                                                                                ({moment(ticket.date_booked).format('YYYY-MM-DD')})
-                                                                                {ticket.difference.includes('hours') || ticket.difference.includes('minutes')
-                                                                                    ? ' Few hours ago'
-                                                                                    : ` ${ticket.difference} ago`}
-                                                                                <Button variant='outline' className="text-xs ml-2" onClick={() => openFullScreenPopup(`/departments/hhp/technicians/${encodeURIComponent(ticket.id)}`)}>View</Button>
-                                                                            </li>
-                                                                        ))}
-                                                                    </ol>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    </AccordionContent>
-                                                </AccordionItem>
-                                            );
-                                        })}
-                                    </Accordion>}
-                        </main>
+                    <Accordion type='single' collapsible>
+                        {Object.entries(engineerBins).map(([engineer, statuses]: any) => {
+                            const totalUnits = Object.values(statuses).reduce((sum: number, stat: any) => sum + stat?.units_count, 0);
+                            return (
+                                <AccordionItem key={engineer} value={engineer}>
+                                    <AccordionTrigger>
+                                        {engineer} ({totalUnits})
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                        <div className='space-y-4'>
+                                            {Object.entries(statuses).map(([status, data]: any) => (
+                                                <div key={status} className='p-4 border rounded-lg shadow-sm bg-gray-50'>
+                                                    <p className='font-medium'>Status: {status}</p>
+                                                    <p>Total Units: {data?.units_count}</p>
+                                                    <p>Ticket Numbers:</p>
+                                                    <ol className=' pl-4'>
+                                                        {data?.tickets.map((ticket: any, i: any) => (
+                                                            <li key={ticket.id} className="mb-2">
+                                                                <span className='font-medium'>{ticket?.ticket_number}</span>
+                                                                ({moment(ticket.date_booked).format('YYYY-MM-DD')})
+                                                                {ticket.difference.includes('hours') || ticket.difference.includes('minutes')
+                                                                    ? ' Few hours ago'
+                                                                    : ` ${ticket.difference} ago`}
+                                                                <Button variant='outline' className="text-xs ml-2" onClick={() => openFullScreenPopup(`/departments/hhp/technicians/${encodeURIComponent(ticket.id)}`)}>View</Button>
+                                                            </li>
+                                                        ))}
+                                                    </ol>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            );
+                        })}
+                    </Accordion>}
 
-                    </>
-                ) : (
-                    <NotLoggedInScreen />
-                )
-            }
+
 
         </>
     )

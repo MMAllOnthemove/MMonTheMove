@@ -184,7 +184,7 @@ export const useHHPTasksCrud = () => {
                 }
             );
             setHHPTasks((prev: any) =>
-                prev.map((task: any) => (task.id === taskId ? data.task : task))
+                prev.map((task: any) => (task?.id === taskId ? data.task : task))
             );
 
             // 🔴 Emit task update event
@@ -234,7 +234,7 @@ export const useHHPTasksCrud = () => {
         socket.on("updateTask", (updatedTask) => {
             toast.success(`Ticket: ${updatedTask?.ticket_number} has been updated`, { position: 'bottom-center' });
             setHHPTasks((prev: any) =>
-                prev.map((task: any) => (task.id === updatedTask.id ? updatedTask : task))
+                prev.map((task: any) => (task?.id === updatedTask?.id ? updatedTask : task))
             );
         });
 

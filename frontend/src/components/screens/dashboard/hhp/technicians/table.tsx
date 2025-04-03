@@ -1,16 +1,15 @@
 "use client";
-import React, { useState, useMemo } from "react";
-import { useReactTable, ColumnDef, getCoreRowModel, flexRender, ColumnFiltersState, ColumnOrderState, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, PaginationState, SortingState } from "@tanstack/react-table";
-import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogHeader, DialogDescription } from "@/components/ui/dialog";
-import { useHHPTasksCrud } from "@/hooks/useHHPTasksCrud";
+import ManagementSearchForm from "@/components/search_field/page";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import useFetchEngineer from "@/hooks/useFetchEngineers";
-import moment from "moment";
+import { useHHPTasksCrud } from "@/hooks/useHHPTasksCrud";
 import repairshopr_statuses_techs from "@/lib/tech_rs_statuses";
 import { TDashboardRowData } from "@/lib/types";
-import groupedDataFunction from "@/lib/group_tickets_hhp_dahboard_table";
-import ManagementSearchForm from "@/components/search_field/page";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { ColumnDef, ColumnFiltersState, ColumnOrderState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, PaginationState, SortingState, useReactTable } from "@tanstack/react-table";
+import moment from "moment";
+import React, { useMemo, useState } from "react";
 
 const repairshopr_statuses = [
     ...repairshopr_statuses_techs,
@@ -72,13 +71,45 @@ const HHPDashboardTable = () => {
                 }
             });
         return Object.values(grouped);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [fromDate, hhpTechs, toDate]);
+    }, [hhpTasks]);
+
+    // know how many were booked
+    // Filter the tasks based on date range
+    const filteredTasks = useMemo(() => {
+        return hhpTasks.filter((ticket: any) => {
+            const ticketDate = new Date(ticket.date_booked);
+            const from = fromDate ? new Date(fromDate) : null;
+            const to = toDate ? new Date(toDate) : null;
+
+            if (from && ticketDate < from) return false;
+            if (to && ticketDate > to) return false;
+
+            return true;
+        });
+    }, [hhpTasks, fromDate, toDate]);
+
+    // Display the count of filtered tasks
+    const filteredTaskCount = filteredTasks.length;
+    const columnTotals = useMemo(() => {
+        const totals: Record<string, number> = {};
+
+        groupedData.forEach((row) => {
+            repairshopr_statuses.forEach(({ _status }) => {
+                const count = (row[_status] as any[])?.length || 0;
+                totals[_status] = (totals[_status] || 0) + count;
+            });
+        });
+        return totals;
+    }, [groupedData, repairshopr_statuses]);
 
 
     // Create columns dynamically
     const columns: ColumnDef<TDashboardRowData>[] = [
-        { header: "Engineer", accessorKey: "engineer" },
+        {
+            header: "Engineer",
+            accessorKey: "engineer",
+            footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+        },
         ...repairshopr_statuses.map(({ _status }) => ({
             header: _status,
             accessorKey: _status,
@@ -93,14 +124,22 @@ const HHPDashboardTable = () => {
                             setSelectedEngineer(row.original.engineer as string);
                             setSelectedTickets(tickets || []);
                         }}
-                        className={`w-full h-full px-2 py-1 rounded ${count > 0 ? "bg-blue-100 hover:bg-blue-200 cursor-pointer" : "text-gray-400"}`}
+                        className={`w-full h-full px-2 py-1 rounded ${count > 0 ? "bg-blue-100 hover:bg-blue-200 cursor-pointer" : "text-gray-400"
+                            }`}
                     >
                         {count}
                     </button>
                 );
             },
+            footer: () => (
+                <span className="font-bold">
+                    {columnTotals[_status] || 0} {/* Display the total for each status */}
+                </span>
+            ),
         })),
     ];
+
+
 
     // Table sorting
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -120,7 +159,10 @@ const HHPDashboardTable = () => {
         pageIndex: 0,
         pageSize: 10,
     })
-
+    const resetFilters = () => {
+        setFromDate(""); // Clear unassigned filter
+        setToDate(""); // Clear engineer filter
+    };
 
     // Initialize table instance
     const table = useReactTable({
@@ -148,7 +190,7 @@ const HHPDashboardTable = () => {
 
     return (
         <div>
-            <h1 className="text-xl font-bold mb-4">Repair Jobs by Engineer & Status</h1>
+            <h1 className="text-xl font-bold mb-4">Repair Jobs by Engineer & Status  <strong>{filteredTaskCount}</strong></h1>
             <div className="flex justify-between items-center gap-3 mb-3">
                 <div className="flex-grow min-w-[200px]">
                     <ManagementSearchForm
@@ -172,6 +214,7 @@ const HHPDashboardTable = () => {
                     />
                 </div>
                 <Button type="button" onClick={() => setSortTableColumns(true)} className="hidden md:block">Sort columns</Button>
+                <Button type="button" onClick={resetFilters}> Reset filters</Button>
 
             </div>
             {
@@ -224,7 +267,7 @@ const HHPDashboardTable = () => {
             }
             <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg">
                 <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-                    <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] uppercase font-semibold">
+                    <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] uppercase font-medium">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <tr key={headerGroup.id} className="font-semibold">
                                 {headerGroup.headers.map((header) => {
@@ -261,21 +304,39 @@ const HHPDashboardTable = () => {
                             </tr>
                         ))}
                     </thead>
-                    {
-                        hhpTasksLoading ? <p className="px-3 text-center">Loading...</p> :
-
-                            <tbody className="z-0">
-                                {table.getRowModel().rows.map((row) => (
-                                    <tr key={row.id} className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]">
-                                        {row.getVisibleCells().map((cell) => (
-                                            <td key={cell.id} className="px-4 py-3 font-medium text-sm">
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </td>
-                                        ))}
-                                    </tr>
+                    <tbody className="z-0">
+                        {hhpTasksLoading ? (
+                            <tr>
+                                <td colSpan={columns.length} className="text-center py-3">
+                                    Loading...
+                                </td>
+                            </tr>
+                        ) : (
+                            table.getRowModel().rows.map((row) => (
+                                <tr
+                                    key={row.id}
+                                    className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]"
+                                >
+                                    {row.getVisibleCells().map((cell) => (
+                                        <td key={cell.id} className="px-4 py-3 font-medium text-sm">
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                    <tfoot>
+                        {table.getFooterGroups().map((footerGroup) => (
+                            <tr key={footerGroup.id}>
+                                {footerGroup.headers.map((footer) => (
+                                    <td key={footer.id} className="px-4 py-3 font-medium text-sm">
+                                        {flexRender(footer.column.columnDef.footer, footer.getContext())}
+                                    </td>
                                 ))}
-                            </tbody>
-                    }
+                            </tr>
+                        ))}
+                    </tfoot>
                 </table>
             </div>
 
