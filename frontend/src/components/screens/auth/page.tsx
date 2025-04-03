@@ -10,10 +10,10 @@ import dynamic from 'next/dynamic'
 import { useEffect } from "react"
 
 const LoginScreen = dynamic(() =>
-    import('./login/page')
+    import('./login/page'), { ssr: false }
 )
 const SignupScreen = dynamic(() =>
-    import('./signup/page')
+    import('./signup/page'), { ssr: false }
 )
 
 export default function AuthScreen() {

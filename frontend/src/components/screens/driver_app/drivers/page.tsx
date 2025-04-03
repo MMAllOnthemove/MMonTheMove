@@ -25,22 +25,22 @@ import {
 import dynamic from 'next/dynamic'
 import React, { useState } from 'react'
 const LoadingScreen = dynamic(() =>
-    import('@/components/loading_screen/page')
+    import('@/components/loading_screen/page'), { ssr: false }
 )
 const NotLoggedInScreen = dynamic(() =>
-    import('@/components/not_logged_in/page')
+    import('@/components/not_logged_in/page'), { ssr: false }
 )
 const PageTitle = dynamic(() =>
-    import('@/components/PageTitle/page')
+    import('@/components/PageTitle/page'), { ssr: false }
 )
 const ManagementSearchForm = dynamic(() =>
-    import('@/components/search_field/page')
+    import('@/components/search_field/page'), { ssr: false }
 )
 const Sidebar = dynamic(() =>
-    import('@/components/sidebar/page')
+    import('@/components/sidebar/page'), { ssr: false }
 )
 const Pagination = dynamic(() =>
-    import('@/components/table_pagination/page')
+    import('@/components/table_pagination/page'), { ssr: false }
 )
 
 

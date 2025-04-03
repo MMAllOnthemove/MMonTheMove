@@ -1,15 +1,18 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 export const useSearchAssets = (customerId: string | number | undefined) => {
     const [searchAssets, setSearchAssets] = useState("");
     const [result, setResult] = useState<any[]>([]);
+    const [loadingAssets, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchAssets = async () => {
             if (!searchAssets || !customerId) return;
 
             try {
+                setLoading(true);
                 const { data } = await axios.get(
                     `${process.env.NEXT_PUBLIC_REPAIRSHOPR_CREATE_ASSETS}?query=${searchAssets}`,
                     {
@@ -24,8 +27,10 @@ export const useSearchAssets = (customerId: string | number | undefined) => {
                         (asset: any) => asset.customer_id == customerId
                     ) || []
                 );
-            } catch (error) {
-                console.error("Error fetching assets:", error);
+            } catch (error: any) {
+                toast.error(error?.response?.data?.error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -33,5 +38,5 @@ export const useSearchAssets = (customerId: string | number | undefined) => {
         return () => clearTimeout(debounce);
     }, [searchAssets, customerId]);
 
-    return { searchAssets, setSearchAssets, result };
+    return { searchAssets, setSearchAssets, result, loadingAssets };
 };

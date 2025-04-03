@@ -1,5 +1,6 @@
 import { pool } from "../../db.js";
 import * as Yup from "yup";
+import appLogs from "../logs/logs.js";
 
 const addAgentsSchema = Yup.object({
     agent_firstname: Yup.string().required("Firstname is required!"),
@@ -9,8 +10,13 @@ const addAgentsSchema = Yup.object({
 });
 
 const addAgent = async (req, res) => {
-    const { agent_firstname, agent_lastname, department, created_at } =
-        req.body;
+    const {
+        agent_firstname,
+        agent_lastname,
+        department,
+        created_at,
+        created_by,
+    } = req.body;
     try {
         await addAgentsSchema.validate(req.body, { abortEarly: false });
 
@@ -30,6 +36,9 @@ const addAgent = async (req, res) => {
             [agent_firstname, agent_lastname, department, created_at]
         );
 
+        // store logs
+
+        await appLogs("INSERT", created_by, req.body);
         return res.status(201).json({
             message: "Successfully created",
         });

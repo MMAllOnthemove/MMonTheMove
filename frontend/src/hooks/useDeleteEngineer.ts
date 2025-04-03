@@ -15,12 +15,12 @@ const useDeleteEngineer = () => {
                     withCredentials: true,
                 }
             );
-            if (response.status === 201) {
+            if (response.data) {
                 toast.success(`${response?.data?.message}`);
             }
         } catch (error: any) {
-            if (error?.response.data?.message) {
-                toast.error(`${error?.response.data?.message}`);
+            if (error?.response.data?.error) {
+                toast.error(`${error?.response.data?.error}`);
             }
         } finally {
             setLoading(false); // Stop loading

@@ -5,6 +5,154 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.20] - 2025-01-31
+
+### Added
+
+-   a table - logs
+-   part_unused boolean column in parts for tasks
+-   add status ‘Complete/RNR’
+-   log who updated what, when
+-   column fault_category
+-   credit_req_number column in parts table
+-   book rework
+-   part issued section, with seal numbers, can select all parts and also comment
+-   predefined faults to make the app structured
+
+### Fixed
+
+-   not pulling phone names
+
+## [0.1.19] - 2025-01-30
+
+### Added
+
+-   clear button on pattern lock canvas
+-   booking section for customers and staff
+-   user?.full_name.toLowerCase().includes(row?.original?.engineer.toLowerCase()) to better acc for assessment dates
+-   loading effect on search claims
+-   search button to reduce unncessary requests
+-   clear customer name from local storage on success (customer booking process)
+-   engineer bin, clicking on ticket opens repairshopr (cannot be done as rs just send you to ticket table)
+
+### Fixed
+
+-   warranty not voiding on rs (this is a repairshopr problem) (fixed in [0.1.18] - 2025-01-29)
+
+## [0.1.18] - 2025-01-29
+
+### Added
+
+-   CREATE INDEX idx_parts_for_tasks_task_row_id ON parts_for_tasks(task_row_id);
+-   CREATE INDEX idx_technician_tasks_unit_status ON technician_tasks(unit_status);
+-   CREATE INDEX idx_technician_tasks_engineer ON technician_tasks(engineer);
+-   CREATE INDEX idx_technician_tasks_images_task_id ON technician_tasks_images(task_id);
+-   CREATE INDEX idx_technician_tasks_images_created_at ON technician_tasks_images(created_at DESC);
+-   CREATE INDEX idx_booking_agents_created_at ON booking_agents(created_at DESC);
+-   CREATE INDEX idx_booking_agents_department ON booking_agents(department);
+-   CREATE INDEX idx_booking_agents_tasks_original_ticket_date
+    ON booking_agents_tasks(original_ticket_date DESC);
+-   CREATE INDEX idx_claims_created_at ON claims(created_at DESC);
+-   useSearchStorage for storing search value
+-   booking screens for customer, and for staff
+-   pattern lock screen
+-   if password, booking agent will type it in while booking
+-   store search value to local storage and then refresh after update, then use that value as the search (booking from so)
+
+### Fixed
+
+-   removed all prefetch
+-   reporting fetch essetntial column
+
+## [0.1.17] - 2025-01-28
+
+### Added
+
+-   prefetch
+-   dynamic imports to use ssr:false on some routes
+-   toggle password shown/hide on login
+-   show count next to tech name in engineer bin stats
+-   parts section, add comment (they can use the section already there since parts are attached)
+-   in_progress_date, assigned_date columns
+-   adding part order id changes status to ‘waiting for parts’ with type being ‘parts order’
+-   For Invoicing status
+-   waiting for parts on statuses (engineer bin dashboard)
+-   parts hand out a part, select from list which ones are being handed out (part 1 or 2 handed out (they are sorted accordingly))
+-   window not undefined check
+-   added flex grow to searchbar in table
+-   imports
+
+### Fixed
+
+-   checklists add attachments
+-   renamed "/files_ticket" to "/attachments_ticket"
+-   getting part details and part stock details was delaying, used await Promise.all
+-   open popup engineer bin stats in medium size screen
+-   status not updating on rs
+-   modal not overflowing properly
+
+## [0.1.16] - 2025-01-26
+
+### Added
+
+-   attachments fetched separately
+
+### Fixed
+
+-   not updating rs from the app
+-   same id in navbar
+-   attatchments pagination
+
+## [0.1.15] - 2025-01-25
+
+### Added
+
+-   check warranty screen
+-   filter hhp tasks by date range
+-   assembly_terms table
+-   backend routes for assembly terms, add, delete, update
+-   can now add asembly terms and conditions
+-   acknowledgement of assessment damages (cannot be hardcoded as it can be changed)
+-   add a section just for editing a ticket, this will ensure we show service order number stored in our db. instead of the one on rs
+-   can edit any field of the actual ticket which will update locally and on rs
+-   field for adding pictures on edit task
+-   techs can only see rs statuses related to them and admins can see all of them
+-   store qc attachments locally and in rs
+-   screen for adding attachments to rs and locally
+-   add new devices (from the list of devices)
+-   can void warranty
+-   screen for uploading images to a ticket
+-   reports_download table
+-   can download reports (only admin)
+-   change warranty status in view summary
+-   stats for bins (know how many units the engineer has in their bin per specific status)
+-   adding a part, shows if in stock or not
+
+### Fixed
+
+-   added phone as a value in create customer
+-   tookan create not clearing fields after searching new so (window will reload)
+-   dashboard show also for daily stats
+-   navbar structure
+-   hide admin panel from navbar if user is not admin
+-   removed loading screen from 'Not logged in' screen when user clicks 'Log in' button (will use the toploader load)
+-   removed useTransition hook
+-   when updating customer from the search customer, refresh as soon as it is updated (search customer screen)
+-   was not adding accessories_and_condition, requires_backup, rs_warranty fields to the backend locally
+-   error handling when adding task with missing fields
+-   delay ticket search by 5 seconds at least
+-   check why we cannot edit a customer’s details on rs from the app, display rs’ errors
+-   adding task with gspn now sets it to 'New' as status just like rs
+-   removed technicians link in the navbar because app defaults to it anyway
+
+## [0.1.14] - 2025-01-19
+
+### Fixed
+
+-   increase client_max_body_size in the nginx server file
+-   upload in book from so
+-   warranty codes and backup codes from rs
+
 ## [0.1.13] - 2025-01-18
 
 ### Added
@@ -12,7 +160,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   store backup code when adding ticket and after creation
 -   store warranty code when adding ticket and after creation
 -   store job_repair_no code when adding ticket and after creation
--
 
 ### Fixed
 

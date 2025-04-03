@@ -24,6 +24,7 @@ export type TUser = {
 export type TUpdateAssessmentDate = {
     assessment_date: string;
     units_assessed: boolean;
+    created_by: string | undefined;
 };
 export type PropertiesType = {
     IMEI?: string;
@@ -191,6 +192,7 @@ export type ModifyTaskModalTechnicians = {
     fault: string;
     imei: string;
     serial_number: string;
+    ticket_type_id?: string | null | any;
     unit_status: string;
     ticket_number: string;
     department: string;
@@ -327,7 +329,7 @@ export type RepairshorTicketComment = {
 
 export type RepairshoprPutTicket = {
     customer_id?: number;
-    ticket_type_id?: number;
+    ticket_type_id?: string | number | undefined | null;
     number?: string;
     subject?: string;
     due_date?: string; // ISO 8601 date string
@@ -336,7 +338,7 @@ export type RepairshoprPutTicket = {
     location_id?: number;
     problem_type?: string;
     status?: string;
-    user_id?: string | number | undefined;
+    user_id?: string | number | undefined | null;
     properties?: {
         IMEI?: string;
         "PO No."?: string;
@@ -467,6 +469,7 @@ export type DriverAdd = {
 export type CarAdd = {
     plate_number: string;
     car_model: string;
+    created_by: string | undefined;
 };
 export type ClaimsAdd = {
     service_order_no?: string;
@@ -479,6 +482,7 @@ export type AgentsAdd = {
     agent_firstname: string;
     agent_lastname: string;
     department: string;
+    created_by: string | undefined;
 };
 export type AgentsTask = {
     ticket_number: number;
@@ -563,6 +567,8 @@ export type TTaskParts = {
     compensation?: boolean | null | undefined | any;
     part_desc: string;
     seal_number: string | null;
+    credit_req_number?: string | null;
+    part_issued?: boolean | null;
     part_quantity: number;
     parts_status: string | null;
     created_at: string;
@@ -720,4 +726,82 @@ export type TCustomersTanstackTable = {
         repairshopr_customer_id?: string | number;
         updated_at?: string;
     };
+};
+export type TAssemblyTermTable = {
+    original: {
+        id?: string;
+        unique_id?: string;
+        term: string;
+        bold?: boolean;
+    };
+};
+export type IHHPSingleTask = {
+    id: string;
+    unique_id: string;
+    service_order_no: string;
+    date_booked: string;
+    created_at: string;
+    model: string;
+    warranty: string;
+    engineer: string;
+    fault: string;
+    imei: string;
+    job_repair_no: string;
+    serial_number: string;
+    repairshopr_status: string;
+    repairshopr_customer_id: number | null | undefined;
+    gspn_status: string;
+    device_location: string | null;
+    requires_backup: string | null;
+    ticket_type_id?: string | null | any;
+    ticket_number: string;
+    department: string;
+    job_added_by: string;
+    assessment_date: string;
+    parts_pending_date: string;
+    parts_issued_date: string;
+    stores: boolean | null;
+    parts_ordered_date: string | null;
+    completed_date: string | null;
+    additional_info: string | null;
+    collected_date: string | null;
+    qc_complete: string | null;
+    qc_date: string | null;
+    repair_completed: string | null;
+    rs_warranty: string | null;
+    accessories_and_condition: string | null;
+    unit_status: string;
+    unit_complete: boolean;
+    collected: string | boolean;
+    parts_pending: string | boolean;
+    parts_issued: string | boolean;
+    compensation: string | boolean;
+    images?: {
+        image_id: number;
+        unique_id: string;
+        task_id: number;
+        image_url: string;
+        created_at: string;
+    }[];
+    comments?: {
+        comment_id: number;
+        comment_text: string;
+        comment_created_at: string;
+        created_by: string;
+    }[];
+    parts?: {
+        part_id: number;
+        unique_id: string;
+        ticket_number: string;
+        part_name: string;
+        part_desc: string;
+        seal_number: null | string;
+        part_quantity: number;
+        parts_status: null | string;
+        created_at: string;
+        created_by: string;
+        updated_at: null | string;
+        compensation: boolean;
+    }[];
+    repairshopr_job_id: string;
 };

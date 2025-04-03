@@ -8,7 +8,7 @@ import deleteStore from "../../controllers/stores/delete_store.js";
 import { authenticateToken } from "../../middleware/verify.js";
 const router = express.Router();
 router.get("/", authenticateToken, getStores);
-router.post("/", limiter, authenticateAdmin, addStore);
+router.post("/", limiter, authenticateToken, addStore);
 router.delete("/:id", authenticateAdmin, deleteStore);
 
 export { router };

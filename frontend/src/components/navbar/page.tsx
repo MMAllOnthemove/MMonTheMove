@@ -10,6 +10,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import useUserLoggedIn from "@/hooks/useGetUser"
 import { menuItems } from "@/lib/sidebar_links"
 import { ChevronDownIcon, SlashIcon } from "@heroicons/react/24/outline"
 import React, { useState } from "react"
@@ -17,12 +18,14 @@ import React, { useState } from "react"
 export default function Navbar() {
     // customize open on hover
     const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
+    const { user, isLoggedIn, loading } = useUserLoggedIn()
+    const isAdmin = user?.user_role === "admin" // Assuming you have a role property in your user object
     return (
 
         <Breadcrumb>
             <BreadcrumbList>
                 {/* Dynamic Breadcrumb Items with Dropdowns */}
-                {menuItems.map((menu) => (
+                {menuItems.filter((menu) => !menu.label.includes("Admin") || isAdmin).map((menu) => (
                     <React.Fragment key={menu.label}>
                         <BreadcrumbItem onMouseEnter={() => setHoveredMenu(menu.label)}
                             onMouseLeave={() => setHoveredMenu(null)}>

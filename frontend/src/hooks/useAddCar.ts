@@ -7,6 +7,7 @@ interface ErrorMessages {
     plate_number?: string;
     car_model?: string;
     created_at?: string;
+    created_by?: string | undefined;
 }
 
 const useAddCar = () => {

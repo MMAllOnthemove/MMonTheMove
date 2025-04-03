@@ -1,5 +1,6 @@
 import { pool } from "../../../db.js";
 import * as Yup from "yup";
+import appLogs from "../../logs/logs.js";
 
 const claimSchema = Yup.object().shape({
     service_order_no: Yup.string()
@@ -45,6 +46,7 @@ const CreateClaim = async (req, res) => {
                     created_at,
                 ]
             );
+            await appLogs("INSERT", created_by, req.body);
             return res.status(201).json({
                 message: "Successfully created",
             });

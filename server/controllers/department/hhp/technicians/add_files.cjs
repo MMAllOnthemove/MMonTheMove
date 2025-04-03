@@ -49,12 +49,6 @@ const date = moment(datetimestamp).format("YYYY-MM-DD%HH:mm:ss");
 const uploadTechnicianFiles = async (req, res) => {
     try {
         const { task_id, ticket_number, created_at } = req.body;
-        console.log(
-            "task_id, ticket_number, created_at",
-            task_id,
-            ticket_number,
-            created_at
-        );
         // Check if files are present in the request
         if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
             return res.status(400).json({ error: "No files uploaded" });
@@ -68,8 +62,16 @@ const uploadTechnicianFiles = async (req, res) => {
 
         // Upload all files and remove local temporary files afterward
         const fileUrls = await Promise.all(
-            req.files.map(async (file) => {
-                const remotePath = `/root/uploads/hhp/${ticket_number}-hhp-${file.originalname}`;
+            req.files.map(async (file, index) => {
+                // Sanitize filename and add a unique identifier
+                const sanitizedFileName = file.originalname
+                    .replace(/[^a-zA-Z0-9.-]/g, "_") // Replace special characters with _
+                    .toLowerCase();
+                const uniqueFileName = `${ticket_number}-hhp-${
+                    index + 1
+                }-${sanitizedFileName}`;
+
+                const remotePath = `/home/mmallonthemove/uploads/hhp/${uniqueFileName}`;
 
                 try {
                     // Upload the file to SFTP
@@ -86,14 +88,14 @@ const uploadTechnicianFiles = async (req, res) => {
                         }
                     });
                     // the file being added
-                    const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/hhp/${ticket_number}-hhp-${file.originalname}`;
-                    // add the file url of this car into our db
+                    const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/hhp/${uniqueFileName}`;
+                    // add the file url of this task into our db
                     await pool.query(
                         "INSERT INTO technician_tasks_images (task_id, image_url, created_at) values ($1, $2, $3)",
                         [task_id, fileBeingAdded, created_at]
                     );
                     // Construct and return the file URL
-                    return `https://repair.mmallonthemove.co.za/files/hhp/${ticket_number}-hhp-${file.originalname}`;
+                    return `https://repair.mmallonthemove.co.za/files/hhp/${uniqueFileName}`;
                 } catch (uploadError) {
                     console.error("Error uploading file:", uploadError);
                     // throw new Error(

@@ -25,10 +25,9 @@ const useRepairshoprFile = () => {
                     },
                 }
             );
-
+            if (response?.data) toast.success(response?.data?.message);
             return response.data;
         } catch (error: any) {
-            console.error("could not get file", error);
             if (error?.response?.data?.error)
                 toast.error(error?.response?.data?.error);
         }

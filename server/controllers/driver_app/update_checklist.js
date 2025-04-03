@@ -1,5 +1,6 @@
 import { pool } from "../../db.js";
 import * as Yup from "yup";
+import appLogs from "../logs/logs.js";
 
 // Define Yup schema for request body validation
 const updateChecklistSchema = Yup.object({
@@ -14,6 +15,7 @@ const updateChecklist = async (req, res) => {
         next_service_date,
         next_service_kms,
         license_disc_expiry,
+        created_by,
     } = req.body;
     try {
         // Validate request body
@@ -32,7 +34,7 @@ const updateChecklist = async (req, res) => {
         if (result.rowCount === 0) {
             return res.status(404).json({ error: "Checklist item not found" });
         }
-
+        await appLogs("UPDATE", created_by, req.body);
         return res.status(200).json({
             message: "Successfully updated",
         });

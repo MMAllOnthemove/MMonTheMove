@@ -78,11 +78,17 @@ export const useHHPTasksCrud = () => {
             setHHPTasks((prev: any) => [...prev, data?.task]);// Append new task
             toast.success(`${data?.message}`);
         } catch (error: any) {
+            console.error("error", error)
             if (error?.response?.data?.message) {
-                toast.error(`${error?.response.data?.message}`);
-            } else if (error.response && error.response.data.errors) {
-                toast(error.response.data.errors);
-                setHHPAddTaskErrors(error.response.data.errors); // Set validation errors to state
+                toast.error(error.response.data.message);
+            } else if (error?.response?.data?.errors) {
+                const errorMessages = Object.entries(error.response.data.errors)
+                    .map(([key, entry]) => `${entry}`)
+                    .join('\n');
+                toast(errorMessages, {
+                    duration: 6000,
+                });
+                setHHPAddTaskErrors(error.response.data.errors);
             }
         } finally {
             setHHPAddTaskLoading(false); // Stop loading

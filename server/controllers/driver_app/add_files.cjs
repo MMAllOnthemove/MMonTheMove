@@ -59,13 +59,19 @@ const uploadChecklistFiles = async (req, res) => {
 
         // Upload all files and remove local temporary files afterward
         const fileUrls = await Promise.all(
-            req.files.map(async (file) => {
+            req.files.map(async (file, index) => {
                 // Because we have 'files' as a directory pointing to '/uploads' folder in our root
                 // we will only reference it as 'files'
                 // e.g. we have a directory inside 'files' called 'driver_app_checklists'
                 // we will now reference it as https://url.com/files/driver_app_checklists/filename
+                const sanitizedFileName = file.originalname
+                    .replace(/[^a-zA-Z0-9.-]/g, "_") // Replace special characters with _
+                    .toLowerCase();
+                const uniqueFileName = `${car}-${date}-${
+                    index + 1
+                }-${sanitizedFileName}`;
 
-                const remotePath = `/root/uploads/driver_app_checklists/${car}-${date}-${file.originalname}`;
+                const remotePath = `/home/mmallonthemove/uploads/driver_app_checklists/${uniqueFileName}`;
                 try {
                     await sftpClient.put(file.path, remotePath);
 
@@ -80,17 +86,18 @@ const uploadChecklistFiles = async (req, res) => {
                                 );
                     });
                     // the file being added
-                    const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/driver_app_checklists/${car}-${date}-${file.originalname}`;
+                    const fileBeingAdded = `https://repair.mmallonthemove.co.za/files/driver_app_checklists/${uniqueFileName}`;
+
                     // add the file url of this car into our db
                     await pool.query(
                         "INSERT INTO vehicle_checklist_images (vehicle_checklist_id, image_url, created_at) values ($1, $2, $3)",
                         [vehicle_checklist_id, fileBeingAdded, created_at]
                     );
-                    // Construct URL for uploaded file
-                    return `https://repair.mmallonthemove.co.za/files/driver_app_checklists/${car}-${date}-${file.originalname}`;
+                    // Construct and return the file URL
+                    return `https://repair.mmallonthemove.co.za/files/driver_app_checklists/${uniqueFileName}`;
                 } catch (uploadError) {
-                 if (process.env.NODE_ENV !== "production")
-                     console.error("Error uploading file:", uploadError);
+                    if (process.env.NODE_ENV !== "production")
+                        console.error("Error uploading file:", uploadError);
                     // throw new Error(
                     //     `Failed to upload file: ${file.originalname}`
                     // );

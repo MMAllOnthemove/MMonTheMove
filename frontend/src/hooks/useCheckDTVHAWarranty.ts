@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
+import toast from "react-hot-toast";
 
 const useCheckWarranty = (modelNumber: string, serialNumber: string) => {
     const [warranty, setWarranty] = useState("");
     const [ticketTypeId, setTicketTypeId] = useState<number | any>();
     const [warrantyCode, setWarrantyCode] = useState<number | any>();
     const [localWarranty, setLocalWarranty] = useState("");
+
+    const [LPDate, setLPDate] = useState("");
+    const [PartsDate, setPartsDate] = useState("");
 
     useEffect(() => {
         const checkWarranty = async () => {
@@ -49,7 +53,8 @@ const useCheckWarranty = (modelNumber: string, serialNumber: string) => {
                 if (data) {
                     const warranty_type = data?.Return?.EvWtyType;
                     setWarranty(warranty_type);
-
+                    setLPDate(data?.Return?.EvNewLaborWtyDate);
+                    setPartsDate(data?.Return?.EvNewPartsWtyDate);
                     if (warranty_type === "LP") {
                         setWarrantyCode("75130");
                         setTicketTypeId("21877");
@@ -59,6 +64,8 @@ const useCheckWarranty = (modelNumber: string, serialNumber: string) => {
                         setTicketTypeId("21878");
                         setLocalWarranty("OOW");
                     }
+                } else {
+                    toast.error(data?.Return?.EvRetMsg);
                 }
             } catch (error) {
                 if (process.env.NODE_ENV !== "production")
@@ -69,7 +76,14 @@ const useCheckWarranty = (modelNumber: string, serialNumber: string) => {
         checkWarranty();
     }, [modelNumber, serialNumber]);
 
-    return { warranty, warrantyCode, ticketTypeId, localWarranty };
+    return {
+        warranty,
+        warrantyCode,
+        ticketTypeId,
+        localWarranty,
+        LPDate,
+        PartsDate,
+    };
 };
 
 export default useCheckWarranty;

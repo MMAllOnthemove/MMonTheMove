@@ -17,19 +17,17 @@ import {
 } from "@tanstack/react-table"
 import dynamic from 'next/dynamic'
 import React, { useState } from 'react'
-const Tablehead = dynamic(() => import('./tablehead'))
-const TableBody = dynamic(() => import('./tablebody'))
-const AgentsModal = dynamic(() => import('./modal'))
-const LoadingScreen = dynamic(() => import('@/components/loading_screen/page'))
-const NotLoggedInScreen = dynamic(() => import('@/components/not_logged_in/page'))
-// const PageTitle = dynamic(() => import('@/components/PageTitle/page'))
+const Tablehead = dynamic(() => import('./tablehead'), { ssr: false })
+const TableBody = dynamic(() => import('./tablebody'), { ssr: false })
+const AgentsModal = dynamic(() => import('./modal'), { ssr: false })
+const LoadingScreen = dynamic(() => import('@/components/loading_screen/page'), { ssr: false })
+const NotLoggedInScreen = dynamic(() => import('@/components/not_logged_in/page'), { ssr: false })
 import PageTitle from '@/components/PageTitle/page'
-const ModifyAgentsModal = dynamic(() => import('./modify_agents_modal'))
+const ModifyAgentsModal = dynamic(() => import('./modify_agents_modal'), { ssr: false })
 
-const ManagementSearchForm = dynamic(() => import('@/components/search_field/page'))
-const Sidebar = dynamic(() => import('@/components/sidebar/page'))
-
-const Pagination = dynamic(() => import('@/components/table_pagination/page'))
+const ManagementSearchForm = dynamic(() => import('@/components/search_field/page'), { ssr: false })
+const Sidebar = dynamic(() => import('@/components/sidebar/page'), { ssr: false })
+const Pagination = dynamic(() => import('@/components/table_pagination/page'), { ssr: false })
 
 const AgentsScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
@@ -47,7 +45,6 @@ const AgentsScreen = () => {
 
     const [openAddModal, setOpenAddModal] = useState(false)
     const [modifyAgentModal, setModifyAgentModal] = useState<boolean | null | undefined | any>();
-    // const { hhpTask } = useFetchHHPTaskById(modifyTaskModal?.id)
 
     const handleRowClick = (row: TBookingAgentData) => {
         setModifyAgentModal(row?.original);
@@ -76,7 +73,8 @@ const AgentsScreen = () => {
     const addBookingAg = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const created_at = datetimestamp;
-        const payload = { agent_firstname, agent_lastname, department, created_at };
+        const created_by = user?.email;
+        const payload = { agent_firstname, agent_lastname, department, created_at, created_by };
         await addAgent(payload);
         setAgentFirstname('')
         setAgentLastname('')
