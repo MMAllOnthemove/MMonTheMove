@@ -4,7 +4,15 @@ create type login_method_enum as ENUM('password', 'oauth', 'sso');
 
 create type login_status_enum as ENUM('success', 'failure');
 
-create type user_role_enum as ENUM('admin', 'manager', 'employee', 'guest');
+create type user_role_enum as ENUM(
+    'admin',
+    'manager',
+    'employee',
+    'guest',
+    'engineer',
+    'booking_agent',
+    'parts_department'
+);
 
 CREATE TABLE company_people (
     user_id BIGSERIAL PRIMARY KEY,

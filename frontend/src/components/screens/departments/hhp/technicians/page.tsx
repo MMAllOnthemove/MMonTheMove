@@ -263,44 +263,56 @@ const TechniciansScreen = () => {
 
     // Data for the table with filtering logic
     const filterHHPData = useMemo(() => {
-        if (!hhpTasks) return []; // Return empty array if no tasks
+        if (!hhpTasks) return [];
 
-        // Return the full dataset when no filters are active
-        if (!engineerFilter && !unassisgnedFilter && !statusFilter && !dateFrom &&
-            !dateTo) {
-            return hhpTasks;
+        const globalSearchActive = filtering.trim() !== "";
+        const roles = ['admin',
+            'manager',
+            'booking_agent',
+            'parts_department']
+        const isAdmin = typeof user?.user_role === 'string' && roles.includes(user.user_role);
+
+
+        let baseData: any[] = [];
+
+        if (isAdmin || globalSearchActive) {
+            // Admins and searching engineers see everything
+            baseData = hhpTasks;
+        } else {
+            // Default engineer view (no role): only their own tasks
+            baseData = hhpTasks.filter((task: any) =>
+                task?.engineer?.toLowerCase() === user?.full_name?.toLowerCase()
+            );
         }
 
-        // Apply "unassigned" filter if active
+        // Apply filters on top of baseData
+        let filtered = [...baseData];
+
         if (unassisgnedFilter) {
-            return hhpTasks.filter((task: any) => !task?.engineer || task?.engineer === null);
+            filtered = filtered.filter((task: any) => !task?.engineer);
         }
 
-        // Apply "engineer" filter if active
         if (engineerFilter) {
-            return hhpTasks.filter((task: any) =>
-                task?.engineer?.toLowerCase()?.includes(engineerFilter?.toLowerCase())
+            filtered = filtered.filter((task: any) =>
+                task?.engineer?.toLowerCase()?.includes(engineerFilter.toLowerCase())
             );
         }
-        // Apply "status" filter if active
+
         if (statusFilter) {
-            return hhpTasks.filter((task: any) =>
-                task?.unit_status?.toLowerCase()?.includes(statusFilter?.toLowerCase())
+            filtered = filtered.filter((task: any) =>
+                task?.unit_status?.toLowerCase()?.includes(statusFilter.toLowerCase())
             );
         }
 
-        const filteredTasks = hhpTasks?.filter((task: any) => {
-            const taskDate = moment(task?.date_booked).format("YYYY-MM-DD");
-            return (taskDate >= dateFrom) && (taskDate <= dateTo);
-        });
         if (dateFrom && dateTo) {
-            return filteredTasks
+            filtered = filtered.filter((task: any) => {
+                const taskDate = moment(task?.date_booked).format("YYYY-MM-DD");
+                return taskDate >= dateFrom && taskDate <= dateTo;
+            });
         }
 
-
-
-        return hhpTasks; // Default return the full dataset
-    }, [engineerFilter, hhpTasks, unassisgnedFilter, statusFilter, dateFrom, dateTo]);
+        return filtered;
+    }, [hhpTasks, user, filtering, unassisgnedFilter, engineerFilter, statusFilter, dateFrom, dateTo]);
 
 
     const [pagination, setPagination] = useState<PaginationState>({
@@ -348,30 +360,222 @@ const TechniciansScreen = () => {
 
                             <PageTitle title="Management" hasSpan={true} spanText={"HHP"} />
 
-                            <div className="grid lg:grid-cols-2 grid-cols-1 items-center gap-3">
-                                <div className="h-full border">
-                                    <table>
-                                        <tr>
-                                            <th>Company</th>
-                                            <th>Contact</th>
-                                            <th>Country</th>
-                                        </tr>
-                                        <tr>
-                                            <td>Alfreds Futterkiste</td>
-                                            <td>Maria Anders</td>
-                                            <td>Germany</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Centro comercial Moctezuma</td>
-                                            <td>Francisco Chang</td>
-                                            <td>Mexico</td>
-                                        </tr>
+                            {/* modal for sorting table columns */}
+                            {
+                                openSortTableColumnsModal &&
+                                <Dialog open={openSortTableColumnsModal} onOpenChange={() => setSortTableColumns(false)} >
+                                    {/* <DialogTrigger>Open</DialogTrigger> */}
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Sort columns</DialogTitle>
+                                            <DialogDescription>
+                                                Toggle columns you want/do not want
+                                            </DialogDescription>
+                                        </DialogHeader>
+
+                                        <div className="inline-block border border-black shadow rounded">
+                                            <div className="px-1 border-b border-black">
+                                                <label>
+                                                    <input
+                                                        className='bg-sky-600 cursor-pointer checked:bg-slate-950 focus:bg-slate-950'
+                                                        {...{
+                                                            type: 'checkbox',
+                                                            checked: table.getIsAllColumnsVisible(),
+                                                            onChange: table.getToggleAllColumnsVisibilityHandler(),
+                                                        }}
+                                                    />{' '}
+                                                    Show them all
+                                                </label>
+                                            </div>
+                                            {table.getAllLeafColumns().map(column => {
+                                                return (
+                                                    <div key={column.id} className="px-1">
+                                                        <label className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
+                                                            <input
+                                                                className='bg-sky-600 cursor-pointer checked:bg-slate-950 focus:bg-slate-950'
+                                                                {...{
+                                                                    type: 'checkbox',
+                                                                    checked: column.getIsVisible(),
+                                                                    onChange: column.getToggleVisibilityHandler(),
+                                                                }}
+                                                            />{' '}
+                                                            {column?.columnDef?.header as any}
+
+                                                        </label>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    </DialogContent>
+                                </Dialog>
+                            }
+
+
+
+                            <div className="w-full lg:w-full">
+                                <section className="flex flex-wrap justify-between items-center py-5 gap-2 w-full overflow-auto">
+                                    {/* Search Field - Allow it to grow */}
+                                    <div className="flex-grow min-w-[200px]">
+                                        <ManagementSearchForm
+                                            filtering={filtering}
+                                            setFiltering={(e) => setFiltering(e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="flex justify-between items-center gap-3">
+
+                                        {isLoggedIn && user?.user_role === "admin" || user?.user_role === "manager" ?
+                                            <>
+                                                <Button type="button" onClick={() => openEngineerBinsTab('/departments/hhp/bins')}>Bin stats</Button>
+
+                                                <Button type="button" onClick={downloadReport} disabled={reportsLoading}>
+                                                    {reportsLoading ? 'Downloading...' : 'Get report'}
+                                                </Button>
+                                            </>
+                                            : null}
+                                        <div className="flex gap-3 items-center">
+                                            <span>
+                                                <Label
+                                                    htmlFor="dateFrom"
+                                                    className="sr-only dark:text-[#eee]"
+                                                >
+                                                    Date from
+                                                </Label>
+                                                <Input
+                                                    type="date"
+                                                    name="dateFrom"
+                                                    value={dateFrom}
+                                                    onChange={handleDateFromFilter}
+                                                    className="cursor-pointer"
+                                                    id="dateFrom"
+                                                />
+                                            </span>
+                                            <span>-</span>
+                                            <span>
+                                                <Label
+                                                    htmlFor="dateTo"
+                                                    className="sr-only dark:text-[#eee]"
+                                                >
+                                                    Date to
+                                                </Label>
+                                                <Input
+                                                    type="date"
+                                                    name="dateTo"
+                                                    value={dateTo}
+                                                    onChange={handleDateToFilter}
+                                                    className="cursor-pointer"
+                                                    id="dateTo"
+                                                />
+                                            </span>
+                                        </div>
+                                        {isLoggedIn && user?.user_role === "admin" || user?.user_role === "manager" ?
+                                            <Select name="engineerFilter" value={engineerFilter} onValueChange={handleEngineerFilter}>
+                                                <SelectTrigger className="w-full hidden md:flex">
+                                                    <SelectValue placeholder="Technician" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectGroup>
+                                                        <SelectLabel>Engineer</SelectLabel>
+                                                        {engineerListFomatted.map((dep) => (
+                                                            <SelectItem key={dep.id} value={`${dep.value}`}>{`${dep.label}`}</SelectItem>
+                                                        ))}
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select> : null}
+
+
+
+                                        {/* Both Admin and Booking Agent can access these */}
+                                        <Select name="statusFilter" value={statusFilter} onValueChange={handleStatusFilter}>
+                                            <SelectTrigger className="w-full hidden md:flex">
+                                                <SelectValue placeholder="Status" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {isLoggedIn && user?.user_role === "admin" || user?.user_role === "manager" ? (
+                                                    <SelectGroup>
+                                                        <SelectLabel>Status</SelectLabel>
+                                                        {repairshopr_statuses.map((dep) => (
+                                                            <SelectItem key={dep.id} value={`${dep._status}`}>{`${dep._status}`}</SelectItem>
+                                                        ))}
+                                                    </SelectGroup>
+                                                ) : (
+                                                    <SelectGroup>
+                                                        <SelectLabel>Status</SelectLabel>
+                                                        {repairshopr_statuses_techs.map((dep) => (
+                                                            <SelectItem key={dep.id} value={`${dep._status}`}>{`${dep._status}`}</SelectItem>
+                                                        ))}
+                                                    </SelectGroup>
+                                                )}
+                                            </SelectContent>
+                                        </Select>
+                                        {user?.user_role === "admin" || user?.user_role === "manager" ? (
+                                            <Select name="unassisgnedFilter" value={unassisgnedFilter} onValueChange={handleUnassignedFilter}>
+                                                <SelectTrigger className="w-full hidden md:flex">
+                                                    <SelectValue placeholder="Unassigned" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value={"unassigned"}>Unassigned</SelectItem>
+                                                </SelectContent>
+                                            </Select>) : null}
+
+                                        <Button type="button" onClick={resetFilters}> Reset filters</Button>
+
+
+                                        {user?.user_role === "admin" || user?.user_role === "manager" ? (
+                                            <>
+
+                                                <Button type="button" onClick={() => setSortTableColumns(true)} className="hidden md:block">Sort columns</Button>
+                                                <Button type="button" onClick={() => setOpenAddTaskModal(true)}>Add task</Button>
+                                            </>
+                                        ) : null}
+                                    </div>
+                                </section>
+
+                                {/* Table for Admin and Booking Agent */}
+
+                                <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg">
+                                    <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
+                                        <TableHead table={table} />
+                                        <TableBody table={table} handleRowClick={handleRowClick} deleteRow={handleDeleteRow} handleOpenSinglePage={handleOpenSinglePage} />
                                     </table>
                                 </div>
-                                <div className="h-full border">
-                                    <BinsScreen />
-                                </div>
+
+
+                                <div className="h-2" />
+                                <Pagination table={table} />
                             </div>
+
+                            {/* Engineer View */}
+                            {user?.user_role === "engineer" && (
+
+                                <BinsScreen />
+
+                            )}
+
+
+
+
+                            {/* modal for adding task */}
+                            {
+                                openAddTaskModal &&
+                                <Modal
+                                    isVisible={openAddTaskModal}
+                                    onClose={() => setOpenAddTaskModal(false)}
+                                    title={"Add task"}
+                                    content={
+                                        <Tabs defaultValue="repairshopr">
+                                            <TabsList>
+                                                <TabsTrigger value="gspn">GSPN</TabsTrigger>
+                                                <TabsTrigger value="repairshopr">Repairshopr</TabsTrigger>
+                                            </TabsList>
+                                            <TabsContent value="gspn"><AddgspnHHPTask onChange={() => setOpenAddTaskModal(false)} /></TabsContent>
+                                            <TabsContent value="repairshopr"><AddRepairshoprHHPTask onChange={() => setOpenAddTaskModal(false)} /></TabsContent>
+                                        </Tabs>
+
+                                    }
+                                />
+                            }
+
+
                         </main>
                     </>
                 ) : (

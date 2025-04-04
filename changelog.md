@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.33] - 2025-04-02
+## [0.1.33] - 2025-04-024
 
 ### Added
 
@@ -17,11 +17,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   total in dashboard hhp table
 -   reset filters in hhp dashboard table
 -   show assets at the top in view ticket
+-   show warranty in bin stats next to tickets
+-   ALTER TYPE user_role_enum ADD VALUE 'booking_agent'
+-   ALTER TYPE user_role_enum ADD VALUE 'engineer'
+-   ALTER TYPE user_role_enum ADD VALUE 'parts_department'
+-   display only engineers’ specific tasks in table
+-   by search show all tasks
+-   display only engineers’ specific tasks in bin stats
+-   admin sees all bins
+-   admin or booking agent sees all data in the table
 
 ### Fixed
 
-- gspn error handling when booking
-- hhp dashboard glitching
+-   gspn error handling when booking
+-   hhp dashboard glitching
+-   refresh token now has 7d
 
 ## [0.1.32] - 2025-03-28
 

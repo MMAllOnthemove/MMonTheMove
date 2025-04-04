@@ -3,7 +3,7 @@ import { TColumns, THHPTasks } from "./types";
 import { ColumnDef } from "@tanstack/react-table";
 
 
-const columns: ColumnDef<THHPTasks>[] =
+const columns: ColumnDef<Record<string, any>, any>[] =
     [
         {
             header: "Service Order No",

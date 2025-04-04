@@ -63,7 +63,7 @@ const TableBody = ({ table, handleRowClick, deleteRow, handleOpenSinglePage }: T
                                 </DropdownMenuItem> */}
                                 <DropdownMenuItem onClick={() => handleOpenSinglePage(row)} className='cursor-pointer'>View ticket</DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                {isLoggedIn && user?.user_role === "admin" ?
+                                {isLoggedIn && user?.user_role === "manager" ?
                                     <DropdownMenuItem onClick={() => deleteRow(row)} className='cursor-pointer'>Delete</DropdownMenuItem> : null}
                             </DropdownMenuContent>
                         </DropdownMenu>

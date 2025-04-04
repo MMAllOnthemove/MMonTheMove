@@ -88,7 +88,7 @@ const TasksUpdate = ({ rs_warranty, handleTicketRSWarranty, setEngineer, setEngi
             </div>
             <div className="mb-3">
                 <div className="relative">
-                    {isLoggedIn && user?.user_role === "admin" ?
+                    {isLoggedIn && user?.user_role === "admin" || user?.user_role === "manager" ?
                         <select className="block w-full appearance-none rounded-md border border-gray-300 bg-white px-4 py-2 pr-8 text-sm shadow-sm focus:outline-none cursor-pointer [&>span]:line-clamp-1" name="status" value={unit_statusProp} onChange={(e) => setRepairshoprStatusProp(e.target.value)}>
                             <option disabled value="">
                                 Select status

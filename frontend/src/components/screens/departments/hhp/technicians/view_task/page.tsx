@@ -167,7 +167,7 @@ const ViewHHPTaskScreen = () => {
     const [part_desc, setPartDesc] = useState("")
 
     // old parts
-    const [search_old_part, setSearchOldPart] = useState("")
+
     const [old_part_name, setPartOldName] = useState("")
     const [old_part_desc, setPartOldDesc] = useState("")
     const [selectedOldParts, setSelectedOldParts] = useState<any>([]);
@@ -191,23 +191,7 @@ const ViewHHPTaskScreen = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [search_part])
 
-    // search old parts from ipaas
-    useEffect(() => {
-        const handleGetSOPartInfo = async (search_old_part: string) => {
-            if (!search_old_part) return;
-            try {
-                const data = await getSOPartsInfo(search_old_part);
-                setPartOldName(data?.Return?.EsPartsInfo?.PartsNo)
-                setPartOldDesc(data?.Return?.EsPartsInfo?.PartsDescription)
-            } catch (error) {
-                if (process.env.NODE_ENV !== 'production') {
-                    console.error(error)
-                }
-            }
-        };
-        handleGetSOPartInfo(search_old_part)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [search_old_part])
+
 
     const openModal = () => {
         setModifyTaskModalOpen(true);
@@ -328,20 +312,7 @@ const ViewHHPTaskScreen = () => {
         setCompensation(false)
         setPartQuantity(0)
     }
-    // add old part searched
-    const addOldPart = async () => {
-        const task_row_id = hhpTask?.id;
-        const ticket_number = hhpTask?.ticket_number
-        const created_at = datetimestamp;
-        const created_by = user?.email
-        const is_old_part = true
-        const payload = { task_row_id, ticket_number, old_part_name, old_part_desc, is_old_part, created_at, created_by }
-        await addThisOldPart(payload);
-        getOldPartsForThisTask()
-        setSearchPart("")
-        setPartOldName("")
-        setPartOldDesc("")
-    }
+
 
     // this will send the order no to rs
     const submitPartOrderId = async () => {

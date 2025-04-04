@@ -52,6 +52,7 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
+    console.log("connected", socket.connected);
     // Broadcast when a new task is added
     socket.on("addTask", (task) => {
         io.emit("addTask", task); // Send to all clients

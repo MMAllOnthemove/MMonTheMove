@@ -6,10 +6,12 @@ const useSocket = () => {
 
     useEffect(() => {
         const handleConnect = () => {
+            console.log("connected");
             setIsConnected(true);
         };
 
         const handleDisconnect = (reason: any) => {
+            console.log("disconnect reason", reason);
             setIsConnected(false);
         };
 

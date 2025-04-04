@@ -19,7 +19,7 @@ export default function Navbar({ isConnected }: boolean | any) {
     // customize open on hover
     const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
     const { user } = useUserLoggedIn()
-    const isAdmin = user?.user_role === "admin" // Assuming you have a role property in your user object
+    const isAdmin = user?.user_role === "admin" || user?.user_role === "manager" // Assuming you have a role property in your user object
 
     return (
 
