@@ -114,9 +114,30 @@ const HHPDashboardTable = () => {
         },
         {
             header: "New",
-            accessorKey: "new_count",
+            accessorKey: "new_tickets_count",
             // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
         },
+        {
+            header: "Assigned to Tech",
+            accessorKey: "assigned_tickets_count",
+            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+        },
+        {
+            header: "Customer Reply",
+            accessorKey: "customer_reply_tickets_count",
+            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+        },
+        {
+            header: "Parts request 1st approval",
+            accessorKey: "parts_request_tickets_count",
+            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+        },
+        {
+            header: "In Progress",
+            accessorKey: "in_progress_tickets_count",
+            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+        },
+
         {
             header: "Completed",
             accessorKey: "qc_passed_count",
@@ -124,36 +145,10 @@ const HHPDashboardTable = () => {
         },
         {
             header: "QC Failed",
-            accessorKey: "qc_failed",
+            accessorKey: "qc_failed_count",
             // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
         },
-        // ...repairshopr_statuses.map(({ _status }) => ({
-        //     header: _status,
-        //     accessorKey: _status,
-        //     cell: ({ row }: any) => {
-        //         const tickets = row.original[_status] as any[] | undefined;
-        //         const count = tickets?.length || 0;
 
-        //         return (
-        //             <button
-        //                 onClick={() => {
-        //                     setSelectedStatus(_status);
-        //                     setSelectedEngineer(row.original.engineer as string);
-        //                     setSelectedTickets(tickets || []);
-        //                 }}
-        //                 className={`w-full h-full px-2 py-1 rounded ${count > 0 ? "bg-blue-100 hover:bg-blue-200 cursor-pointer" : "text-gray-400"
-        //                     }`}
-        //             >
-        //                 {count}
-        //             </button>
-        //         );
-        //     },
-        //     footer: () => (
-        //         <span className="font-bold">
-        //             {columnTotals[_status] || 0} {/* Display the total for each status */}
-        //         </span>
-        //     ),
-        // })),
     ];
 
 
