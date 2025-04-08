@@ -4,6 +4,19 @@ create type login_method_enum as ENUM('password', 'oauth', 'sso');
 
 create type login_status_enum as ENUM('success', 'failure');
 
+<<<<<<< HEAD
+=======
+create type user_role_enum as ENUM(
+    'admin',
+    'manager',
+    'employee',
+    'guest',
+    'engineer',
+    'booking_agent',
+    'parts_department'
+);
+
+>>>>>>> origin/sockets-realtime
 CREATE TABLE company_people (
     user_id BIGSERIAL PRIMARY KEY,
     user_unique_id uuid DEFAULT gen_random_uuid(),
@@ -13,7 +26,11 @@ CREATE TABLE company_people (
     department text,
     created_at text,
     updated_at text,
+<<<<<<< HEAD
     user_role text,
+=======
+    user_role user_role_enum,
+>>>>>>> origin/sockets-realtime
     reset_token VARCHAR(255),
     repairshopr_id INTEGER,
     permissions text,
@@ -21,6 +38,21 @@ CREATE TABLE company_people (
     reset_token_expires_at text
 );
 
+<<<<<<< HEAD
+=======
+create type auth_type_enum as ENUM('login', 'signup');
+
+create table tokens (
+    id BIGSERIAL PRIMARY KEY,
+    token_unique_id uuid DEFAULT gen_random_uuid(),
+    token text,
+    user_id int unique,
+    created_at text,
+    auth_type auth_type_enum,
+    FOREIGN KEY (user_id) REFERENCES company_people(user_id)
+);
+
+>>>>>>> origin/sockets-realtime
 CREATE TABLE login_history (
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
@@ -93,7 +125,10 @@ create table technician_tasks (
     ticket_number text,
     department text,
     job_added_by text,
+<<<<<<< HEAD
     updated_by text,
+=======
+>>>>>>> origin/sockets-realtime
     reassign_engineer text,
     parts_list text [],
     assessment_date text,
@@ -107,6 +142,11 @@ create table technician_tasks (
     repairshopr_job_id text,
     qc_complete text,
     qc_date text,
+<<<<<<< HEAD
+=======
+    qc_fail text,
+    qc_fail_date text,
+>>>>>>> origin/sockets-realtime
     unit_complete boolean,
     completed_date date,
     parts_issued boolean,
@@ -128,9 +168,30 @@ create table technician_tasks (
     requires_backup text,
     rs_warranty text,
     ticket_type_id text,
+<<<<<<< HEAD
     fault_category text
 );
 
+=======
+    quote_accepted boolean,
+    quote_accepted_date text,
+    quote_rejected boolean,
+    quote_rejected_date text,
+    fault_category text
+);
+
+create table hhp_quality_control (
+    id BIGSERIAL PRIMARY KEY,
+    unique_id uuid DEFAULT gen_random_uuid(),
+    ticket_number text,
+    qc_complete text,
+    reason text,
+    engineer text,
+    created_at text,
+    created_by text
+);
+
+>>>>>>> origin/sockets-realtime
 create table technician_tasks_images (
     id BIGSERIAL PRIMARY KEY,
     unique_id uuid DEFAULT gen_random_uuid(),
@@ -409,6 +470,11 @@ create table parts_for_tasks (
     part_unused boolean,
     credit_req_number text,
     part_issued boolean,
+<<<<<<< HEAD
+=======
+    part_returned boolean,
+    is_old_part boolean,
+>>>>>>> origin/sockets-realtime
     FOREIGN KEY (task_row_id) REFERENCES technician_tasks(id) ON DELETE CASCADE
 );
 
@@ -496,4 +562,61 @@ create table logs (
     changed_by text,
     created_at text,
     changes jsonb
+<<<<<<< HEAD
 )
+=======
+);
+
+CREATE TABLE notifications (
+    id SERIAL PRIMARY KEY,
+    -- Unique identifier for the notification
+    user_id uuid NOT NULL,
+    -- User ID the notification is for
+    type VARCHAR(255) NOT NULL,
+    -- Type of the notification (e.g., 'task-assigned', 'task-updated')
+    message TEXT NOT NULL,
+    -- The actual notification message
+    status VARCHAR(20) DEFAULT 'unread',
+    -- Status of the notification ('read' or 'unread')
+    created_at text,
+    -- Timestamp for when the notification was created
+    updated_at text,
+    -- Timestamp for when the notification was last updated
+    FOREIGN KEY (user_id) REFERENCES company_people(user_unique_id) -- Assuming there's a 'users' table
+);
+
+CREATE TABLE products (
+    product_id bigserial,
+    product__unique_id uuid NOT NULL unique,
+    id BIGINT PRIMARY KEY,
+    price_cost DECIMAL(10, 2) NOT NULL,
+    price_retail DECIMAL(10, 2) NOT NULL,
+    condition TEXT,
+    description TEXT,
+    maintain_stock BOOLEAN DEFAULT FALSE,
+    name VARCHAR(255) NOT NULL,
+    quantity INT DEFAULT 0,
+    warranty TEXT,
+    sort_order INT,
+    reorder_at INT,
+    disabled BOOLEAN DEFAULT FALSE,
+    taxable BOOLEAN DEFAULT TRUE,
+    product_category VARCHAR(255),
+    category_path VARCHAR(255),
+    upc_code VARCHAR(255) UNIQUE,
+    discount_percent DECIMAL(5, 2),
+    warranty_template_id BIGINT,
+    qb_item_id BIGINT,
+    desired_stock_level INT,
+    price_wholesale DECIMAL(10, 2) DEFAULT 0,
+    notes TEXT,
+    tax_rate_id BIGINT,
+    physical_location VARCHAR(255),
+    serialized BOOLEAN DEFAULT FALSE,
+    vendor_ids JSONB,
+    long_description TEXT,
+    since_updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    location_quantities JSONB,
+    photos JSONB
+);
+>>>>>>> origin/sockets-realtime

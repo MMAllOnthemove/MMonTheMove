@@ -1,6 +1,10 @@
 import { pool } from "../../db.js";
 import appLogs from "../logs/logs.js";
+<<<<<<< HEAD
 
+=======
+import "dotenv/config";
+>>>>>>> origin/sockets-realtime
 export const UpdateCustomer = async (req, res) => {
     const { id } = req.params; // Assuming the ID is passed in the URL
     if (!id) return;

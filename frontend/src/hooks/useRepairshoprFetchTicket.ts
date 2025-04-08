@@ -1,6 +1,7 @@
 import { TicketData } from "@/lib/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const useRepairshoprFetchTicket = (searchTicket: string | undefined) => {
     const [fetchRSTicketData, setData] = useState<TicketData>();
@@ -21,12 +22,10 @@ const useRepairshoprFetchTicket = (searchTicket: string | undefined) => {
                 if (data?.tickets[0]?.number == searchTicket) {
                     setData(data);
                 }
-            } catch (error) {
-                if (process.env.NODE_ENV !== "production") {
-                    console.error(
-                        "Error repairshopr search ticket data:",
-                        error
-                    );
+            } catch (error: any) {
+                if (error?.response?.data?.message.length > 0) {
+                    const errors = error?.response?.data?.message;
+                    toast.error(errors);
                 }
             }
         };

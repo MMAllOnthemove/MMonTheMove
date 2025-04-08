@@ -35,6 +35,7 @@ const useGetAttachments = (
             }
             return data;
         } catch (error: any) {
+            console.error("fetchAttachments error", error);
             if (error) toast.error(error?.response?.data?.error);
         } finally {
             setLoading(false);

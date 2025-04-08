@@ -142,7 +142,7 @@ const TermsAndConditionsScreen = () => {
 
             // Set customer information
             doc.setFontSize(10);
-            doc.text(`Customer Name: ${customer}`, 20, 40);
+            doc.text(`Customer Name: ${customer_name}`, 20, 40);
             doc.text(`Date: ${moment(currentDate).format("YYYY-MM-DD HH:mm:ss")}`, 20, 50);
 
             let yPosition = 60;
@@ -190,7 +190,7 @@ const TermsAndConditionsScreen = () => {
             <div className="container mx-auto p-4">
                 <h1 className="text-center text-2xl font-bold">{title}</h1>
                 <p className="text-center text-gray-600 mb-4">{description}</p>
-                <div className="mb-4">
+                {/* <div className="mb-4">
                     <label htmlFor="customerName" className="block text-gray-700 font-medium">
                         Customer Name
                     </label>
@@ -201,7 +201,7 @@ const TermsAndConditionsScreen = () => {
                         onChange={(e) => setCustomerName(e.target.value)}
                         className="border border-gray-300 rounded-md p-2 w-full"
                     />
-                </div>
+                </div> */}
                 <ul className="space-y-2">
                     {rules.map((rule) => (
                         <li key={rule.id} className="flex items-center">
@@ -241,7 +241,7 @@ const TermsAndConditionsScreen = () => {
                             onClick={handleDownloadPdf}
                             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                         >
-                            Generate PDF
+                            Save
                         </button>
                     </div>
                 </div>

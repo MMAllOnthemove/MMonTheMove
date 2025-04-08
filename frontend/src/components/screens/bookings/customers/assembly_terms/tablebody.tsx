@@ -57,7 +57,7 @@ const TableBody = ({ table, handleRowClick, deleteRow }: TTableBody) => {
                                 >
                                     Edit
                                 </DropdownMenuItem>
-                                {isLoggedIn && user?.user_role === "admin" ?
+                                {isLoggedIn && user?.user_role === "manager" ?
                                     <DropdownMenuItem onClick={() => deleteRow(row)} className='cursor-pointer'>Delete</DropdownMenuItem> : null}
                             </DropdownMenuContent>
                         </DropdownMenu>

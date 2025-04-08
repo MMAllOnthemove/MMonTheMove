@@ -1,5 +1,6 @@
 import { RepairshorTicketComment } from "@/lib/types";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const useRepairshoprComment = () => {
     const updateRepairTicketComment = async (
@@ -19,10 +20,11 @@ const useRepairshoprComment = () => {
             );
 
             return response.data;
-        } catch (error) {
-            console.error("error", error);
-            if (process.env.NODE_ENV !== "production") {
-                console.error("Error updating repairshopr comment:", error);
+        } catch (error: any) {
+             console.error("useRepairshoprComment error", error);
+            if (error?.response?.data?.message.length > 0) {
+                const errors = error?.response?.data?.message;
+                toast.error(errors);
             }
         }
     };

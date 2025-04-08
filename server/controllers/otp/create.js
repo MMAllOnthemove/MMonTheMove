@@ -1,5 +1,9 @@
 import * as Yup from "yup";
 import { pool } from "../../db.js";
+<<<<<<< HEAD
+=======
+import { io } from "../../services/io.js";
+>>>>>>> origin/sockets-realtime
 
 const otpSchema = Yup.object({
     created_by: Yup.string()
@@ -32,12 +36,22 @@ const createOTP = async (req, res) => {
         if (hasOTPBeenUsed.rows.length > 0) {
             return res.status(401).json({ message: "OTP already exists" });
         } else {
+<<<<<<< HEAD
             await pool.query(
                 "INSERT INTO otp (created_by, otp_code, created_at) VALUES ($1, $2, $3)",
                 [created_by, otp_code, created_at]
             );
             return res.status(201).json({
                 message: "Otp created, thank you!",
+=======
+            const { rows } = await pool.query(
+                "INSERT INTO otp (created_by, otp_code, created_at) VALUES ($1, $2, $3) returning otp_code",
+                [created_by, otp_code, created_at]
+            );
+            return res.status(201).json({
+                message: "New OTP added!",
+                otp: rows[0]?.otp_code,
+>>>>>>> origin/sockets-realtime
             });
         }
     } catch (error) {

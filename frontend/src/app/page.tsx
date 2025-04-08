@@ -6,8 +6,9 @@ export const metadata: Metadata = {
   title: 'Home',
   description: '...',
 }
-export default function Home() {
+const Home = () => {
   return (
     <TechniciansScreen />
   );
 }
+export default Home

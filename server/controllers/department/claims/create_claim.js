@@ -46,12 +46,20 @@ const CreateClaim = async (req, res) => {
                     created_at,
                 ]
             );
+<<<<<<< HEAD
             await appLogs("INSERT", created_by, req.body);
+=======
+            await appLogs("INSERT", created_by, req.body, ticket_number);
+>>>>>>> origin/sockets-realtime
             return res.status(201).json({
                 message: "Successfully created",
             });
         }
     } catch (error) {
+<<<<<<< HEAD
+=======
+        console.log(error);
+>>>>>>> origin/sockets-realtime
         // Handle validation or other errors
         const errors = {};
         if (error.inner) {

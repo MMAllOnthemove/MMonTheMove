@@ -7,7 +7,7 @@ import { authenticateToken } from "../../middleware/verify.js";
 import { authenticateAdmin } from "../../middleware/verify_admin.js";
 import { RefreshToken } from "../../refreshTokens/index.js";
 const router = express.Router();
-
+import { authenticateRole } from "../../middleware/verify_role.js";
 import LogoutUser from "../../controllers/auth/logout.js";
 
 import AdminRoute from "../../controllers/protected/admin.js";
@@ -20,7 +20,11 @@ router.post("/forgot_password", limiter, ForgotPassword);
 router.post("/token", RefreshToken);
 router.get("/protected", authenticateToken, ProtectedRoute);
 router.get("/user/me", authenticateToken, CurrentUser);
-router.get("/user/admin", authenticateAdmin, AdminRoute);
+router.get(
+    "/user/admin",
+    authenticateRole(["admin", "manager"]),
+    AdminRoute
+);
 
 router.get("/logout", LogoutUser);
 

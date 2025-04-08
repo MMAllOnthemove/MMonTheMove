@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
+import useCreateCustomerLocally from '@/hooks/useCustomerLocally';
 import useUpdateRepairshoprCustomer from '@/hooks/useUpdateRepairshoprCustomer';
 import { datetimestamp } from '@/lib/date_formats';
 import { Customer } from '@/lib/types';
@@ -29,8 +29,11 @@ import {
     DialogTitle
 } from "@/components/ui/dialog";
 import { capitalizeText } from '@/lib/capitalize';
+import useCustomerLocally from '@/hooks/useCustomerLocally';
+import useSocket from '@/hooks/useSocket';
 
 const SearchCustomerRepairshoprScreen = () => {
+    const { socket, isConnected } = useSocket()
     const [searchCustomer, setSearchCustomer] = useState("");
     const [result, setResult] = useState<Customer[] | any>([]);
     const [customerId, setCustomerId] = useState("")
@@ -45,7 +48,7 @@ const SearchCustomerRepairshoprScreen = () => {
     const [city, setCity] = useState("");
     const [state, setState] = useState("");
     const [zip, setZip] = useState("")
-    const { addCustomerLocally, createCustomerLocallyLoading } = useCreateCustomerLocally()
+    const { addCustomerLocally, createCustomerLocallyLoading } = useCustomerLocally()
     const { updateCustomer, updateCustomerRepairshoprLoading } = useUpdateRepairshoprCustomer()
     // this is the modal for editing customer details
     const [editModalOpen, setEditModalOpen] = useState(false);
@@ -70,16 +73,16 @@ const SearchCustomerRepairshoprScreen = () => {
             );
 
             if (data?.customers?.length > 0) {
-                const searchLower = searchCustomer.toLowerCase();
+                const searchLower = searchCustomer?.toLowerCase();
 
-                const exactMatchCustomer = data.customers.find((customer: any) => {
+                const exactMatchCustomer = data.customers?.find((customer: any) => {
                     const firstNameExact = customer.firstname?.toLowerCase() === searchLower;
                     const lastNameExact = customer.lastname?.toLowerCase() === searchLower;
                     const emailExact = customer.email?.toLowerCase() === searchLower;
                     const mobileExact = customer.mobile?.toLowerCase() === searchLower;
                     const phoneExact = customer.phone?.toLowerCase() === searchLower;
                     const fullNameExact =
-                        `${customer.firstname} ${customer.lastname}`.toLowerCase() === searchLower;
+                        `${customer.firstname} ${customer.lastname}`?.toLowerCase() === searchLower;
 
                     return firstNameExact || lastNameExact || emailExact || fullNameExact || mobileExact || phoneExact;
                 });
@@ -139,7 +142,8 @@ const SearchCustomerRepairshoprScreen = () => {
         const payload = {
             "firstname": firstname,
             "lastname": lastname,
-            "businessname": businessname,
+            "business_name": businessname,
+            "business_then_name": businessname,
             "email": email,
             "phone": phoneNumber,
             "mobile": phoneNumber2,
@@ -172,7 +176,7 @@ const SearchCustomerRepairshoprScreen = () => {
     };
 
     return (
-        <main className="flex justify-center items-center h-screen bg-orange-100">
+        <main className="flex justify-center items-center h-screen bg-gray-800">
             <Sidebar />
             {
                 editModalOpen &&
@@ -205,6 +209,15 @@ const SearchCustomerRepairshoprScreen = () => {
                                         type="text"
                                     />
                                 </div>
+                            </div>
+                            <div className='mb-1'>
+                                <Label htmlFor="businessname">Business name</Label>
+                                <Input
+                                    type="text"
+                                    value={businessname || ''}
+                                    onChange={(e) => setBusinessname(e.target.value)}
+                                    autoComplete='false'
+                                />
                             </div>
                             <div className='mb-1'>
                                 <Label htmlFor="email">Email</Label>

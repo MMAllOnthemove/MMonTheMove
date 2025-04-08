@@ -31,7 +31,7 @@ const Pagination = dynamic(() => import('@/components/table_pagination/page'), {
 const TableHead = dynamic(() => import('./tablehead'), { ssr: false })
 const TableBody = dynamic(() => import('./tablebody'), { ssr: false })
 
-function AssemblyTermScreen() {
+const AssemblyTermScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { assemblyTermsList, assemblyTermsListLoading, refetch } = useAssemblyTerms()
     const { updateAssemblyTerm, updateAssemblyTermLoading } = useUpdateAssemblyTerm()
@@ -126,7 +126,7 @@ function AssemblyTermScreen() {
             {
                 loading ? (
                     <LoadingScreen />
-                ) : isLoggedIn && user?.user_role === "admin" ? (
+                ) : isLoggedIn && user?.user_role === "admin" || user?.user_role === "manager" ? (
                     <>
                         <Sidebar />
                         <main className='container p-1'>

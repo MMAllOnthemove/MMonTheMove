@@ -1,5 +1,9 @@
 import { pool } from "../../../../db.js";
+<<<<<<< HEAD
 
+=======
+import "dotenv/config";
+>>>>>>> origin/sockets-realtime
 export const UpdateTask = async (req, res) => {
     const { id } = req.params; // Assuming the ID is passed in the URL
     const changes = req.body; // Get the changed fields from the frontend

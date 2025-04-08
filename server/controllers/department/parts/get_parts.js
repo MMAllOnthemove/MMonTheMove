@@ -14,7 +14,10 @@ const GetPartsForTask = async (req, res) => {
         );
         return res.status(200).json(rows);
     } catch (err) {
+<<<<<<< HEAD
         console.error("Error fetching parts for task:", err); // Log for debugging
+=======
+>>>>>>> origin/sockets-realtime
         return res.status(500).json({ error: "Failed to get parts" });
     }
 };

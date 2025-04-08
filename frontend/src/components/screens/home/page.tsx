@@ -7,7 +7,7 @@ const Sidebar = dynamic(() => import('@/components/sidebar/page'), { ssr: false 
 
 
 
-export default function HomeScreen() {
+const HomeScreen = () => {
     const { isLoggedIn, loading } = useUserLoggedIn()
 
     return (
@@ -26,3 +26,4 @@ export default function HomeScreen() {
         </>
     );
 }
+export default HomeScreen

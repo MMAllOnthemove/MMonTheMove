@@ -1,14 +1,21 @@
 "use client";
 import axios from "axios";
 import { useEffect, useState } from "react";
-
+import socket from "@/socket";
 type TEngineerBins = {
     engineer: string | null;
     unit_status: string;
     units_count: string;
-    tickets: [];
+    difference: string;
+    tickets: [
+        {
+            ticket_number: string | number;
+            ticket_id: string | number;
+            date_booked: string;
+            difference: string ;
+        }
+    ];
 };
-
 
 const useGetEngineerBins = () => {
     const [engineerBinList, setData] = useState<TEngineerBins[]>([]);
@@ -29,14 +36,22 @@ const useGetEngineerBins = () => {
             return response?.data;
         } catch (error: any) {
             if (process.env.NODE_ENV !== "production") {
+                console.log(error);
             }
-            // console.error(error?.response?.data?.error);
         } finally {
             setLoading(false);
         }
     };
     useEffect(() => {
         refetch();
+        // Listen for real-time bin stats updates
+        socket.on("binStatsUpdated", (updatedStats) => {
+            setData(updatedStats);
+        });
+
+        return () => {
+            socket.off("binStatsUpdated");
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

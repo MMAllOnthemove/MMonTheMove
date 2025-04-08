@@ -4,7 +4,11 @@ const fs = require("fs");
 const yup = require("yup");
 const pg = require("pg");
 const moment = require("moment");
+<<<<<<< HEAD
 
+=======
+require("dotenv").config();
+>>>>>>> origin/sockets-realtime
 // create a connection to db as we cannot import a module in a common js file
 
 const pool = new pg.Pool({
@@ -65,13 +69,22 @@ const uploadChecklistFiles = async (req, res) => {
                 // e.g. we have a directory inside 'files' called 'driver_app_checklists'
                 // we will now reference it as https://url.com/files/driver_app_checklists/filename
                 const sanitizedFileName = file.originalname
+<<<<<<< HEAD
                     .replace(/[^a-zA-Z0-9.-]/g, "_") // Replace special characters with _
                     .toLowerCase();
+=======
+                    ?.replace(/[^a-zA-Z0-9.-]/g, "_") // Replace special characters with _
+                    ?.toLowerCase();
+>>>>>>> origin/sockets-realtime
                 const uniqueFileName = `${car}-${date}-${
                     index + 1
                 }-${sanitizedFileName}`;
 
+<<<<<<< HEAD
                 const remotePath = `/home/mmallonthemove/uploads/driver_app_checklists/${uniqueFileName}`;
+=======
+                const remotePath = `/var/www/uploads/driver_app_checklists/${uniqueFileName}`;
+>>>>>>> origin/sockets-realtime
                 try {
                     await sftpClient.put(file.path, remotePath);
 
@@ -98,6 +111,19 @@ const uploadChecklistFiles = async (req, res) => {
                 } catch (uploadError) {
                     if (process.env.NODE_ENV !== "production")
                         console.error("Error uploading file:", uploadError);
+<<<<<<< HEAD
+=======
+                    // Remove the temporary file from local storage even on delete
+                    fs.unlink(file.path, (err) => {
+                        if (err) {
+                            console.error(
+                                "Error deleting file:",
+                                file.path,
+                                err
+                            );
+                        }
+                    });
+>>>>>>> origin/sockets-realtime
                     // throw new Error(
                     //     `Failed to upload file: ${file.originalname}`
                     // );

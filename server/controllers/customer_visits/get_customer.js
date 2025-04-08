@@ -1,5 +1,9 @@
 import { pool } from "../../db.js";
+<<<<<<< HEAD
 
+=======
+import "dotenv/config";
+>>>>>>> origin/sockets-realtime
 const getCustomer = async (req, res) => {
     const { id } = req.params;
     try {

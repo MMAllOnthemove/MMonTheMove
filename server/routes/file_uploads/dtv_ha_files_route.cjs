@@ -12,6 +12,7 @@ const fileFilter = (req, file, cb) => {
         "image/jpeg",
         "image/png",
         "image/gif",
+        "image/webp",
         "video/mp4",
         "video/avi",
         "video/mov",

@@ -11,18 +11,22 @@ import React, { useState } from 'react';
 import Modal from '@/components/modal/page';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import useAddAgentTask from '@/hooks/useAddBookingAgentTask';
 import useAddTaskCommentLocally from '@/hooks/useAddCommentLocally';
-import useAddHHPTask from '@/hooks/useAddHHPTask';
 import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
+import useBookingAgentsTasks from '@/hooks/useBookingAgentsTasks';
+import { useCreateAssetsBookFromSO } from '@/hooks/useCreateAssetsBookFromSO';
 import useCreateCustomerOnRepairshopr from '@/hooks/useCreateCustomer';
-import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
 import useCreateTicket from '@/hooks/useCreateTicket';
+import useCustomerLocally from '@/hooks/useCustomerLocally';
+import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud';
+import useSocket from '@/hooks/useSocket';
 import { assetTypes } from '@/lib/asset_types';
 import { capitalizeText } from '@/lib/capitalize';
 import { datetimestamp } from '@/lib/date_formats';
+import warranties from '@/lib/warranties';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import useAddCommentsLocally from '@/hooks/useCommentsLocally';
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page')
 )
@@ -35,14 +39,16 @@ const Sidebar = dynamic(() =>
 
 const BookFromSOScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
+    const { socket, isConnected } = useSocket()
     const { getSOInfoAllTookan, loadingData } = useIpaasGetSOInfoAll();
+    const { createAssetsOnRepairshopr, createAssetsBookFromSOLoading } = useCreateAssetsBookFromSO()
     const { addTicket, createTicketLoading } = useCreateTicket()
-    const { addAgentTask, addAgentTaskLoading, errors } = useAddAgentTask()
+    const { addAgentTask, addAgentTaskLoading, errors } = useBookingAgentsTasks()
     const { addCustomer, createCustomerLoading } = useCreateCustomerOnRepairshopr()
     const { addRepairTicketFile } = useRepairshoprFile()
-    const { addCommentLocally } = useAddTaskCommentLocally()
-    const { addCustomerLocally } = useCreateCustomerLocally()
-    const { addTask } = useAddHHPTask();
+    const { addCommentLocally } = useAddCommentsLocally()
+    const { addCustomerLocally } = useCustomerLocally()
+    const { addTask } = useHHPTasksCrud();
     const [search, setSearch] = useState("")
     const [firstname, setFirstname] = useState("")
     const [lastname, setLastname] = useState("")
@@ -56,7 +62,7 @@ const BookFromSOScreen = () => {
     const [state, setState] = useState("")
     const [serviceOrder, setServiceOrder] = useState("")
     const [fault, setFault] = useState("")
-    const [task_id, setTaskId] = useState("")
+    const [task_id, setTaskId] = useState<any>("")
     const [newTicketId, setNewTicketId] = useState("")
     const [imei, setIMEI] = useState("")
     const [serialNumber, setSerialNumber] = useState("")
@@ -75,12 +81,12 @@ const BookFromSOScreen = () => {
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setADH(e.target.checked ? 'ADH' : 'IW');
     };
+    const isFormValid = firstname && lastname && fault && itemCondition && requires_backup && imei && serialNumber && model
     const hhp_issue_types = assetTypes.filter(asset => asset.value.includes("HHP"));
     const handleGetSOInfo = async (serviceOrder: string) => {
         if (!serviceOrder) return
         try {
             const data = await getSOInfoAllTookan(serviceOrder);
-            // const fullAddress = `${data.Return.EsBpInfo.CustAddrStreet1} ${data.Return.EsBpInfo.CustAddrStreet2} ${data.Return.EsBpInfo.CustCity} ${data.Return.EsBpInfo.CustCountry}`;
             setFirstname(data.Return.EsBpInfo.CustFirstName);
             setLastname(data.Return.EsBpInfo.CustLastName);
             setEmail(data.Return.EsBpInfo.CustEmail);
@@ -111,6 +117,22 @@ const BookFromSOScreen = () => {
             if (process.env.NODE_ENV !== 'production') {
                 console.error(error)
             }
+        }
+    };
+
+    const handleWarrantyChange = (
+        event: any
+    ) => {
+        setLocalWarranty(event);
+        // Update other state variables based on the selected warranty
+        if (event === "IW") {
+            setTicketTypeId("21877");
+            setWarrantyCode("75130");
+            setLocalWarranty("IW");
+        } else if (event === "OOW") {
+            setTicketTypeId("21878");
+            setWarrantyCode("69477");
+            setLocalWarranty("OOW");
         }
     };
     const [hhpFiles, setHHPFiles] = useState([]);
@@ -229,16 +251,9 @@ const BookFromSOScreen = () => {
                 "asset_serial": serialNumber
             };
 
-            const createdAsset = await axios.post(
-                `${process.env.NEXT_PUBLIC_REPAIRSHOPR_CREATE_ASSETS}`,
-                newAssetPayload,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_REPAIRSHOPR_TOKEN}`,
-                    },
-                }
-            );
+
+
+            const createdAsset = await createAssetsOnRepairshopr(newAssetPayload)
 
             asset_ids = [createdAsset?.data?.asset?.id]; // Add newly created asset ID
         }
@@ -308,6 +323,7 @@ const BookFromSOScreen = () => {
             "comment": `*${fault}`,
             "created_at": created_at,
             "created_by": user?.full_name,
+            "ticket_number": data?.ticket?.number,
         }
         await addCommentLocally(addCommentLocallyPayload)
         openModal() // open modal for attachments
@@ -362,10 +378,11 @@ const BookFromSOScreen = () => {
             "accessories_and_condition": itemCondition,
             "requires_backup": requires_backup,
             "rs_warranty": warrantyCode,
-            "ticket_type_id": ticket_type_id
+            "ticket_type_id": ticket_type_id,
+            "created_by": user?.full_name
         }
-        const res = await addTask(payload)
-        setTaskId(res?.id)
+        const res: any = await addTask(payload)
+        setTaskId(res?.data?.id)
 
     }
     const handleHHPFiles = (event: any) => {
@@ -512,12 +529,32 @@ const BookFromSOScreen = () => {
                                     <Label htmlFor="fault" className="text-gray-500">Fault</Label>
                                     <Input type="text" name="fault" value={fault || ""} onChange={(e) => setFault(e.target.value)} />
                                 </div>
-                                <div>
+                                {/* <div>
                                     <Label htmlFor='warranty' className="text-gray-500">Warranty</Label>
                                     <Input type="text" name='warranty' id='warranty' placeholder='warranty' value={localWarranty} onChange={(e) => setLocalWarranty(e.target.value)} />
 
-                                </div>
+                                </div> */}
+                                <div>
+                                    <Label htmlFor='localWarranty' className="text-gray-500">Change warranty</Label>
+                                    <Select
+                                        value={localWarranty || ""}
+                                        onValueChange={handleWarrantyChange}
+                                        name='localWarranty'
+                                    >
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Change warranty" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Warranties</SelectLabel>
 
+                                                {warranties.map((x: any) =>
+                                                    (<SelectItem key={x.id} value={`${x.warranty}`}>{x?.warranty}</SelectItem>))
+                                                }
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                                 <div>
                                     <Label htmlFor='issue_type' className="text-gray-500">Issue type</Label>
                                     <Select
@@ -591,8 +628,9 @@ const BookFromSOScreen = () => {
                                 <Label htmlFor='specialRequirement' className="text-gray-500">Special requirement</Label>
                                 <Textarea placeholder='Special requirement' name="specialRequirement" value={specialRequirement} onChange={(e) => setSpecialRequirement(e.target.value)}></Textarea>
                             </div>
+                            <p className="text-xs text-gray-500 text-center">{createAssetsBookFromSOLoading ? 'Creating assets' : null}</p>
 
-                            <Button type="button" className="mt-2 w-full" disabled={createTicketLoading} onClick={createTicket}>
+                            <Button type="button" className="mt-2 w-full" disabled={createTicketLoading || !isFormValid} onClick={createTicket}>
                                 {createTicketLoading ? 'Creating...' : 'Create ticket'}
                             </Button>
 

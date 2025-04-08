@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { THHPTasks } from '@/lib/types';
 import toast from 'react-hot-toast';
+import socket from '@/socket';
 
 type TUpdateValues = {
     id?: string | number;
@@ -14,7 +15,17 @@ type TUpdateValues = {
     parts_issued?: boolean;
     parts_pending?: boolean;
     qc_date?: string;
+    quote_accepted_date?: string;
+    quote_rejected_date?: string;
     qc_complete?: string;
+    updatedByWho: string;
+    ticket_number?: string | number;
+};
+type TUpdateSO = {
+    updated_at?: string;
+    updated_by?: string;
+    service_order_no?: string;
+    unit_status?: string;
 };
 interface AddTaskErrors {
     date_booked?: string;
@@ -33,6 +44,38 @@ interface AddTaskErrors {
     repeat_repair?: string;
     additional_info?: string;
 }
+type TAddTask = {
+    id?: string;
+    unique_id?: string;
+    service_order_no?: string | null;
+    qc_date?: string;
+    device_name?: string;
+    date_booked?: string;
+    created_at?: string | null;
+    model?: string | null;
+    warranty?: string | null;
+    engineer?: string | null;
+    fault?: string | null;
+    imei?: string | null;
+    serial_number?: string | null;
+    repairshopr_status?: string | null;
+    gspn_status?: string | null;
+    ticket_number?: string | null;
+    department?: string | null;
+    job_added_by?: string | null;
+    assessment_date?: string | null;
+    parts_pending_date?: string | null;
+    parts_issued_date?: string | null;
+    parts_pending?: string | null;
+    stores?: string | null;
+    parts_ordered_date?: string | null;
+    qc_complete?: string | boolean | null;
+    repairshopr_job_id?: string | number;
+    unit_status?: string | null;
+    qc_complete_date?: string | null;
+    repair_completed?: string | null;
+    created_by?: string | null
+}
 
 export const useHHPTasksCrud = () => {
     const [hhpTasks, setHHPTasks] = useState<THHPTasks[] | any>([]);
@@ -40,6 +83,7 @@ export const useHHPTasksCrud = () => {
     const [hhpAddTaskLoading, setHHPAddTaskLoading] = useState(false);
     const [hhpAddTaskErrors, setHHPAddTaskErrors] = useState<AddTaskErrors>({});
     const [updateHHPTaskLoading, setUpdateHHPTaskLoading] = useState(false); // Loading state
+    const [updateHHPTaskSOLoading, setUpdateHHPTaskSOLoading] = useState(false); // Loading state
     const [deleteHHPTaskLoading, setDeleteHHPTaskLoading] = useState(false); // Loading state
 
     const fetchTasks = async () => {
@@ -63,22 +107,25 @@ export const useHHPTasksCrud = () => {
             setHHPTasksLoading(false);
         }
     };
-
-    const addTask = async (values: any) => {
+    
+    const addTask = async (values: TAddTask) => {
         setHHPAddTaskLoading(true)
         setHHPAddTaskErrors({})
         try {
-            const { data } = await axios.post(
+            const response = await axios.post(
                 `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs`,
                 values,
                 {
                     withCredentials: true,
                 }
             );
-            setHHPTasks((prev: any) => [...prev, data?.task]);// Append new task
-            toast.success(`${data?.message}`);
+            setHHPTasks((prev: any) => [...prev, response?.data?.task]);// Append new task
+            // 🔴 Emit task creation event
+            socket.emit("addTask", response?.data?.task);
+            return response;
+            // toast.success(`${data?.message}`);
         } catch (error: any) {
-            console.error("error", error)
+            console.error("addTask error", error);
             if (error?.response?.data?.message) {
                 toast.error(error.response.data.message);
             } else if (error?.response?.data?.errors) {
@@ -86,7 +133,7 @@ export const useHHPTasksCrud = () => {
                     .map(([key, entry]) => `${entry}`)
                     .join('\n');
                 toast(errorMessages, {
-                    duration: 6000,
+                    duration: 10000,
                 });
                 setHHPAddTaskErrors(error.response.data.errors);
             }
@@ -108,9 +155,12 @@ export const useHHPTasksCrud = () => {
                     withCredentials: true,
                 }
             );
-            // setHHPTasks((prev: any) => [...prev, data?.task])
-            await fetchTasks()
-            // setHHPTasks((prev: any) => prev.map((task: any) => (task.id === taskId ? data : task)));
+            setHHPTasks((prev: any) =>
+                prev.map((task: any) => (task.id === taskId ? data.task : task))
+            );
+
+            // 🔴 Emit task update event
+            socket.emit("updateTask", data?.task);
         } catch (error: any) {
             if (error) toast.error(error?.response?.data?.error);
         } finally {
@@ -118,20 +168,52 @@ export const useHHPTasksCrud = () => {
         }
 
     };
-
-    const deleteTask = async (id: string) => {
-        if (!id) return;
-        setDeleteHHPTaskLoading(true)
+    const updateTaskSO = async (taskId: string | number | undefined,
+        values: TUpdateSO) => {
+        if (!taskId) return;
+        setUpdateHHPTaskSOLoading(true);
         try {
-            const { data } = await axios.delete(
-                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/${id}`,
+            const { data } = await axios.patch(
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/so/` +
+                taskId,
+                values,
                 {
                     withCredentials: true,
                 }
             );
-            toast.success(`${data?.message}`);
-            setHHPTasks((prev: any) => prev.filter((task: any) => task.id !== id));
+            setHHPTasks((prev: any) =>
+                prev.map((task: any) => (task?.id === taskId ? data.task : task))
+            );
+
+            // 🔴 Emit task update event
+            socket.emit("updateTask", data?.task);
         } catch (error: any) {
+            console.error("updateTaskSO error", error);
+            if (error) toast.error(error?.response?.data?.error);
+        } finally {
+            setUpdateHHPTaskSOLoading(false)
+        }
+
+    };
+
+    const deleteTask = async (taskId: string, userId: string | undefined) => {
+        if (!taskId) return;
+        setDeleteHHPTaskLoading(true)
+        try {
+            const response = await axios.delete(
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/${taskId}`,
+                {
+                    withCredentials: true,
+                    headers: { "Content-Type": "application/json" }, // Ensure JSON format
+                    data: { userId }
+                }
+            );
+            // // 🔴 Emit task delete event
+            // socket.emit("deleteTask", { taskId, deletedBy: userId });
+            setHHPTasks((prev: any) => prev.filter((task: any) => task.id !== taskId));
+            // toast.success(`Ticket: ${response?.data?.task?.ticket_number} has been deleted`, { position: 'bottom-right' });
+        } catch (error: any) {
+            console.error("deleteTask error", error);
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             }
@@ -139,6 +221,32 @@ export const useHHPTasksCrud = () => {
             setDeleteHHPTaskLoading(false); // Stop loading
         }
     };
+    // 🔄 Listen for real-time updates
+    useEffect(() => {
+        fetchTasks()
+        socket.on("addTask", (task) => {
+            toast.success(`Ticket: ${task?.ticket_number} has been added`, { position: 'bottom-center' });
+            setHHPTasks((prev: any) => [...prev, task]); // Add assigned task
+        });
 
-    return { hhpTasks, fetchTasks, hhpAddTaskLoading, addTask, hhpAddTaskErrors, updateHHPTaskLoading, updateTask, deleteHHPTaskLoading, deleteTask };
+        socket.on("updateTask", (updatedTask) => {
+            toast.success(`Ticket: ${updatedTask?.ticket_number} has been updated`, { position: 'bottom-center' });
+            setHHPTasks((prev: any) =>
+                prev.map((task: any) => (task?.id === updatedTask?.id ? updatedTask : task))
+            );
+        });
+
+        socket.on("deleteTask", ({ task, deletedBy, ticket_number }) => {
+            toast.success(`Ticket: ${ticket_number} has been deleted by ${deletedBy}`, { position: 'bottom-center', duration: 4000 });
+            setHHPTasks((prev: any) => prev.filter((task: any) => task.id !== task?.id));
+        });
+
+        return () => {
+            socket.off("task-assigned");
+            socket.off("addTask");
+            socket.off("updateTask");
+            socket.off("deleteTask");
+        };
+    }, []);
+    return { hhpTasks, hhpTasksLoading, fetchTasks, hhpAddTaskLoading, addTask, hhpAddTaskErrors, updateHHPTaskLoading, updateTask, updateTaskSO, updateHHPTaskSOLoading, deleteHHPTaskLoading, deleteTask };
 };

@@ -19,6 +19,7 @@ type TUpdateValues = {
     requires_backup?: string | null;
     job_repair_no?: string | null;
     qc_complete?: string;
+    warranty?: string;
 };
 
 const useUpdateHHPTask = () => {

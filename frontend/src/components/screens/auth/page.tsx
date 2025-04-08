@@ -16,7 +16,7 @@ const SignupScreen = dynamic(() =>
     import('./signup/page'), { ssr: false }
 )
 
-export default function AuthScreen() {
+const AuthScreen = () => {
     // const { user, isLoggedIn } = useUserLoggedIn()
 
     useEffect(() => {
@@ -53,3 +53,5 @@ export default function AuthScreen() {
         </div>
     )
 }
+
+export default AuthScreen

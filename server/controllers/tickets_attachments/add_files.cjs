@@ -2,7 +2,11 @@ const sftp = require("ssh2-sftp-client");
 const path = require("path");
 const fs = require("fs");
 const yup = require("yup");
+<<<<<<< HEAD
 
+=======
+require("dotenv").config();
+>>>>>>> origin/sockets-realtime
 const moment = require("moment");
 
 const sftpConfig = {

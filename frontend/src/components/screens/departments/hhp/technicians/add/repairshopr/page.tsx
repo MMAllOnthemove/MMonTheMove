@@ -183,7 +183,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
         e.preventDefault()
         const job_added_by = user?.email
         const created_at = datetimestamp;
-
+        const trimmed_ticket = `${ticket_number}`?.trim()
         const payload = {
             service_order_no,
             date_booked,
@@ -194,7 +194,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
             imei: imei ?? repairshoprIMEI,
             serial_number,
             status,
-            ticket_number,
+            ticket_number: trimmed_ticket,
             department,
             job_added_by,
             stores,
@@ -206,13 +206,14 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
             requires_backup,
             rs_warranty,
             repairshopr_customer_id,
-            ticket_type_id
+            ticket_type_id,
+            created_by: user?.full_name
         }
         const userIdPayload = {
             "user_id": repairshopr_id,
         }
 
-        await addTask(payload)
+        const response = await addTask(payload)
         if (engineer) await updateRepairTicket(repairshopr_job_id, userIdPayload)
         setSearchTicket('')
         setWarranty('')
@@ -235,7 +236,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
         setRSWarranty('')
         setCustomerRSId('')
 
-        if (hhpAddTaskErrors) {
+        if (response?.status === 201) {
             onChange(false)
         }
     }
@@ -299,7 +300,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
 
 
 
-                    {hhpAddTaskErrors.engineer && <p className="text-sm text-red-500 font-medium">{hhpAddTaskErrors.engineer}</p>}
+                    {/* {hhpAddTaskErrors.engineer && <p className="text-sm text-red-500 font-medium">{hhpAddTaskErrors.engineer}</p>} */}
 
                 </div>
 
@@ -321,7 +322,7 @@ const AddRepairshoprHHPTask = ({ onChange }: { onChange: (value: boolean) => voi
                             </SelectGroup>
                         </SelectContent>
                     </Select>
-                    {hhpAddTaskErrors.stores && <p className="text-sm text-red-500 font-medium">{hhpAddTaskErrors.stores}</p>}
+                    {/* {hhpAddTaskErrors.stores && <p className="text-sm text-red-500 font-medium">{hhpAddTaskErrors.stores}</p>} */}
 
                 </div>
                 <Button className="w-full outline-none" type="submit" onClick={handleSubmit} disabled={hhpAddTaskLoading}> {hhpAddTaskLoading ? 'Adding...' : 'Add task'}</Button>

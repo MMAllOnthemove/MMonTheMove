@@ -9,10 +9,12 @@ import {
 } from "@/components/ui/card"
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import useAddOtp from '@/hooks/useAddOtp'
+import useAddOtp from '@/hooks/useOtp'
 import useUserLoggedIn from '@/hooks/useGetUser'
 import dynamic from 'next/dynamic'
 import React, { useState } from 'react'
+import useOtp from '@/hooks/useOtp'
+import useSocket from '@/hooks/useSocket'
 const Sidebar = dynamic(() =>
     import('@/components/sidebar/page')
 )
@@ -23,9 +25,9 @@ const NotLoggedInScreen = dynamic(() =>
     import('@/components/not_logged_in/page')
 )
 const CreateOtpScreen = () => {
-
+    const { isConnected } = useSocket()
     const { user, isLoggedIn, loading } = useUserLoggedIn()
-    const { addOTP, otpAddLoading } = useAddOtp()
+    const { addOTP, otpAddLoading } = useOtp()
     const [otp_code, setOtpCode] = useState('')
 
     const submit = async (e: React.SyntheticEvent) => {

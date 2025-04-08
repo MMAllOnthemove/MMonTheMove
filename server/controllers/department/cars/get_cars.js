@@ -1,5 +1,9 @@
 import { pool } from "../../../db.js";
+<<<<<<< HEAD
 
+=======
+import "dotenv/config";
+>>>>>>> origin/sockets-realtime
 const getCars = async (req, res) => {
     try {
         const { rows } = await pool.query(

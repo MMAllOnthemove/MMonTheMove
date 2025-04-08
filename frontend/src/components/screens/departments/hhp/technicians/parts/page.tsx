@@ -9,17 +9,23 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { datetimestamp } from '@/lib/date_formats';
-import repairshopr_part_statuses from "@/lib/parts_status";
+import useFetchEngineer from "@/hooks/useFetchEngineers";
 import { TTaskParts } from '@/lib/types';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { CheckedState } from '@radix-ui/react-checkbox';
 import React, { useEffect, useState } from 'react';
+
 type TPartsHHPUpdate = {
-    parts_orderedProp: CheckedState | undefined
-    parts_issuedProp: CheckedState | undefined
-    parts_requestedProp: CheckedState | undefined
     compensation: CheckedState | undefined | any | any
     search_part: string;
     parts_order_id: string | null | undefined;
@@ -33,13 +39,7 @@ type TPartsHHPUpdate = {
     setPartDesc: (data: string) => void;
     part_quantity: number | undefined;
     setPartQuantity: (data: number | undefined) => void;
-    setPartsOrderedProp: (data: CheckedState | undefined) => void;
-    setPartsOrderedDateProp: (data: string) => void;
-    setPartsIssuedProp: (data: CheckedState | undefined) => void;
-    setPartsRequestedProp: (data: CheckedState | undefined) => void;
     setCompensation: (data: CheckedState | undefined | any | null) => void;
-    setPartsRequestedDateProp: (data: string) => void;
-    setPartsIssuedDateProp: (data: string) => void;
     addPartLoading: boolean;
     addPartOnRepairshoprLoading: boolean;
     submitPartsUpdateLoading: boolean;
@@ -48,12 +48,10 @@ type TPartsHHPUpdate = {
     submitPartOrderIdLoading: boolean;
     submitPartOrderId: (data: React.SyntheticEvent) => void;
     submitPartsUpdate: (data: React.SyntheticEvent) => void;
-    serial_number: string;
-    model: string;
-    imei: string;
     part_data: TTaskParts[];
     deletePartLoading: boolean;
     issuedPartsLoading: boolean;
+    oldPartsLoading: boolean;
     // 3 arguments so we know which part was deleted
     handleDelete: (data: string, part_name: string, part_desc: string) => void;
     errors: {
@@ -61,31 +59,38 @@ type TPartsHHPUpdate = {
         part_desc?: string;
         part_quantity?: string;
     }
-    stored_parts_order_id: string;
-    part_status: string;
-    setPartStatus: (e: string) => void;
+    stored_parts_order_id: string | null | undefined;
     in_stock: string | undefined;
     onSelectionChange: (selectedParts: string[]) => void;
+    onSelectionChangeOldParts: (selectedOldParts: string[]) => void;
     submitPartsIssued: (data: any) => void;
+    submitPartsOld: (data: any) => void;
 }
-const Parts = ({  partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedPartsLoading, onSelectionChange, in_stock, partsExtraText, setPartsExtraText, deletePartLoading, parts_order_id, setPartsOrderId, stored_parts_order_id, submitPartOrderIdLoading, submitPartOrderId, part_data, handleDelete, setPartsRequestedProp, setPartsRequestedDateProp, setPartsOrderedProp, setPartsOrderedDateProp, setPartsIssuedProp, setPartsIssuedDateProp, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, model, imei, serial_number, errors, part_status, setPartStatus }: TPartsHHPUpdate) => {
+const Parts = ({ oldPartsLoading, submitPartsOld, onSelectionChangeOldParts, partsIssuedText, setIssuedExtraText, submitPartsIssued, issuedPartsLoading, onSelectionChange, in_stock, partsExtraText, setPartsExtraText, deletePartLoading, parts_order_id, setPartsOrderId, submitPartOrderIdLoading, submitPartOrderId, part_data, handleDelete, search_part, setSearchPart, part_desc, setPartDesc, part_quantity, setPartQuantity, addPartLoading, addPart, submitPartsUpdateLoading, addPartOnRepairshoprLoading, addPartOnRepairshopr, submitPartsUpdate, setCompensation, compensation, errors }: TPartsHHPUpdate) => {
     const [selectedParts, setSelectedParts] = useState<any[]>([]);
     const [selectAll, setSelectAll] = useState(false);
 
-
+    const [selectedOldParts, setSelectedOldParts] = useState<any[]>([]);
+    const [selectAllOldParts, setSelectAllOldParts] = useState(false);
     useEffect(() => {
         onSelectionChange(selectedParts); // Notify parent of changes
     }, [selectedParts, onSelectionChange]);
 
+
+    useEffect(() => {
+        onSelectionChangeOldParts(selectedOldParts); // Notify parent of changes
+    }, [selectedOldParts, onSelectionChangeOldParts]);
+
     // Toggle single part selection
     // Toggle part selection
-    const handlePartChange = (partId: string, partName: string) => {
+    const handlePartChange = (partId: string, partName: string, partDesc: string) => {
         setSelectedParts((prevSelectedParts) =>
             prevSelectedParts.some((p) => p.id === partId)
                 ? prevSelectedParts.filter((p) => p.id !== partId)
-                : [...prevSelectedParts, { id: partId, part_name: partName, seal_number: "", part_issued: true }]
+                : [...prevSelectedParts, { id: partId, part_name: partName, seal_number: "", part_issued: true, part_desc: partDesc }]
         );
     };
+
 
     // Handle Select All
     const handleSelectAll = () => {
@@ -107,23 +112,40 @@ const Parts = ({  partsIssuedText, setIssuedExtraText, submitPartsIssued, issued
     };
 
 
+    // Toggle single old part selection
+    // Toggle old part selection
+    const handleOldPartChange = (partId: string, partName: string, partDesc: string) => {
+        setSelectedOldParts((prevSelectedParts) =>
+            prevSelectedParts.some((p) => p.id === partId)
+                ? prevSelectedParts.filter((p) => p.id !== partId)
+                : [...prevSelectedParts, { id: partId, part_name: partName, is_old_part: true, part_desc: partDesc }]
+        );
+    };
 
 
-    const handlePartStatus = (e: React.SyntheticEvent | any) => {
-        setPartStatus(e.target.value)
-        if (e.target.value === 'Parts to be ordered') {
-            setPartsOrderedProp(true);
-            setPartsOrderedDateProp(datetimestamp)
+    // Handle Select All old parts
+    const handleSelectAllOldParts = () => {
+        if (selectAllOldParts) {
+            setSelectedOldParts([]); // Deselect all
+        } else {
+            setSelectedOldParts(part_data?.map((part) => ({ id: part.id, part_name: part.part_name, is_old_part: true }))); // Select all old parts
         }
-        if (e.target.value === 'Parts Issued') {
-            setPartsIssuedProp(true);
-            setPartsIssuedDateProp(datetimestamp)
-        }
-        if (e.target.value === 'Parts Request 1st Approval') {
-            setPartsRequestedProp(true);
-            setPartsRequestedDateProp(datetimestamp)
-        }
-    }
+        setSelectAllOldParts(!selectAllOldParts);
+    };
+
+
+    const { engineersList } = useFetchEngineer()
+    // for filtering by engineer
+    const engineerListFomatted = engineersList?.map((user) => ({
+        id: user?.id,
+        repairshopr_id: user?.repairshopr_id,
+        value: user?.engineer_firstname + " " + user?.engineer_lastname,
+        label: user?.engineer_firstname + " " + user?.engineer_lastname,
+    }))
+
+
+
+
     const handleCompensation = (e: React.SyntheticEvent | any) => {
         if (!compensation) {
             setCompensation(e);
@@ -171,12 +193,12 @@ const Parts = ({  partsIssuedText, setIssuedExtraText, submitPartsIssued, issued
 
 
                         </div>
-                        <Button className="w-full mt-2" type="button" onClick={addPart} disabled={addPartLoading}>{addPartLoading ? 'Adding...' : 'Add part'} </Button>
+                        <Button data-btn="add_part" className="w-full mt-2" type="button" onClick={addPart} disabled={addPartLoading}>{addPartLoading ? 'Adding...' : 'Add part'} </Button>
 
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-2">
-                    <AccordionTrigger>Added parts</AccordionTrigger>
+                    <AccordionTrigger>Parts used for unit</AccordionTrigger>
                     <AccordionContent>
                         <div className="my-3">
                             {part_data?.length > 0 && (
@@ -193,8 +215,8 @@ const Parts = ({  partsIssuedText, setIssuedExtraText, submitPartsIssued, issued
                         </div>
                         <div>
                             {part_data?.length > 0 ? part_data?.map((item: any) => (
-                                <div key={item.id}>
-                                    <p className="flex items-center justify-between border-b border-grey-50 text-xs leading-3" >
+                                <div key={item?.id}>
+                                    <p id={item?.part_name} className="flex items-center justify-between border-b border-grey-50 text-xs leading-3" >
                                         ({item.part_name}) / <span className="text-ellipsis overflow-hidden whitespace-nowrap">{item?.part_desc} /</span>({item?.part_quantity}) <button type="button" disabled={deletePartLoading} onClick={() => handleDelete(item.id, item?.part_name, item?.part_desc)}>{deletePartLoading ? '...' : <XMarkIcon className="h-4 w-4" />}</button>
                                     </p>
                                 </div>
@@ -209,41 +231,6 @@ const Parts = ({  partsIssuedText, setIssuedExtraText, submitPartsIssued, issued
                             ) : null}
                         </div>
 
-                        <div className="mt-4">
-
-                            <div className="mb-3">
-                                <label htmlFor="part_status" className="text-sm font-medium mb-3">Select part status</label>
-                                <div className="relative">
-                                    <select className="block w-full appearance-none rounded-md border border-gray-300 bg-white px-4 py-2 pr-8 text-sm shadow-sm focus:outline-none cursor-pointer [&>span]:line-clamp-1" name="part_status" value={part_status} onChange={handlePartStatus}>
-                                        <option disabled value="">
-                                            Choose status
-                                        </option>
-                                        {repairshopr_part_statuses?.map((dep) => (
-                                            <option key={dep.id} value={`${dep._status}`}>
-                                                {dep._status}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <span
-                                        className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400"
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-5 w-5"
-                                            viewBox="0 0 20 20"
-                                            fill="currentColor"
-                                        >
-                                            <path
-                                                fillRule="evenodd"
-                                                d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.72-3.72a.75.75 0 111.06 1.06l-4 4a.75.75 0 01-1.06 0l-4-4a.75.75 0 01.02-1.06z"
-                                                clipRule="evenodd"
-                                            />
-                                        </svg>
-                                    </span>
-                                </div>
-                            </div>
-
-                        </div>
                     </AccordionContent>
                 </AccordionItem>
 
@@ -260,15 +247,29 @@ const Parts = ({  partsIssuedText, setIssuedExtraText, submitPartsIssued, issued
                 <AccordionItem value="item-4">
                     <AccordionTrigger>Parts issued</AccordionTrigger>
                     <AccordionContent>
-                        <div className="my-3">
-                            <Label htmlFor="partsIssuedText">Add comment to go with these parts</Label>
+                        {/* instead of typing out the engineer, just select them */}
+                        <Select name="partsIssuedText" value={partsIssuedText} onValueChange={(e) => setIssuedExtraText(e)}>
+                            <SelectTrigger className="w-full hidden md:flex mb-2">
+                                <SelectValue placeholder="Issue parts to who" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectLabel>Engineer</SelectLabel>
+                                    {engineerListFomatted.map((dep) => (
+                                        <SelectItem key={dep.id} value={`${dep.value}`}>{`${dep.label}`}</SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        {/* <div className="my-3">
+                            <Label htmlFor="partsIssuedText">Add comment to go with these parts (just the techncian name)</Label>
                             <Textarea
                                 placeholder="Parts issued to: "
                                 name="partsIssuedText"
                                 value={partsIssuedText}
                                 onChange={(e) => setIssuedExtraText(e.target.value)}
                             />
-                        </div>
+                        </div> */}
                         <div>
                             <label>
                                 <input type="checkbox" checked={selectAll} onChange={handleSelectAll} />
@@ -285,9 +286,9 @@ const Parts = ({  partsIssuedText, setIssuedExtraText, submitPartsIssued, issued
                                                 <input
                                                     type="checkbox"
                                                     checked={isSelected}
-                                                    onChange={() => handlePartChange(part.id, part.part_name)}
+                                                    onChange={() => handlePartChange(part.id, part.part_name, part.part_desc)}
                                                 />
-                                                {part.part_name}
+                                                {part.part_name} {part.part_desc}
                                             </label>
                                             <>
                                                 {isSelected && (
@@ -317,27 +318,54 @@ const Parts = ({  partsIssuedText, setIssuedExtraText, submitPartsIssued, issued
                                 })}
                             </ul>
                         </div>
-                        <Button className="w-full mt-2" type="button" onClick={submitPartsIssued} disabled={issuedPartsLoading}>{issuedPartsLoading ? 'Adding...' : 'Send parts issued to ticket'} </Button>
+                        <Button className="w-full mt-2" type="button" onClick={submitPartsIssued} disabled={issuedPartsLoading}>{issuedPartsLoading ? 'Adding...' : 'Publish parts as comment on repairshopr'} </Button>
 
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-5">
-                    <AccordionTrigger>Device info</AccordionTrigger>
+                    <AccordionTrigger>Old parts returned</AccordionTrigger>
                     <AccordionContent>
-                        <div>
-                            <ul className="list-decimal list-inside">
 
-                                <li>Model: <span className="text-gray-600 font-medium">{model}</span></li>
-                                <li>IMEI: <span className="text-gray-600 font-medium">{imei}</span></li>
-                                <li>Serial number: <span className="text-gray-600 font-medium">{serial_number}</span></li>
-                                <li>Order id: <span className="text-gray-600 font-medium">{stored_parts_order_id}</span></li>
+                        <div>
+                            <label>
+                                <input type="checkbox" checked={selectAllOldParts} onChange={handleSelectAllOldParts} />
+                                Select All
+                            </label>
+                            <ul>
+                                {part_data?.map((part: any) => {
+                                    const isSelected = selectedOldParts.some((p) => p.id === part.id);
+                                    const sealNumber = selectedOldParts.find((p) => p.id === part.id)?.seal_number || "";
+
+                                    return (
+                                        <li key={part.id} className="flex gap-2 items-center">
+                                            <label>
+                                                <input
+                                                    id={part.part_name}
+                                                    type="checkbox"
+                                                    checked={isSelected}
+                                                    onChange={() => handleOldPartChange(part.id, part.part_name, part.part_desc)}
+                                                />
+                                                {part.part_name} {part.part_desc} {part.is_old_part}
+                                            </label>
+                                            <>
+                                                {part?.is_old_part ? (
+                                                    <span className="ml-2 text-sm text-green-700">
+                                                        Old parts
+                                                    </span>
+                                                ) : null}
+                                            </>
+
+                                        </li>
+                                    );
+                                })}
                             </ul>
                         </div>
+                        <Button id="submitOldParts" className="w-full mt-2" type="button" onClick={submitPartsOld} disabled={oldPartsLoading}>{oldPartsLoading ? 'Adding...' : 'Publish old parts as comment on repairshopr'} </Button>
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>
 
-            <Button className="w-full outline-none" type="button" onClick={submitPartsUpdate} disabled={submitPartsUpdateLoading}>{submitPartsUpdateLoading ? 'Loading...' : 'Update'}</Button>
+            <Button className="outline-none bg-sky-600" type="button" onClick={submitPartsUpdate} disabled={submitPartsUpdateLoading}>{submitPartsUpdateLoading ? 'Loading...' : 'Save parts section changes'}</Button>
 
         </div >
     )

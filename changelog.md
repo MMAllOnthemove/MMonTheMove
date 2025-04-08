@@ -5,6 +5,247 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.34] - 2025-04-08
+
+### Added
+
+-    qc_fail, qc_fail_date columns in sql
+-    update item condition field in view ticket
+-    sort tickets in bin stats by old first
+-    if file is pdf accommodate it too when displaying in the view ticket
+-    fail for qc and how many (already created a table to add them separately, will count from there)
+-    CREATE INDEX idx_technician_tasks_date_booked ON technician_tasks(date_booked)
+-    CREATE INDEX idx_technician_tasks_qc_complete ON technician_tasks(qc_complete)
+-    CREATE INDEX idx_technician_tasks_engineer_date ON technician_tasks(engineer, date_booked)
+
+### Fixed
+
+-   page title h1, now is semibold instead of extrabold
+
+
+## [0.1.33] - 2025-04-04
+
+### Added
+
+-   auth_type_enum, tokens table, alter table company_people add column user_role user_role_enum
+-   ADD CONSTRAINT unique_token_user_id UNIQUE (user_id)
+-   hide ‘add task’ button
+-   Show quote approved date and time in view ticket
+-   hhp_quality_control
+-   total in dashboard hhp table
+-   reset filters in hhp dashboard table
+-   show assets at the top in view ticket
+-   show warranty in bin stats next to tickets
+-   ALTER TYPE user_role_enum ADD VALUE 'booking_agent'
+-   ALTER TYPE user_role_enum ADD VALUE 'engineer'
+-   ALTER TYPE user_role_enum ADD VALUE 'parts_department'
+-   display only engineers’ specific tasks in table
+-   by search show all tasks
+-   display only engineers’ specific tasks in bin stats
+-   admin sees all bins
+-   admin or booking agent sees all data in the table
+
+### Fixed
+
+-   gspn error handling when booking
+-   hhp dashboard glitching
+-   refresh token now has 7d
+
+## [0.1.32] - 2025-03-28
+
+### Added
+
+-   create service order from view ticket
+-   show hhp techs in home screen
+-   add columns quote_accepted_date and quote_rejected_date
+-   quote_accepted, quote_rejected radio in view ticket (updateable)
+-   assigned to tech date
+-   clicking on bin stats tickets, opens them in view
+-   view invoices from rs in view ticket
+-   Udpate so number to said ticket after creating it, in view ticket
+-   dashboard table, sortable columns, columns should be independently clickable
+
+### Fixed
+
+-   uploading in view tickets was not working accordingly
+
+## [0.1.31] - 2025-03-27
+
+### Added
+
+-   allow more faults in create ticket screen
+-   table view for qc_complete jobs (count them as 'Complete')
+
+### Fixed
+
+-   bin stats calculations are glitching, calculate on the client
+-   group select by technicians in bin stats
+
+## [0.1.30] - 2025-03-25
+
+### Added
+
+-   add a select dropdown to update technician and also store booking agent
+-   search customer and create customer (staff) requests business name
+
+### Fixed
+
+-   update dashboard to instead show techncians filterable by status
+
+## [0.1.29] - 2025-03-24
+
+### Added
+
+-   created_by column in technician_tasks
+-   show booked by in view ticket
+
+### Fixed
+
+-   checklists not appearing
+-   cannot retrieve files, moved uploads folder to /var/www
+
+## [0.1.28] - 2025-03-20
+
+### Added
+
+-   old parts returned
+
+### Fixed
+
+-   prevent duplicate ticket entry by converting ticket to string and trimming whitespace
+-   not pulling parts order info
+-   not pulling warranty in ticket and on booking
+
+## [0.1.27] - 2025-03-19
+
+### Added
+
+-   attachment querying shows 5 each pagination
+-   better responsiveness for attachments display
+-   column part_returned boolean
+
+### Fixed
+
+-   not updating ticket on repairshopr, each function will have it's own payload with the key being updated, instead of using on global one
+-   update not working
+-   comment in parts not adding automatically
+
+## [0.1.26] - 2025-03-17
+
+### Added
+
+-   is_old_part boolean column added in parts_for_tasks
+-   show date booked, and how long since booked in engineer bin stats
+-   minimize open new tab in engineer bin stats
+-   change orange bg from search customers to drak gray
+-   show errors on add task if there are none do not close the modal
+-   parts issued to: adding engineer name on top
+
+### Fixed
+
+-   just have two buttons on customers booking welcome screen, no card in background
+-   not updating assessment date in view task
+-   Parts search is slow, because of asynchronously fetchingpart info and stock data, just delayed the latter until the former is done
+-   trim part search field
+-   removed navbar from engineer bins
+-   parts issued not working
+-   parts ordered and its date
+
+## [0.1.25] - 2025-03-05
+
+### Added
+
+-   loading effect for view ticket screen
+-   modal to add service order after booking
+-   black bg in customers welcome screen, Samsung logo, mm all logo text, mm phone number
+-   disable create ticket && create service order button until all necessary fields are filled
+-   search parts screen
+-   show part description in parts issued view ticket screen
+-   apk to view the app url by default for customer booking screen
+
+### Fixed
+
+-   not showing all statuses in view ticket
+-   open popup tab in full screen
+-   asset result display key in assets screen
+-   local warranty was not loading on create ticket
+
+## [0.1.24] - 2025-03-03
+
+### Added
+
+-   fetch comments immediately on view ticket scren
+-   fetch deletion comment immediately on delete
+-   show files being uploaded in hhp view ticket screen
+-   show engineer on clicked dashboard cards
+-   parts request 1st approval stat, replacing resolved
+-   alter table logs add column ticket_number text;
+-   default comment locally after booking tikcet, the one that has the fault
+-   robtronics/dunoworx booking turnt off, was adding wrong customers
+-   search via ticket number as well, tookan
+-   removed navbar from view ticket screen, less distractions
+
+### Fixed
+
+-   Now showing when asset is taken when booking from so screen
+-   updatePart was emitting the wrong event
+-   turnt off live emit for parts, uses regular fetching for immediate fetching of added parts
+-   checking if comment exists check
+-   shows extra ticket on dashboard when clicking card
+-   reporting stats not downloading
+-   displaying parts for all jobs instead of the correct ones
+-   reporting stats not showing
+-   displaying parts for all jobs instead of the correct ones
+-   not downloading reports
+
+## [0.1.23] - 2025-02-20
+
+### Added
+
+-   kafkajs, socket io and client
+-   require('dotenv').config() where files are added (file.cjs)
+-   ` sql ALTER TABLE company_people ADD CONSTRAINT unique_user_unique_id UNIQUE (user_unique_id);`
+-   TABLE notifications
+-   add, delete, update realtime
+-   turn off clickable ticket numbers in enginee bin
+-   engineer bin updates in realtime
+-   otp add and get, realtime
+-   border red to required fields in create ticket
+-   booking agents stats updates in realtime
+-   columns for quote rejected and quote accepted as booleans
+-   open ticket in new tab on
+-   to top button
+-   scrap the view summary and instead take users to the full page
+
+## [0.1.22] - 2025-02-20
+
+### Added
+
+-   book dunoworx/robtroncics screen
+-   route to customers today screen after so creation
+-   not updating so no on rs until user types something
+
+### Fixed
+
+-   change password field in create ticket to type text
+-   labels in create ticket to show always
+
+## [0.1.21] - 2025-02-12
+
+### Added
+
+-   show phone name in view single ticket
+-   password field for booking user device
+-   all terms and conditions for assembly
+-   can select warranty manually when creating ticket and book from so so as to void if necessary
+-   BER status
+-   dynamic fault generation catering for rework, adding job repair no to title
+
+### Fixed
+
+-   parts order id updating rs and not locally
+-   get reports was not working on empty data
+
 ## [0.1.20] - 2025-01-31
 
 ### Added

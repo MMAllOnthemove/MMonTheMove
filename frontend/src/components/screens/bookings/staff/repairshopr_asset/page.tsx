@@ -108,7 +108,6 @@ const RepairshoprAssetScreen = () => {
 
                             <>
                                 <Select
-                                    key={x?.asset_serial}
                                     value={selectedAsset}
                                     onValueChange={(e) => setSelectedAsset(e)}
                                     name='selectedAsset'
@@ -119,7 +118,7 @@ const RepairshoprAssetScreen = () => {
                                     <SelectContent>
                                         <SelectGroup>
                                             <SelectLabel>Customer assets</SelectLabel>
-                                            <SelectItem value={`${x.id}`}>{x?.asset_serial} - {x?.name}</SelectItem>
+                                            <SelectItem key={x?.id} value={`${x.id}`}>{x?.asset_serial} - {x?.name}</SelectItem>
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>

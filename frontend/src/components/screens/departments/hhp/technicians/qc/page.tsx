@@ -1,13 +1,6 @@
 "use client"
 
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { datetimestamp } from '@/lib/date_formats';
 import React, { ChangeEvent } from "react";
@@ -15,17 +8,16 @@ type TQC = {
     qcUpdateLoading: boolean;
     qc_fail_reasonProp: string
     qc_completeProp: string
-    qc_FilesLoadingProp: boolean
     setQCCompleteProp: (data: string) => void;
     setQCCompleteDateProp: (data: string) => void;
+    // setQCFailProp: (data: string) => void;
+    // setQCFailDateProp: (data: string) => void;
     setUnitCompleteProp: (data: boolean) => void;
     setUnitCompleteDateProp: (data: string) => void;
     setQCFailReasonProp: (data: ChangeEvent<HTMLTextAreaElement>) => void;
-    setQCFilesProp: (data: ChangeEvent<HTMLInputElement>) => void;
-    submitQCFiles: (data: React.SyntheticEvent) => void;
     submitQC: (data: React.SyntheticEvent) => void;
 }
-const QC = ({ qcUpdateLoading, setUnitCompleteProp, setUnitCompleteDateProp, qc_fail_reasonProp, qc_completeProp, setQCCompleteProp, setQCCompleteDateProp, setQCFailReasonProp, qc_FilesLoadingProp, setQCFilesProp, submitQCFiles, submitQC }: TQC) => {
+const QC = ({ qcUpdateLoading, setUnitCompleteProp, setUnitCompleteDateProp, qc_fail_reasonProp, qc_completeProp, setQCCompleteProp, setQCCompleteDateProp, setQCFailReasonProp, submitQC }: TQC) => {
 
 
 
@@ -61,21 +53,11 @@ const QC = ({ qcUpdateLoading, setUnitCompleteProp, setUnitCompleteDateProp, qc_
                     onChange={handleQCcheck}
                 /> Pass
             </div>
-            <Textarea className='mb-3' placeholder="Reason for QC failing/passing." value={qc_fail_reasonProp} onChange={setQCFailReasonProp} />
+            <Textarea name="qc_comment" className='mb-3' placeholder="Reason for QC failing/passing." value={qc_fail_reasonProp} onChange={setQCFailReasonProp} />
 
-            <Accordion type="single" collapsible>
-                <AccordionItem value="item-1">
-                    <AccordionTrigger>Attachments</AccordionTrigger>
-                    <AccordionContent>
-                        <div className="flex items-center">
-                            <Input type="file" accept="image/*,video/*, application/pdf" multiple className="my-3" onChange={setQCFilesProp} />
-                            <Button className="ml-3" disabled={qc_FilesLoadingProp} onClick={submitQCFiles}>{qc_FilesLoadingProp ? 'Uploading' : 'Attach'}</Button>
-                        </div>
-                    </AccordionContent>
-                </AccordionItem>
-            </Accordion>
 
-            <Button className="w-full outline-none" type="submit" onClick={submitQC} disabled={qcUpdateLoading}>{qcUpdateLoading ? 'Updating...' : 'Update QC'}</Button>
+
+            <Button data-qc='qc_submit' className="w-full outline-none" type="submit" onClick={submitQC} disabled={qcUpdateLoading || !qc_completeProp}>{qcUpdateLoading ? 'Updating...' : 'Update Quality control'}</Button>
         </form>
 
     )

@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally';
+import useCustomerLocally from '@/hooks/useCustomerLocally';
 import useUpdateRepairshoprCustomer from '@/hooks/useUpdateRepairshoprCustomer';
 import { capitalizeText } from '@/lib/capitalize';
 import { datetimestamp } from '@/lib/date_formats';
@@ -47,7 +47,7 @@ const SearchCustomerRepairshoprCustomerScreen = () => {
     const [state, setState] = useState("");
     const [zip, setZip] = useState("")
     const [openDialog, setOpenDialog] = useState(false)
-    const { addCustomerLocally, createCustomerLocallyLoading } = useCreateCustomerLocally()
+    const { addCustomerLocally, createCustomerLocallyLoading } = useCustomerLocally()
     const { updateCustomer, updateCustomerRepairshoprLoading } = useUpdateRepairshoprCustomer()
     // this is the modal for editing customer details
     const [editModalOpen, setEditModalOpen] = useState(false);
@@ -72,7 +72,7 @@ const SearchCustomerRepairshoprCustomerScreen = () => {
             );
 
             if (data?.customers?.length > 0) {
-                const searchLower = searchCustomer.toLowerCase();
+                const searchLower = searchCustomer?.toLowerCase();
 
                 const exactMatchCustomer = data.customers.find((customer: any) => {
                     const firstNameExact = customer.firstname?.toLowerCase() === searchLower;
@@ -174,7 +174,7 @@ const SearchCustomerRepairshoprCustomerScreen = () => {
     };
 
     return (
-        <main className="flex justify-center items-center h-screen bg-orange-100">
+        <main className="flex justify-center items-center h-screen bg-gray-800">
             {
                 editModalOpen &&
                 <Dialog open={editModalOpen} onOpenChange={closeModal} >

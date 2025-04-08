@@ -22,6 +22,7 @@ export const useSearchAssets = (customerId: string | number | undefined) => {
                         },
                     }
                 );
+          
                 setResult(
                     data?.assets.filter(
                         (asset: any) => asset.customer_id == customerId

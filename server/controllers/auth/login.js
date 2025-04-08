@@ -67,6 +67,19 @@ const LoginUser = async (req, res) => {
         const accessToken = generateAccessToken(userForToken);
         const refreshToken = generateRefreshToken(userForToken);
 
+<<<<<<< HEAD
+=======
+        // Hash refresh token before storing it
+        const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+
+        // Store hashed refresh token in the database
+        await pool.query(
+            `INSERT INTO tokens (user_id, token, auth_type) VALUES ($1, $2, $3) 
+             ON CONFLICT (user_id) DO UPDATE SET token = EXCLUDED.token`,
+            [user.user_id, hashedRefreshToken, "login"]
+        );
+
+>>>>>>> origin/sockets-realtime
         // Send the refresh token as a secure, httpOnly cookie (considering HTTPS)
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,

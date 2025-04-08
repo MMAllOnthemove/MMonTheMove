@@ -112,7 +112,7 @@ const StoresScreen = () => {
             {
                 loading ? (
                     <LoadingScreen />
-                ) : isLoggedIn && user?.user_role === "admin" ? (
+                ) : isLoggedIn && user?.user_role === "manager" ? (
                     <>
                         <Sidebar />
                         <main className='container p-1'>

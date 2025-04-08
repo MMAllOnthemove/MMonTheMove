@@ -25,6 +25,7 @@ export type TUpdateAssessmentDate = {
     assessment_date: string;
     units_assessed: boolean;
     created_by: string | undefined;
+    ticket_number: string | number;
 };
 export type PropertiesType = {
     IMEI?: string;
@@ -574,6 +575,7 @@ export type TTaskParts = {
     created_at: string;
     created_by: string;
     updated_at: string | null;
+    is_old_part?: boolean;
     stock_availability?: string;
     sales_status?: string;
 };
@@ -736,7 +738,7 @@ export type TAssemblyTermTable = {
     };
 };
 export type IHHPSingleTask = {
-    id: string;
+    id: string | undefined | any;
     unique_id: string;
     service_order_no: string;
     date_booked: string;
@@ -748,20 +750,28 @@ export type IHHPSingleTask = {
     imei: string;
     job_repair_no: string;
     serial_number: string;
+    parts_order_id: string | null | undefined;
     repairshopr_status: string;
     repairshopr_customer_id: number | null | undefined;
     gspn_status: string;
+    quote_rejected_date?: string | null | undefined;
+    quote_accepted_date?: string | null | undefined;
+    assigned_date?: string | undefined;
     device_location: string | null;
     requires_backup: string | null;
     ticket_type_id?: string | null | any;
-    ticket_number: string;
+    ticket_number: string | undefined | any;
     department: string;
     job_added_by: string;
     assessment_date: string;
     parts_pending_date: string;
     parts_issued_date: string;
+    parts_ordered_date: string;
+    quote_accepted: boolean;
+    created_by: string | null;
+    quote_rejected: boolean;
     stores: boolean | null;
-    parts_ordered_date: string | null;
+    phone_name?: string | null;
     completed_date: string | null;
     additional_info: string | null;
     collected_date: string | null;
@@ -773,8 +783,9 @@ export type IHHPSingleTask = {
     unit_status: string;
     unit_complete: boolean;
     collected: string | boolean;
-    parts_pending: string | boolean;
-    parts_issued: string | boolean;
+    parts_pending: null | boolean;
+    parts_ordered: null | boolean;
+    parts_issued: null | boolean;
     compensation: string | boolean;
     images?: {
         image_id: number;
@@ -804,4 +815,8 @@ export type IHHPSingleTask = {
         compensation: boolean;
     }[];
     repairshopr_job_id: string;
+};
+export type TDashboardRowData = {
+    engineer: string;
+    [key: string]: any[] | string; // Other keys will hold ticket lists
 };

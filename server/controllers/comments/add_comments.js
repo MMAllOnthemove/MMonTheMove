@@ -10,7 +10,13 @@ const addCommentSchema = Yup.object({
 });
 
 const addComment = async (req, res) => {
+<<<<<<< HEAD
     const { task_id, comment, created_at, created_by } = req.body;
+=======
+    const { task_id, comment, created_at, created_by, ticket_number } =
+        req.body;
+
+>>>>>>> origin/sockets-realtime
     try {
         await addCommentSchema.validate(req.body, { abortEarly: false });
 
@@ -19,6 +25,7 @@ const addComment = async (req, res) => {
             "SELECT * FROM technician_tasks_comments WHERE task_id = $1 AND comment = $2 limit 1",
             [task_id, comment]
         );
+<<<<<<< HEAD
 
         if (existingComment.length > 0) {
             return res.status(409).json({ message: "Comment already exists" });
@@ -33,6 +40,23 @@ const addComment = async (req, res) => {
             });
         }
     } catch (error) {
+=======
+        // todo: remove
+        if (existingComment.length > 0)
+            return res.status(400).json({ message: "Comment exists" });
+
+        const { rows } = await pool.query(
+            "INSERT INTO technician_tasks_comments (task_id, comment, created_at, created_by) VALUES ($1, $2, $3, $4) returning *",
+            [task_id, comment, created_at, created_by]
+        );
+        await appLogs("INSERT", created_by, req.body, ticket_number);
+        return res.status(201).json({
+            message: "Successfully created",
+            rows: rows[0],
+        });
+    } catch (error) {
+        console.log("error add comment", error);
+>>>>>>> origin/sockets-realtime
         // Handle validation or other errors
         const errors = {};
         if (error.inner) {

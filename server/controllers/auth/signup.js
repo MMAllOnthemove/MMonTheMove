@@ -26,7 +26,11 @@ const SignupUser = async (req, res) => {
 
         const { fullName, repairshopr_id, email, password, createdAt } =
             req.body;
+<<<<<<< HEAD
         let capitalizedEmail = email.toLowerCase();
+=======
+        let capitalizedEmail = email?.toLowerCase();
+>>>>>>> origin/sockets-realtime
 
         // Check if domain is allowed
         const emailRegex = /\@allelectronics.co.za$/;
@@ -82,6 +86,14 @@ const SignupUser = async (req, res) => {
         const refreshToken = generateRefreshToken(userForToken);
 
         await appLogs("INSERT", capitalizedEmail, user);
+<<<<<<< HEAD
+=======
+        // Store token in the database
+        await pool.query(
+            `INSERT INTO tokens (user_id, token, auth_type) VALUES ($1, $2, $3)`,
+            [user.user_id, refreshToken, "signup"]
+        );
+>>>>>>> origin/sockets-realtime
 
         // Set refresh token in the cookie (secure for production)
         res.cookie("refreshToken", refreshToken, {

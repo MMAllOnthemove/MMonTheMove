@@ -1,4 +1,5 @@
 import { pool } from "../../db.js";
+<<<<<<< HEAD
 
 const getAttachments = async (req, res) => {
     let { id, page = 1, limit = 10 } = req.query;
@@ -6,6 +7,16 @@ const getAttachments = async (req, res) => {
     // Parse and validate `page` and `limit`
     page = Math.max(parseInt(page, 10) || 1, 1);
     limit = Math.max(parseInt(limit, 10) || 10, 1);
+=======
+import "dotenv/config";
+
+const getAttachments = async (req, res) => {
+    let { id, page = 1, limit = 5 } = req.query;
+
+    // Parse and validate `page` and `limit`
+    page = Math.max(parseInt(page, 5) || 1, 1);
+    limit = Math.max(parseInt(limit, 5) || 5, 1);
+>>>>>>> origin/sockets-realtime
     const offset = (page - 1) * limit;
 
     try {
@@ -21,7 +32,11 @@ const getAttachments = async (req, res) => {
 
         // Extract total count from the first row (only if data exists)
         const totalAttachments =
+<<<<<<< HEAD
             rows.length > 0 ? parseInt(rows[0].total_count, 10) : 0;
+=======
+            rows.length > 0 ? parseInt(rows[0].total_count, 5) : 0;
+>>>>>>> origin/sockets-realtime
 
         return res.status(200).json({
             data: rows,
@@ -32,7 +47,10 @@ const getAttachments = async (req, res) => {
             },
         });
     } catch (error) {
+<<<<<<< HEAD
         console.error("Error fetching attachments:", error);
+=======
+>>>>>>> origin/sockets-realtime
         return res.status(500).json({
             message: "Could not get attachments",
             error:

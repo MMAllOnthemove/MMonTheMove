@@ -1,6 +1,10 @@
 import { pool } from "../../../db.js";
 import appLogs from "../../logs/logs.js";
+<<<<<<< HEAD
 
+=======
+import emitLatestPartsAdded from "./emit_latest_parts.js";
+>>>>>>> origin/sockets-realtime
 export const UpdatePart = async (req, res) => {
     const { id } = req.params; // Assuming the ID is passed in the URL
     if (!id) {
@@ -44,16 +48,29 @@ export const UpdatePart = async (req, res) => {
 
         const query = `UPDATE parts_for_tasks SET ${setClause} WHERE id = $${
             keys.length + 1
+<<<<<<< HEAD
         } RETURNING id`;
+=======
+        } RETURNING *`;
+>>>>>>> origin/sockets-realtime
 
         // Execute update query
         const result = await pool.query({ text: query, values });
 
         await appLogs("UPDATE", changes?.updated_by, updates); // Log only changed fields
+<<<<<<< HEAD
 
         return res.status(200).json({ message: "Part updated successfully" });
     } catch (err) {
         console.error("Error updating part:", err);
+=======
+        emitLatestPartsAdded();
+        return res.status(200).json({
+            message: "Part updated successfully",
+            part: result.rows[0],
+        });
+    } catch (err) {
+>>>>>>> origin/sockets-realtime
         return res.status(500).json({ error: "Could not update, try again" });
     }
 };

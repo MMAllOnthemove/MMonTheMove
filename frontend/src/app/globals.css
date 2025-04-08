@@ -168,3 +168,12 @@ input[type="radio"]:checked {
     opacity: 1;
     visibility: visible;
 }
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+}

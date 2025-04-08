@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import bcrypt from "bcrypt";
 import { pool } from "../../db.js";
 import "dotenv/config";
@@ -7,6 +8,15 @@ import {
 } from "../../utils/token_generate.js";
 import * as Yup from "yup";
 import nodemailer from "nodemailer";
+=======
+import "dotenv/config";
+import nodemailer from "nodemailer";
+import * as Yup from "yup";
+import { pool } from "../../db.js";
+import {
+    generateAccessToken
+} from "../../utils/token_generate.js";
+>>>>>>> origin/sockets-realtime
 // Login route
 // authentication
 
@@ -25,7 +35,11 @@ const transporter = nodemailer.createTransport({
     secure: true, // true for port 465, false for other ports
     auth: {
         user: `noreply@mmallonthemove.co.za`,
+<<<<<<< HEAD
         pass: `noreply@Password@2022@`,
+=======
+        pass: `hbegt`,
+>>>>>>> origin/sockets-realtime
     },
     tls: {
         rejectUnauthorized: false, // Set to false for development, or if you encounter certificate issues

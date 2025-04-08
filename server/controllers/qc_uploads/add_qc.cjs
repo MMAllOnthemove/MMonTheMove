@@ -3,7 +3,11 @@ const path = require("path");
 const fs = require("fs");
 const pg = require("pg");
 const yup = require("yup");
+<<<<<<< HEAD
 
+=======
+require("dotenv").config();
+>>>>>>> origin/sockets-realtime
 const moment = require("moment");
 
 // create a connection to db as we cannot import a module in a common js file
@@ -61,6 +65,7 @@ const uploadQCFile = async (req, res) => {
         // Upload all files and remove local temporary files afterward
         const fileUrls = await Promise.all(
             req.files.map(async (file, index) => {
+<<<<<<< HEAD
                 // Because we have 'files' as a directory pointing to '/uploads' folder in our root
                 // we will only reference it as 'files'
                 // e.g. we have a directory inside 'files' called 'hhp/qc'
@@ -69,11 +74,20 @@ const uploadQCFile = async (req, res) => {
                 const sanitizedFileName = file.originalname
                     .replace(/[^a-zA-Z0-9.-]/g, "_") // Replace special characters with _
                     .toLowerCase();
+=======
+                const sanitizedFileName = file.originalname
+                    ?.replace(/[^a-zA-Z0-9.-]/g, "_") // Replace special characters with _
+                    ?.toLowerCase();
+>>>>>>> origin/sockets-realtime
                 const uniqueFileName = `${ticket_number}-qc-${
                     index + 1
                 }-${sanitizedFileName}`;
 
+<<<<<<< HEAD
                 const remotePath = `/home/mmallonthemove/uploads/hhp/${uniqueFileName}`;
+=======
+                const remotePath = `/var/www/uploads/hhp/${uniqueFileName}`;
+>>>>>>> origin/sockets-realtime
                 try {
                     await sftpClient.put(file.path, remotePath);
                     // Remove temporary file from local storage
@@ -98,6 +112,19 @@ const uploadQCFile = async (req, res) => {
                 } catch (error) {
                     if (process.env.NODE_ENV !== "production")
                         console.error("Error uploading file:", error);
+<<<<<<< HEAD
+=======
+                    // Remove the temporary file from local storage even on delete
+                    fs.unlink(file.path, (err) => {
+                        if (err) {
+                            console.error(
+                                "Error deleting file:",
+                                file.path,
+                                err
+                            );
+                        }
+                    });
+>>>>>>> origin/sockets-realtime
                     // throw new Error(
                     //     `Failed to upload file: ${file.originalname}`
                     // );

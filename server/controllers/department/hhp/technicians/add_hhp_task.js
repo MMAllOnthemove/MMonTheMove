@@ -1,7 +1,15 @@
+<<<<<<< HEAD
 import { pool } from "../../../../db.js";
 import "dotenv/config";
 import * as Yup from "yup";
 import appLogs from "../../../logs/logs.js";
+=======
+import "dotenv/config";
+import * as Yup from "yup";
+import { pool } from "../../../../db.js";
+import appLogs from "../../../logs/logs.js";
+import emitBinStatsUpdate from "../bin_dashboard/emit_bin_updates.js";
+>>>>>>> origin/sockets-realtime
 
 const AddHHPTaskSchema = Yup.object({
     service_order_no: Yup.string(),
@@ -20,7 +28,11 @@ const AddHHPTaskSchema = Yup.object({
     additional_info: Yup.string(),
     stores: Yup.string().required("Select service type"),
     repairshopr_job_id: Yup.string().required("Repairshopr job id is missing"),
+<<<<<<< HEAD
     repeat_repair: Yup.string().required("This field is required"),
+=======
+    repeat_repair: Yup.string().required("Is it a repeat repair?"),
+>>>>>>> origin/sockets-realtime
     units_assessed: Yup.boolean(),
 });
 
@@ -50,11 +62,21 @@ const AddHHPTask = async (req, res) => {
         requires_backup,
         rs_warranty,
         ticket_type_id,
+<<<<<<< HEAD
     } = req.body;
     try {
         await AddHHPTaskSchema.validate(req.body, { abortEarly: false });
         const findIfExists = await pool.query(
             "SELECT * from technician_tasks WHERE ticket_number = $1 limit 1",
+=======
+        created_by,
+    } = req.body;
+
+    try {
+        await AddHHPTaskSchema.validate(req.body, { abortEarly: false });
+        const findIfExists = await pool.query(
+            "SELECT 1 from technician_tasks WHERE ticket_number = $1 limit 1",
+>>>>>>> origin/sockets-realtime
             [ticket_number]
         );
         const returnDataWithNewRow =
@@ -65,7 +87,11 @@ const AddHHPTask = async (req, res) => {
             });
         } else {
             const { rows } = await pool.query(
+<<<<<<< HEAD
                 "INSERT INTO technician_tasks (service_order_no, date_booked, model, warranty, engineer, fault, imei, serial_number, unit_status, ticket_number, department, job_added_by, stores, repairshopr_job_id, repeat_repair, created_at, additional_info, repairshopr_customer_id, job_repair_no, accessories_and_condition, requires_backup, rs_warranty, ticket_type_id) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23) returning id",
+=======
+                "INSERT INTO technician_tasks (service_order_no, date_booked, model, warranty, engineer, fault, imei, serial_number, unit_status, ticket_number, department, job_added_by, stores, repairshopr_job_id, repeat_repair, created_at, additional_info, repairshopr_customer_id, job_repair_no, accessories_and_condition, requires_backup, rs_warranty, ticket_type_id, created_by) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24) returning id",
+>>>>>>> origin/sockets-realtime
                 [
                     service_order_no,
                     date_booked,
@@ -90,6 +116,10 @@ const AddHHPTask = async (req, res) => {
                     requires_backup,
                     rs_warranty,
                     ticket_type_id,
+<<<<<<< HEAD
+=======
+                    created_by,
+>>>>>>> origin/sockets-realtime
                 ]
             );
 
@@ -97,6 +127,11 @@ const AddHHPTask = async (req, res) => {
                 rows[0].id,
             ]);
             await appLogs("INSERT", job_added_by, req.body);
+<<<<<<< HEAD
+=======
+            // io.emit("addTask", rows[0]); // Notify clients about task addition
+            await emitBinStatsUpdate(); // Call bin stats update function
+>>>>>>> origin/sockets-realtime
             return res.status(201).json({
                 message: "HHP task created",
                 task: fetchResult.rows[0],

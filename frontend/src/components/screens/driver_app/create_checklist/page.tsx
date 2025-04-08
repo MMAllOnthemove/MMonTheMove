@@ -1,11 +1,10 @@
 "use client"
-import dynamic from 'next/dynamic'
 import { Button } from '@/components/ui/button'
-import useAddChecklist from '@/hooks/useAddChecklist'
 import useUserLoggedIn from '@/hooks/useGetUser'
 import { closeModalInParent, VehicleInspection } from '@/lib/types'
 import axios from 'axios'
 import moment from 'moment'
+import dynamic from 'next/dynamic'
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
 const SectionEight = dynamic(() =>
@@ -43,11 +42,14 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Input } from "@/components/ui/input"
+import useCarChecklist from '@/hooks/useAddChecklist'
+import useSocket from '@/hooks/useSocket'
 
 
 const CreateChecklistScreen: React.FC<closeModalInParent> = ({ onSuccess }) => {
+    const { isConnected } = useSocket()
     const { user } = useUserLoggedIn()
-    const { addChecklist, addChecklistLoading } = useAddChecklist()
+    const { addChecklist, addChecklistLoading } = useCarChecklist()
     const [car, setCar] = useState("")
     const [reason_for_use, selectCarUseReason] = useState("")
     const [driver, setDriver] = useState("")

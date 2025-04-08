@@ -12,9 +12,10 @@ export const metadata: Metadata = {
 }
 
 
-export default function Auth() {
+const Auth = () => {
 
     return (
         <AuthScreen />
     )
 }
+export default Auth

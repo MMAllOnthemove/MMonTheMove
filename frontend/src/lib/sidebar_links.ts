@@ -55,6 +55,7 @@ export const menuItems = [
             { id: 12, item: "Add driver", pageRoute: "/drivers" },
             { id: 13, item: "Add car", pageRoute: "/cars" },
             { id: 14, item: "Add assembly term", pageRoute: "/assembly_terms" },
+            { id: 24, item: "Search parts", pageRoute: "/search_parts" },
         ],
     },
     {
@@ -95,13 +96,18 @@ export const menuItems = [
                 item: "All customers",
                 pageRoute: "/bookings/staff/customers",
             },
+            // {
+            //     id: 22,
+            //     item: "Robtronics/Dunoworx booking",
+            //     pageRoute: "/bookings/staff/dunoworx_robtronics",
+            // },
         ],
     },
     {
         label: "Bookings customers",
         sublinks: [
             {
-                id: 22,
+                id: 23,
                 item: "Begin process",
                 pageRoute: "/bookings/customers/welcome",
             },

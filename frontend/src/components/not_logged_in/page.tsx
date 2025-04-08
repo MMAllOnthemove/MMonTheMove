@@ -18,6 +18,7 @@ const NotLoggedInScreen = () => {
                     You are not logged in
                 </p>
                 <Button
+                    type="button"
                     onClick={handleLoginClick}
                     className="bg-gray-950 outline-none text-gray-50"
                 >

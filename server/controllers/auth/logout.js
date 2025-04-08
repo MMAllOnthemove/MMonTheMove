@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+import "dotenv/config";
+>>>>>>> origin/sockets-realtime
 const LogoutUser = async (req, res) => {
     try {
         res.clearCookie("refreshToken", {

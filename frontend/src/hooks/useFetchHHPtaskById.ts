@@ -2,8 +2,6 @@ import { IHHPSingleTask } from "@/lib/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-
-
 const useFetchHHPTaskById = (taskId: string | string[] | any) => {
     const [hhpTask, setHHPTask] = useState<IHHPSingleTask | null>(null);
     const [hhpTaskLoading, setLoading] = useState(false);
@@ -31,11 +29,7 @@ const useFetchHHPTaskById = (taskId: string | string[] | any) => {
         }
     };
     useEffect(() => {
-        const delayFetch = setTimeout(() => {
-            refetch();
-        }, 5000); // 5-second delay
-
-        return () => clearTimeout(delayFetch); // Cleanup timeout if searchTicket changes
+        refetch();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [taskId]);

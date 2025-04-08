@@ -15,23 +15,23 @@ import FormWrapper from './wrapper';
 import useCheckWarranty from '@/hooks/useCheckDTVHAWarranty';
 
 type TProductInfo = {
-    model: string;
+    model: string | any;
     setModel: (value: string) => void
-    serial_number: string;
+    serial_number: string | any;
     setSerialNumber: (value: string) => void
-    imei: string;
+    imei: string | any;
     setIMEI: (value: string) => void
     purchase_date: string;
     setPurchaseDate: (value: string) => void
-    accessory: string;
+    accessory: string | any;
     setAccessory: (value: string) => void
-    defectDesc: string;
+    defectDesc: string | any;
     setDefectDesc: (value: string) => void
-    remark: string;
+    remark: string | any;
     setRemark: (value: string) => void
-    wtyException: string;
+    wtyException: string | any;
     setWtyException: (value: string) => void
-    wtyType: string;
+    wtyType: string | any;
     setWtyType: (value: string) => void
 }
 const ProductInfo = ({ model, setModel, serial_number, setSerialNumber, imei, setIMEI, purchase_date, setPurchaseDate, wtyException, setWtyException, wtyType, setWtyType, accessory, setAccessory, defectDesc, setDefectDesc, remark, setRemark }: TProductInfo) => {
@@ -75,7 +75,7 @@ const ProductInfo = ({ model, setModel, serial_number, setSerialNumber, imei, se
                         onChange={(e) => setWtyType(e.target.value)} />
                 </div>
                 <div>
-                    <label htmlFor='wtyException' className='text-sm font-medium text-gray-900'>Wty Type</label>
+                    <label htmlFor='wtyException' className='text-sm font-medium text-gray-900'>Wty Type <small>(For voiding warranty)</small></label>
 
                     <Select value={wtyException}
                         name="wtyException"
@@ -100,12 +100,12 @@ const ProductInfo = ({ model, setModel, serial_number, setSerialNumber, imei, se
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 items-center">
                 <div>
-                    <label htmlFor='accessory' className='text-sm font-medium text-gray-900'>Accessories</label>
+                    <label htmlFor='accessory' className='text-sm font-medium text-gray-900'>Accessories <small>(What it came with)</small></label>
                     <Input type="text" id='accessory' name='accessory' value={accessory} maxLength={62}
                         onChange={(e) => setAccessory(e.target.value)} />
                 </div>
                 <div>
-                    <label htmlFor='defectDesc' className='text-sm font-medium text-gray-900'>Defect desc</label>
+                    <label htmlFor='defectDesc' className='text-sm font-medium text-gray-900'>Defect desc <small>(The fault)</small></label>
                     <Input type="text" id='defectDesc' name='defectDesc' value={defectDesc} maxLength={70}
                         onChange={(e) => setDefectDesc(e.target.value)} />
                 </div>

@@ -1,5 +1,4 @@
-import ClaimsScreen from '@/components/screens/departments/claims/page'
-import React from 'react'
+import ClaimsScreen from '@/components/screens/departments/claims/page';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

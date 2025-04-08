@@ -1,5 +1,11 @@
 import { pool } from "../../../../db.js";
 import appLogs from "../../../logs/logs.js";
+<<<<<<< HEAD
+=======
+import emitBinStatsUpdate from "../bin_dashboard/emit_bin_updates.js";
+import addToQCTable from "./add_to_qc_table.js";
+import { datetimestamp } from "../../../../utils/datetimestamp.js";
+>>>>>>> origin/sockets-realtime
 
 export const UpdateTask = async (req, res) => {
     const { id } = req.params; // Assuming the ID is passed in the URL
@@ -13,6 +19,24 @@ export const UpdateTask = async (req, res) => {
     const keys = Object.keys(changes);
     const values = Object.values(changes);
 
+<<<<<<< HEAD
+=======
+    // Check if the qc_complete field is set to 'Fail'
+    if (changes.qc_complete === "Fail") {
+        const created_at = datetimestamp;
+        // Insert into the hhp_quality_control table if qc_complete is 'Fail'
+        const { ticket_number, qc_comment, engineer, updated_by } = changes;
+        await addToQCTable(
+            ticket_number,
+            "Fail",
+            qc_comment,
+            engineer,
+            created_at,
+            updated_by
+        );
+    }
+
+>>>>>>> origin/sockets-realtime
     // Construct dynamic SQL query for patching only changed values using prepared statements
     const setClause = keys
         .map((key, index) => `${key} = $${index + 1}`)
@@ -32,19 +56,41 @@ export const UpdateTask = async (req, res) => {
             text: query,
             values: values,
         });
+<<<<<<< HEAD
         const fetchResult = await pool.query(returnDataWithNewRow, [
             result?.rows[0]?.id,
         ]);
+=======
+
+        const fetchResult = await pool.query(returnDataWithNewRow, [
+            result?.rows[0]?.id,
+        ]);
+        const updatedTask = fetchResult.rows[0];
+>>>>>>> origin/sockets-realtime
         // Check if the update was successful
         if (result.rowCount === 0) {
             return res
                 .status(404)
                 .json({ error: "Task not found or no changes made" });
         }
+<<<<<<< HEAD
         await appLogs("UPDATE", changes?.updated_by, req.body);
         return res.status(201).json({
             message: "HHP task updated",
             task: fetchResult.rows[0],
+=======
+        await appLogs(
+            "UPDATE",
+            changes?.updated_by,
+            req.body,
+            changes?.ticket_number
+        );
+        // io.emit("updateTask", updatedTask); // Notify clients about task update
+        await emitBinStatsUpdate();
+        return res.status(201).json({
+            message: "HHP task updated",
+            task: updatedTask,
+>>>>>>> origin/sockets-realtime
         });
     } catch (err) {
         if (process.env.NODE_ENV !== "production") {

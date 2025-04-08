@@ -37,6 +37,8 @@ const TableBody = ({ table, handleRowClick, deleteRow, handleOpenSinglePage }: T
         setSelectedRowId(row.id)
     }
 
+    
+
     return (
         <tbody className="z-0">
             {table.getRowModel().rows.map((row: any) => (
@@ -54,14 +56,14 @@ const TableBody = ({ table, handleRowClick, deleteRow, handleOpenSinglePage }: T
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuItem className='cursor-pointer'
+                                {/* <DropdownMenuItem className='cursor-pointer'
                                     onClick={() => handleRowClick(row)}
                                 >
                                     View summary
-                                </DropdownMenuItem>
+                                </DropdownMenuItem> */}
+                                <DropdownMenuItem onClick={() => handleOpenSinglePage(row)} className='cursor-pointer'>View ticket</DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => handleOpenSinglePage(row)} className='cursor-pointer'>View in full</DropdownMenuItem>
-                                {isLoggedIn && user?.user_role === "admin" ?
+                                {isLoggedIn && user?.user_role === "manager" ?
                                     <DropdownMenuItem onClick={() => deleteRow(row)} className='cursor-pointer'>Delete</DropdownMenuItem> : null}
                             </DropdownMenuContent>
                         </DropdownMenu>

@@ -1,5 +1,9 @@
 import { pool } from "../../db.js";
+<<<<<<< HEAD
 
+=======
+import "dotenv/config";
+>>>>>>> origin/sockets-realtime
 const getComments = async (req, res) => {
     let { id, page = 1, limit = 10 } = req.query;
 

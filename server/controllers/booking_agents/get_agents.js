@@ -1,5 +1,9 @@
 import { pool } from "../../db.js";
+<<<<<<< HEAD
 
+=======
+import "dotenv/config";
+>>>>>>> origin/sockets-realtime
 const getAgents = async (req, res) => {
     try {
         const { rows } = await pool.query(
@@ -10,7 +14,10 @@ const getAgents = async (req, res) => {
 
         return res.status(200).json(rows);
     } catch (error) {
+<<<<<<< HEAD
         console.error("Error fetching agents:", error);
+=======
+>>>>>>> origin/sockets-realtime
         return res.status(500).json({
             message: "Internal server error",
             error:

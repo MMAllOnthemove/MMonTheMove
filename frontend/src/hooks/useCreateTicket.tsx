@@ -32,7 +32,7 @@ type TPayload = {
 
 const useCreateTicket = () => {
     const [createTicketLoading, setLoading] = useState(false); // Loading state
-    const { engineerBinList, engineerBinListLoading, refetch } = useGetEngineerBins();
+    const { refetch } = useGetEngineerBins();
     const addTicket = async (values: TPayload) => {
         setLoading(true);
         try {

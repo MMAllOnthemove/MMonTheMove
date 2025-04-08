@@ -1,5 +1,9 @@
 import { pool } from "../../../db.js";
+<<<<<<< HEAD
 
+=======
+import "dotenv/config";
+>>>>>>> origin/sockets-realtime
 // GET all table info from database
 
 const GetAssemblyTerms = async (req, res) => {

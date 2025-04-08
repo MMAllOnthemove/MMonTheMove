@@ -6,8 +6,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import useCreateCustomerOnRepairshopr from '@/hooks/useCreateCustomer'
-import useCreateCustomerLocally from '@/hooks/useCreateCustomerLocally'
+import useCustomerLocally from '@/hooks/useCustomerLocally'
 import useUserLoggedIn from '@/hooks/useGetUser'
+import useSocket from '@/hooks/useSocket'
 import { capitalizeText } from '@/lib/capitalize'
 import { datetimestamp } from '@/lib/date_formats'
 import provinces from '@/lib/provinces'
@@ -30,6 +31,7 @@ type PhoneDetail = {
 
 const CreateCustomerStaffScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
+    const { socket, isConnected } = useSocket()
     const router = useRouter()
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
@@ -43,7 +45,7 @@ const CreateCustomerStaffScreen = () => {
     const [phoneDetails, setPhoneDetails] = useState([{ type: "mobile", number: "" }]);
 
     const { addCustomer, createCustomerLoading } = useCreateCustomerOnRepairshopr()
-    const { addCustomerLocally } = useCreateCustomerLocally()
+    const { addCustomerLocally } = useCustomerLocally()
     const handlePhoneChange = (
         index: number,
         field: keyof PhoneDetail, // Ensures field can only be "type" or "number"

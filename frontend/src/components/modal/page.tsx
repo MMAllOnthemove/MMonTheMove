@@ -8,14 +8,14 @@ export interface IPopupModal {
     onClose: () => void;
     footer?: string | number | boolean | React.ReactNode | any;
 }
-function Modal({
+const Modal = ({
     isVisible = false,
     title,
     description,
     content,
     footer,
     onClose,
-}: IPopupModal) {
+}: IPopupModal) => {
     const keydownHandler = ({ key }: { key: string | number }) => {
         switch (key) {
             case "Escape":
@@ -33,7 +33,6 @@ function Modal({
     return !isVisible ? null : (
         <div
             className="fixed top-0 bottom-0 left-0 inset-0 right-0 z-50 flex items-center justify-center bg-black/80 transition ease-in-out duration-300 rounded-sm"
-        // todo: uncomment
         // onClick={onClose}
         >
             <div

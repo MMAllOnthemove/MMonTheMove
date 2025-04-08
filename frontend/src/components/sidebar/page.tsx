@@ -8,7 +8,6 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import useGetOtp from "@/hooks/useGetOtp";
 import useUserLoggedIn from "@/hooks/useGetUser";
 import useLogoutUser from "@/hooks/useLogout";
 import { menuItems } from "@/lib/sidebar_links";
@@ -20,11 +19,14 @@ import { useState } from "react";
 import logo from "../../assets/mmlogo.png";
 const Navbar = dynamic(() => import('../navbar/page'), { ssr: false })
 
-
+import useOtp from "@/hooks/useOtp";
+import useSocket from "@/hooks/useSocket";
+import { WifiIcon } from "@heroicons/react/24/outline";
 const Sidebar = () => {
+    const { isConnected } = useSocket()
     const { user } = useUserLoggedIn();
     const { logoutUser, logoutLoading } = useLogoutUser();
-    const { otp } = useGetOtp();
+    const { otp } = useOtp();
     const [openDropdown, setOpenDropdown] = useState<null | boolean | number>(null);
     const [buttonLoading, setButtonLoading] = useState<null | boolean | number>(null);
 
@@ -103,11 +105,12 @@ const Sidebar = () => {
             </Sheet>
 
             <div className="w-full hidden md:flex justify-between items-center">
-                <Navbar />
+                <Navbar isConnected={isConnected} />
                 <div className="flex items-center gap-3">
-                    <p className="font-medium text-sm text-gray-900">
-                        <span className="text-gray-500">OTP:</span>
-                        {otp ? otp?.otp_code : ""}
+                    <WifiIcon className={`h-4 w-4 ${isConnected ? 'text-green-500' : 'text-red-400'}`} />
+                    <p className="font-medium text-xs text-gray-900">
+                        <span className="text-gray-500 font-semibold">OTP:</span>
+                        {otp ? otp : ""}
                     </p>
                     <Link href="/" className="no-underline hover:no-underline cursor-pointer">
                         <Image

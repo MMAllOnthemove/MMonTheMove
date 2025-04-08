@@ -3,7 +3,10 @@ import axios from "axios";
 import moment from "moment";
 import toast from "react-hot-toast";
 
-const useCheckWarranty = (modelNumber: string, serialNumber: string) => {
+const useCheckWarranty = (
+    modelNumber: string | undefined,
+    serialNumber: string | undefined
+) => {
     const [warranty, setWarranty] = useState("");
     const [ticketTypeId, setTicketTypeId] = useState<number | any>();
     const [warrantyCode, setWarrantyCode] = useState<number | any>();
@@ -75,12 +78,28 @@ const useCheckWarranty = (modelNumber: string, serialNumber: string) => {
 
         checkWarranty();
     }, [modelNumber, serialNumber]);
+    const handleWarrantyChange = (
+        event: React.ChangeEvent<HTMLSelectElement>
+    ) => {
+        setLocalWarranty(event.target.value);
+        // Update other state variables based on the selected warranty
+        if (event.target.value === "IW") {
+            setTicketTypeId("21877");
+            setWarrantyCode("75130");
+            setLocalWarranty("IW");
+        } else if (event.target.value === "OOW") {
+            setTicketTypeId("21878");
+            setWarrantyCode("69477");
+            setLocalWarranty("OOW");
+        }
+    };
 
     return {
         warranty,
         warrantyCode,
         ticketTypeId,
         localWarranty,
+        handleWarrantyChange,
         LPDate,
         PartsDate,
     };
