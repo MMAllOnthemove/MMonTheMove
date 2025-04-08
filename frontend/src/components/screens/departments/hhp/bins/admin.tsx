@@ -21,7 +21,7 @@ const PageTitle = dynamic(() => import('@/components/PageTitle/page'))
 const NotLoggedInScreen = dynamic(() => import('@/components/not_logged_in/page'))
 
 
-function AdminsBin({ user, isLoggedIn, loading }: { user: TUser | null, isLoggedIn: boolean | null, loading: boolean | null }) {
+const AdminsBin = ({ user, isLoggedIn, loading }: { user: TUser | null, isLoggedIn: boolean | null, loading: boolean | null }) => {
 
     const { engineerBinList, engineerBinListLoading, refetch } = useGetEngineerBins();
     const { engineersList } = useFetchEngineer()
@@ -60,7 +60,7 @@ function AdminsBin({ user, isLoggedIn, loading }: { user: TUser | null, isLogged
             if (user?.user_role === "admin" || user?.user_role === "manager") {
                 if (!isUnassigned && !engineerLookup.has(engineerName)) return;
             } else {
-             
+
                 if (isUnassigned || engineerName !== user?.full_name) return;
             }
 
@@ -130,21 +130,24 @@ function AdminsBin({ user, isLoggedIn, loading }: { user: TUser | null, isLogged
                                                         <p>Total Units: {data?.units_count}</p>
                                                         <p>Ticket Numbers:</p>
                                                         <ol className=' pl-4'>
-                                                            {data?.tickets.map((ticket: any, i: any) => (
-                                                                <li key={ticket.id} className="mb-2">
-                                                                    <span className='font-medium'>{ticket?.ticket_number}</span>
-                                                                    <span className='font-medium mx-1'>({ticket?.warranty})</span>
-                                                                    ({moment(ticket.date_booked).format('YYYY-MM-DD')})
-                                                                    {ticket.difference.includes('hours') || ticket.difference.includes('minutes')
-                                                                        ? ' Few hours ago'
-                                                                        : ` ${ticket.difference} ago`}
-                                                                    <Button variant='outline' className="text-xs ml-2" onClick={() => openFullScreenPopup(`/departments/hhp/technicians/${encodeURIComponent(ticket.id)}`)}>View</Button>
-                                                                </li>
-                                                            ))}
+                                                            {data?.tickets
+                                                                .sort((a: any, b: any) => new Date(a.date_booked).getTime() - new Date(b.date_booked).getTime()) // Sort tickets by date_booked (oldest first)
+                                                                .map((ticket: any, i: any) => (
+                                                                    <li key={ticket.id} className="mb-2">
+                                                                        <span className='font-medium'>{ticket?.ticket_number}</span>
+                                                                        <span className='font-medium mx-1'>({ticket?.warranty})</span>
+                                                                        ({moment(ticket.date_booked).format('YYYY-MM-DD')})
+                                                                        {ticket.difference.includes('hours') || ticket.difference.includes('minutes')
+                                                                            ? ' Few hours ago'
+                                                                            : ` ${ticket.difference} ago`}
+                                                                        <Button variant='outline' className="text-xs ml-2" onClick={() => openFullScreenPopup(`/departments/hhp/technicians/${encodeURIComponent(ticket.id)}`)}>View</Button>
+                                                                    </li>
+                                                                ))}
                                                         </ol>
                                                     </div>
                                                 ))}
                                             </div>
+
                                         </AccordionContent>
                                     </AccordionItem>
                                 );

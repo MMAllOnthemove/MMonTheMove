@@ -42,7 +42,6 @@ const useAddCommentsLocally = (
             socket.emit("addTicketComment", response?.data?.task);
             return response?.data;
         } catch (error: any) {
-            console.error("addCommentLocally error", error);
             if (error?.response?.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             } else if (error.response && error.response.data.errors) {

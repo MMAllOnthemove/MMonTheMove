@@ -10,6 +10,8 @@ type TQC = {
     qc_completeProp: string
     setQCCompleteProp: (data: string) => void;
     setQCCompleteDateProp: (data: string) => void;
+    // setQCFailProp: (data: string) => void;
+    // setQCFailDateProp: (data: string) => void;
     setUnitCompleteProp: (data: boolean) => void;
     setUnitCompleteDateProp: (data: string) => void;
     setQCFailReasonProp: (data: ChangeEvent<HTMLTextAreaElement>) => void;
@@ -27,6 +29,7 @@ const QC = ({ qcUpdateLoading, setUnitCompleteProp, setUnitCompleteDateProp, qc_
             setUnitCompleteDateProp(datetimestamp);
             setUnitCompleteProp(true);
         }
+
     };
 
 
@@ -55,7 +58,7 @@ const QC = ({ qcUpdateLoading, setUnitCompleteProp, setUnitCompleteDateProp, qc_
 
 
 
-            <Button data-qc='qc_submit' className="w-full outline-none" type="submit" onClick={submitQC} disabled={qcUpdateLoading}>{qcUpdateLoading ? 'Updating...' : 'Update Quality control'}</Button>
+            <Button data-qc='qc_submit' className="w-full outline-none" type="submit" onClick={submitQC} disabled={qcUpdateLoading || !qc_completeProp}>{qcUpdateLoading ? 'Updating...' : 'Update Quality control'}</Button>
         </form>
 
     )

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
         follow: false,
     },
 }
-function AssemblyTerm() {
+const AssemblyTerm = () => {
     return (
         <AssemblyTermScreen />
     )

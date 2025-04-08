@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import useFetchEngineer from "@/hooks/useFetchEngineers";
+import useHHPDashboardTable from "@/hooks/useHHPDashboardTable";
 import { useHHPTasksCrud } from "@/hooks/useHHPTasksCrud";
 import repairshopr_statuses_techs from "@/lib/tech_rs_statuses";
 import { TDashboardRowData } from "@/lib/types";
@@ -30,6 +31,7 @@ const HHPDashboardTable = () => {
     const [openSortTableColumnsModal, setSortTableColumns] = useState(false)
     const { hhpTasks, hhpTasksLoading } = useHHPTasksCrud()
     const hhpTechs = engineersList?.filter((x) => x.department === "HHP")
+    const { hhpDashboardTable, hhpDashboardTableLoading, refetchHHPDashboardTable } = useHHPDashboardTable(fromDate, toDate)
     // Group tickets by engineer and unit_status
     // Group tickets by engineer and unit_status
     const groupedData: TDashboardRowData[] = useMemo(() => {
@@ -71,7 +73,7 @@ const HHPDashboardTable = () => {
                 }
             });
         return Object.values(grouped);
-    }, [hhpTasks]);
+    }, []);
 
     // know how many were booked
     // Filter the tasks based on date range
@@ -108,35 +110,50 @@ const HHPDashboardTable = () => {
         {
             header: "Engineer",
             accessorKey: "engineer",
-            footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
         },
-        ...repairshopr_statuses.map(({ _status }) => ({
-            header: _status,
-            accessorKey: _status,
-            cell: ({ row }: any) => {
-                const tickets = row.original[_status] as any[] | undefined;
-                const count = tickets?.length || 0;
+        {
+            header: "New",
+            accessorKey: "new_count",
+            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+        },
+        {
+            header: "Completed",
+            accessorKey: "qc_passed_count",
+            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+        },
+        {
+            header: "QC Failed",
+            accessorKey: "qc_failed",
+            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+        },
+        // ...repairshopr_statuses.map(({ _status }) => ({
+        //     header: _status,
+        //     accessorKey: _status,
+        //     cell: ({ row }: any) => {
+        //         const tickets = row.original[_status] as any[] | undefined;
+        //         const count = tickets?.length || 0;
 
-                return (
-                    <button
-                        onClick={() => {
-                            setSelectedStatus(_status);
-                            setSelectedEngineer(row.original.engineer as string);
-                            setSelectedTickets(tickets || []);
-                        }}
-                        className={`w-full h-full px-2 py-1 rounded ${count > 0 ? "bg-blue-100 hover:bg-blue-200 cursor-pointer" : "text-gray-400"
-                            }`}
-                    >
-                        {count}
-                    </button>
-                );
-            },
-            footer: () => (
-                <span className="font-bold">
-                    {columnTotals[_status] || 0} {/* Display the total for each status */}
-                </span>
-            ),
-        })),
+        //         return (
+        //             <button
+        //                 onClick={() => {
+        //                     setSelectedStatus(_status);
+        //                     setSelectedEngineer(row.original.engineer as string);
+        //                     setSelectedTickets(tickets || []);
+        //                 }}
+        //                 className={`w-full h-full px-2 py-1 rounded ${count > 0 ? "bg-blue-100 hover:bg-blue-200 cursor-pointer" : "text-gray-400"
+        //                     }`}
+        //             >
+        //                 {count}
+        //             </button>
+        //         );
+        //     },
+        //     footer: () => (
+        //         <span className="font-bold">
+        //             {columnTotals[_status] || 0} {/* Display the total for each status */}
+        //         </span>
+        //     ),
+        // })),
     ];
 
 
@@ -166,7 +183,7 @@ const HHPDashboardTable = () => {
 
     // Initialize table instance
     const table = useReactTable({
-        data: groupedData,
+        data: hhpDashboardTable,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),

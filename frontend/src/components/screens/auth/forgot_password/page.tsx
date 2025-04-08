@@ -16,7 +16,7 @@ import React, { useState } from 'react';
 
 
 
-function ForgotPasswordScreen() {
+const ForgotPasswordScreen = () => {
 
     const { forgotPassword, loading, errors } = useForgotPassword()
     const [email, setEmail] = useState("")

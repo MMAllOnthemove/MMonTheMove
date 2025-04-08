@@ -5,7 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.33] - 2025-04-024
+## [0.1.34] - 2025-04-08
+
+### Added
+
+-    qc_fail, qc_fail_date columns in sql
+-    update item condition field in view ticket
+-    sort tickets in bin stats by old first
+-    if file is pdf accommodate it too when displaying in the view ticket
+-    fail for qc and how many (already created a table to add them separately, will count from there)
+-    CREATE INDEX idx_technician_tasks_date_booked ON technician_tasks(date_booked)
+-    CREATE INDEX idx_technician_tasks_qc_complete ON technician_tasks(qc_complete)
+-    CREATE INDEX idx_technician_tasks_engineer_date ON technician_tasks(engineer, date_booked)
+
+### Fixed
+
+-   page title h1, now is semibold instead of extrabold
+
+
+## [0.1.33] - 2025-04-04
 
 ### Added
 

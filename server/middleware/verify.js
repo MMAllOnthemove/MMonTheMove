@@ -10,7 +10,7 @@ import { verifyJwtToken } from "./authUtils.js";
 //         next();
 //     });
 // }
-export function authenticateToken(req, res, next) {
+export const authenticateToken = (req, res, next) => {
     const token = req.cookies.refreshToken;
     if (!token) return res.status(401).json({ error: "Please log in" });
 
@@ -19,4 +19,4 @@ export function authenticateToken(req, res, next) {
 
     req.user = user; // Attach user object to the request
     next();
-}
+};

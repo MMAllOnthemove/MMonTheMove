@@ -108,7 +108,7 @@ export const useHHPTasksCrud = () => {
             setHHPTasksLoading(false);
         }
     };
-
+    
     const addTask = async (values: TAddTask) => {
         setHHPAddTaskLoading(true)
         setHHPAddTaskErrors({})
@@ -163,7 +163,6 @@ export const useHHPTasksCrud = () => {
             // 🔴 Emit task update event
             socket.emit("updateTask", data?.task);
         } catch (error: any) {
-            console.error("updateTask error", error);
             if (error) toast.error(error?.response?.data?.error);
         } finally {
             setUpdateHHPTaskLoading(false)

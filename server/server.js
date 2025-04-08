@@ -37,6 +37,7 @@ import { router as stores } from "./routes/stores/index.js";
 import { router as assembly_terms } from "./routes/terms_and_conditions/index.js";
 import { router as add_images_checklist } from "./routes/tools/index.js";
 import { router as addAttachments } from "./controllers/tools/add_ticket_images_router.js";
+import { router as hhpDashboard } from "./routes/department/hhp/dashboard.js";
 const { router: fileRoutes } = QCfileRoutesModule;
 const { router: dtvFiles } = dtvhaFiles;
 
@@ -124,8 +125,12 @@ io.on("connection", (socket) => {
     });
 });
 app.use(
+    // todo: fix the expo url in prod
     cors({
-        origin: [process.env.NEXT_PUBLIC_REACT_URL],
+        origin: [
+            process.env.NEXT_PUBLIC_REACT_URL,
+            "http://192.168.1.126:8081",
+        ],
         methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true, // Allow credentials (cookies, authorization headers)
@@ -145,6 +150,7 @@ app.use("/auth", auth);
 
 // HHP jobs
 app.use("/api/v1/hhp/jobs", hhpjobsrouter);
+app.use("/api/v1/hhp/dashboard", hhpDashboard);
 app.use("/api/v1/hhp/reports", hhp_reports);
 // dtv jobs
 app.use("/api/v1/dtv_ha/jobs", dtv_hajobsrouter);

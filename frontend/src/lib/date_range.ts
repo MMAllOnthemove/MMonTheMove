@@ -6,11 +6,11 @@ import moment from "moment";
 // }
 // export default isDateInRange;
 
-function isDateInRange(
+const isDateInRange = (
     dateString: string,
     startDate?: string,
     endDate?: string
-) {
+) => {
     // Default to a 7-day range ending today if no dates are provided
     const end = endDate || moment().format("YYYY-MM-DD");
     const start =
@@ -18,6 +18,6 @@ function isDateInRange(
 
     const date = moment(dateString).format("YYYY-MM-DD");
     return date >= start && date <= end;
-}
+};
 
 export default isDateInRange;

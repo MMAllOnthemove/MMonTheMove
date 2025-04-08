@@ -8,7 +8,7 @@ type FormWrapperProps = {
 }
 
 
-function FormWrapper({ title, children }: FormWrapperProps) {
+const FormWrapper = ({ title, children }: FormWrapperProps) => {
     return (
         <>
             <h2 className='mb-[2em] text-lg font-semibold leading-none tracking-tight text-center'>

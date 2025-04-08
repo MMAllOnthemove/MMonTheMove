@@ -20,7 +20,7 @@ const LoadingScreen = dynamic(() => import('@/components/loading_screen/page'))
 const PageTitle = dynamic(() => import('@/components/PageTitle/page'))
 const NotLoggedInScreen = dynamic(() => import('@/components/not_logged_in/page'))
 
-function TechniciansBin({ user, isLoggedIn, loading }: { user: TUser | null, isLoggedIn: boolean | null, loading: boolean | null }) {
+const TechniciansBin = ({ user, isLoggedIn, loading }: { user: TUser | null, isLoggedIn: boolean | null, loading: boolean | null }) => {
 
     const { engineerBinList, engineerBinListLoading, refetch } = useGetEngineerBins();
     const { engineersList } = useFetchEngineer()

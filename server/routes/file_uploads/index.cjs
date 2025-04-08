@@ -36,6 +36,7 @@ const ALLOWED_MIME_TYPES = [
 ];
 
 // Multer file filter
+// Multer file filter
 const fileFilter = (req, file, cb) => {
     ALLOWED_MIME_TYPES.includes(file.mimetype)
         ? cb(null, true)
@@ -52,7 +53,6 @@ const upload = multer({
     storage: multer.memoryStorage(),
     fileFilter,
 });
-
 // Routes for file uploads
 router.post("/", upload.array("files", 15), limiter, uploadTechnicianFiles);
 router.post("/qc", upload.array("files", 15), limiter, uploadQCFile);

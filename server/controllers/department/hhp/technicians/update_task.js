@@ -1,6 +1,8 @@
 import { pool } from "../../../../db.js";
 import appLogs from "../../../logs/logs.js";
 import emitBinStatsUpdate from "../bin_dashboard/emit_bin_updates.js";
+import addToQCTable from "./add_to_qc_table.js";
+import { datetimestamp } from "../../../../utils/datetimestamp.js";
 
 export const UpdateTask = async (req, res) => {
     const { id } = req.params; // Assuming the ID is passed in the URL
@@ -13,6 +15,21 @@ export const UpdateTask = async (req, res) => {
 
     const keys = Object.keys(changes);
     const values = Object.values(changes);
+
+    // Check if the qc_complete field is set to 'Fail'
+    if (changes.qc_complete === "Fail") {
+        const created_at = datetimestamp;
+        // Insert into the hhp_quality_control table if qc_complete is 'Fail'
+        const { ticket_number, qc_comment, engineer, updated_by } = changes;
+        await addToQCTable(
+            ticket_number,
+            "Fail",
+            qc_comment,
+            engineer,
+            created_at,
+            updated_by
+        );
+    }
 
     // Construct dynamic SQL query for patching only changed values using prepared statements
     const setClause = keys

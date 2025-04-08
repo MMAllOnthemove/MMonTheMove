@@ -5,6 +5,8 @@ const { Pool } = require("pg");
 const yup = require("yup");
 require("dotenv").config();
 const moment = require("moment");
+const multer = require("multer");
+const sharp = require("sharp");
 
 // Database connection
 const pool = new Pool({
@@ -41,7 +43,6 @@ const sftpClient = new SftpClient();
 const uploadTechnicianFiles = async (req, res) => {
     try {
         const { task_id, ticket_number, created_at } = req.body;
-
         if (!req.files || req.files.length === 0) {
             return res.status(400).json({ error: "No files uploaded" });
         }
@@ -50,7 +51,7 @@ const uploadTechnicianFiles = async (req, res) => {
 
         if (!sftpClient.sftp) {
             // console.log("Connecting to SFTP...");
-            // await sftpClient.connect(sftpConfig);
+            await sftpClient.connect(sftpConfig);
             // console.log("SFTP Connection Established");
         }
 
@@ -60,29 +61,53 @@ const uploadTechnicianFiles = async (req, res) => {
                     console.error("Invalid file:", file);
                     return null;
                 }
-
-                const sanitizedFileName = file.originalname
+                // web: file.originalName
+                // mobile: file.originalnrsame
+                console.log("file", file);
+                const rawFileName =
+                    file.originalname ||
+                    file.originalName
+                        .replace(/[^a-zA-Z0-9.-]/g, "_")
+                        .toLowerCase();
+                const sanitizedFileName = rawFileName
                     .replace(/[^a-zA-Z0-9.-]/g, "_")
                     .toLowerCase();
+                // const sanitizedFileName = file.originalname
+                // .replace(/[^a-zA-Z0-9.-]/g, "_")
+                // .toLowerCase();
                 const uniqueFileName = `${ticket_number}-hhp-${
                     index + 1
                 }-${sanitizedFileName}`;
                 const remotePath = `/var/www/uploads/hhp/${uniqueFileName}`;
 
                 try {
-                    await sftpClient.put(file.buffer, remotePath);
+                    // complress image before uploading
+                    let fileBufferToUpload = file.buffer;
+                    // do not compress pdf files
+                    if (!sanitizedFileName.endsWith(".pdf")) {
+                        const image = sharp(file.buffer);
+                        const metadata = await image.metadata();
+                        // accomodate png files and let them keep their extension
+                        if (metadata.format === "png") {
+                            fileBufferToUpload = await image
+                                .png({ quality: 80, compressionLevel: 8 })
+                                .toBuffer();
+                        } else if (metadata.format === "webp") {
+                            fileBufferToUpload = await image
+                                .webp({ quality: 80 })
+                                .toBuffer();
+                        } else {
+                            fileBufferToUpload = await image
+                                .jpeg({ quality: 80 })
+                                .toBuffer();
+                        }
+                    }
+                    await sftpClient.put(fileBufferToUpload, remotePath);
                     const fileUrl = `https://repair.mmallonthemove.co.za/files/hhp/${uniqueFileName}`;
-                    // console.log(
-                    //     "task_id, fileUrl, created_at",
-                    //     task_id,
-                    //     fileUrl,
-                    //     created_at
-                    // );
                     await pool.query(
                         "INSERT INTO technician_tasks_images (task_id, image_url, created_at) VALUES ($1, $2, $3)",
                         [task_id, fileUrl, created_at]
                     );
-
                     return fileUrl;
                 } catch (uploadError) {
                     console.error("Error uploading file:", uploadError);
@@ -96,6 +121,12 @@ const uploadTechnicianFiles = async (req, res) => {
             fileUrls: fileUrls.filter(Boolean),
         });
     } catch (err) {
+        console.log("err", err);
+        if (err instanceof multer.MulterError) {
+            return res
+                .status(400)
+                .json({ message: `Multer error: ${err.message}` });
+        }
         if (err instanceof yup.ValidationError) {
             return res
                 .status(400)

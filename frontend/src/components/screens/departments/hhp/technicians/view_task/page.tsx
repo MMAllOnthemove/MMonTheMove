@@ -24,7 +24,7 @@ import openInNewTab from '@/lib/open_new_tab';
 import repairshopr_statuses from '@/lib/repairshopr_status';
 import { RepairshorTicketComment } from '@/lib/types';
 import { type_21877, type_21878 } from '@/lib/warranty_maps';
-import { EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
+import { DocumentIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
 import { CheckedState } from '@radix-ui/react-checkbox';
 import axios from 'axios';
 import moment from 'moment';
@@ -90,6 +90,7 @@ const ViewHHPTaskScreen = () => {
     const [compensation, setCompensation] = useState<CheckedState | undefined | any | any>()
     const [parts_ordered, setPartsOrdered] = useState<boolean | null>()
     const [submitPartsUpdateLoading, setSubmitPartsUpdateLoading] = useState(false)
+    const [openFilesModal, setOpenFilesModal] = useState(false)
     const [part_quantity, setPartQuantity] = useState<number | undefined>()
     interface FileUpload {
         file: File | any;
@@ -546,11 +547,23 @@ const ViewHHPTaskScreen = () => {
         const updated_at = datetimestamp;
         const created_at = datetimestamp;
 
+
         const updatePayload = {
             // This goes to our in house db
             id, updated_by: user?.email, updated_at, qc_comment, qc_date, qc_complete, unit_complete, completed_date, additional_info: additionalInfo, ticket_number: hhpTask?.ticket_number
         }
-        const changes = findChanges(hhpTask, updatePayload)
+        const updates = findChanges(hhpTask, updatePayload)
+        const changes = {
+            ...updates,
+            // this will go to the qc table, important that it's always there
+            // qc will pass once but can fail multiple times hence we store it on a separate table so we can count
+            ticket_number: hhpTask?.ticket_number,
+            updated_by: user?.email,
+            qc_complete: qc_complete,
+            engineer: engineer,
+
+
+        }
         const commentPayload: RepairshorTicketComment = {
             "subject": "Update",
             "tech": user?.full_name,
@@ -575,7 +588,6 @@ const ViewHHPTaskScreen = () => {
         }
         try {
             setQCSubmitLoading(true)
-            await addQCToTable(addQCToTablePayload)
             if (Object.keys(changes).length > 0) {
                 await updateTask(id, changes)
                 if (qc_comment?.length > 0) {
@@ -1032,6 +1044,7 @@ const ViewHHPTaskScreen = () => {
             );
 
             if (data) {
+                console.log("data", data)
                 toast.success(`${data?.message}`);
                 const repairshopr_payload = {
                     files: data.fileUrls.map((url: any) => ({
@@ -1149,6 +1162,10 @@ const ViewHHPTaskScreen = () => {
                                                 <Input type="text" name="add_job_repair_no" value={repairNo || ''} onChange={(e) => setRepairNo(e.target.value)} />
                                             </div>
                                             <div>
+                                                <Label htmlFor="item_condition">Item condition</Label>
+                                                <Input type="text" name="item_condition" value={itemCondition || ''} onChange={(e) => setCondition(e.target.value)} />
+                                            </div>
+                                            <div>
                                                 <Label htmlFor="additionalInfo">Special requirement</Label>
                                                 <Textarea name="additionalInfo" value={additionalInfo || ""} onChange={(e) => setAdditionalInfo(e.target.value)} />
                                             </div>
@@ -1173,6 +1190,7 @@ const ViewHHPTaskScreen = () => {
                                 }
                             />
                         }
+
 
                         {hhpTaskLoading ? <p className="text-center text-gray-800">Loading ticket info please wait...</p> :
 
@@ -1385,7 +1403,7 @@ const ViewHHPTaskScreen = () => {
                                                                 {/* <Input type="file" accept="image/*,video/*, application/pdf" multiple className="my-3" onChange={handleHHPFiles} /> */}
                                                                 {
                                                                     hhpFiles?.length > 0 ?
-                                                                        <Button type="button" onClick={submitHHPFiles}>Submit</Button> : <Button variant="outline" type="button">View all</Button>
+                                                                        <Button type="button" onClick={submitHHPFiles}>Submit</Button> : null
                                                                 }
 
 
@@ -1414,13 +1432,29 @@ const ViewHHPTaskScreen = () => {
                                                                     <div className="flex flex-col">
                                                                         <div className="flex gap-3 items-center cursor-pointer" onClick={() => openInNewTab(x?.image_url)}>
                                                                             <div className="w-[40px] h-[40px] overflow-hidden">
-                                                                                <Image
-                                                                                    width={50}
-                                                                                    height={50}
-                                                                                    alt={`Ticket image`}
-                                                                                    src={x?.image_url}
-                                                                                    className='rounded-sm shadow-sm'
-                                                                                />
+                                                                                {/* Check for image file types */}
+                                                                                {x?.image_url?.toLowerCase().endsWith('.png') ||
+                                                                                    x?.image_url?.toLowerCase().endsWith('.jpg') ||
+                                                                                    x?.image_url?.toLowerCase().endsWith('.jpeg') ? (
+                                                                                    <div className="w-[50px] h-[50px] overflow-hidden">
+                                                                                        <Image
+                                                                                            width={50}
+                                                                                            height={50}
+                                                                                            alt={`Ticket image`}
+                                                                                            src={x?.image_url}
+                                                                                            className='rounded-sm shadow-sm'
+
+                                                                                        />
+                                                                                    </div>
+                                                                                ) : x?.image_url?.toLowerCase().endsWith('.pdf') ? (
+                                                                                    <div className="border flex items-center justify-center w-[40px] h-[40px]">
+                                                                                        <DocumentIcon className="size-5 text-gray-500" /> {/* PDF Icon */}
+                                                                                    </div>
+                                                                                ) : (
+                                                                                    <div className="border flex items-center justify-center w-[40px] h-[40px]">
+                                                                                        <span className="text-sm text-gray-500">File</span> {/* Fallback for other file types */}
+                                                                                    </div>
+                                                                                )}
                                                                             </div>
                                                                             <div>
                                                                                 <h5 className="font-medium text-sm">{hhpTask?.ticket_number}</h5>

@@ -1,4 +1,4 @@
-export function processArrayComments(array: any) {
+export const processArrayComments = (array: any) => {
     if (array.length === 0) {
         return;
     }
@@ -13,4 +13,4 @@ export function processArrayComments(array: any) {
     const removedObject = array.splice(array.length - 1, 1)[0];
 
     return removedObject;
-}
+};

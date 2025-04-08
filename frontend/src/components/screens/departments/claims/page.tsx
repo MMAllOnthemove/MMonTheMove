@@ -5,7 +5,8 @@ import useAddClaims from '@/hooks/useAddClaims'
 import useUserLoggedIn from '@/hooks/useGetUser'
 import useIpaasGetSOInfoAll from '@/hooks/useIpaasGetSoInfoAll'
 import dynamic from 'next/dynamic'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page'), { ssr: false }
 )
@@ -99,6 +100,7 @@ const ClaimsScreen = () => {
                                             Search ticket
                                         </Label>
                                         <Input
+                                            className="placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none"
                                             placeholder='Search ticket'
                                             type="number"
                                             id="searchTicket"
@@ -108,12 +110,12 @@ const ClaimsScreen = () => {
                                         />
 
                                     </span>
-                                    <Button type="button" disabled={loadingData} onClick={() => handleGetSOInfo(searchServiceOrder)}>{loadingData ? 'Searching...' : 'Search'}</Button>
+                                        <Button type="button" className='text-sm text-gray-100 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] shadow-none border-none' disabled={loadingData} onClick={() => handleGetSOInfo(searchServiceOrder)}>{loadingData ? 'Searching...' : <MagnifyingGlassIcon className="size-6 text-white" />}</Button>
                                 </div>
                             </section>
                             <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg mb-4">
                                 <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-                                    <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] uppercase font-semibold">
+                                    <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white text-xs uppercase font-medium">
                                         <tr className=" font-semibold">
                                             <th className="px-4 py-3 cursor-pointer font-semibold">
                                                 Service order
@@ -133,7 +135,7 @@ const ClaimsScreen = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="z-0">
-                                        <tr className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]">
+                                        <tr className="border-b cursor-pointer dark:bg-[#22303c] hover:text-gray-900 focus:bg-gray-200 focus:text-gray-900 active:bg-gray-200 active:text-gray-900 dark:hover:text-[#22303c]">
                                             <td className="px-4 py-3 font-medium text-sm max-w-full">
                                                 <span>
                                                     {service_order_no}
@@ -156,7 +158,7 @@ const ClaimsScreen = () => {
                                                             id="ticket_number"
                                                             name="ticket_number"
                                                             value={ticket_number}
-                                                            className='w-full'
+                                                            className="w-full min-w-[150px] placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none"
                                                             onChange={(e) => setTicketNumber(e.target.value)}
                                                         />
                                                         {errors.ticket_number && <p className="text-sm text-red-500 font-medium">{errors.ticket_number}</p>}
@@ -176,7 +178,7 @@ const ClaimsScreen = () => {
                                                 <span>
 
                                                     <Select name="department" value={department} onValueChange={(e) => setDepartment(e)}>
-                                                        <SelectTrigger className="w-full">
+                                                        <SelectTrigger className="w-full shadow-none text-gray-400 border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none">
                                                             <SelectValue placeholder="Select department" />
                                                         </SelectTrigger>
                                                         <SelectContent>
@@ -194,7 +196,7 @@ const ClaimsScreen = () => {
                                                     type="button"
                                                     role="button"
                                                     onClick={addTask}
-
+                                                        className='text-sm text-gray-100 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] shadow-none border-none'
                                                     disabled={addClaimLoading}> {addClaimLoading ? 'Adding...' : 'Add claim'}
                                                 </Button>
                                             </td>

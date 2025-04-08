@@ -30,14 +30,14 @@ const WelcomeScreen = () => {
                         className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg"
                         aria-label="Yes, this is my first time"
                     >
-                        Yes, this is my first time
+                        This is my first time
                     </Button>
                     <Button
                         onClick={() => goTo("/bookings/customers/search_customer")}
                         className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg"
                         aria-label="No, I’ve been here before"
                     >
-                        No, I’ve been here before
+                        I’ve been here before
                     </Button>
                 </div>
             </div>

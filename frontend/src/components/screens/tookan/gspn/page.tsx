@@ -166,7 +166,7 @@ const SearchGSPNTicket = () => {
 
             <Card className='w-full border-none md:max-w-[700px] max-w-[550px] shadow-none md:border md:shadow'>
                 <CardHeader>
-                    <CardTitle className="text-center">Create tookan task</CardTitle>
+                    <CardTitle className="text-center text-sm text-gray-800 font-medium">Create tookan task</CardTitle>
                     <CardDescription>
                     </CardDescription>
                 </CardHeader>
@@ -176,57 +176,56 @@ const SearchGSPNTicket = () => {
                             <form onSubmit={handleCreateTookanTask}>
                                 <div className="grid grid-cols-1 gap-4">
                                     <div className="mb-1">
-                                        <Label htmlFor='serviceOrder'>Service order</Label>
-                                        <Input type="text" defaultValue={serviceOrder} onChange={(e) => setServiceOrder(e.target.value)} name='serviceOrder' id='serviceOrder' />
+                                        <Label htmlFor='serviceOrder' className="text-sm text-gray-800 font-medium after:ml-0.5 after:text-red-500 after:content-['*']">Service order number</Label>
+                                        <Input type="text" className="w-full placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none" defaultValue={serviceOrder} onChange={(e) => setServiceOrder(e.target.value)} name='serviceOrder' id='serviceOrder' />
 
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1">
                                     <div className="mb-1">
-                                        <Label htmlFor='fault'>Fault (description)</Label>
-                                        <Textarea defaultValue={fault} onChange={(e) => setFault(e.target.value)} name='fault' id='fault' ></Textarea>
+                                        <Label htmlFor='fault' className="text-sm text-gray-800 font-medium">Fault (description)</Label>
+                                        <Textarea className="w-full placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none" defaultValue={fault} onChange={(e) => setFault(e.target.value)} name='fault' id='fault' ></Textarea>
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="mb-1">
-                                        <Label htmlFor='firstname'>First Name</Label>
-                                        <Input type="text" defaultValue={capitalizeFirstLetter(firstname) || ""} onChange={(e) => setFirstname(e.target.value)} name='firstname' id='firstname' />
+                                        <Label htmlFor='firstname' className="text-sm text-gray-800 font-medium">First name</Label>
+                                        <Input type="text" className="w-full placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none" defaultValue={capitalizeFirstLetter(firstname) || ""} onChange={(e) => setFirstname(e.target.value)} name='firstname' id='firstname' />
 
                                     </div>
                                     <div className="mb-1">
-                                        <Label htmlFor='lastname'>Last Name</Label>
-                                        <Input type="text" defaultValue={capitalizeFirstLetter(lastname) || ""} onChange={(e) => setLastname(e.target.value)} id='lastname' name='lastname' />
+                                        <Label htmlFor='lastname' className="text-sm text-gray-800 font-medium">Last name</Label>
+                                        <Input type="text" className="w-full placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none" defaultValue={capitalizeFirstLetter(lastname) || ""} onChange={(e) => setLastname(e.target.value)} id='lastname' name='lastname' />
 
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="mb-1">
-                                        <Label htmlFor='email'>Email</Label>
-                                        <Input type="text" defaultValue={email?.toLowerCase() || ""} onChange={(e) => setEmail(e.target.value)} name='email' id='email' />
+                                        <Label htmlFor='email' className="text-sm text-gray-800 font-medium">Email</Label>
+                                        <Input type="text" className="w-full placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none" defaultValue={email?.toLowerCase() || ""} onChange={(e) => setEmail(e.target.value)} name='email' id='email' />
 
                                     </div>
                                     <div className="mb-1">
-                                        <Label htmlFor='phone' >Telephone</Label>
-                                        <Input type="text" defaultValue={phone || ""} onChange={(e) => setPhone(e.target.value)} id='phone' name='phone' />
+                                        <Label htmlFor='phone' className="text-sm text-gray-800 font-medium">Telephone</Label>
+                                        <Input type="text" className="w-full placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none" defaultValue={phone || ""} onChange={(e) => setPhone(e.target.value)} id='phone' name='phone' />
 
                                     </div>
                                 </div>
 
                                 <div>
-                                    <Label htmlFor='address' className='block mb-2 text-sm font-medium  text-gray-900'>Address</Label>
+                                    <Label htmlFor='address' className='block text-sm font-medium text-gray-900'>Address</Label>
 
-                                    <small>Please copy the address, open google maps, and ensure the address is correct</small>
+                                    <small className='font-medium text-gray-600'>Please copy the address, open google maps, and ensure the address is correct</small>
                                     <div className="flex items-center justify-between gap-2 mb-4">
-                                        <Input type="text" defaultValue={address || ""} onChange={(e) => setAddress(e.target.value)} name='address' id='address' className="flex flex-grow" />
-
-                                        <Link href={`http://maps.google.com/?q=${address}`} target="_blank" rel="noopener noreferrer" className='text-white bg-gray-900 hover:bg-gray-800 focus:outline-none font-medium rounded-sm text-sm px-5 py-2'>Map</Link>
+                                        <Input type="text" className="w-full placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none" defaultValue={address || ""} onChange={(e) => setAddress(e.target.value)} name='address' id='address' />
+                                        <Link href={`http://maps.google.com/?q=${address}`} target="_blank" rel="noopener noreferrer" className='flex flex-grow text-white bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:outline-none font-medium rounded-sm text-sm px-5 py-2'>Map</Link>
                                     </div>
                                 </div>
 
                                 <div className="grid grid-cols-1 gap-4">
                                     <div className="mb-1">
-                                        <Label htmlFor='latitude_longitude' className='block mb-2 text-sm font-medium  text-gray-900'>Latitude and Longitude</Label>
-                                        <Input type="text" value={latitudeLogintude} onChange={(e) => setLatitudeLongitude(e.target.value)} name='latitude_longitude' id='latitude_longitude' />
+                                        <Label htmlFor='latitude_longitude' className="text-sm text-gray-800 font-medium">Latitude and Longitude</Label>
+                                        <Input type="text" className="w-full placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none" value={latitudeLogintude} onChange={(e) => setLatitudeLongitude(e.target.value)} name='latitude_longitude' id='latitude_longitude' />
 
                                     </div>
                                     {/* <div className="mb-1">
@@ -237,22 +236,21 @@ const SearchGSPNTicket = () => {
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="mb-1">
-                                        <Label htmlFor='startDate' className='block mb-2 text-sm font-medium  text-gray-900'>Task start date</Label>
-                                        <Input type="date" min={today} value={startDate} onChange={(e) => setStartDate(e.target.value)} name='startDate' id='startDate' />
+                                        <Label htmlFor='startDate' className="text-sm text-gray-800 font-medium">Task start date</Label>
+                                        <Input type="date" className="w-full placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none" min={today} value={startDate} onChange={(e) => setStartDate(e.target.value)} name='startDate' id='startDate' />
 
                                     </div>
                                     <div className="mb-1">
-                                        <Label htmlFor='endDate' className='block mb-2 text-sm font-medium  text-gray-900'>Task end date</Label>
-                                        <Input type="date" min={today} value={endDate} onChange={(e) => setEndDate(e.target.value)} name='endDate' id='endDate' />
+                                        <Label htmlFor='endDate' className="text-sm text-gray-800 font-medium">Task end date</Label>
+                                        <Input type="date" className="w-full placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none" min={today} value={endDate} onChange={(e) => setEndDate(e.target.value)} name='endDate' id='endDate' />
 
                                     </div>
                                 </div>
 
-                                <Button type="submit" className='w-full my-4'>
+                                <Button type="submit" className='text-sm text-gray-100 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] shadow-none border-none my-4 w-full'>
                                     Create task
                                 </Button>
                             </form>
-                            <small className='font-medium text-slate-700 text-center block'>Type in the service order to auto populate</small>
                         </div>
                     </div>
                 </CardContent>
@@ -270,7 +268,7 @@ const SearchGSPNTicket = () => {
                         <form onSubmit={handleAssignTookanTask}>
                             <div className="mb-4">
                                 <Select name="department" value={department} onValueChange={(e) => setDepartment(e)}>
-                                    <SelectTrigger className="w-full">
+                                    <SelectTrigger className="w-full shadow-none text-gray-400 border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none">
                                         <SelectValue placeholder="Assign to department" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -283,7 +281,7 @@ const SearchGSPNTicket = () => {
                             </div>
                             <div className="mb-4">
                                 <Select name="tookan_status" value={tookanStatus} onValueChange={(e) => setTookanStatus(e)} >
-                                    <SelectTrigger className="w-full">
+                                    <SelectTrigger className="w-full shadow-none text-gray-400 border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none">
                                         <SelectValue placeholder="Select status" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -293,7 +291,7 @@ const SearchGSPNTicket = () => {
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <Button type="submit" disabled={assToTeamLoading} className='w-full'>
+                            <Button type="submit" disabled={assToTeamLoading} className='w-full text-sm text-gray-100 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] shadow-none border-none'>
                                 {assToTeamLoading ? 'Assigning...' : 'Assign to team'}
                             </Button>
                         </form>

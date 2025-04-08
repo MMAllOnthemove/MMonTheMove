@@ -13,7 +13,7 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useState } from "react";
 
-export default function LoginScreen() {
+const LoginScreen = () => {
     const { login, loading, errors } = useLogin();
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -88,3 +88,4 @@ export default function LoginScreen() {
 
     )
 }
+export default LoginScreen

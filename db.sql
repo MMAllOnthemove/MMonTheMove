@@ -128,6 +128,8 @@ create table technician_tasks (
     repairshopr_job_id text,
     qc_complete text,
     qc_date text,
+    qc_fail text,
+    qc_fail_date text,
     unit_complete boolean,
     completed_date date,
     parts_issued boolean,
@@ -162,6 +164,7 @@ create table hhp_quality_control (
     ticket_number text,
     qc_complete text,
     reason text,
+    engineer text,
     created_at text,
     created_by text
 );
