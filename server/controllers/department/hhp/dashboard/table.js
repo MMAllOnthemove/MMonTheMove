@@ -66,6 +66,26 @@ SELECT
     )
   ) FILTER (WHERE t.unit_status = 'Completed') AS "Completed_tickets",
 
+  COUNT(*) FILTER (WHERE t.unit_status = 'For Invoicing') AS "for_invoicing_count",
+  ARRAY_AGG(
+    JSONB_BUILD_OBJECT(
+      'ticket_number', t.ticket_number,
+      'date_booked', t.date_booked,
+      'unit_status', t.unit_status,
+      'engineer', t.engineer
+    )
+  ) FILTER (WHERE t.unit_status = 'For Invoicing') AS "for_invoicing_tickets",
+
+  COUNT(*) FILTER (WHERE t.unit_status = 'Resolved') AS "resolved_count",
+  ARRAY_AGG(
+    JSONB_BUILD_OBJECT(
+      'ticket_number', t.ticket_number,
+      'date_booked', t.date_booked,
+      'unit_status', t.unit_status,
+      'engineer', t.engineer
+    )
+  ) FILTER (WHERE t.unit_status = 'Resolved') AS "resolved_tickets",
+
   COUNT(*) FILTER (WHERE t.qc_complete = 'Pass') AS qc_passed_count,
   ARRAY_AGG(
     JSONB_BUILD_OBJECT(

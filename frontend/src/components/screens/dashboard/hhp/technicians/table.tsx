@@ -32,48 +32,14 @@ const HHPDashboardTable = () => {
     const { hhpTasks, hhpTasksLoading } = useHHPTasksCrud()
     const hhpTechs = engineersList?.filter((x) => x.department === "HHP")
     const { hhpDashboardTable, hhpDashboardTableLoading, refetchHHPDashboardTable } = useHHPDashboardTable(fromDate, toDate)
-    // Group tickets by engineer and unit_status
-    // Group tickets by engineer and unit_status
-    const groupedData: TDashboardRowData[] = useMemo(() => {
-        const grouped: { [key: string]: TDashboardRowData } = {};
-
-        hhpTasks
-            .filter((ticket: any) => {
-                // Filter by engineer (only include engineers in the engineersList)
-                return hhpTechs.some((engineer) => `${engineer?.engineer_firstname} ${engineer?.engineer_lastname}` === ticket.engineer);
-            })
-            .filter((ticket: any) => {
-                // Filter by date range
-                const ticketDate = new Date(ticket.date_booked);
-                const from = fromDate ? new Date(fromDate) : null;
-                const to = toDate ? new Date(toDate) : null;
-
-                if (from && ticketDate < from) return false;
-                if (to && ticketDate > to) return false;
-
-                return true;
-            })
-            .forEach((ticket: any) => {
-                if (!grouped[ticket.engineer]) {
-                    grouped[ticket.engineer] = { engineer: ticket.engineer };
-                }
-                // Group by unit_status (e.g., 'New', 'In Progress', etc.)
-                if (!grouped[ticket.engineer][ticket.unit_status]) {
-                    grouped[ticket.engineer][ticket.unit_status] = [];
-                }
-                (grouped[ticket.engineer][ticket.unit_status] as any[]).push(ticket);
-
-                // Handle the qc_complete field as its own status if it's 'Pass'
-                if (ticket.qc_complete === 'Pass') {
-                    const qcStatus = 'QC Passed';
-                    if (!grouped[ticket.engineer][qcStatus]) {
-                        grouped[ticket.engineer][qcStatus] = [];
-                    }
-                    (grouped[ticket.engineer][qcStatus] as any[]).push(ticket);
-                }
-            });
-        return Object.values(grouped);
-    }, []);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalLabel, setModalLabel] = useState("");
+    const [modalTickets, setModalTickets] = useState<any[]>([]);
+    const handleShowTickets = (tickets: any[], label: string) => {
+        setModalLabel(label);
+        setModalTickets(tickets);
+        setModalOpen(true);
+    };
 
     // know how many were booked
     // Filter the tasks based on date range
@@ -92,63 +58,163 @@ const HHPDashboardTable = () => {
 
     // Display the count of filtered tasks
     const filteredTaskCount = filteredTasks.length;
-    const columnTotals = useMemo(() => {
-        const totals: Record<string, number> = {};
 
-        groupedData.forEach((row) => {
-            repairshopr_statuses.forEach(({ _status }) => {
-                const count = (row[_status] as any[])?.length || 0;
-                totals[_status] = (totals[_status] || 0) + count;
-            });
-        });
-        return totals;
-    }, [groupedData, repairshopr_statuses]);
 
 
     // Create columns dynamically
-    const columns: ColumnDef<TDashboardRowData>[] = [
+    const engineerColumns = (handleShowTickets: (tickets: any[], label: string) => void): ColumnDef<any>[] => [
+
         {
             header: "Engineer",
             accessorKey: "engineer",
+
             // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
         },
         {
             header: "New",
             accessorKey: "new_tickets_count",
+            cell: ({ row }) => {
+                const tickets = row.original.new_tickets;
+                return (
+                    <button
+                        className="text-blue-600 underline"
+                        onClick={() => handleShowTickets(tickets, "New")}
+                    >
+                        {row.original.New}
+                    </button>
+                );
+            },
             // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
         },
         {
             header: "Assigned to Tech",
             accessorKey: "assigned_tickets_count",
+            cell: ({ row }) => {
+                const tickets = row.original.assigned_tickets;
+                return (
+                    <button
+                        className="text-blue-600 underline"
+                        onClick={() => handleShowTickets(tickets, "Assigned to Tech")}
+                    >
+                        {row.original.New}
+                    </button>
+                );
+            },
             // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
         },
         {
             header: "Customer Reply",
             accessorKey: "customer_reply_tickets_count",
+            cell: ({ row }) => {
+                const tickets = row.original.customer_reply_tickets;
+                return (
+                    <button
+                        className="text-blue-600 underline"
+                        onClick={() => handleShowTickets(tickets, "Customer Reply")}
+                    >
+                        {row.original.New}
+                    </button>
+                );
+            },
             // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
         },
         {
             header: "Parts request 1st approval",
             accessorKey: "parts_request_tickets_count",
+            cell: ({ row }) => {
+                const tickets = row.original.parts_request_tickets;
+                return (
+                    <button
+                        className="text-blue-600 underline"
+                        onClick={() => handleShowTickets(tickets, "Parts request 1st approval")}
+                    >
+                        {row.original.New}
+                    </button>
+                );
+            },
             // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
         },
         {
             header: "In Progress",
             accessorKey: "in_progress_tickets_count",
+            cell: ({ row }) => {
+                const tickets = row.original.in_progress_tickets;
+                return (
+                    <button
+                        className="text-blue-600 underline"
+                        onClick={() => handleShowTickets(tickets, "In Progress")}
+                    >
+                        {row.original.New}
+                    </button>
+                );
+            },
             // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
         },
 
         {
             header: "Completed",
             accessorKey: "qc_passed_count",
+            cell: ({ row }) => {
+                const tickets = row.original.qc_passed_tickets;
+                return (
+                    <button
+                        className="text-blue-600 underline"
+                        onClick={() => handleShowTickets(tickets, "Completed")}
+                    >
+                        {row.original.New}
+                    </button>
+                );
+            },
+            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+        },
+        {
+            header: "For Invoicing",
+            accessorKey: "for_invoicing_count",
+            cell: ({ row }) => {
+                const tickets = row.original.for_invoicing_tickets;
+                return (
+                    <button
+                        className="text-blue-600 underline"
+                        onClick={() => handleShowTickets(tickets, "For Invoicing")}
+                    >
+                        {row.original.New}
+                    </button>
+                );
+            },
+            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+        },
+        {
+            header: "Resolved",
+            accessorKey: "resolved_count",
+            cell: ({ row }) => {
+                const tickets = row.original.resolved_tickets;
+                return (
+                    <button
+                        className="text-blue-600 underline"
+                        onClick={() => handleShowTickets(tickets, "Resolved")}
+                    >
+                        {row.original.New}
+                    </button>
+                );
+            },
             // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
         },
         {
             header: "QC Failed",
             accessorKey: "qc_failed_count",
+            cell: ({ row }) => {
+                const tickets = row.original.qc_failed_tickets;
+                return (
+                    <button
+                        className="text-blue-600 underline"
+                        onClick={() => handleShowTickets(tickets, "QC Failed")}
+                    >
+                        {row.original.New}
+                    </button>
+                );
+            },
             // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
         },
-
     ];
 
 
@@ -178,8 +244,8 @@ const HHPDashboardTable = () => {
 
     // Initialize table instance
     const table = useReactTable({
-        data: hhpDashboardTable,
-        columns,
+        data: hhpDashboardTable || [],
+        columns: engineerColumns(handleShowTickets),
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -317,13 +383,7 @@ const HHPDashboardTable = () => {
                         ))}
                     </thead>
                     <tbody className="z-0">
-                        {hhpTasksLoading ? (
-                            <tr>
-                                <td colSpan={columns.length} className="text-center py-3">
-                                    Loading...
-                                </td>
-                            </tr>
-                        ) : (
+                        {
                             table.getRowModel().rows.map((row) => (
                                 <tr
                                     key={row.id}
@@ -336,7 +396,7 @@ const HHPDashboardTable = () => {
                                     ))}
                                 </tr>
                             ))
-                        )}
+                        }
                     </tbody>
                     <tfoot>
                         {table.getFooterGroups().map((footerGroup) => (
@@ -353,10 +413,10 @@ const HHPDashboardTable = () => {
             </div>
 
             {/* Ticket List Modal */}
-            <Dialog open={!!selectedStatus} onOpenChange={() => setSelectedStatus(null)}>
+            <Dialog open={!!modalOpen} onOpenChange={() => setSelectedStatus(null)}>
                 <DialogContent>
                     <DialogTitle>
-                        {selectedEngineer} - {selectedStatus} Tickets
+                        {selectedEngineer} - {modalOpen} Tickets
                     </DialogTitle>
                     <div className="overflow-auto h-[400px]">
                         <ul className="mt-2">
