@@ -39,7 +39,7 @@ const DashboardScreen = () => {
                         <Sidebar />
                         <main className='container mx-auto p-1'>
                             <PageTitle title="Dashboard" hasSpan={true} spanText={"HHP"} />
-                            <Tabs defaultValue="table_view" className="w-full">
+                            {/* <Tabs defaultValue="table_view" className="w-full">
                                 <TabsList className="grid w-[400px] grid-cols-2">
                                     <TabsTrigger value="table_view">Table view</TabsTrigger>
                                     <TabsTrigger value="card_view">Card view</TabsTrigger>
@@ -50,7 +50,8 @@ const DashboardScreen = () => {
                                 <TabsContent value="card_view">
                                     <HHPDashboardCards />
                                 </TabsContent>
-                            </Tabs>
+                            </Tabs> */}
+                            <HHPDashboardTable />
                         </main>
 
 

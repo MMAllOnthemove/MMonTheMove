@@ -21,7 +21,7 @@ const TableBody = ({ table, handleRowClick }: TTableBody) => {
                 <tr
                     key={row.id}
 
-                    className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]"
+                    className="border-b cursor-pointer hover:bg-gray-100"
                 >
 
                     {row.getVisibleCells().map((cell: any) => (

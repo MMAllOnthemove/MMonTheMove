@@ -44,7 +44,7 @@ const TableBody = ({ table, handleRowClick, deleteRow, handleOpenSinglePage }: T
             {table.getRowModel().rows.map((row: any) => (
                 <tr
                     key={row.id}
-                    className={`border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e] ${selectedRowId === row.id ? 'bg-gray-200' : ''}`}
+                    className={`border-b cursor-pointer hover:bg-gray-100 ${selectedRowId === row.id ? 'bg-gray-200' : ''}`}
                     onClick={() => handleRowSelect(row)}
                 >
                     <td className="px-4 py-3 font-medium text-sm max-w-full cursor-pointer">

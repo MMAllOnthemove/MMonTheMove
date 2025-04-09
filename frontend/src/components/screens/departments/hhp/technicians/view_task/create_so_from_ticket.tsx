@@ -2,29 +2,34 @@ import CustomerInfoScreen from '@/components/screens/bookings/staff/create_ticke
 import ProductInfo from '@/components/screens/bookings/staff/create_ticket/gspn/multistep/product_info';
 import ProductInfoTwo from '@/components/screens/bookings/staff/create_ticket/gspn/multistep/product_info_two';
 import { Button } from '@/components/ui/button';
+import useAddCommentsLocally from '@/hooks/useCommentsLocally';
 import useCreateServiceOrder from '@/hooks/useCreateServiceOrder';
 import useUserLoggedIn from '@/hooks/useGetUser';
 import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud';
+import useRepairshoprComment from '@/hooks/useRepairshoprComment';
 import { datetimestamp } from '@/lib/date_formats';
-import { IHHPSingleTask } from '@/lib/types';
+import { IHHPSingleTask, RepairshorTicketComment } from '@/lib/types';
 import moment from 'moment';
-import router from 'next/router';
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react';
 
 type TCreateSOFromTicket = {
     modelProp: string | undefined;
     serial_numberProp: string | undefined;
     imeiProp: string | undefined;
     ticket_number: string | undefined;
+    task_id: string | undefined;
+    repairshopr_job_id: string | number | undefined;
     faultProp: string | undefined;
     setOpenCreateSOModal: (e: boolean) => void;
     data: IHHPSingleTask | null;
 }
 
-const CreateSOFromTicket = ({ faultProp, modelProp, serial_numberProp, imeiProp, setOpenCreateSOModal, data, ticket_number }: TCreateSOFromTicket) => {
+const CreateSOFromTicket = ({ faultProp, modelProp, serial_numberProp, imeiProp, setOpenCreateSOModal, data, ticket_number, task_id, repairshopr_job_id }: TCreateSOFromTicket) => {
     const { addServiceOrder, addServiceOrderLoading } = useCreateServiceOrder()
     const { hhpTasks, fetchTasks, updateHHPTaskLoading, updateTask, deleteTask, updateTaskSO, updateHHPTaskSOLoading } = useHHPTasksCrud()
     const { user, isLoggedIn, loading } = useUserLoggedIn()
+    const { addCommentLocally, addCommentLoading } = useAddCommentsLocally()
+    const { updateRepairTicketComment } = useRepairshoprComment()
     const [step, setStep] = useState(1);
     const nextStep = () => {
         setStep((prev) => Math.min(prev + 1, 3)); // Adjust this if you add more steps
@@ -152,15 +157,30 @@ const CreateSOFromTicket = ({ faultProp, modelProp, serial_numberProp, imeiProp,
                 "Country": `${country}`
             }
         }
-
         const result = await addServiceOrder(values)
         const updated_at = datetimestamp;
         const payload = {
             service_order: result?.Return?.EvSvcOrderNo, updated_by: user?.email, updated_at, ticket_number
         }
+        const addCommentLocallyPayload = {
+            "task_id": task_id,
+            "comment": '*The created service order ' + result?.Return?.EvSvcOrderNo,
+            "created_at": updated_at,
+            "created_by": user?.full_name,
+            "ticket_number": ticket_number
+        }
+        const commentPayload: RepairshorTicketComment = {
+            "subject": "Update",
+            "tech": user?.full_name,
+            "body": '*The created service order ' + result?.Return?.EvSvcOrderNo,
+            "hidden": true,
+            "do_not_email": true
+        }
+
         // update to service order in the very ticket you are in
         await updateTaskSO(ticket_number, payload)
-
+        await updateRepairTicketComment(repairshopr_job_id, commentPayload)
+        await addCommentLocally(addCommentLocallyPayload)
 
         // setNewServiceOrder(result?.Return?.EvSvcOrderNo);
 

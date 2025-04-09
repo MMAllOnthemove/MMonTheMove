@@ -4,9 +4,9 @@ import { Label } from '@/components/ui/label'
 import useAddClaims from '@/hooks/useAddClaims'
 import useUserLoggedIn from '@/hooks/useGetUser'
 import useIpaasGetSOInfoAll from '@/hooks/useIpaasGetSoInfoAll'
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import dynamic from 'next/dynamic'
 import React, { useState } from 'react'
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 const LoadingScreen = dynamic(() =>
     import('@/components/loading_screen/page'), { ssr: false }
 )
@@ -62,10 +62,6 @@ const ClaimsScreen = () => {
         }
     };
 
-    // handleGetSOInfo(searchServiceOrder);
-
-
-
     const addTask = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const created_by = user?.email;
@@ -100,7 +96,7 @@ const ClaimsScreen = () => {
                                             Search ticket
                                         </Label>
                                         <Input
-                                            className="placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none"
+                                            className="polder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none"
                                             placeholder='Search ticket'
                                             type="number"
                                             id="searchTicket"
@@ -110,7 +106,7 @@ const ClaimsScreen = () => {
                                         />
 
                                     </span>
-                                        <Button type="button" className='text-sm text-gray-100 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] shadow-none border-none' disabled={loadingData} onClick={() => handleGetSOInfo(searchServiceOrder)}>{loadingData ? 'Searching...' : <MagnifyingGlassIcon className="size-6 text-white" />}</Button>
+                                    <Button type="button" className='text-sm text-gray-100 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] shadow-none border-none' disabled={loadingData} onClick={() => handleGetSOInfo(searchServiceOrder)}>{loadingData ? 'Searching...' : <MagnifyingGlassIcon className="size-6 text-white" />}</Button>
                                 </div>
                             </section>
                             <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg mb-4">
@@ -135,7 +131,7 @@ const ClaimsScreen = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="z-0">
-                                        <tr className="border-b cursor-pointer dark:bg-[#22303c] hover:text-gray-900 focus:bg-gray-200 focus:text-gray-900 active:bg-gray-200 active:text-gray-900 dark:hover:text-[#22303c]">
+                                        <tr className="border-b cursor-pointer hover:text-gray-900 focus:bg-gray-200 focus:text-gray-900 active:bg-gray-200 active:text-gray-900">
                                             <td className="px-4 py-3 font-medium text-sm max-w-full">
                                                 <span>
                                                     {service_order_no}
@@ -196,7 +192,7 @@ const ClaimsScreen = () => {
                                                     type="button"
                                                     role="button"
                                                     onClick={addTask}
-                                                        className='text-sm text-gray-100 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] shadow-none border-none'
+                                                    className='text-sm text-gray-100 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] shadow-none border-none'
                                                     disabled={addClaimLoading}> {addClaimLoading ? 'Adding...' : 'Add claim'}
                                                 </Button>
                                             </td>

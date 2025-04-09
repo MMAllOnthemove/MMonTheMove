@@ -77,7 +77,7 @@ const useCreateServiceOrder = () => {
                     },
                 }
             );
-            console.log("gspn response data", data);
+
 
             if (data?.Return?.EvSvcOrderNo) {
                 toast.success(
@@ -100,6 +100,12 @@ const useCreateServiceOrder = () => {
             // Handle error messages
             if (data?.EtEhnErrInfo?.GspnWMsgCode) {
                 toast.error(data?.EtEhnErrInfo?.GspnWMsgCode);
+            }
+            if (data?.Return?.EvRetMsg) {
+                toast.error(data?.Return?.EvRetMsg);
+            }
+            if (data?.Return?.EsCommonResult?.Code === "202_H") {
+                toast.error("Please refresh screen & try again");
             }
 
             if (Array.isArray(data?.EtErrInfo?.results) && data?.EtErrInfo?.results.length > 0) {

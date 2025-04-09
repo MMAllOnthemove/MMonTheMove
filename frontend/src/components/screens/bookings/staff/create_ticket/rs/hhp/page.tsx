@@ -151,7 +151,7 @@ const HHP = (customerProps: string | string[] | any) => {
             "comments_attributes": [
                 {
                     "subject": "Initial Issue",
-                    "body": `*${fault}`,
+                    "body": subject(),
                     "hidden": false,
                     "do_not_email": true,
                     "tech": `${user?.full_name}`

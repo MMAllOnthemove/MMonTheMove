@@ -6,4 +6,4 @@ const ForgotPassword = () => {
         <ForgotPasswordScreen />
     )
 }
-export default
+export default ForgotPassword

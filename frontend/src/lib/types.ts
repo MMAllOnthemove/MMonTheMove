@@ -223,6 +223,17 @@ export type TAgentTasks = {
     tickets?: string[];
     count?: number;
 };
+export type TBookingAgentsDashboard = {
+    booking_agent: string;
+    total_tasks: number;
+    in_warranty_count: string | null;
+    out_of_warranty_count: string | null;
+    tickets: [{
+        ticket_number: string | number;
+        date_booked: string | null;
+        warranty: string | null
+    }];
+}
 export type TBookingAgentsTasksCount = {
     booking_agent?: string;
     createdBy?: string | undefined;

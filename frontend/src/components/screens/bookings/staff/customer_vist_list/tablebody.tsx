@@ -38,7 +38,7 @@ const TableBody = ({ table, handleCreateTicket, handleCreateSO, handleRowSelect,
                 {table.getRowModel().rows.map((row: any) => (
                     <tr
                         key={row.id}
-                        className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]"
+                        className="border-b cursor-pointer hover:bg-gray-100"
                         onDoubleClick={() => handleRowSelect(row)}
                     >
                         <td className="px-4 py-3 font-medium text-sm max-w-full cursor-pointer">

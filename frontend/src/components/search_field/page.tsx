@@ -13,7 +13,7 @@ const ManagementSearchForm = ({ filtering, setFiltering }: ISearchForm) => {
                 type="text"
                 id="simple-search"
                 placeholder="Search..."
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm pl-10 pr-4 py-2 shadow-none border border-gray-200 rounded-md focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none"
                 value={filtering}
                 onChange={(e) => setFiltering(e)}
             />

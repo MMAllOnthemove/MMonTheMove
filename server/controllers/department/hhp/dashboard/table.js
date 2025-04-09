@@ -1,6 +1,4 @@
 import { pool } from "../../../../db.js";
-import { Parser } from "@json2csv/plainjs";
-import appLogs from "../../../logs/logs.js";
 
 const query = `
 SELECT
@@ -123,15 +121,13 @@ ORDER BY t.engineer;
 
 // In your HHPDashboardTable handler
 const HHPDashboardTable = async (req, res) => {
-    console.log("HHPDashboardTable handler reached!");
     const { from, to } = req.query;
     console.log("From:", from, "To:", to); // Log query parameters
 
     try {
         const results = await pool.query(query, [from, to]);
-        return res.json(results.rows); // Ensure you're sending the correct data
+        return res.status(200).json(results.rows); // Ensure you're sending the correct data
     } catch (error) {
-        console.error("Error in query:", error);
         return res.status(500).json({ message: "Error occurred" });
     }
 };

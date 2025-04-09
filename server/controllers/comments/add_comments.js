@@ -12,7 +12,6 @@ const addCommentSchema = Yup.object({
 const addComment = async (req, res) => {
     const { task_id, comment, created_at, created_by, ticket_number } =
         req.body;
-
     try {
         await addCommentSchema.validate(req.body, { abortEarly: false });
 
@@ -21,9 +20,9 @@ const addComment = async (req, res) => {
             "SELECT * FROM technician_tasks_comments WHERE task_id = $1 AND comment = $2 limit 1",
             [task_id, comment]
         );
-        // todo: remove
-        if (existingComment.length > 0)
-            return res.status(400).json({ message: "Comment exists" });
+        // if (existingComment.length > 0) {
+        //     return res.status(400).json({ message: "Comment exists" });
+        // }
 
         const { rows } = await pool.query(
             "INSERT INTO technician_tasks_comments (task_id, comment, created_at, created_by) VALUES ($1, $2, $3, $4) returning *",
@@ -35,7 +34,6 @@ const addComment = async (req, res) => {
             rows: rows[0],
         });
     } catch (error) {
-        console.log("error add comment", error);
         // Handle validation or other errors
         const errors = {};
         if (error.inner) {

@@ -42,7 +42,7 @@ const Pagination = ({ table }: any) => {
             </div>
 
             <div className="flex items-center gap-2 md:flex-1">
-                <span className="font-semibold text-gray-600 dark:text-gray-400">
+                <span className="font-semibold text-gray-600">
                     Page
                 </span>
                 <strong>

@@ -1,4 +1,4 @@
-import { TAgentTasks } from "@/lib/types";
+import { TBookingAgentsDashboard } from "@/lib/types";
 import socket from "@/socket";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -10,18 +10,27 @@ interface ErrorMessages {
     booking_agent?: string;
 }
 
-const useBookingAgentsTasks = () => {
+const useBookingAgentsTasks = (
+    dateFrom?: string | null | undefined,
+    dateTo?: string | null | undefined
+) => {
     const [addAgentTaskLoading, setLoading] = useState(false); // Loading state
     const [errors, setErrors] = useState<ErrorMessages>({}); // Explicitly typed
-    const [bookingAgentTasksList, setData] = useState<TAgentTasks[]>([]);
+    const [bookingAgentTasksList, setData] = useState<
+        TBookingAgentsDashboard[]
+    >([]);
     const [bookingAgentTasksListLoading, setBookingAgentTasksList] =
         useState(true);
 
-    const fetchBookingAgentTasks = async () => {
+    const fetchBookingAgentTasks = async (
+        dateFrom: string | null | undefined,
+        dateTo: string | null | undefined
+    ) => {
         try {
+            if (!dateFrom && !dateTo) return;
             setBookingAgentTasksList(true);
             const response = await axios.get(
-                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/booking_agents/tasks`,
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/booking_agents/tasks?from=${dateFrom}&to=${dateTo}`,
                 {
                     withCredentials: true,
                 }
@@ -66,20 +75,20 @@ const useBookingAgentsTasks = () => {
     };
     // 🔄 Listen for real-time updates
     useEffect(() => {
-        fetchBookingAgentTasks();
+        fetchBookingAgentTasks(dateFrom, dateTo);
         socket.on("bookingAgentTask", (task) => {
-             if (!task || !task.booking_agent || !task.ticket_number) {
-                 return; // Ignore incomplete task
-             }
+            if (!task || !task.booking_agent || !task.ticket_number) {
+                return; // Ignore incomplete task
+            }
             toast.success(`${task?.booking_agent} just made a booking`, {
                 position: "bottom-center",
             });
             setData((prev: any) => [...prev, task]); // Add assigned task
         });
         socket.on("bookingStatAdded", (task) => {
-             if (!task || !task.booking_agent || !task.ticket_number) {
-                 return; // Ignore incomplete task
-             }
+            if (!task || !task.booking_agent || !task.ticket_number) {
+                return; // Ignore incomplete task
+            }
             setData((prev: any) => [...prev, task]); // Update for the stats
         });
 
@@ -87,7 +96,8 @@ const useBookingAgentsTasks = () => {
             socket.off("bookingAgentTask");
             socket.off("bookingStatAdded");
         };
-    }, []);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dateFrom, dateTo]);
     return {
         fetchBookingAgentTasks,
         addAgentTask,

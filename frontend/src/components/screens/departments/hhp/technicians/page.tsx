@@ -436,7 +436,7 @@ const TechniciansScreen = () => {
                                             <span>
                                                 <Label
                                                     htmlFor="dateFrom"
-                                                    className="sr-only dark:text-[#eee]"
+                                                    className="sr-only"
                                                 >
                                                     Date from
                                                 </Label>
@@ -453,7 +453,7 @@ const TechniciansScreen = () => {
                                             <span>
                                                 <Label
                                                     htmlFor="dateTo"
-                                                    className="sr-only dark:text-[#eee]"
+                                                    className="sr-only"
                                                 >
                                                     Date to
                                                 </Label>

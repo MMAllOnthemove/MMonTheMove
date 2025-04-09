@@ -53,7 +53,6 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
-    console.log("connected", socket.connected);
     // Broadcast when a new task is added
     socket.on("addTask", (task) => {
         io.emit("addTask", task); // Send to all clients
@@ -125,11 +124,10 @@ io.on("connection", (socket) => {
     });
 });
 app.use(
-    // todo: fix the expo url in prod
     cors({
         origin: [
             process.env.NEXT_PUBLIC_REACT_URL,
-            "http://192.168.1.126:8081",
+            process.env.NEXT_PUBLIC_EXPO_URL,
         ],
         methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],

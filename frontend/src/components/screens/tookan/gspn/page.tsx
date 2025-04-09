@@ -166,7 +166,7 @@ const SearchGSPNTicket = () => {
 
             <Card className='w-full border-none md:max-w-[700px] max-w-[550px] shadow-none md:border md:shadow'>
                 <CardHeader>
-                    <CardTitle className="text-center text-sm text-gray-800 font-medium">Create tookan task</CardTitle>
+                    <CardTitle className="text-center">Create tookan task</CardTitle>
                     <CardDescription>
                     </CardDescription>
                 </CardHeader>

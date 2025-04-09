@@ -89,8 +89,8 @@ const RepairshoprAssetScreen = () => {
 
             <div className="flex flex-col justify-center items-center h-screen bg-white border w-30">
                 <Sidebar />
-                <h4 className="text-3xl font-bold mb-2 text-center dark:text-gray-700">Search asset</h4>
-                <p className='tracking-tighter text-gray-500 md:text-lg dark:text-gray-400'>Serial number</p>
+                <h4 className="text-3xl font-bold mb-2 text-center">Search asset</h4>
+                <p className='tracking-tighter text-gray-500 md:text-lg'>Serial number</p>
                 <p className='tracking-tighter text-gray-500 text-sm mb-2'>{loadingAssets ? 'Searching...' : null}</p>
                 <div>
                     <Input

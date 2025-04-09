@@ -63,7 +63,6 @@ const uploadTechnicianFiles = async (req, res) => {
                 }
                 // web: file.originalName
                 // mobile: file.originalnrsame
-                console.log("file", file);
                 const rawFileName =
                     file.originalname ||
                     file.originalName
@@ -121,7 +120,6 @@ const uploadTechnicianFiles = async (req, res) => {
             fileUrls: fileUrls.filter(Boolean),
         });
     } catch (err) {
-        console.log("err", err);
         if (err instanceof multer.MulterError) {
             return res
                 .status(400)

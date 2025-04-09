@@ -9,19 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--    qc_fail, qc_fail_date columns in sql
--    update item condition field in view ticket
--    sort tickets in bin stats by old first
--    if file is pdf accommodate it too when displaying in the view ticket
--    fail for qc and how many (already created a table to add them separately, will count from there)
--    CREATE INDEX idx_technician_tasks_date_booked ON technician_tasks(date_booked)
--    CREATE INDEX idx_technician_tasks_qc_complete ON technician_tasks(qc_complete)
--    CREATE INDEX idx_technician_tasks_engineer_date ON technician_tasks(engineer, date_booked)
+-   qc_fail, qc_fail_date columns in sql
+-   update item condition field in view ticket
+-   sort tickets in bin stats by old first
+-   if file is pdf accommodate it too when displaying in the view ticket
+-   fail for qc and how many (already created a table to add them separately, will count from there)
+-   CREATE INDEX idx_technician_tasks_date_booked ON technician_tasks(date_booked)
+-   CREATE INDEX idx_technician_tasks_qc_complete ON technician_tasks(qc_complete)
+-   CREATE INDEX idx_technician_tasks_engineer_date ON technician_tasks(engineer, date_booked)
+-   booking agents dashboard, showing iw, oow and modal to show tickets list
+-   qc should have dropdown options and allow free text
+-   more gspn create service order error handling
+-   add created service order to ticket comment if created from create service order button
+-   account for booking agents as well for viewing tasks
 
 ### Fixed
 
 -   page title h1, now is semibold instead of extrabold
-
+-   some comments not showing on app
+-   was not showing the job repair no on the first initial issue comment for Dunoworx jobs
 
 ## [0.1.33] - 2025-04-04
 

@@ -9,7 +9,7 @@ type TTableBody = {
 const TableBody = ({ ticket_number, booking_agent, addAgentTaskLoading, addTask }: TTableBody) => {
     return (
         <tbody className="z-0">
-            <tr className="border-b cursor-pointer dark:bg-[#22303c] hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900  dark:hover:bg-[#eee] dark:text-[#eee] dark:hover:text-[#22303c]">
+            <tr className="border-b cursor-pointer hover:bg-[#eee] hover:text-gray-900 focus:bg-[#eee] focus:text-gray-900 active:bg-[#eee] active:text-gray-900">
                 <td className="px-4 py-3 font-medium text-sm max-w-full">
                     {ticket_number}
                 </td>

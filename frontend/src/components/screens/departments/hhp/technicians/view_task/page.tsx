@@ -66,10 +66,10 @@ const ViewHHPTaskScreen = () => {
     const { hhpTask, refetch, hhpTaskLoading } = useFetchHHPTaskById(id ? decodeURIComponent(Array.isArray(id) ? id[0] : id) : null)
     const { commentsList, commentsListLoading, totalPages, currentPage, fetchComments } = useAddCommentsLocally(id)
     const { addQCToTable } = useQCToTable()
-    const [reparshoprComment, setRepairshoprComment] = useState("")
     const { getSOPartsInfo } = useIpaasSOPartsInfo()
     const [qc_comment, setQCFailReason] = useState('')
     const [qc_complete, setQCComplete] = useState<string>('')
+    const [qc_extratext, setQCExtraText] = useState<string>('')
     const [qc_date, setQCCompleteDate] = useState<string | undefined>("")
     const [qcFiles, setQCFiles] = useState<FileUpload[]>([]);
     const [qcFilesUploading, setQCFilesUploading] = useState(false);
@@ -406,18 +406,19 @@ const ViewHHPTaskScreen = () => {
             const commentPayload: RepairshorTicketComment = {
                 "subject": "Update",
                 "tech": user?.full_name,
-                "body": '*' + comment,
+                "body": `*${comment}`,
                 "hidden": true,
                 "do_not_email": true
             }
             const created_at = datetimestamp;
             const addCommentLocallyPayload = {
                 "task_id": hhpTask?.id,
-                "comment": '*' + comment,
+                "comment": `*${comment}`,
                 "created_at": created_at,
                 "created_by": user?.full_name,
                 "ticket_number": hhpTask?.ticket_number
             }
+
             if (comment) {
                 await updateRepairTicketComment(hhpTask?.repairshopr_job_id, commentPayload)
                 await addCommentLocally(addCommentLocallyPayload)
@@ -547,10 +548,11 @@ const ViewHHPTaskScreen = () => {
         const updated_at = datetimestamp;
         const created_at = datetimestamp;
 
+        const formatted_qc_comment = `*QC: ${qc_complete}\n${qc_comment}\n${qc_extratext}`
 
         const updatePayload = {
             // This goes to our in house db
-            id, updated_by: user?.email, updated_at, qc_comment, qc_date, qc_complete, unit_complete, completed_date, additional_info: additionalInfo, ticket_number: hhpTask?.ticket_number
+            id, updated_by: user?.email, updated_at, qc_comment: formatted_qc_comment, qc_date, qc_complete, unit_complete, completed_date, additional_info: additionalInfo, ticket_number: hhpTask?.ticket_number
         }
         const updates = findChanges(hhpTask, updatePayload)
         const changes = {
@@ -561,31 +563,24 @@ const ViewHHPTaskScreen = () => {
             updated_by: user?.email,
             qc_complete: qc_complete,
             engineer: engineer,
-
-
         }
+
         const commentPayload: RepairshorTicketComment = {
             "subject": "Update",
             "tech": user?.full_name,
-            "body": "*QC analysis: " + qc_comment,
+            "body": formatted_qc_comment,
             "hidden": true,
             "do_not_email": true
         }
 
         const addCommentLocallyPayload = {
             "task_id": id,
-            "comment": "*QC analysis: " + qc_comment,
+            "comment": formatted_qc_comment,
             "created_at": created_at,
             "created_by": user?.full_name,
             "ticket_number": hhpTask?.ticket_number
         }
-        const addQCToTablePayload = {
-            ticket_number: hhpTask?.ticket_number,
-            qc_complete,
-            qc_comment,
-            created_at,
-            created_by: user?.email
-        }
+
         try {
             setQCSubmitLoading(true)
             if (Object.keys(changes).length > 0) {
@@ -630,7 +625,7 @@ const ViewHHPTaskScreen = () => {
             const created_at = datetimestamp;
             const addCommentLocallyPayload = {
                 "task_id": hhpTask?.id,
-                "comment": '*' + reparshoprComment,
+                "comment": '*' + comment,
                 "created_at": created_at,
                 "created_by": user?.full_name,
                 "ticket_number": hhpTask?.ticket_number
@@ -1044,7 +1039,6 @@ const ViewHHPTaskScreen = () => {
             );
 
             if (data) {
-                console.log("data", data)
                 toast.success(`${data?.message}`);
                 const repairshopr_payload = {
                     files: data.fileUrls.map((url: any) => ({
@@ -1206,7 +1200,7 @@ const ViewHHPTaskScreen = () => {
                                 </div>
 
                                 {
-                                    openCreateSOModal ? <CreateSOFromTicket ticket_number={hhpTask?.ticket_number} faultProp={hhpTask?.fault} data={hhpTask} setOpenCreateSOModal={() => setOpenCreateSOModal(!openCreateSOModal)} modelProp={hhpTask?.model} serial_numberProp={hhpTask?.serial_number} imeiProp={hhpTask?.imei} /> : <>
+                                    openCreateSOModal ? <CreateSOFromTicket repairshopr_job_id={hhpTask?.repairshopr_job_id} task_id={hhpTask?.id} ticket_number={hhpTask?.ticket_number} faultProp={hhpTask?.fault} data={hhpTask} setOpenCreateSOModal={() => setOpenCreateSOModal(!openCreateSOModal)} modelProp={hhpTask?.model} serial_numberProp={hhpTask?.serial_number} imeiProp={hhpTask?.imei} /> : <>
 
                                         <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 items-start">
                                             {/* column 1 */}
@@ -1620,7 +1614,7 @@ const ViewHHPTaskScreen = () => {
                                                             </div>
                                                         ))}
                                                     </div>
-                                                    <QC qcUpdateLoading={qcSubmitLoading} qc_fail_reasonProp={qc_comment} setQCFailReasonProp={(e: React.SyntheticEvent | any) => setQCFailReason(e.target.value)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} setUnitCompleteDateProp={setUnitCompleteDate} setUnitCompleteProp={setUnitComplete} submitQC={handleQCSubmit} />
+                                                    <QC qc_extratext={qc_extratext} setQCExtraText={setQCExtraText} qcUpdateLoading={qcSubmitLoading} qc_fail_reasonProp={qc_comment} setQCFailReasonProp={(e) => setQCFailReason(e)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} setUnitCompleteDateProp={setUnitCompleteDate} setUnitCompleteProp={setUnitComplete} submitQC={handleQCSubmit} />
                                                 </div>
                                                 {/* Parts */}
                                                 <div className="py-2 px-3">

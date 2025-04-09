@@ -22,14 +22,14 @@ const TableBody = ({ table, handleRowClick }: TTableBody) => {
                 <tr
                     key={row.id}
 
-                    className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]"
+                    className="border-b cursor-pointer hover:bg-gray-100"
                 >
                     <td className="px-4 py-3 font-medium text-sm max-w-full">
                         <Button
                             onClick={() => handleRowClick(row)}
                             type="button"
                             role="button"
-                            className="text-red-500 dark:text-red-500 hover:underline bg-transparent shadow-none"
+                            className="text-red-500 hover:underline bg-transparent shadow-none"
                         >
                             Delete
                         </Button>

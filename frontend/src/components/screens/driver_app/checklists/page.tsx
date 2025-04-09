@@ -183,7 +183,7 @@ const ChecklistsScreen = () => {
                             </section>
                             <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg">
                                 <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-                                    <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] uppercase font-semibold">
+                                    <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white uppercase font-semibold">
                                         {table.getHeaderGroups().map((headerGroup) => (
                                             <tr key={headerGroup.id} className=" font-semibold">
 
@@ -246,7 +246,7 @@ const ChecklistsScreen = () => {
                                             ) : <tr
                                                 key={row.id}
                                                 onClick={() => handleRowClick(row)}
-                                                className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]"
+                                                className="border-b cursor-pointer hover:bg-gray-100"
                                             >
 
                                                 {row.getVisibleCells().map((cell: any) => (

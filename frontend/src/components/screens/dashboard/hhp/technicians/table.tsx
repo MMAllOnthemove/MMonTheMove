@@ -60,15 +60,44 @@ const HHPDashboardTable = () => {
     const filteredTaskCount = filteredTasks.length;
 
 
+    const calculateColumnTotals = (data: any[]) => {
+        const totals: Record<string, number> = {
+            new_tickets_count: 0,
+            assigned_tickets_count: 0,
+            customer_reply_tickets_count: 0,
+            parts_request_tickets_count: 0,
+            in_progress_tickets_count: 0,
+            qc_passed_count: 0,
+            for_invoicing_count: 0,
+            resolved_count: 0,
+            qc_failed_count: 0,
+        };
+
+        data.forEach(row => {
+            totals.new_tickets_count += Number(row.new_tickets_count) || 0;
+            totals.assigned_tickets_count += Number(row.assigned_tickets_count) || 0;
+            totals.customer_reply_tickets_count += Number(row.customer_reply_tickets_count) || 0;
+            totals.parts_request_tickets_count += Number(row.parts_request_tickets_count) || 0;
+            totals.in_progress_tickets_count += Number(row.in_progress_tickets_count) || 0;
+            totals.qc_passed_count += Number(row.qc_passed_count) || 0;
+            totals.for_invoicing_count += Number(row.for_invoicing_count) || 0;
+            totals.resolved_count += Number(row.resolved_count) || 0;
+            totals.qc_failed_count += Number(row.qc_failed_count) || 0;
+        });
+
+        return totals;
+    };
+
+    const totals = calculateColumnTotals(hhpDashboardTable || []);
 
     // Create columns dynamically
-    const engineerColumns = (handleShowTickets: (tickets: any[], label: string) => void): ColumnDef<any>[] => [
+    const engineerColumns = (handleShowTickets: (tickets: any[], label: string) => void, totals: Record<string, number>): ColumnDef<any>[] => [
 
         {
             header: "Engineer",
             accessorKey: "engineer",
 
-            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+            footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
         },
         {
             header: "New",
@@ -80,11 +109,11 @@ const HHPDashboardTable = () => {
                         className="text-blue-600 underline"
                         onClick={() => handleShowTickets(tickets, "New")}
                     >
-                        {row.original.New}
+                        {row.original.new_tickets_count}
                     </button>
                 );
             },
-            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+            footer: () => totals?.new_tickets_count ?? 0,
         },
         {
             header: "Assigned to Tech",
@@ -96,11 +125,11 @@ const HHPDashboardTable = () => {
                         className="text-blue-600 underline"
                         onClick={() => handleShowTickets(tickets, "Assigned to Tech")}
                     >
-                        {row.original.New}
+                        {row.original.assigned_tickets_count}
                     </button>
                 );
             },
-            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+            footer: () => totals?.assigned_tickets_count ?? 0,
         },
         {
             header: "Customer Reply",
@@ -112,11 +141,11 @@ const HHPDashboardTable = () => {
                         className="text-blue-600 underline"
                         onClick={() => handleShowTickets(tickets, "Customer Reply")}
                     >
-                        {row.original.New}
+                        {row.original.customer_reply_tickets_count}
                     </button>
                 );
             },
-            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+            footer: () => totals?.customer_reply_tickets_count ?? 0,
         },
         {
             header: "Parts request 1st approval",
@@ -128,11 +157,11 @@ const HHPDashboardTable = () => {
                         className="text-blue-600 underline"
                         onClick={() => handleShowTickets(tickets, "Parts request 1st approval")}
                     >
-                        {row.original.New}
+                        {row.original.parts_request_tickets_count}
                     </button>
                 );
             },
-            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+            footer: () => totals?.parts_request_tickets_count ?? 0,
         },
         {
             header: "In Progress",
@@ -144,11 +173,11 @@ const HHPDashboardTable = () => {
                         className="text-blue-600 underline"
                         onClick={() => handleShowTickets(tickets, "In Progress")}
                     >
-                        {row.original.New}
+                        {row.original.in_progress_tickets_count}
                     </button>
                 );
             },
-            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+            footer: () => totals?.in_progress_tickets_count ?? 0,
         },
 
         {
@@ -161,11 +190,11 @@ const HHPDashboardTable = () => {
                         className="text-blue-600 underline"
                         onClick={() => handleShowTickets(tickets, "Completed")}
                     >
-                        {row.original.New}
+                        {row.original.qc_passed_count}
                     </button>
                 );
             },
-            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+            footer: () => totals?.qc_passed_count ?? 0,
         },
         {
             header: "For Invoicing",
@@ -177,11 +206,11 @@ const HHPDashboardTable = () => {
                         className="text-blue-600 underline"
                         onClick={() => handleShowTickets(tickets, "For Invoicing")}
                     >
-                        {row.original.New}
+                        {row.original.for_invoicing_count}
                     </button>
                 );
             },
-            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+            footer: () => totals?.for_invoicing_count ?? 0,
         },
         {
             header: "Resolved",
@@ -193,11 +222,11 @@ const HHPDashboardTable = () => {
                         className="text-blue-600 underline"
                         onClick={() => handleShowTickets(tickets, "Resolved")}
                     >
-                        {row.original.New}
+                        {row.original.resolved_count}
                     </button>
                 );
             },
-            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+            footer: () => totals?.resolved_count ?? 0,
         },
         {
             header: "QC Failed",
@@ -209,11 +238,11 @@ const HHPDashboardTable = () => {
                         className="text-blue-600 underline"
                         onClick={() => handleShowTickets(tickets, "QC Failed")}
                     >
-                        {row.original.New}
+                        {row.original.qc_failed_count}
                     </button>
                 );
             },
-            // footer: () => <strong>Total</strong> // Display "Total" as footer label for the first column
+            footer: () => totals?.qc_failed_count ?? 0,
         },
     ];
 
@@ -241,11 +270,10 @@ const HHPDashboardTable = () => {
         setFromDate(""); // Clear unassigned filter
         setToDate(""); // Clear engineer filter
     };
-
     // Initialize table instance
     const table = useReactTable({
-        data: hhpDashboardTable || [],
-        columns: engineerColumns(handleShowTickets),
+        data: hhpDashboardTable,
+        columns: engineerColumns(handleShowTickets, totals),
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -268,7 +296,7 @@ const HHPDashboardTable = () => {
 
     return (
         <div>
-            <h1 className="text-xl font-bold mb-4">Repair Jobs by Engineer & Status  <strong>{filteredTaskCount}</strong></h1>
+            <h1 className="text-xl font-medium text-gray-800 mb-4">Total booked in  <strong>{filteredTaskCount}</strong></h1>
             <div className="flex justify-between items-center gap-3 mb-3">
                 <div className="flex-grow min-w-[200px]">
                     <ManagementSearchForm
@@ -282,17 +310,17 @@ const HHPDashboardTable = () => {
                         type="date"
                         value={fromDate || ""}
                         onChange={(e) => setFromDate(e.target.value)}
-                        className="mr-2 p-2 border border-gray-300 rounded"
+                        className="mr-2 w-full placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none"
                     />
                     <Input
                         type="date"
                         value={toDate || ""}
                         onChange={(e) => setToDate(e.target.value)}
-                        className="p-2 border border-gray-300 rounded"
+                        className="w-full placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none"
                     />
                 </div>
-                <Button type="button" onClick={() => setSortTableColumns(true)} className="hidden md:block">Sort columns</Button>
-                <Button type="button" onClick={resetFilters}> Reset filters</Button>
+                <Button type="button" onClick={() => setSortTableColumns(true)} className="hidden md:block className='text-sm text-gray-100 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] shadow-none border-none'">Sort columns</Button>
+                <Button type="button" onClick={resetFilters} className="className='text-sm text-gray-100 bg-[#075985] hover:bg-[#082f49] active:bg-[#082f49] shadow-none border-none"> Reset filters</Button>
 
             </div>
             {
@@ -344,8 +372,8 @@ const HHPDashboardTable = () => {
                 </Dialog>
             }
             <div className="overflow-y-auto max-h-[540px] rounded-lg shadow-lg">
-                <table className="w-full whitespace-nowrap text-sm text-left text-gray-500 table-auto">
-                    <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white dark:text-[#eee] uppercase font-medium">
+                <table className="w-full whitespace-wrap text-sm text-start text-gray-500 table-auto">
+                    <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white text-xs uppercase font-medium">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <tr key={headerGroup.id} className="font-semibold">
                                 {headerGroup.headers.map((header) => {
@@ -387,7 +415,7 @@ const HHPDashboardTable = () => {
                             table.getRowModel().rows.map((row) => (
                                 <tr
                                     key={row.id}
-                                    className="border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-[#22303c] dark:bg-[#2f3f4e]"
+                                    className="border-b cursor-pointer hover:bg-gray-100"
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <td key={cell.id} className="px-4 py-3 font-medium text-sm">
@@ -413,15 +441,15 @@ const HHPDashboardTable = () => {
             </div>
 
             {/* Ticket List Modal */}
-            <Dialog open={!!modalOpen} onOpenChange={() => setSelectedStatus(null)}>
+            <Dialog open={!!modalOpen} onOpenChange={() => setModalOpen(false)}>
                 <DialogContent>
                     <DialogTitle>
-                        {selectedEngineer} - {modalOpen} Tickets
+                        {modalLabel} Tickets
                     </DialogTitle>
                     <div className="overflow-auto h-[400px]">
                         <ul className="mt-2">
-                            {selectedTickets.length > 0 ? (
-                                selectedTickets.map((ticket, index: number) => (
+                            {modalTickets && modalTickets?.length > 0 ? (
+                                modalTickets.map((ticket, index: number) => (
                                     <li key={ticket.ticket_number} className="border p-2 rounded mb-2">
                                         {index + 1}  <strong>{ticket.ticket_number}</strong> - Booked on: {moment(ticket.date_booked).format("YYYY-MM-DD")}
                                     </li>
