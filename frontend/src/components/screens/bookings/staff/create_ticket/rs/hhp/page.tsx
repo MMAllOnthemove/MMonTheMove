@@ -42,7 +42,7 @@ const HHP = (customerProps: string | string[] | any) => {
     const { customerId, email } = customerProps?.customerProps;
     const { socket, isConnected } = useSocket()
     const { addTask, hhpAddTaskErrors } = useHHPTasksCrud();
-    const { addAgentTask, addAgentTaskLoading, errors } = useBookingAgentsTasks()
+    const { addAgentTask } = useBookingAgentsTasks()
     const { user } = useUserLoggedIn()
     const { addCommentLocally } = useAddCommentsLocally()
     const { addTicket, createTicketLoading } = useCreateTicket()
@@ -55,7 +55,6 @@ const HHP = (customerProps: string | string[] | any) => {
     const [serialNumber, setSerialNumber] = useState("")
     const [modelNumber, setModelNumber] = useState("")
     const [issue_type, setIssueType] = useState("");
-    const [openModal, setOpenModal] = useState(false);
     const [openDialog, setOpenDialog] = useState(false)
     const [serviceOrderNumber, setServiceOrder] = useState("")
     const [task_id, setTaskId] = useState("")
@@ -128,7 +127,7 @@ const HHP = (customerProps: string | string[] | any) => {
             "problem_type": `${issue_type}`, // Will aways be HHP for handheld devices, no need to choose
             "subject": subject(),
             "status": "New", //  will always be 'New' for a recently created ticket
-            "ticket_type_id": `${ticketTypeIdManually ?? ticketTypeId}`,
+            "ticket_type_id": `${ticketTypeIdManually}`,
             "user_id": `${user?.repairshopr_id}`,
             "properties": {
                 "Service Order No.": serviceOrderNumber,
@@ -137,8 +136,8 @@ const HHP = (customerProps: string | string[] | any) => {
                 "Item Condition": itemCondition,
                 "Backup Requires": requires_backup,
                 "Backup Requires ": requires_backup,
-                "Warranty ": selectedWarranty ?? (adh === 'ADH' && ticketTypeId === "21877" ? '75132' : warrantyCode), // ADH RS code
-                "Warranty": selectedWarranty ?? (adh === 'ADH' && ticketTypeId === "21877" ? '75132' : warrantyCode), // ADH RS code
+                "Warranty ": adh === 'ADH' && ticketTypeIdManually === "21877" ? '75132' : warrantyCode, // ADH RS code
+                "Warranty": adh === 'ADH' && ticketTypeIdManually === "21877" ? '75132' : warrantyCode, // ADH RS code
                 "IMEI": `${IMEI}`,
                 "Job Repair No.": job_repair_no,
                 "Job Repair No.:": job_repair_no,
@@ -161,15 +160,15 @@ const HHP = (customerProps: string | string[] | any) => {
         }
         const created_at = datetimestamp;
         const data = await addTicket(payload)
-        await sendTicketDataToOurDB(
+        const task_id_from_db = await sendTicketDataToOurDB(
             data?.ticket?.number,
             data?.ticket?.id,
             data?.ticket?.customer_id,
             data?.ticket?.ticket_type_id
         );
         const addCommentLocallyPayload = {
-            "task_id": `${task_id}`,
-            "comment": `* ${fault}`,
+            "task_id": `${task_id_from_db}`,  // Use the is id from our server directly
+            "comment": subject(),
             "created_at": created_at,
             "created_by": user?.full_name,
             "ticket_number": data?.ticket?.number,
@@ -234,7 +233,9 @@ const HHP = (customerProps: string | string[] | any) => {
             "created_by": user?.full_name
         }
         const res: any = await addTask(payload)
-        if (res?.data?.id) setTaskId(res?.data?.id)
+        const id = res?.data?.task?.id
+        if (res?.data?.task) setTaskId(id)
+        return id; // <-- return the ID here
 
 
     }
@@ -422,14 +423,14 @@ const HHP = (customerProps: string | string[] | any) => {
 
                     </div>
                     <div>
-                        <Label htmlFor='selectedWarranty' className="text-gray-500">Change warranty</Label>
+                        <Label htmlFor='selectedWarranty' className="text-gray-500">Select or warranty</Label>
                         <Select
                             value={selectedWarranty || ""}
                             onValueChange={handleWarrantyChange}
                             name='selectedWarranty'
                         >
-                            <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Change warranty" />
+                            <SelectTrigger className="w-full  focus-visible:border-red-500">
+                                <SelectValue placeholder="Select warranty" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>

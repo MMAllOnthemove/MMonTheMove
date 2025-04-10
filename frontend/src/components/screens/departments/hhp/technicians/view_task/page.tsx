@@ -548,7 +548,13 @@ const ViewHHPTaskScreen = () => {
         const updated_at = datetimestamp;
         const created_at = datetimestamp;
 
-        const formatted_qc_comment = `*QC: ${qc_complete}\n${qc_comment}\n${qc_extratext}`
+
+
+
+        let formatted_qc_comment;
+
+        if (qc_extratext) formatted_qc_comment = `*QC: ${qc_complete}\n${qc_comment}\n${qc_extratext}`;
+        else formatted_qc_comment = `*QC: ${qc_complete}\n${qc_comment}`;
 
         const updatePayload = {
             // This goes to our in house db
@@ -564,7 +570,7 @@ const ViewHHPTaskScreen = () => {
             qc_complete: qc_complete,
             engineer: engineer,
         }
-
+  
         const commentPayload: RepairshorTicketComment = {
             "subject": "Update",
             "tech": user?.full_name,
@@ -581,15 +587,17 @@ const ViewHHPTaskScreen = () => {
             "ticket_number": hhpTask?.ticket_number
         }
 
+
         try {
             setQCSubmitLoading(true)
             if (Object.keys(changes).length > 0) {
                 await updateTask(id, changes)
-                if (qc_comment?.length > 0) {
+                if (formatted_qc_comment?.length > 0) {
                     await updateRepairTicketComment(hhpTask?.repairshopr_job_id, commentPayload)
                     await addCommentLocally(addCommentLocallyPayload)
                 }
                 setQCFailReason("")
+                setQCExtraText("")
                 toast.success(`Successfully updated`);
                 closeModal()
             }

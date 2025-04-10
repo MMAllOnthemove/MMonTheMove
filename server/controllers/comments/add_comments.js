@@ -12,6 +12,7 @@ const addCommentSchema = Yup.object({
 const addComment = async (req, res) => {
     const { task_id, comment, created_at, created_by, ticket_number } =
         req.body;
+    console.log("req.body", req.body);
     try {
         await addCommentSchema.validate(req.body, { abortEarly: false });
 

@@ -31,7 +31,8 @@ const TechniciansBin = ({ user, isLoggedIn, loading }: { user: TUser | null, isL
         "Assigned to Tech",
         "New",
         "In Progress",
-        "Parts Request 1st Approval"
+        "Parts Request 1st Approval",
+        "Waiting for Parts"
     ]);
 
     const hhpTechs = engineersList?.filter((x) => x.department === 'HHP')
@@ -111,7 +112,7 @@ const TechniciansBin = ({ user, isLoggedIn, loading }: { user: TUser | null, isL
                 hhpTasksLoading ? <p className="text-center">Loading stats</p> :
 
                     <>
-                        <h2 className="text-center font-medium">Your open jobs</h2>
+                        <h2 className="text-center font-medium">Your open jobs (Based on New, Assigned, In Progress, Parts request and Waiting for Parts tickets)</h2>
                         <Accordion type='single' collapsible className="w-full">
                             {Object.entries(engineerBins).map(([engineer, statuses]: any) => {
                                 const totalUnits = Object.values(statuses).reduce((sum: number, stat: any) => sum + stat?.units_count, 0);
@@ -127,7 +128,7 @@ const TechniciansBin = ({ user, isLoggedIn, loading }: { user: TUser | null, isL
                                                         <p className='font-medium'>Status: {status}</p>
                                                         <p>Total Units: {data?.units_count}</p>
                                                         <p>Ticket Numbers:</p>
-                                                        <ol className=' pl-4'>
+                                                        {/* <ol className=' pl-4'>
                                                             {data?.tickets.map((ticket: any, i: any) => (
                                                                 <li key={ticket.id} className="mb-2">
                                                                     <span className='font-medium'>{ticket?.ticket_number}</span>
@@ -139,6 +140,21 @@ const TechniciansBin = ({ user, isLoggedIn, loading }: { user: TUser | null, isL
                                                                     <Button variant='outline' className="text-xs ml-2" onClick={() => openFullScreenPopup(`/departments/hhp/technicians/${encodeURIComponent(ticket.id)}`)}>View</Button>
                                                                 </li>
                                                             ))}
+                                                        </ol> */}
+                                                        <ol className=' pl-4'>
+                                                            {data?.tickets
+                                                                .sort((a: any, b: any) => new Date(a.date_booked).getTime() - new Date(b.date_booked).getTime()) // Sort tickets by date_booked (oldest first)
+                                                                .map((ticket: any, i: any) => (
+                                                                    <li key={ticket.id} className="mb-2">
+                                                                        <span className='font-medium'>{ticket?.ticket_number}</span>
+                                                                        <span className='font-medium mx-1'>({ticket?.warranty})</span>
+                                                                        ({moment(ticket.date_booked).format('YYYY-MM-DD')})
+                                                                        {ticket.difference.includes('hours') || ticket.difference.includes('minutes')
+                                                                            ? ' Few hours ago'
+                                                                            : ` ${ticket.difference} ago`}
+                                                                        <Button variant='outline' className="text-xs ml-2" onClick={() => openFullScreenPopup(`/departments/hhp/technicians/${encodeURIComponent(ticket.id)}`)}>View</Button>
+                                                                    </li>
+                                                                ))}
                                                         </ol>
                                                     </div>
                                                 ))}

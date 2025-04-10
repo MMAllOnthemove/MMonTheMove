@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.35] - 2025-04-10
+
+### Added
+
+-   sort engineer bins by date
+
+### Fixed
+
+-   qc not updating properly
+-   socket io not showing connection on localhost
+-   logout not clearing both access and refresh, only refresh which caused socket io connetion error
+-   not adding the first comment with the initial issue locally
+-   changing warranty in create ticket not setting proper value (users will have to select manually so we can accomodate the repairshopr api)
+
 ## [0.1.34] - 2025-04-08
 
 ### Added

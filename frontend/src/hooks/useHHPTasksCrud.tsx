@@ -108,7 +108,7 @@ export const useHHPTasksCrud = () => {
             setHHPTasksLoading(false);
         }
     };
-    
+
     const addTask = async (values: TAddTask) => {
         setHHPAddTaskLoading(true)
         setHHPAddTaskErrors({})
@@ -126,7 +126,6 @@ export const useHHPTasksCrud = () => {
             return response;
             // toast.success(`${data?.message}`);
         } catch (error: any) {
-            console.error("addTask error", error);
             if (error?.response?.data?.message) {
                 toast.error(error.response.data.message);
             } else if (error?.response?.data?.errors) {
@@ -185,7 +184,6 @@ export const useHHPTasksCrud = () => {
             setHHPTasks((prev: any) =>
                 prev.map((task: any) => (task?.id === taskId ? data.task : task))
             );
-
             // 🔴 Emit task update event
             socket.emit("updateTask", data?.task);
         } catch (error: any) {
@@ -214,7 +212,6 @@ export const useHHPTasksCrud = () => {
             setHHPTasks((prev: any) => prev.filter((task: any) => task.id !== taskId));
             // toast.success(`Ticket: ${response?.data?.task?.ticket_number} has been deleted`, { position: 'bottom-right' });
         } catch (error: any) {
-            console.error("deleteTask error", error);
             if (error?.response.data?.message) {
                 toast.error(`${error?.response.data?.message}`);
             }

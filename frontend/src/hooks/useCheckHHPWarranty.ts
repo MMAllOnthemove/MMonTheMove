@@ -17,6 +17,7 @@ const useCheckWarranty = (
     const [selectedWarranty, setSelectedWarranty] = useState("");
     const [LPDate, setLPDate] = useState("");
     const [PartsDate, setPartsDate] = useState("");
+
     useEffect(() => {
         const checkWarranty = async () => {
             if (!modelNumber || !serialNumber || !imei) return;
@@ -60,34 +61,36 @@ const useCheckWarranty = (
                     setWarranty(warranty_type);
                     setLPDate(data?.Return?.EvNewLaborWtyDate);
                     setPartsDate(data?.Return?.EvNewPartsWtyDate);
-                    if (data?.Return?.EvWtyType === "LP") {
-                        setTicketTypeId("21877");
-                        setWarrantyCode("75130");
-                        setLocalWarranty(() => {
-                            return "IW";
-                        });
-                    } else if (data?.Return?.EvWtyType === "OW") {
-                        setTicketTypeId("21878");
-                        setWarrantyCode("69477");
-                        setLocalWarranty(() => {
-                            return "OOW";
-                        });
-                    }
+                    // if (data?.Return?.EvWtyType === "LP") {
+                    //     setTicketTypeId("21877");
+                    //     setWarrantyCode("75130");
+                    //     setLocalWarranty(() => {
+                    //         return "IW";
+                    //     });
+                    // } else if (data?.Return?.EvWtyType === "OW") {
+                    //     setTicketTypeId("21878");
+                    //     setWarrantyCode("69477");
+                    //     setLocalWarranty(() => {
+                    //         return "OOW";
+                    //     });
+                    // }
                 }
             } catch (error) {
                 if (process.env.NODE_ENV !== "production")
                     console.error("check warranty error", error);
             }
         };
-
         checkWarranty();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [imei, modelNumber, serialNumber, localWarranty]);
 
     const handleWarrantyChange = (event: any) => {
         setSelectedWarranty(event);
         // Update other state variables based on the selected warranty
         if (event === "IW") {
-            setTicketTypeIdManually("21877");
+            setTicketTypeIdManually(() => {
+                return "21877";
+            });
             setWarrantyCode("75130");
             setLocalWarranty(() => {
                 return "IW";

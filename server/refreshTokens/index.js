@@ -1,8 +1,5 @@
-import bcrypt from "bcrypt";
-import { pool } from "../db.js";
 import "dotenv/config";
 import { generateAccessToken } from "../utils/token_generate.js";
-import { refreshTokens } from "../utils/refresh_tokens.js";
 
 export const RefreshToken = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;

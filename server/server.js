@@ -44,15 +44,16 @@ const { router: dtvFiles } = dtvhaFiles;
 io.use((socket, next) => {
     const token = socket.handshake.headers.cookie?.split("=")[1]; // Extract token from cookies
     if (!token) return next(new Error("Authentication error"));
-
     const user = verifyJwtToken(token);
     if (!user) return next(new Error("Invalid token"));
 
     socket.userId = user.user_unique_id; // Attach user info to the socket
+    console.log(socket.userId);
     next();
 });
 
 io.on("connection", (socket) => {
+    console.log(`✅ A user connected: ${socket.userId}`);
     // Broadcast when a new task is added
     socket.on("addTask", (task) => {
         io.emit("addTask", task); // Send to all clients

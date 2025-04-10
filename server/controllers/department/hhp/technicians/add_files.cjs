@@ -38,15 +38,13 @@ const fileUploadSchema = yup.object().shape({
         ),
 });
 
-const sftpClient = new SftpClient();
-
 const uploadTechnicianFiles = async (req, res) => {
+    const sftpClient = new SftpClient();
     try {
         const { task_id, ticket_number, created_at } = req.body;
         if (!req.files || req.files.length === 0) {
             return res.status(400).json({ error: "No files uploaded" });
         }
-
         await fileUploadSchema.validate({ files: req.files });
 
         if (!sftpClient.sftp) {

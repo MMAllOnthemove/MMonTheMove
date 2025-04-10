@@ -103,6 +103,7 @@ const AddHHPTask = async (req, res) => {
             await appLogs("INSERT", job_added_by, req.body);
             // io.emit("addTask", rows[0]); // Notify clients about task addition
             await emitBinStatsUpdate(); // Call bin stats update function
+            console.log("returned rows on create ticket", fetchResult.rows[0]);
             return res.status(201).json({
                 message: "HHP task created",
                 task: fetchResult.rows[0],

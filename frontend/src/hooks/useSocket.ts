@@ -10,6 +10,7 @@ const useSocket = () => {
         };
 
         const handleDisconnect = (reason: any) => {
+            console.log("disconnect reason", reason);
             setIsConnected(false);
         };
 
@@ -20,6 +21,7 @@ const useSocket = () => {
         // });
         // Ensures socket reconnects on page refresh
         if (!socket.connected) {
+            console.log("Connecting socket...");
             socket.connect();
         }
 

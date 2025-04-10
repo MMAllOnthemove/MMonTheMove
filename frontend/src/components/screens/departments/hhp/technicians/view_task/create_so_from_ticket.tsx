@@ -25,6 +25,7 @@ type TCreateSOFromTicket = {
 }
 
 const CreateSOFromTicket = ({ faultProp, modelProp, serial_numberProp, imeiProp, setOpenCreateSOModal, data, ticket_number, task_id, repairshopr_job_id }: TCreateSOFromTicket) => {
+
     const { addServiceOrder, addServiceOrderLoading } = useCreateServiceOrder()
     const { hhpTasks, fetchTasks, updateHHPTaskLoading, updateTask, deleteTask, updateTaskSO, updateHHPTaskSOLoading } = useHHPTasksCrud()
     const { user, isLoggedIn, loading } = useUserLoggedIn()
@@ -162,6 +163,7 @@ const CreateSOFromTicket = ({ faultProp, modelProp, serial_numberProp, imeiProp,
         const payload = {
             service_order: result?.Return?.EvSvcOrderNo, updated_by: user?.email, updated_at, ticket_number
         }
+
         const addCommentLocallyPayload = {
             "task_id": task_id,
             "comment": '*The created service order ' + result?.Return?.EvSvcOrderNo,
@@ -181,10 +183,6 @@ const CreateSOFromTicket = ({ faultProp, modelProp, serial_numberProp, imeiProp,
         await updateTaskSO(ticket_number, payload)
         await updateRepairTicketComment(repairshopr_job_id, commentPayload)
         await addCommentLocally(addCommentLocallyPayload)
-
-        // setNewServiceOrder(result?.Return?.EvSvcOrderNo);
-
-        // setOpenModal(true)
         setModel("")
         setSerialNumber("")
         setIMEI("")

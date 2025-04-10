@@ -1,3 +1,4 @@
+import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useState } from "react";
 
@@ -16,7 +17,8 @@ const useLogoutUser = () => {
                 }
             );
 
-            if (res.status === 204) {
+            if (res.status === 200) {
+                toast.success(res.data?.message);
                 window.location.reload();
             }
         } catch (error) {

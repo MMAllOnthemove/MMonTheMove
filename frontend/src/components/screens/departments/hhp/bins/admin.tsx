@@ -32,7 +32,8 @@ const AdminsBin = ({ user, isLoggedIn, loading }: { user: TUser | null, isLogged
         "Assigned to Tech",
         "New",
         "In Progress",
-        "Parts Request 1st Approval"
+        "Parts Request 1st Approval",
+        "Waiting for Parts",
     ]);
 
     const hhpTechs = engineersList?.filter((x) => x.department === 'HHP')
@@ -113,7 +114,7 @@ const AdminsBin = ({ user, isLoggedIn, loading }: { user: TUser | null, isLogged
                     <>
 
 
-                        <p className="text-sm text-sky-500 text-center font-medium">Based on New, Assigned, In Progress, Parts request tickets</p>
+                        <p className="text-sm text-sky-500 text-center font-medium">Based on New, Assigned, In Progress, Parts request and Waiting for Parts tickets</p>
                         <Accordion type='single' collapsible className="w-full">
                             {Object.entries(engineerBins).map(([engineer, statuses]: any) => {
                                 const totalUnits = Object.values(statuses).reduce((sum: number, stat: any) => sum + stat?.units_count, 0);
