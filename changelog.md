@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.36] - 2025-04-11
+
+### Added
+
+-   add column repairshopr_asset_id text
+-   the mobile file uploader app is fully functional
+-   repairshopr_asset_id column in db
+-   store asset id from rs so we are able to edit/add assets
+-   edit assets in ticket, locally and on rs
+
+### Fixed
+
+- include issue type when creating ticket, the logic for creating, this hides submit button until all necessary fields are selected
+- Parts issued in engineer bins instead of Waiting for Parts
+
 ## [0.1.35] - 2025-04-10
 
 ### Added

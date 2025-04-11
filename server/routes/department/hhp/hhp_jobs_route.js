@@ -13,10 +13,12 @@ import { UpdateTask } from "../../../controllers/department/hhp/technicians/upda
 import { limiter } from "../../../middleware/rateLimiter.js";
 import { authenticateToken } from "../../../middleware/verify.js";
 import { authenticateRole } from "../../../middleware/verify_role.js";
+import { updateAssets } from "../../../controllers/department/hhp/technicians/update_assets.js";
 const router = express.Router();
 
 router.post("/", limiter, authenticateToken, AddHHPTask);
 router.patch("/assess/:id", limiter, authenticateToken, UpdateAssessmentDate);
+router.put("/assets/:id", limiter, authenticateToken, updateAssets);
 
 router.get("/", authenticateToken, GetAllTasks);
 router.get("/:id", authenticateToken, GetTaskById);
@@ -31,4 +33,3 @@ router.patch("/so/:id", authenticateToken, UpdateSOAfterBooking);
 router.delete("/:id", authenticateRole(["manager"]), deleteHHPTask);
 
 export { router };
-

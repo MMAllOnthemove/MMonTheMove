@@ -81,7 +81,7 @@ const BookFromSOScreen = () => {
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setADH(e.target.checked ? 'ADH' : 'IW');
     };
-    const isFormValid = firstname && lastname && fault && itemCondition && requires_backup && imei && serialNumber && model
+    const isFormValid = firstname && lastname && fault && itemCondition && requires_backup && imei && serialNumber && model && issue_type
     const hhp_issue_types = assetTypes.filter(asset => asset.value.includes("HHP"));
     const handleGetSOInfo = async (serviceOrder: string) => {
         if (!serviceOrder) return
@@ -305,11 +305,12 @@ const BookFromSOScreen = () => {
 
 
 
-        await sendTicketDataToOurDB(
+        const task_id_from_db =  await sendTicketDataToOurDB(
             data?.ticket?.number,
             data?.ticket?.id,
             data?.ticket?.customer_id,
-            data?.ticket?.ticket_type_id
+            data?.ticket?.ticket_type_id,
+            data?.ticket?.asset_ids[0],
         );
         // Step 7: Add task for booking agents
         const bookingAgentsStatPayload = {
@@ -322,7 +323,7 @@ const BookFromSOScreen = () => {
         };
         await addAgentTask(bookingAgentsStatPayload); // adds it to the booking agent table, for reporting
         const addCommentLocallyPayload = {
-            "task_id": task_id,
+            "task_id": `${task_id_from_db}`,  // Use the is id from our server directly
             "comment": `*${fault}`,
             "created_at": created_at,
             "created_by": user?.full_name,
@@ -332,7 +333,7 @@ const BookFromSOScreen = () => {
         openModal() // open modal for attachments
 
     }
-    const sendTicketDataToOurDB = async (ticketNumber: string | number, ticketId: string | number, repairshoprCustomerId: string | number, ticket_type_id: number | string) => {
+    const sendTicketDataToOurDB = async (ticketNumber: string | number, ticketId: string | number, repairshoprCustomerId: string | number, ticket_type_id: number | string, repairshopr_asset_id: string | number) => {
         const created_at = datetimestamp;
         const date_booked = datetimestamp; // seeing as the task will be added same time
         // initially a unit does not have a service_order_no
@@ -382,10 +383,13 @@ const BookFromSOScreen = () => {
             "requires_backup": requires_backup,
             "rs_warranty": warrantyCode,
             "ticket_type_id": ticket_type_id,
+            "repairshopr_asset_id": repairshopr_asset_id,
             "created_by": user?.full_name
         }
         const res: any = await addTask(payload)
-        setTaskId(res?.data?.id)
+        const id = res?.data?.task?.id
+        if (res?.data?.task) setTaskId(id)
+        return id; // <-- return the ID here
 
     }
     const handleHHPFiles = (event: any) => {

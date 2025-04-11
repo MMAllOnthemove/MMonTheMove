@@ -4,6 +4,11 @@ import { THHPTasks } from '@/lib/types';
 import toast from 'react-hot-toast';
 import socket from '@/socket';
 
+type TUpdateAssets = {
+    model: string;
+    serial_number: string;
+    imei: string;
+}
 type TUpdateValues = {
     id?: string | number;
     device_name?: string;
@@ -85,6 +90,7 @@ export const useHHPTasksCrud = () => {
     const [updateHHPTaskLoading, setUpdateHHPTaskLoading] = useState(false); // Loading state
     const [updateHHPTaskSOLoading, setUpdateHHPTaskSOLoading] = useState(false); // Loading state
     const [deleteHHPTaskLoading, setDeleteHHPTaskLoading] = useState(false); // Loading state
+    const [updateAssetsLoading, setUpdateAssetsLoading] = useState(false)
 
     const fetchTasks = async () => {
         try {
@@ -194,7 +200,32 @@ export const useHHPTasksCrud = () => {
         }
 
     };
+    const updateAssets = async (taskId: string | number | undefined,
+        values: TUpdateAssets) => {
+        if (!taskId) return;
+        setUpdateAssetsLoading(true);
+        try {
+            const { data } = await axios.put(
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/assets/` +
+                taskId,
+                values,
+                {
+                    withCredentials: true,
+                }
+            );
+            setHHPTasks((prev: any) =>
+                prev.map((task: any) => (task.id === taskId ? data.task : task))
+            );
 
+            // 🔴 Emit task update event
+            socket.emit("updateTask", data?.task);
+        } catch (error: any) {
+            if (error) toast.error(error?.response?.data?.error);
+        } finally {
+            setUpdateAssetsLoading(false)
+        }
+
+    };
     const deleteTask = async (taskId: string, userId: string | undefined) => {
         if (!taskId) return;
         setDeleteHHPTaskLoading(true)
@@ -246,5 +277,5 @@ export const useHHPTasksCrud = () => {
             socket.off("deleteTask");
         };
     }, []);
-    return { hhpTasks, hhpTasksLoading, fetchTasks, hhpAddTaskLoading, addTask, hhpAddTaskErrors, updateHHPTaskLoading, updateTask, updateTaskSO, updateHHPTaskSOLoading, deleteHHPTaskLoading, deleteTask };
+    return { hhpTasks, hhpTasksLoading, updateAssets, updateAssetsLoading, fetchTasks, hhpAddTaskLoading, addTask, hhpAddTaskErrors, updateHHPTaskLoading, updateTask, updateTaskSO, updateHHPTaskSOLoading, deleteHHPTaskLoading, deleteTask };
 };

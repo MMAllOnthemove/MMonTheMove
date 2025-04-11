@@ -8,17 +8,12 @@ import {
 import { Button } from '@/components/ui/button'
 import useFetchEngineer from '@/hooks/useFetchEngineers'
 import useGetEngineerBins from '@/hooks/useGetEngineerBins'
-import useUserLoggedIn from '@/hooks/useGetUser'
 import { useHHPTasksCrud } from '@/hooks/useHHPTasksCrud'
 import useSocket from '@/hooks/useSocket'
 import openFullScreenPopup from '@/lib/openFullScreenPopup'
 import { TUser } from "@/lib/types"
 import moment from 'moment'
-import dynamic from 'next/dynamic'
-const Sidebar = dynamic(() => import('@/components/sidebar/page'))
-const LoadingScreen = dynamic(() => import('@/components/loading_screen/page'))
-const PageTitle = dynamic(() => import('@/components/PageTitle/page'))
-const NotLoggedInScreen = dynamic(() => import('@/components/not_logged_in/page'))
+
 
 const TechniciansBin = ({ user, isLoggedIn, loading }: { user: TUser | null, isLoggedIn: boolean | null, loading: boolean | null }) => {
 
@@ -32,7 +27,7 @@ const TechniciansBin = ({ user, isLoggedIn, loading }: { user: TUser | null, isL
         "New",
         "In Progress",
         "Parts Request 1st Approval",
-        "Waiting for Parts"
+        "Parts Issued"
     ]);
 
     const hhpTechs = engineersList?.filter((x) => x.department === 'HHP')
@@ -102,7 +97,6 @@ const TechniciansBin = ({ user, isLoggedIn, loading }: { user: TUser | null, isL
     const engineerBins = calculateEngineerBins(hhpTasks);
 
 
-    // const calculatePartsToBeOrdered = [...engineerBinList]?.filter((x) => x?.unit_status === 'Parts to be ordered')
 
     if (Object.entries(engineerBins)?.length === 0) return <p className="text-center">No new, in progress, assigned, parts request, jobs for you</p>
     return (
@@ -112,7 +106,7 @@ const TechniciansBin = ({ user, isLoggedIn, loading }: { user: TUser | null, isL
                 hhpTasksLoading ? <p className="text-center">Loading stats</p> :
 
                     <>
-                        <h2 className="text-center font-medium">Your open jobs (Based on New, Assigned, In Progress, Parts request and Waiting for Parts tickets)</h2>
+                        <h2 className="text-center font-medium">Your open jobs (Based on New, Assigned, In Progress, Parts request and Parts Issued tickets)</h2>
                         <Accordion type='single' collapsible className="w-full">
                             {Object.entries(engineerBins).map(([engineer, statuses]: any) => {
                                 const totalUnits = Object.values(statuses).reduce((sum: number, stat: any) => sum + stat?.units_count, 0);

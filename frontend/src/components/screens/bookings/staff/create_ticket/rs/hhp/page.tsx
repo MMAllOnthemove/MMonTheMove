@@ -69,7 +69,7 @@ const HHP = (customerProps: string | string[] | any) => {
     const [openExtraFault, setOpenExtraFault] = useState(false)
     const [openFaultList, setOpenFaultList] = useState(false)
 
-    const isFormValid = itemCondition && requires_backup && IMEI && serialNumber && modelNumber
+    const isFormValid = itemCondition && requires_backup && IMEI && serialNumber && modelNumber && issue_type
 
     // these will be send to our db as soon as a ticket is booked
     // some of the values will be stored in state from the result
@@ -164,7 +164,8 @@ const HHP = (customerProps: string | string[] | any) => {
             data?.ticket?.number,
             data?.ticket?.id,
             data?.ticket?.customer_id,
-            data?.ticket?.ticket_type_id
+            data?.ticket?.ticket_type_id,
+            data?.ticket?.asset_ids[0],
         );
         const addCommentLocallyPayload = {
             "task_id": `${task_id_from_db}`,  // Use the is id from our server directly
@@ -180,7 +181,7 @@ const HHP = (customerProps: string | string[] | any) => {
         await addAgentTask(bookingAgentsStatPayload); // adds it to the booking agent table, for reporting
         setOpenDialog(true)
     }
-    const sendTicketDataToOurDB = async (ticketNumber: string | number, ticketId: string | number, repairshoprCustomerId: string | number, ticket_type_id: number | string) => {
+    const sendTicketDataToOurDB = async (ticketNumber: string | number, ticketId: string | number, repairshoprCustomerId: string | number, ticket_type_id: number | string, repairshopr_asset_id: string | number) => {
         const created_at = datetimestamp;
         const date_booked = datetimestamp; // seeing as the task will be added same time
         // initially a unit does not have a service_order_no
@@ -230,6 +231,7 @@ const HHP = (customerProps: string | string[] | any) => {
             "requires_backup": requires_backup,
             "rs_warranty": warrantyCode,
             "ticket_type_id": ticket_type_id,
+            "repairshopr_asset_id": repairshopr_asset_id,
             "created_by": user?.full_name
         }
         const res: any = await addTask(payload)

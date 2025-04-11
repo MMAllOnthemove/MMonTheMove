@@ -136,6 +136,7 @@ create table technician_tasks (
     repeat_repair text,
     units_assessed boolean,
     qc_comment text,
+    repairshopr_asset_id text,
     parts_ordered boolean,
     parts_requested boolean,
     parts_requested_date text,

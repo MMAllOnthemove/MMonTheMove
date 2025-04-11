@@ -33,7 +33,7 @@ const TicketUpdaterScreen: React.FC = () => {
             );
 
             // const filtered = tickets?.filter((x) => x.ticket_number == '1269029 ')
-            const filtered = tickets?.filter((x: any) => moment(x.created_at).format("YYYY-MM-DD") === moment(datetimestamp).format("YYYY-MM-DD"))
+            const filtered = tickets?.filter((x: any) => x.repairshopr_asset_id === '' || x.repairshopr_asset_id === Boolean)
             // const filtered = tickets?.filter((x: any) => x.stores === 'HHP (Robtronics)' && x.unit_status !== 'Resolved')
             // const filtered = tickets?.filter((x: any) => x.created_by === null)
 
@@ -55,7 +55,7 @@ const TicketUpdaterScreen: React.FC = () => {
                 // }
 
                 const secondSystemData = await axios.get(
-                    `https://allelectronics.repairshopr.com/api/v1/tickets?query=${ticket.ticket_number}`,
+                    `https://allelectronics.repairshopr.com/api/v1/tickets/${ticket.repairshopr_job_id}`,
                     {
                         headers: {
                             "Content-Type": "application/json",
@@ -64,7 +64,8 @@ const TicketUpdaterScreen: React.FC = () => {
                     }
                 );
 
-                await processAndUpdateTicket(ticket, secondSystemData.data?.tickets[0]);
+                // await processAndUpdateTicket(ticket, secondSystemData.data?.tickets[0]);
+                await processAndUpdateTicket(ticket, secondSystemData.data?.ticket);
                 setProcessedTickets((prevSet) => new Set(prevSet).add(ticket.ticket_number));
                 await new Promise((resolve) => setTimeout(resolve, 1000)); // 1-second delay
             }
@@ -85,8 +86,9 @@ const TicketUpdaterScreen: React.FC = () => {
             const job_repair_no = secondSystemTicket.properties["Job Repair No.:"]?.trim();
             const accessories_and_condition = secondSystemTicket.properties["Item Condition "]?.trim();
             const requires_backup = secondSystemTicket.properties["Backup Requires"]?.trim();
-            const rs_warranty = secondSystemTicket.properties["Warranty"]?.trim();
-            const ticket_type_id = secondSystemTicket.ticket_type_id
+            const rs_warranty = secondSystemTicket.properties["Warranty "]?.trim();
+            const repairshopr_asset_id = secondSystemTicket.asset_ids[0]
+            // const ticket_type_id = secondSystemTicket.ticket_type_id // not there if we query ticket by id on when querying by query
 
             // Extract comments from the second system
             const newComments = secondSystemTicket.comments
@@ -204,7 +206,8 @@ const TicketUpdaterScreen: React.FC = () => {
                 accessories_and_condition: accessories_and_condition,
                 requires_backup: requires_backup,
                 rs_warranty: rs_warranty,
-                ticket_type_id: ticket_type_id,
+                repairshopr_asset_id: repairshopr_asset_id,
+                // ticket_type_id: ticket_type_id,
                 created_by: secondSystemTicket.comments.filter((x: string | undefined | any) => x.subject === "Initial Issue").map((x: string | undefined | any) => x.tech)[0]
             };
 
@@ -229,7 +232,8 @@ const TicketUpdaterScreen: React.FC = () => {
                 ticket.requires_backup != changes.requires_backup ||
                 ticket.rs_warranty != changes.rs_warranty ||
                 ticket.created_by !== changes.created_by ||
-                ticket_type_id || ticket.parts_ordered !== changes.parts_ordered || ticket.parts_ordered_date !== changes.parts_ordered_date || ticket.warranty !== changes.warranty || ticket.assigned_date !== changes.assigned_date
+                ticket.repairshopr_asset_id !== changes.repairshopr_asset_id ||
+                ticket.parts_ordered !== changes.parts_ordered || ticket.parts_ordered_date !== changes.parts_ordered_date || ticket.warranty !== changes.warranty || ticket.assigned_date !== changes.assigned_date
 
             ) {
                 await updateHHPTask(ticket.id, changes);

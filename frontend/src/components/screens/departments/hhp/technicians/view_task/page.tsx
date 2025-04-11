@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import useQCToTable from '@/hooks/addQCToTable';
 import useRepairshoprFile from '@/hooks/useAddRepairshoprFile';
 import useAddCommentsLocally from '@/hooks/useCommentsLocally';
 import useFetchEngineer from '@/hooks/useFetchEngineers';
@@ -38,6 +37,14 @@ import Parts from '../parts/page';
 import QC from '../qc/page';
 import CreateSOFromTicket from './create_so_from_ticket';
 import TicketInvoices from './task_invoices';
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from "@/components/ui/tabs"
+import EditAssets from './edit_assets';
+
 
 const BackToTop = dynamic(() =>
     import('@/components/toTopButton/page')
@@ -57,25 +64,29 @@ const PageTitle = dynamic(() =>
 const Sidebar = dynamic(() =>
     import('@/components/sidebar/page')
 )
+
+
+type TAssets = {
+    asset_id: string | number,
+    model: string,
+    serial_number: string,
+    imei: string,
+}
+
 const ViewHHPTaskScreen = () => {
     const params = useParams(); // Fetch URL parameters
     const { id } = params;
     const { socket, isConnected } = useSocket()
     const { user, isLoggedIn, loading } = useUserLoggedIn()
-    const { hhpTasks, fetchTasks, updateHHPTaskLoading, updateTask, deleteTask } = useHHPTasksCrud()
+    const { updateHHPTaskLoading, updateTask } = useHHPTasksCrud()
     const { hhpTask, refetch, hhpTaskLoading } = useFetchHHPTaskById(id ? decodeURIComponent(Array.isArray(id) ? id[0] : id) : null)
     const { commentsList, commentsListLoading, totalPages, currentPage, fetchComments } = useAddCommentsLocally(id)
-    const { addQCToTable } = useQCToTable()
-    const { getSOPartsInfo } = useIpaasSOPartsInfo()
     const [qc_comment, setQCFailReason] = useState('')
     const [qc_complete, setQCComplete] = useState<string>('')
     const [qc_extratext, setQCExtraText] = useState<string>('')
     const [qc_date, setQCCompleteDate] = useState<string | undefined>("")
-    const [qcFiles, setQCFiles] = useState<FileUpload[]>([]);
-    const [qcFilesUploading, setQCFilesUploading] = useState(false);
     const [completed_date, setUnitCompleteDate] = useState<string | undefined>("")
     const [unit_complete, setUnitComplete] = useState<boolean>(false)
-
     const [partsIssuedText, setIssuedExtraText] = useState("")
     const [issuedPartsLoading, setIssuedPartsLoading] = useState<boolean>(false);
     const [selectedIssuedParts, setSelectedIssuedParts] = useState<any>([]);
@@ -90,7 +101,6 @@ const ViewHHPTaskScreen = () => {
     const [compensation, setCompensation] = useState<CheckedState | undefined | any | any>()
     const [parts_ordered, setPartsOrdered] = useState<boolean | null>()
     const [submitPartsUpdateLoading, setSubmitPartsUpdateLoading] = useState(false)
-    const [openFilesModal, setOpenFilesModal] = useState(false)
     const [part_quantity, setPartQuantity] = useState<number | undefined>()
     interface FileUpload {
         file: File | any;
@@ -106,7 +116,7 @@ const ViewHHPTaskScreen = () => {
         addThisOldPart,
         updatePart, taskOldPartsList, taskOldPartsListLoading,
         updatePartLoading, deletePart, deletePartLoading, refetchPartsForThisTask, getOldPartsForThisTask } = useTaskParts(hhpTask?.id)
-
+    const { getSOPartsInfo } = useIpaasSOPartsInfo()
     const {
         attachmentsList,
         attachmentsListLoading,
@@ -158,6 +168,7 @@ const ViewHHPTaskScreen = () => {
 
 
     const [openCreateSOModal, setOpenCreateSOModal] = useState(false)
+    const [openCreateAssetModal, setOpenCreateAssetModal] = useState(false)
     const [viewInvoicesModal, setViewInvoicesModal] = useState(false)
 
 
@@ -168,9 +179,6 @@ const ViewHHPTaskScreen = () => {
     const [part_desc, setPartDesc] = useState("")
 
     // old parts
-
-    const [old_part_name, setPartOldName] = useState("")
-    const [old_part_desc, setPartOldDesc] = useState("")
     const [selectedOldParts, setSelectedOldParts] = useState<any>([]);
     const [oldPartsLoading, setOldPartsLoading] = useState<boolean>(false);
 
@@ -241,26 +249,12 @@ const ViewHHPTaskScreen = () => {
     }, [id, hhpTask])
 
 
-    const getRepairshoprPayload = () => ({
-        "user_id": repairshopr_id,
-        "status": unit_status,
-        "properties": {
-            "IMEI": imei,
-            "Warranty": rs_warranty,
-            "Warranty ": rs_warranty,
-            "Backup Requires": backup_requires_code,
-            "Backup Requires ": backup_requires_code,
-            "Item Condition": itemCondition,
-            "Item Condition ": itemCondition,
-            "Service Order No.": serviceOrder,
-            "Service Order No. ": serviceOrder,
-            "Special Requirement": additionalInfo,
-            "Special Requirement ": additionalInfo,
-            "Job Repair No.": repairNo,
-            "Job Repair No.:": repairNo,
-            "Location (BIN)": deviceLocation,
-        }
-    });
+
+    // open assets modal or edit
+
+
+
+
     // for the quote radio inputs
     const handleSelection = (value: boolean) => {
         if (value === true) {
@@ -485,62 +479,8 @@ const ViewHHPTaskScreen = () => {
             setOldPartsLoading(false); // Stop loading
         }
     }
-    const handleQCFiles = (event: any) => {
-        if (event.target.files) {
-            const selectedFiles = Array.from(event.target.files)?.map((file) => ({
-                file,
-                progress: 0,
-            }));
-            setQCFiles(selectedFiles);
-        }
 
-    };
-    // submit qc files to backend and repairshopr
-    const submitQCFiles = async () => {
-        setQCFilesUploading(true);
-        try {
-            const formData = new FormData();
-            const ticket_number = hhpTask?.ticket_number;
-            const task_id = hhpTask?.id;
-            const created_at = datetimestamp;
 
-            for (const fileObj of qcFiles) {
-                formData.append('files', fileObj.file);
-                // Append ticket_number once
-                formData.append('ticket_number', ticket_number);
-                formData.append('task_id', task_id);
-                formData.append('created_at', created_at);
-
-                const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/files/qc`, formData, {
-                    onUploadProgress: (progressEvent) => {
-                        const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total!);
-                        fileObj.progress = percent;
-                        setQCFiles([...qcFiles]);
-                    },
-                    withCredentials: true,
-                })
-                if (data) {
-                    toast.success(`${data?.message}`)
-                    const repairshopr_payload = {
-                        files: data.fileUrls.map((url: any) => ({
-                            url: url,
-                            filename: url.split('/').pop(), // Extract filename from URL
-                        })),
-                    };
-                    await addRepairTicketFile(hhpTask?.repairshopr_job_id, repairshopr_payload)
-                    setQCFiles([])
-                }
-                // setQCFilesUrls(data?.fileUrls)
-                setQCFilesUploading(false)
-            }
-        } catch (error: any) {
-            toast.error(error?.response?.data?.error);
-            setQCFilesUploading(false)
-            if (process.env.NODE_ENV !== "production") {
-                console.error("Error uploading qc images:", error);
-            }
-        }
-    }
     // Update the QC tab
     const handleQCSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
@@ -570,7 +510,7 @@ const ViewHHPTaskScreen = () => {
             qc_complete: qc_complete,
             engineer: engineer,
         }
-  
+
         const commentPayload: RepairshorTicketComment = {
             "subject": "Update",
             "tech": user?.full_name,
@@ -680,44 +620,6 @@ const ViewHHPTaskScreen = () => {
 
     };
 
-    const updateIssueType = async (e: any) => {
-        const selected = e;
-        setIssueType(e)
-        const problem_type_update = {
-            "user_id": repairshopr_id,
-            "status": unit_status,
-            "problem_type": selected,
-            "properties": {
-                "IMEI": imei,
-                "Warranty": rs_warranty,
-                "Warranty ": rs_warranty,
-                "Backup Requires": backup_requires_code,
-                "Backup Requires ": backup_requires_code,
-                "Item Condition": itemCondition,
-                "Item Condition ": itemCondition,
-                "Service Order No.": serviceOrder,
-                "Service Order No. ": serviceOrder,
-                "Special Requirement": additionalInfo,
-                "Special Requirement ": additionalInfo,
-                "Job Repair No.": repairNo,
-                "Job Repair No.:": repairNo,
-                "Location (BIN)": deviceLocation,
-                "ticket_type_id": ticket_type_id,
-            }
-        }
-        const id = hhpTask?.id;
-        const updated_at = datetimestamp;
-        const updatePayload = {
-            // This goes to our in house db
-            id, service_order_no: serviceOrder, accessories_and_condition: itemCondition, unit_status, updated_at, engineer, collected, stores: selected, collected_date, device_location: deviceLocation, job_repair_no: repairNo, ticket_number: hhpTask?.ticket_number, updated_by: user?.email
-        }
-        const changes = findChanges(hhpTask, updatePayload)
-        await updateRepairTicket(hhpTask?.repairshopr_job_id, problem_type_update);
-        if (Object.keys(changes).length > 0) {
-            await updateTask(id, changes)
-        }
-        refetch();
-    }
 
     const updateStatus = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selected = e.target.value;
@@ -1192,6 +1094,28 @@ const ViewHHPTaskScreen = () => {
                                 }
                             />
                         }
+                        {/* assets edit/create modal */}
+                        {
+                            openCreateAssetModal &&
+                            <Modal
+                                isVisible={openCreateAssetModal}
+                                onClose={() => setOpenCreateAssetModal(false)}
+                                title={hhpTask?.ticket_number}
+                                content={
+                                    <>
+                                        <Tabs defaultValue="edit_asset" className="w-full">
+                                            <TabsList>
+                                                <TabsTrigger value="edit_asset">Edit asset</TabsTrigger>
+                                                <TabsTrigger value="create_asset">Create asset</TabsTrigger>
+                                            </TabsList>
+                                            <TabsContent value="edit_asset"><EditAssets data={hhpTask} asset_id={hhpTask?.repairshopr_asset_id} customer_id={hhpTask?.repairshopr_customer_id} modelProp={hhpTask?.model} serial_numberProp={hhpTask?.serial_number} imeiProp={hhpTask?.imei} /></TabsContent>
+                                            <TabsContent value="create_asset">Coming soon.</TabsContent>
+                                        </Tabs>
+
+                                    </>
+                                }
+                            />
+                        }
 
 
                         {hhpTaskLoading ? <p className="text-center text-gray-800">Loading ticket info please wait...</p> :
@@ -1498,8 +1422,7 @@ const ViewHHPTaskScreen = () => {
                                                     <div className="flex justify-between items-center border-b pb-2">
                                                         <h4 className="scroll-m-20 text-lg font-semibold tracking-tight">Product information (Assets)</h4>
                                                         <div className="flex gap-3">
-                                                            <Button variant="outline" type="button" disabled>New</Button>
-                                                            <Button variant="outline" type="button" disabled>Add existing</Button>
+                                                            <Button variant="outline" type="button" onClick={() => setOpenCreateAssetModal(true)}>Edit or add asset</Button>
                                                         </div>
                                                     </div>
                                                     <div className='flex items-center gap-4 md:justify-between my-2'>
@@ -1577,51 +1500,10 @@ const ViewHHPTaskScreen = () => {
                                                 </div>
                                                 {/* Quality control */}
                                                 <div className="py-2 px-3">
-                                                    <div className="flex justify-between items-center border-b pb-2">
-                                                        <h4 className="scroll-m-20 text-lg font-semibold tracking-tight">Quality control</h4>
-                                                        <div className='flex gap-3 items-center'>
-                                                            {/* <Input type="file" accept="image/*,video/*, application/pdf" multiple className="border w-[auto]" /> */}
-                                                            <div className="flex items-center">
-                                                                <Button variant="outline"
-                                                                    type="button"
-                                                                    disabled={qcFilesUploading}
-                                                                    onClick={() => document.getElementById('qcfileUpload')?.click()}
-                                                                >
-                                                                    {qcFilesUploading ? 'Uploading..' : 'Upload'}
-                                                                </Button>
-                                                                <input
-                                                                    disabled={qcFilesUploading}
-                                                                    type="file"
-                                                                    id="qcfileUpload"
-                                                                    className="hidden"
-                                                                    multiple
-                                                                    onChange={handleQCFiles}
-                                                                />
-                                                            </div>
-                                                            {/* <Input type="file" accept="image/*,video/*, application/pdf" multiple className="my-3" onChange={handleHHPFiles} /> */}
-                                                            {
-                                                                qcFiles?.length > 0 ?
-                                                                    <Button type="button" onClick={submitQCFiles}>Submit</Button> : <Button variant="outline" type="button">View all</Button>
-                                                            }
+
+                                                    <h4 className="scroll-m-20 text-lg font-semibold tracking-tight">Quality control</h4>
 
 
-                                                        </div>
-                                                    </div>
-                                                    {/* files being uploaded */}
-                                                    <div className="mt-4">
-                                                        {qcFiles?.map((fileObj: any, index: any) => (
-                                                            <div key={index} className="mb-2 border p-2">
-                                                                <p className="font-medium text-sm">{fileObj.file.name}</p>
-                                                                <div className="w-full bg-gray-200 rounded h-2">
-                                                                    <div
-                                                                        className="bg-blue-500 h-2 rounded"
-                                                                        style={{ width: `${fileObj.progress}%` }}
-                                                                    />
-                                                                </div>
-                                                                <p className="text-xs text-gray-500">{fileObj.progress}%</p>
-                                                            </div>
-                                                        ))}
-                                                    </div>
                                                     <QC qc_extratext={qc_extratext} setQCExtraText={setQCExtraText} qcUpdateLoading={qcSubmitLoading} qc_fail_reasonProp={qc_comment} setQCFailReasonProp={(e) => setQCFailReason(e)} qc_completeProp={qc_complete} setQCCompleteProp={setQCComplete} setQCCompleteDateProp={setQCCompleteDate} setUnitCompleteDateProp={setUnitCompleteDate} setUnitCompleteProp={setUnitComplete} submitQC={handleQCSubmit} />
                                                 </div>
                                                 {/* Parts */}

@@ -228,12 +228,14 @@ export type TBookingAgentsDashboard = {
     total_tasks: number;
     in_warranty_count: string | null;
     out_of_warranty_count: string | null;
-    tickets: [{
-        ticket_number: string | number;
-        date_booked: string | null;
-        warranty: string | null
-    }];
-}
+    tickets: [
+        {
+            ticket_number: string | number;
+            date_booked: string | null;
+            warranty: string | null;
+        }
+    ];
+};
 export type TBookingAgentsTasksCount = {
     booking_agent?: string;
     createdBy?: string | undefined;
@@ -764,6 +766,7 @@ export type IHHPSingleTask = {
     parts_order_id: string | null | undefined;
     repairshopr_status: string;
     repairshopr_customer_id: number | null | undefined;
+    repairshopr_asset_id: string | number;
     gspn_status: string;
     quote_rejected_date?: string | null | undefined;
     quote_accepted_date?: string | null | undefined;
