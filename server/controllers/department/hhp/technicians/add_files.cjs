@@ -61,21 +61,13 @@ const uploadTechnicianFiles = async (req, res) => {
                 }
                 // web: file.originalName
                 // mobile: file.originalnrsame
-                const rawFileName =
-                    file.originalname ||
-                    file.originalName
-                        .replace(/[^a-zA-Z0-9.-]/g, "_")
-                        .toLowerCase();
-                const sanitizedFileName = rawFileName
-                    .replace(/[^a-zA-Z0-9.-]/g, "_")
-                    .toLowerCase();
-                // const sanitizedFileName = file.originalname
-                // .replace(/[^a-zA-Z0-9.-]/g, "_")
-                // .toLowerCase();
-                const uniqueFileName = `${ticket_number}-hhp-${
-                    index + 1
-                }-${sanitizedFileName}`;
-                const remotePath = `/var/www/uploads/hhp/${uniqueFileName}`;
+                const rawFileName = file.originalname || file.originalName;
+                const sanitizedFileName = rawFileName.replace(
+                    /[^a-zA-Z0-9.-]/g,
+                    "_"
+                );
+
+                const remotePath = `/var/www/uploads/hhp/${sanitizedFileName}`;
 
                 try {
                     // complress image before uploading
@@ -100,7 +92,7 @@ const uploadTechnicianFiles = async (req, res) => {
                         }
                     }
                     await sftpClient.put(fileBufferToUpload, remotePath);
-                    const fileUrl = `https://repair.mmallonthemove.co.za/files/hhp/${uniqueFileName}`;
+                    const fileUrl = `https://repair.mmallonthemove.co.za/files/hhp/${sanitizedFileName}`;
                     await pool.query(
                         "INSERT INTO technician_tasks_images (task_id, image_url, created_at) VALUES ($1, $2, $3)",
                         [task_id, fileUrl, created_at]

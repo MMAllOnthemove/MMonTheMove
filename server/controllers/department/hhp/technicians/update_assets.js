@@ -22,7 +22,6 @@ export const updateAssets = async (req, res) => {
             task: updatedTask,
         });
     } catch (error) {
-        console.log(error);
         return res.status(500).json({ error: "Could not update, try again" });
     }
 };

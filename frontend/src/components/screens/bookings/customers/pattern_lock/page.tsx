@@ -6,9 +6,7 @@ interface Point {
     y: number;
 }
 
-interface PatternLockProps {
-    imageUrl: string;
-}
+
 const PatternLockScreen = () => {
     const router = useRouter()
     const canvasRef = useRef<HTMLCanvasElement | null>(null);

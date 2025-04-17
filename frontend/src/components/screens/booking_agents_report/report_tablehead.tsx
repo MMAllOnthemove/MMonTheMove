@@ -1,22 +1,52 @@
 import React from 'react'
+import {
+    flexRender,
+    HeaderGroup,
+} from "@tanstack/react-table"
+type TTableHead = {
+    table: {
+        getHeaderGroups: () => HeaderGroup<any>[]
 
-const ReportTableHead = () => {
+    }
+}
+const ReportTableHead = ({ table }: TTableHead) => {
     return (
-        <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white text-xs uppercase font-medium">
-            <tr className="font-semibold">
-                <th className="px-4 py-3 cursor-pointer  font-semibold">
-                    Booking Agent
-                </th>
-                <th className="px-4 py-3 cursor-pointer  font-semibold">
-                    Tickets booked
-                </th>
-                <th className="px-4 py-3 cursor-pointer  font-semibold">
-                    IW
-                </th>
-                <th className="px-4 py-3 cursor-pointer  font-semibold">
-                    OW
-                </th>
-            </tr>
+        <thead className="sticky top-0 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] focus:bg-[#075985] text-white uppercase font-medium text-xs">
+            {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id} className="font-semibold">
+
+                    {headerGroup.headers.map((header) => {
+                        return (
+                            <th
+                                key={header.id}
+                                className="px-4 py-3 cursor-pointer font-semibold"
+                            >
+                                {header.isPlaceholder ? null : (
+                                    <div
+                                        {...{
+                                            className: header.column.getCanSort()
+                                                ? "cursor-pointer select-none"
+                                                : "",
+                                            onClick:
+                                                header.column.getToggleSortingHandler(),
+                                        }}
+                                    >
+                                        {flexRender(
+                                            header.column.columnDef.header,
+                                            header.getContext()
+                                        )}
+                                        {{
+                                            asc: " 👇",
+                                            desc: " 👆",
+                                        }[header.column.getIsSorted() as string] ??
+                                            null}
+                                    </div>
+                                )}
+                            </th>
+                        );
+                    })}
+                </tr>
+            ))}
         </thead>
     )
 }

@@ -45,11 +45,11 @@ import { Label } from '@/components/ui/label';
 const GSPNScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const { addServiceOrder, addServiceOrderLoading } = useCreateServiceOrder()
-    const { hhpTasks, fetchTasks, updateHHPTaskLoading, updateTask, deleteTask, updateTaskSO, updateHHPTaskSOLoading } = useHHPTasksCrud()
+    const {  updateTaskSO, updateHHPTaskSOLoading } = useHHPTasksCrud()
     const [step, setStep] = useState(1);
     const params = useParams()
     const { customer_email } = params;
-    const { singleCustomer, singleCustomerLoading, refetch } = useGetCustomerLocally(
+    const { singleCustomer } = useGetCustomerLocally(
         decodeURIComponent(Array.isArray(customer_email) ? customer_email[0] : customer_email)
     );
     const nextStep = () => {

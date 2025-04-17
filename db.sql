@@ -536,6 +536,7 @@ create table logs (
     operation text,
     changed_by text,
     created_at text,
+    ticket text,
     changes jsonb
 );
 

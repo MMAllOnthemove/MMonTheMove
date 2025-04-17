@@ -25,11 +25,10 @@ const TermsAndConditionsScreen = () => {
     const router = useRouter()
     const customer = customer_name ? decodeURIComponent(Array.isArray(customer_name) ? customer_name[0] : customer_name) : null
     const [rules, setRules] = useState<Rule[]>([]);
-    const [title, setTitle] = useState("MM ALL Electronics");
-    const [description, setDescription] = useState("Acknowledgement of assessment damages:");
+    const [title] = useState("MM ALL Electronics");
+    const [description] = useState("Acknowledgement of assessment damages:");
     const signatureCanvasRef = useRef<HTMLCanvasElement>(null);
     const isDrawingRef = useRef(false);
-    const [customerName, setCustomerName] = useState("");
     // Fetch rules from API
     useEffect(() => {
         if (assemblyTermsList?.length) {

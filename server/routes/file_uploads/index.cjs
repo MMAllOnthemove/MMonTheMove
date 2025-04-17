@@ -35,7 +35,7 @@ const ALLOWED_MIME_TYPES = [
     "application/pdf",
 ];
 
-// Multer file filter
+
 // Multer file filter
 const fileFilter = (req, file, cb) => {
     ALLOWED_MIME_TYPES.includes(file.mimetype)

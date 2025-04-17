@@ -105,7 +105,7 @@ const Sidebar = () => {
             </Sheet>
 
             <div className="w-full hidden md:flex justify-between items-center">
-                <Navbar isConnected={isConnected} />
+                <Navbar />
                 <div className="flex items-center gap-3">
                     <WifiIcon className={`h-4 w-4 ${isConnected ? 'text-green-500' : 'text-red-400'}`} />
                     <p className="font-medium text-xs text-gray-900">
@@ -120,7 +120,18 @@ const Sidebar = () => {
                             height={100}
                         />
                     </Link>
+                    <a
+                        href="/downloads/mmallelectronics_uploader.apk"
+                        download
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M7 10l5 5 5-5M12 15V3" />
+                        </svg>
+                    </a>
+
                 </div>
+
             </div >
         </div >
     );

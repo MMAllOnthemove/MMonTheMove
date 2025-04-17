@@ -42,6 +42,7 @@ const faults_hhp = [
         label: "No power",
     },
     { value: "Charging Port Damage", label: "Charging Port Damage" },
+    { value: "Forgot password", label: "Forgot password" },
     {
         value: "Wireless Charging Not Working",
         label: "Wireless Charging Not Working",

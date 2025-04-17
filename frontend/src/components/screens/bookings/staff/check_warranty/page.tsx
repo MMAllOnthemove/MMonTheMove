@@ -20,9 +20,6 @@ const LoadingScreen = dynamic(() =>
 const NotLoggedInScreen = dynamic(() =>
     import('@/components/not_logged_in/page'), { ssr: false }
 )
-const PageTitle = dynamic(() =>
-    import('@/components/PageTitle/page'), { ssr: false }
-)
 const Sidebar = dynamic(() =>
     import('@/components/sidebar/page'), { ssr: false }
 )
@@ -30,8 +27,7 @@ const CheckWarrantyScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
     const [model, setModel] = useState("")
     const [serialNumber, setSerialNumber] = useState("")
-    const { warranty, warrantyCode, ticketTypeId, localWarranty, LPDate,
-        PartsDate, } = useCheckWarranty(model, serialNumber)
+    const { warranty, LPDate, PartsDate } = useCheckWarranty(model, serialNumber)
 
     return (
 

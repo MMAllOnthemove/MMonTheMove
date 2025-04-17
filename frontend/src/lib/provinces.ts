@@ -1,12 +1,12 @@
 const provinces = [
-    { label: "Gauteng", value: "GP" },
-    { label: "KwaZulu-Natal", value: "KZN" },
-    { label: "Western Cape", value: "WC" },
     { label: "Eastern Cape", value: "EC" },
     { label: "Free State", value: "FS" },
+    { label: "Gauteng", value: "GP" },
+    { label: "KwaZulu-Natal", value: "KZN" },
     { label: "Limpopo", value: "LP" },
     { label: "Mpumalanga", value: "MP" },
-    { label: "Northern Cape", value: "NC" },
     { label: "North West", value: "NW" },
+    { label: "Northern Cape", value: "NC" },
+    { label: "Western Cape", value: "WC" },
 ];
 export default provinces;

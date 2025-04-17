@@ -89,7 +89,7 @@ const RepairshoprAssetScreen = () => {
 
             <div className="flex flex-col justify-center items-center h-screen bg-white border w-30">
                 <Sidebar />
-                <h4 className="text-3xl font-bold mb-2 text-center">Search asset</h4>
+                <h4 className="text-3xl font-bold mb-2 text-center text-gray-800">Search asset</h4>
                 <p className='tracking-tighter text-gray-500 md:text-lg'>Serial number</p>
                 <p className='tracking-tighter text-gray-500 text-sm mb-2'>{loadingAssets ? 'Searching...' : null}</p>
                 <div>
@@ -99,7 +99,7 @@ const RepairshoprAssetScreen = () => {
                         autoComplete='false'
                         type="text"
                         placeholder="Search..."
-                        className="w-full py-3 px-4 mb-2 border border-gray-300 rounded-lg focus:outline-none text-sm"
+                        className="w-full mb-2 placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none"
                     />
                 </div>
                 {
@@ -124,7 +124,7 @@ const RepairshoprAssetScreen = () => {
                                     </SelectContent>
                                 </Select>
 
-                                <Button type="button" onClick={storeAssetsLocally}>Add asset to ticket</Button>
+                                <Button type="button" className="text-sm text-gray-100 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] shadow-none border-none" onClick={storeAssetsLocally}>Add asset to ticket</Button>
                             </>
 
 
@@ -135,7 +135,7 @@ const RepairshoprAssetScreen = () => {
                 {searchAssets !== result[0]?.asset_serial || result[0]?.asset_serial === "" || searchAssets === "" ?
                     <>
                         <p className="my-2 text-sm font-medium text-slate-800">Nothing showing? click here to create asset</p>
-                        <Button type="button" onClick={() => setOpenModal(true)}>Create new asset</Button>
+                        <Button type="button" onClick={() => setOpenModal(true)} className="text-sm text-gray-100 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] shadow-none border-none">Create new asset</Button>
 
                         {
                             openModal &&
@@ -156,6 +156,7 @@ const RepairshoprAssetScreen = () => {
                                                 autoComplete='false'
                                                 type="text"
                                                 placeholder="Type IMEI"
+                                                className=" placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none"
                                             />
                                         </div>
                                         <div className='mb-1'>
@@ -165,6 +166,7 @@ const RepairshoprAssetScreen = () => {
                                                 autoComplete='false'
                                                 type="text"
                                                 placeholder="Type model number"
+                                                className=" placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none"
                                             />
                                         </div>
                                         <div className='mb-1'>
@@ -174,6 +176,7 @@ const RepairshoprAssetScreen = () => {
                                                 autoComplete='false'
                                                 type="text"
                                                 placeholder="Type serial number"
+                                                className=" placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none"
                                             />
                                         </div>
                                         <div className="mb-4">
@@ -194,7 +197,7 @@ const RepairshoprAssetScreen = () => {
                                                 </SelectContent>
                                             </Select>
                                         </div>
-                                        <Button type="button" onClick={createAssetsOnRS} disabled={createAssetLoading}>{createAssetLoading ? 'Creating...' : 'Create new asset'}</Button>
+                                            <Button type="button" className="text-sm text-gray-100 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] shadow-none border-none" onClick={createAssetsOnRS} disabled={createAssetLoading}>{createAssetLoading ? 'Creating...' : 'Create new asset'}</Button>
                                     </>
                                 </DialogContent>
                             </Dialog>

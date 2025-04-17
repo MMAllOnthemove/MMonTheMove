@@ -2,9 +2,7 @@ import "dotenv/config";
 import nodemailer from "nodemailer";
 import * as Yup from "yup";
 import { pool } from "../../db.js";
-import {
-    generateAccessToken
-} from "../../utils/token_generate.js";
+import { generateAccessToken } from "../../utils/token_generate.js";
 // Login route
 // authentication
 
@@ -17,18 +15,7 @@ const forgotPasswordSchema = Yup.object({
 });
 
 // Nodemailer setup (or use another email service)
-const transporter = nodemailer.createTransport({
-    host: `mail.mmallonthemove.co.za`,
-    port: 465,
-    secure: true, // true for port 465, false for other ports
-    auth: {
-        user: `noreply@mmallonthemove.co.za`,
-        pass: `hbegt`,
-    },
-    tls: {
-        rejectUnauthorized: false, // Set to false for development, or if you encounter certificate issues
-    },
-});
+const transporter = nodemailer.createTransport({});
 
 const ForgotPassword = async (req, res) => {
     try {
@@ -61,21 +48,7 @@ const ForgotPassword = async (req, res) => {
             }/reset-password?token=${resetToken}`;
 
             // Send the email using Nodemailer
-            await transporter.sendMail(
-                {
-                    to: email,
-                    subject: "Password Reset Request",
-                    html: `<p>You requested a password reset. Click <a href="${resetLink}">here</a> to reset your password.</p>`,
-                },
-                (error, info) => {
-                    if (error) {
-                        // console.error("Error sending email:", error);
-                    } else {
-                        // console.log("Email sent:", info.response);
-                    }
-                }
-            );
-
+         
             return res.json({
                 message: "Password reset link has been sent to your email",
             });

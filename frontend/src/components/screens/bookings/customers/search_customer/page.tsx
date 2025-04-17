@@ -23,13 +23,8 @@ import { capitalizeText } from '@/lib/capitalize';
 import { datetimestamp } from '@/lib/date_formats';
 import { Customer } from '@/lib/types';
 import axios from 'axios';
-import dynamic from 'next/dynamic';
-import { useRouter } from 'nextjs-toploader/app';
 import { useState } from 'react';
 import AlertDialogPassword from '../modal/page';
-const Sidebar = dynamic(() =>
-    import('@/components/sidebar/page'), { ssr: false }
-)
 
 const SearchCustomerRepairshoprCustomerScreen = () => {
     const [searchCustomer, setSearchCustomer] = useState("");
@@ -53,7 +48,6 @@ const SearchCustomerRepairshoprCustomerScreen = () => {
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState<any>(null); // Customer being edited
     const [isLoading, setIsLoading] = useState(false);
-    const router = useRouter()
 
     // router.prefetch("/assembly_terms")
     const checkIfCustomerWasHere = async () => {

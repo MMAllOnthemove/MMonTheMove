@@ -41,13 +41,65 @@ interface AddTaskErrors {
     imei?: string;
     serial_number?: string;
     status?: string;
+    stores?: string;
+    ticket_number?: string;
+    department?: string;
+    job_added_by?: string;
+    issue_type?: string;
+    repairshopr_job_id?: string;
+    repeat_repair?: string;
+    additional_info?: string;
+    requires_backup?: string;
+}
+interface AddTaskAutoErrors {
+    service_order_no?: string;
+    model?: string;
+    warranty?: string;
+    engineer?: string;
+    fault?: string;
+    imei?: string;
+    serial_number?: string;
+    unit_status?: string;
     ticket_number?: string;
     department?: string;
     job_added_by?: string;
     stores?: string;
-    repairshopr_job_id?: string;
-    repeat_repair?: string;
+    accessories_and_condition?: string;
+    issue_type?: string;
     additional_info?: string;
+    job_repair_no?: string;
+    date_booked?: string;
+    requires_backup?: string;
+}
+interface AddTaskFromGSPNErrors {
+    first_name?: string,
+    last_name?: string,
+    businessname?: string,
+    email?: string,
+    phone_number?: string,
+    home_number?: string,
+    address?: string,
+    address_2?: string,
+    city?: string,
+    state?: string,
+    service_order_no?: string;
+    model?: string;
+    warranty?: string;
+    engineer?: string;
+    fault?: string;
+    imei?: string;
+    serial_number?: string;
+    unit_status?: string;
+    ticket_number?: string;
+    department?: string;
+    job_added_by?: string;
+    stores?: string;
+    accessories_and_condition?: string;
+    issue_type?: string;
+    additional_info?: string;
+    job_repair_no?: string;
+    date_booked?: string;
+    requires_backup?: string;
 }
 type TAddTask = {
     id?: string;
@@ -81,12 +133,55 @@ type TAddTask = {
     repair_completed?: string | null;
     created_by?: string | null
 }
+type TAddTaskFromGSPN = {
+    // this will also take the customer object
+    first_name: string;
+    last_name: string;
+    business_name?: string;
+    email: string;
+    phone_number: string;
+    home_number: string;
+    office_number?: string;
+    address: string;
+    address_2?: string;
+    city: string;
+    state: string;
+    zip: string;
+    service_order_no: string | null;
+    model: string | null;
+    warranty: string,
+    imei: string,
+    serial_number: string,
+    unit_status: string,
+    department: string,
+    job_added_by: string | undefined,
+    stores: string,
+    accessories_and_condition: string,
+    additional_info: string,
+    job_repair_no: string,
+    requires_backup: string,
+    fault: string,
+    repeat_repair: string,
+    ticket_type_id: string,
+    adh: string,
+    password: string,
+    assetId: string,
+    repairshopr_customer_id?: string,// optional since initially it's not there, will be added on update
+    created_by: string | undefined,
+    warrantyCode: string,
+    issue_type: string,
+    repairshopr_id: number | undefined
+}
 
 export const useHHPTasksCrud = () => {
     const [hhpTasks, setHHPTasks] = useState<THHPTasks[] | any>([]);
     const [hhpTasksLoading, setHHPTasksLoading] = useState(false);
+    const [hhpTasksAutoLoading, setHHPTasksAutoLoading] = useState(false);
     const [hhpAddTaskLoading, setHHPAddTaskLoading] = useState(false);
+    const [hhpAddTaskAutoErrors, setHHPAddTaskAutoErrors] = useState<AddTaskAutoErrors>({});
     const [hhpAddTaskErrors, setHHPAddTaskErrors] = useState<AddTaskErrors>({});
+    const [hhpAddTaskFromGSPNLoading, setHHPAddTaskFromGSPNLoading] = useState(false);
+    const [hhpAddTaskFromGSPNErrors, setHHPAddTaskFromGSPNErrors] = useState<AddTaskFromGSPNErrors>({});
     const [updateHHPTaskLoading, setUpdateHHPTaskLoading] = useState(false); // Loading state
     const [updateHHPTaskSOLoading, setUpdateHHPTaskSOLoading] = useState(false); // Loading state
     const [deleteHHPTaskLoading, setDeleteHHPTaskLoading] = useState(false); // Loading state
@@ -120,7 +215,7 @@ export const useHHPTasksCrud = () => {
         setHHPAddTaskErrors({})
         try {
             const response = await axios.post(
-                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs`,
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/manually`,
                 values,
                 {
                     withCredentials: true,
@@ -145,6 +240,72 @@ export const useHHPTasksCrud = () => {
             }
         } finally {
             setHHPAddTaskLoading(false); // Stop loading
+        }
+    };
+    const addTaskAuto = async (values: TAddTask) => {
+        setHHPTasksAutoLoading(true)
+        setHHPAddTaskAutoErrors({})
+        try {
+            const response = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs`,
+                values,
+                {
+                    withCredentials: true,
+                }
+            );
+
+            setHHPTasks((prev: any) => [...prev, response?.data?.task]);// Append new task
+            // 🔴 Emit task creation event
+            socket.emit("addTask", response?.data?.task);
+            return response;
+            // toast.success(`${data?.message}`);
+        } catch (error: any) {
+            if (error?.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else if (error?.response?.data?.errors) {
+                const errorMessages = Object.entries(error.response.data.errors)
+                    .map(([key, entry]) => `${entry}`)
+                    .join('\n');
+                toast(errorMessages, {
+                    duration: 10000,
+                });
+                setHHPAddTaskAutoErrors(error.response.data.errors);
+            }
+        } finally {
+            setHHPTasksAutoLoading(false); // Stop loading
+        }
+    };
+    const addTaskFromSO = async (values: TAddTaskFromGSPN) => {
+        setHHPAddTaskFromGSPNLoading(true)
+        setHHPAddTaskFromGSPNErrors({})
+        try {
+            const response = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_SERVER_URL}/api/v1/hhp/jobs/from_so`,
+                values,
+                {
+                    withCredentials: true,
+                }
+            );
+
+            setHHPTasks((prev: any) => [...prev, response?.data?.task]);// Append new task
+            // 🔴 Emit task creation event
+            socket.emit("addTask", response?.data?.task);
+            return response;
+            // toast.success(`${data?.message}`);
+        } catch (error: any) {
+            if (error?.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else if (error?.response?.data?.errors) {
+                const errorMessages = Object.entries(error.response.data.errors)
+                    .map(([key, entry]) => `${entry}`)
+                    .join('\n');
+                toast(errorMessages, {
+                    duration: 10000,
+                });
+                setHHPAddTaskFromGSPNErrors(error.response.data.errors);
+            }
+        } finally {
+            setHHPAddTaskFromGSPNLoading(false); // Stop loading
         }
     };
 
@@ -277,5 +438,5 @@ export const useHHPTasksCrud = () => {
             socket.off("deleteTask");
         };
     }, []);
-    return { hhpTasks, hhpTasksLoading, updateAssets, updateAssetsLoading, fetchTasks, hhpAddTaskLoading, addTask, hhpAddTaskErrors, updateHHPTaskLoading, updateTask, updateTaskSO, updateHHPTaskSOLoading, deleteHHPTaskLoading, deleteTask };
+    return { hhpTasks, hhpTasksLoading, updateAssets, updateAssetsLoading, fetchTasks, hhpAddTaskLoading, addTask, hhpAddTaskErrors, addTaskAuto, hhpAddTaskAutoErrors, addTaskFromSO, hhpTasksAutoLoading, hhpAddTaskFromGSPNLoading, hhpAddTaskFromGSPNErrors, updateHHPTaskLoading, updateTask, updateTaskSO, updateHHPTaskSOLoading, deleteHHPTaskLoading, deleteTask };
 };

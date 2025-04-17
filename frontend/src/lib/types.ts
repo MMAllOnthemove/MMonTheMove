@@ -228,6 +228,10 @@ export type TBookingAgentsDashboard = {
     total_tasks: number;
     in_warranty_count: string | null;
     out_of_warranty_count: string | null;
+    dunoworx_in_warranty: string | null;
+    dunoworx_out_of_warranty: string | null;
+    dsv_in_warranty: string | null;
+    dsv_out_of_warranty: string | null;
     tickets: [
         {
             ticket_number: string | number;
@@ -242,12 +246,14 @@ export type TBookingAgentsTasksCount = {
     tasksCount: number;
 };
 export type TBookingAgentsTasksViewIndieList = {
-    id?: string;
-    unique_id?: string;
-    ticket_number?: string;
-    createdBy?: string;
-    booking_agent?: string;
-    created_at?: string;
+    original: {
+        id?: string;
+        unique_id?: string;
+        ticket_number?: string;
+        createdBy?: string;
+        booking_agent?: string;
+        created_at?: string;
+    };
 };
 export type TicketData = {
     tickets: [

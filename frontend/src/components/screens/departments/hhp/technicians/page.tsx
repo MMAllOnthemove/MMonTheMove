@@ -92,7 +92,7 @@ const ManagementSearchForm = dynamic(() =>
 // import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import useFetchHHPReports from '@/hooks/useFetchHHPReports'
+import useFetchHHPReports from '@/hooks/useFetchHHPTicketReports'
 import useIpaasGetBranchStockOverview from '@/hooks/useGetBranchStockOverview'
 import useSocket from "@/hooks/useSocket"
 import useTaskParts from "@/hooks/useTaskParts"

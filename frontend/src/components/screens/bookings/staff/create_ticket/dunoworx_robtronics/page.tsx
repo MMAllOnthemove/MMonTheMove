@@ -57,12 +57,12 @@ const Sidebar = dynamic(() =>
 
 const DunoworxRobtronicScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
-    const { customerSearchLoading, customer, checkIfCustomerWasHere } = useFetchCustomer();
+    const { customerSearchLoading, checkIfCustomerWasHere } = useFetchCustomer();
     const { socket, isConnected } = useSocket()
-    const { createAssetsOnRepairshopr, createAssetLoading } = useCreateAssets()
+    const { createAssetsOnRepairshopr, } = useCreateAssets()
     const { addTicket, createTicketLoading } = useCreateTicket()
-    const { addAgentTask, addAgentTaskLoading, errors } = useBookingAgentsTasks()
-    const { addCustomer, createCustomerLoading } = useCreateCustomerOnRepairshopr()
+    const { addAgentTask } = useBookingAgentsTasks()
+    const { addCustomer } = useCreateCustomerOnRepairshopr()
     const { addRepairTicketFile } = useRepairshoprFile()
     const { addCommentLocally } = useAddCommentsLocally()
     const { addCustomerLocally } = useCustomerLocally()
@@ -100,8 +100,7 @@ const DunoworxRobtronicScreen = () => {
     const [phoneNumber, setPhoneNumber] = useState<string | null | any>("")
     const [phoneNumber2, setPhoneNumber2] = useState<string | any>("")
     const [zip, setZip] = useState<string | any>("")
-    const { warranty, warrantyCode, ticketTypeId, localWarranty, selectedWarranty, handleWarrantyChange } = useCheckWarranty(model, serialNumber, imei)
-    const [assetId, setAssetId] = useState('')
+    const { warranty, warrantyCode, ticketTypeId, localWarranty, handleWarrantyChange } = useCheckWarranty(model, serialNumber, imei)
     const [isRework, setIsRework] = useState<boolean>(false);
     const [addRepairNoToTitle, setAddRepairNoToTitle] = useState<boolean>(false);
     const [openFaultList, setOpenFaultList] = React.useState(false)

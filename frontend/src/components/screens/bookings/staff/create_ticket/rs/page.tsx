@@ -13,10 +13,10 @@ import { useParams } from 'next/navigation'
 import HHP from './hhp/page'
 
 const CreateTicketRepairshoprScreen = () => {
-    const { user, isLoggedIn, loading } = useUserLoggedIn()
+    const { isLoggedIn, loading } = useUserLoggedIn()
     const params = useParams()
     const { customer_email } = params;
-    const { singleCustomer, singleCustomerLoading, refetch } = useGetCustomerLocally(
+    const { singleCustomer } = useGetCustomerLocally(
         decodeURIComponent(Array.isArray(customer_email) ? customer_email[0] : customer_email)
     );
     const customerId = singleCustomer[0]?.repairshopr_customer_id

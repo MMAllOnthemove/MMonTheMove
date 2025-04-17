@@ -5,7 +5,6 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import useCreateCustomerOnRepairshopr from '@/hooks/useCreateCustomer'
 import { datetimestamp } from '@/lib/date_formats'
 import dynamic from 'next/dynamic'
-import { useRouter } from 'nextjs-toploader/app'
 import React, { useState } from 'react'
 const PageTitle = dynamic(() =>
     import('@/components/PageTitle/page'), { ssr: false }
@@ -22,7 +21,7 @@ type PhoneDetail = {
 };
 
 const CreateCustomerRepairshoprScreen = () => {
-    const router = useRouter()
+
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [businessname, setBusinessName] = useState("")
@@ -88,7 +87,7 @@ const CreateCustomerRepairshoprScreen = () => {
         await addCustomerLocally(spreadPayload)
         // send the customer name in the url params
         // this will then be stored in the customer name, in the next screen
-        const fullname = `${capitalizeText(firstName)} ${capitalizeText(lastName)}`
+        // const fullname = `${capitalizeText(firstName)} ${capitalizeText(lastName)}`
         // router.push(`/assembly_terms/${encodeURIComponent(fullname)}`)
         setOpenDialog(true)
 

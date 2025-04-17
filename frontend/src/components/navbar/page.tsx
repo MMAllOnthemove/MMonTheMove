@@ -15,7 +15,7 @@ import { menuItems } from "@/lib/sidebar_links"
 import { ChevronDownIcon, SlashIcon, } from "@heroicons/react/24/outline"
 import React, { useState } from "react"
 
-const Navbar = ({ isConnected }: boolean | any) => {
+const Navbar = () => {
     // customize open on hover
     const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
     const { user } = useUserLoggedIn()

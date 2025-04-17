@@ -8,6 +8,7 @@ SELECT
   ARRAY_AGG(
     JSONB_BUILD_OBJECT(
       'ticket_number', t.ticket_number,
+      'ticket_id', t.id,
       'date_booked', t.date_booked,
       'unit_status', t.unit_status,
       'engineer', t.engineer
@@ -18,6 +19,7 @@ SELECT
   ARRAY_AGG(
     JSONB_BUILD_OBJECT(
       'ticket_number', t.ticket_number,
+      'ticket_id', t.id,
       'date_booked', t.date_booked,
       'unit_status', t.unit_status,
       'engineer', t.engineer
@@ -28,6 +30,7 @@ SELECT
   ARRAY_AGG(
     JSONB_BUILD_OBJECT(
       'ticket_number', t.ticket_number,
+      'ticket_id', t.id,
       'date_booked', t.date_booked,
       'unit_status', t.unit_status,
       'engineer', t.engineer
@@ -38,6 +41,7 @@ SELECT
   ARRAY_AGG(
     JSONB_BUILD_OBJECT(
       'ticket_number', t.ticket_number,
+      'ticket_id', t.id,
       'date_booked', t.date_booked,
       'unit_status', t.unit_status,
       'engineer', t.engineer
@@ -48,6 +52,7 @@ SELECT
   ARRAY_AGG(
     JSONB_BUILD_OBJECT(
       'ticket_number', t.ticket_number,
+      'ticket_id', t.id,
       'date_booked', t.date_booked,
       'unit_status', t.unit_status,
       'engineer', t.engineer
@@ -58,6 +63,7 @@ SELECT
   ARRAY_AGG(
     JSONB_BUILD_OBJECT(
       'ticket_number', t.ticket_number,
+      'ticket_id', t.id,
       'date_booked', t.date_booked,
       'unit_status', t.unit_status,
       'engineer', t.engineer
@@ -68,6 +74,7 @@ SELECT
   ARRAY_AGG(
     JSONB_BUILD_OBJECT(
       'ticket_number', t.ticket_number,
+      'ticket_id', t.id,
       'date_booked', t.date_booked,
       'unit_status', t.unit_status,
       'engineer', t.engineer
@@ -78,6 +85,7 @@ SELECT
   ARRAY_AGG(
     JSONB_BUILD_OBJECT(
       'ticket_number', t.ticket_number,
+      'ticket_id', t.id,
       'date_booked', t.date_booked,
       'unit_status', t.unit_status,
       'engineer', t.engineer
@@ -88,6 +96,7 @@ SELECT
   ARRAY_AGG(
     JSONB_BUILD_OBJECT(
       'ticket_number', t.ticket_number,
+      'ticket_id', t.id,
       'date_booked', t.date_booked,
       'unit_status', t.unit_status,
       'engineer', t.engineer
@@ -101,6 +110,7 @@ SELECT
   ARRAY_AGG(
     DISTINCT JSONB_BUILD_OBJECT(
       'ticket_number', hqc.ticket_number,
+      'ticket_id', t.id,
       'date_booked', t.date_booked,
       'unit_status', t.unit_status,
       'engineer', t.engineer,
@@ -122,7 +132,7 @@ ORDER BY t.engineer;
 // In your HHPDashboardTable handler
 const HHPDashboardTable = async (req, res) => {
     const { from, to } = req.query;
-    console.log("From:", from, "To:", to); // Log query parameters
+   
 
     try {
         const results = await pool.query(query, [from, to]);

@@ -14,9 +14,14 @@ import { limiter } from "../../../middleware/rateLimiter.js";
 import { authenticateToken } from "../../../middleware/verify.js";
 import { authenticateRole } from "../../../middleware/verify_role.js";
 import { updateAssets } from "../../../controllers/department/hhp/technicians/update_assets.js";
+import createHHPTicket from "../../../controllers/department/hhp/create_ticket/index.js";
+import createTicketFromSO from "../../../controllers/department/hhp/create_ticket/create_ticket_from_so.js";
 const router = express.Router();
 
-router.post("/", limiter, authenticateToken, AddHHPTask);
+
+router.post("/", limiter, authenticateToken, createHHPTicket);
+router.post("/manually", limiter, authenticateToken, AddHHPTask);
+router.post("/from_so", limiter, authenticateToken, createTicketFromSO);
 router.patch("/assess/:id", limiter, authenticateToken, UpdateAssessmentDate);
 router.put("/assets/:id", limiter, authenticateToken, updateAssets);
 

@@ -4,10 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import useFetchEngineer from "@/hooks/useFetchEngineers";
+import useFetchHHPReports from "@/hooks/useFetchHHPTableDashboardReports";
+import useUserLoggedIn from "@/hooks/useGetUser";
 import useHHPDashboardTable from "@/hooks/useHHPDashboardTable";
 import { useHHPTasksCrud } from "@/hooks/useHHPTasksCrud";
+import { datetimestamp } from "@/lib/date_formats";
+import openEngineerBinsTab from "@/lib/openEngineerBinsTab";
+import openFullScreenPopup from "@/lib/openFullScreenPopup";
 import repairshopr_statuses_techs from "@/lib/tech_rs_statuses";
-import { TDashboardRowData } from "@/lib/types";
 import { ColumnDef, ColumnFiltersState, ColumnOrderState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, PaginationState, SortingState, useReactTable } from "@tanstack/react-table";
 import moment from "moment";
 import React, { useMemo, useState } from "react";
@@ -22,6 +26,7 @@ const repairshopr_statuses = [
 
 
 const HHPDashboardTable = () => {
+    const { user, isLoggedIn } = useUserLoggedIn()
     const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
     const [selectedEngineer, setSelectedEngineer] = useState<string | null>(null);
     const [selectedTickets, setSelectedTickets] = useState<any[]>([]);
@@ -38,8 +43,10 @@ const HHPDashboardTable = () => {
     const handleShowTickets = (tickets: any[], label: string) => {
         setModalLabel(label);
         setModalTickets(tickets);
+
         setModalOpen(true);
     };
+    const { reportsLoading, fetchReports, error } = useFetchHHPReports()
 
     // know how many were booked
     // Filter the tasks based on date range
@@ -246,6 +253,16 @@ const HHPDashboardTable = () => {
         },
     ];
 
+    const downloadReport = async () => {
+        const downloaded_by = user?.email;
+        const downloaded_at = datetimestamp;
+        await fetchReports(
+            fromDate || undefined,
+            toDate || undefined,
+            downloaded_by,
+            downloaded_at
+        );
+    }
 
 
     // Table sorting
@@ -319,6 +336,13 @@ const HHPDashboardTable = () => {
                         className="w-full placeholder:font-regular placeholder:text-gray-400 placeholder:text-sm shadow-none border border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-300 focus-visible:border-none focus-visible:shadow-none focus-visible:outline-none"
                     />
                 </div>
+                {isLoggedIn && user?.user_role === "admin" || user?.user_role === "manager" ?
+
+                        <Button type="button" onClick={downloadReport} disabled={reportsLoading}>
+                            {reportsLoading ? 'Downloading...' : 'Get report'}
+                        </Button>
+
+                    : null}
                 <Button type="button" onClick={() => setSortTableColumns(true)} className="hidden md:block className='text-sm text-gray-100 bg-[#082f49] hover:bg-[#075985] active:bg-[#075985] shadow-none border-none'">Sort columns</Button>
                 <Button type="button" onClick={resetFilters} className="className='text-sm text-gray-100 bg-[#075985] hover:bg-[#082f49] active:bg-[#082f49] shadow-none border-none"> Reset filters</Button>
 
@@ -451,8 +475,10 @@ const HHPDashboardTable = () => {
                             {modalTickets && modalTickets?.length > 0 ? (
                                 modalTickets.map((ticket, index: number) => (
                                     <li key={ticket.ticket_number} className="border p-2 rounded mb-2">
-                                        {index + 1}  <strong>{ticket.ticket_number}</strong> - Booked on: {moment(ticket.date_booked).format("YYYY-MM-DD")}
+                                        ({index + 1})  <strong>{ticket.ticket_number}</strong> - Booked on: {moment(ticket.date_booked).format("YYYY-MM-DD")} <Button variant='outline' className="text-xs ml-2" onClick={() => openFullScreenPopup(`/departments/hhp/technicians/${encodeURIComponent(ticket.ticket_id)}`)}>View</Button>
+                                        {ticket?.fail_reason && <><br /> <span className="text-xs text-gray-500">{ticket?.fail_reason}</span></>}
                                     </li>
+
                                 ))
                             ) : (
                                 <p>No tickets found.</p>

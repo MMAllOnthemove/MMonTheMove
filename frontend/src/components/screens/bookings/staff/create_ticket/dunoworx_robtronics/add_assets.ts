@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 
 export const useCreateAssets = () => {
     const [createAssetLoading, setCreateAssetLoading] = useState(false);
-    const router = useRouter();
 
     const createAssetsOnRepairshopr = async (values: any) => {
         setCreateAssetLoading(true);
@@ -29,7 +28,7 @@ export const useCreateAssets = () => {
             }
         } catch (error: any) {
             if (error?.response?.data) {
-                const { success, message, params } = error.response.data;
+                const { success, message } = error.response.data;
                 if (!success && message) {
                     if (Array.isArray(message)) {
                         const errorMessages = message.join("\n");

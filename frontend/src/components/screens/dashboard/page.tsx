@@ -10,6 +10,8 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs"
 import HHPDashboardTable from './hhp/technicians/table'
+import BookingAgentsReportScreen from '../booking_agents_report/page'
+import QCFailed from './hhp/technicians/qc_failed'
 
 const HHPDashboardCards = dynamic(() =>
     import('./hhp/technicians/cards'), { ssr: false }
@@ -39,10 +41,12 @@ const DashboardScreen = () => {
                         <Sidebar />
                         <main className='container mx-auto p-1'>
                             <PageTitle title="Dashboard" hasSpan={true} spanText={"HHP"} />
-                            {/* <Tabs defaultValue="table_view" className="w-full">
-                                <TabsList className="grid w-[400px] grid-cols-2">
-                                    <TabsTrigger value="table_view">Table view</TabsTrigger>
-                                    <TabsTrigger value="card_view">Card view</TabsTrigger>
+                            <Tabs defaultValue="table_view" className="w-full">
+                                <TabsList >
+                                    <TabsTrigger value="table_view">Jobs</TabsTrigger>
+                                    {/* <TabsTrigger value="card_view">Card view</TabsTrigger> */}
+                                    <TabsTrigger value="booking_agents">Booking agents</TabsTrigger>
+                                    <TabsTrigger value="qc_fail">QC fail</TabsTrigger>
                                 </TabsList>
                                 <TabsContent value="table_view">
                                     <HHPDashboardTable />
@@ -50,8 +54,14 @@ const DashboardScreen = () => {
                                 <TabsContent value="card_view">
                                     <HHPDashboardCards />
                                 </TabsContent>
-                            </Tabs> */}
-                            <HHPDashboardTable />
+                                <TabsContent value="booking_agents">
+                                    <BookingAgentsReportScreen />
+                                </TabsContent>
+                                <TabsContent value="qc_fail">
+                                    <QCFailed />
+                                </TabsContent>
+                            </Tabs>
+                            {/* <HHPDashboardTable /> */}
                         </main>
 
 

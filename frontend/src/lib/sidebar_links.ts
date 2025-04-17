@@ -26,14 +26,7 @@ export const menuItems = [
     },
     {
         label: "Dashboard",
-        sublinks: [
-            { id: 5, item: "HHP stats", pageRoute: "/dashboard" },
-            {
-                id: 6,
-                item: "Booking agents stats",
-                pageRoute: "/booking_agents_report",
-            },
-        ],
+        sublinks: [{ id: 5, item: "HHP", pageRoute: "/dashboard" }],
     },
     {
         label: "Driver app",

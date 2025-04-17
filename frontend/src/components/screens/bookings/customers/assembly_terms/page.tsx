@@ -33,10 +33,10 @@ const TableBody = dynamic(() => import('./tablebody'), { ssr: false })
 
 const AssemblyTermScreen = () => {
     const { user, isLoggedIn, loading } = useUserLoggedIn()
-    const { assemblyTermsList, assemblyTermsListLoading, refetch } = useAssemblyTerms()
+    const { assemblyTermsList, refetch } = useAssemblyTerms()
     const { updateAssemblyTerm, updateAssemblyTermLoading } = useUpdateAssemblyTerm()
-    const { addAssemblyTerm, addAssemblyTermLoading, errors } = useAddAssemblyTerm()
-    const { deleteAssemblyTerm, deleteEngineerLoading } = useDeleteAssemblyTerm()
+    const { addAssemblyTerm, addAssemblyTermLoading } = useAddAssemblyTerm()
+    const { deleteAssemblyTerm } = useDeleteAssemblyTerm()
     const [modifyAssemblyTermModal, setModifyAssemblyTermModal] = useState<TAssemblyTermTable | any>();
     const [modifyAssemblyTermModalOpen, setModifyAssemblyTermModalOpen] = useState(false);
     const [term, setTerm] = useState("")

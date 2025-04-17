@@ -1,6 +1,5 @@
 import CreateCustomerRepairshoprScreen from '@/components/screens/bookings/customers/create_customer/rs/page';
-import { Metadata } from 'next'
-import dynamic from 'next/dynamic'
+import { Metadata } from 'next';
 
 
 export const metadata: Metadata = {

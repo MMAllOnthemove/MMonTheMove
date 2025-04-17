@@ -105,6 +105,9 @@ const ViewHHPTaskScreen = () => {
     interface FileUpload {
         file: File | any;
         progress: number;
+        customName?: string; // allow users to rename files if they choose
+        extension?: string;
+        nameWithoutExt?: string;
     }
     const { taskPartsList,
         taskPartsListLoading,
@@ -281,8 +284,8 @@ const ViewHHPTaskScreen = () => {
             quote_rejected_date: quote_accepted === false ? datetime : null,
             ticket_number: hhpTask?.ticket_number
         };
-
-        const changes = findChanges(hhpTask, payload);
+        const updates = findChanges(hhpTask, payload)
+        const changes = { ...updates, updated_by: user?.email, ticket_number: hhpTask?.ticket_number }
 
 
 
@@ -340,7 +343,8 @@ const ViewHHPTaskScreen = () => {
             // This goes to our in house db
             id, updated_at, updated_by: user?.email, unit_status: "Waiting for Parts", ticket_number: hhpTask?.ticket_number
         }
-        const changes = findChanges(hhpTask, updatePayload)
+        const updates = findChanges(hhpTask, updatePayload)
+        const changes = { ...updates, changed_by: user?.email, ticket_number: hhpTask?.ticket_number }
 
         const commentPayload: RepairshorTicketComment = {
             "subject": "Parts Order",
@@ -510,7 +514,7 @@ const ViewHHPTaskScreen = () => {
             qc_complete: qc_complete,
             engineer: engineer,
         }
-
+  
         const commentPayload: RepairshorTicketComment = {
             "subject": "Update",
             "tech": user?.full_name,
@@ -724,7 +728,8 @@ const ViewHHPTaskScreen = () => {
             updated_by: user?.email
         };
 
-        const changes = findChanges(hhpTask, updatePayload);
+        const updates = findChanges(hhpTask, updatePayload)
+        const changes = { ...updates, updated_by: user?.email, ticket_number: hhpTask?.ticket_number }
         await updateRepairTicket(hhpTask?.repairshopr_job_id, status_update);
         if (Object.keys(changes).length > 0) {
             await updateTask(id, changes);
@@ -768,24 +773,46 @@ const ViewHHPTaskScreen = () => {
             id, service_order_no: serviceOrder, unit_status, updated_at, engineer: selected, collected, collected_date, stores: issue_type, device_location: deviceLocation, job_repair_no: repairNo, ticket_number: hhpTask?.ticket_number, updated_by: user?.email
         }
 
-        const changes = findChanges(hhpTask, updatePayload)
+        const updates = findChanges(hhpTask, updatePayload)
+        const changes = { ...updates, updated_by: user?.email, ticket_number: hhpTask?.ticket_number }
 
         await updateRepairTicket(hhpTask?.repairshopr_job_id, engineer_update);
         if (Object.keys(changes).length > 0) {
+          
             await updateTask(id, changes)
         }
         refetch();
     }
 
-    const handleHHPFiles = (event: any) => {
+    // const handleHHPFiles = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     if (event.target.files) {
+    //         const selectedFiles = Array.from(event.target.files).map((file) => ({
+    //             file,
+    //             progress: 0,
+    //             customName: file.name,
+    //         }));
+    //         setHHPFiles(selectedFiles);
+    //     }
+    // };
+    const handleHHPFiles = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
-            const selectedFiles = Array.from(event.target.files)?.map((file) => ({
-                file,
-                progress: 0,
-            }));
+            const selectedFiles = Array.from(event.target.files).map((file) => {
+                const originalName = file.name;
+                const dotIndex = originalName.lastIndexOf(".");
+                const nameWithoutExt = originalName.substring(0, dotIndex);
+                const extension = originalName.substring(dotIndex);
+
+                return {
+                    file,
+                    progress: 0,
+                    nameWithoutExt,
+                    extension,
+                };
+            });
             setHHPFiles(selectedFiles);
         }
     };
+
 
     const handleTicketRSWarranty = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selected = e.target.value;
@@ -839,7 +866,9 @@ const ViewHHPTaskScreen = () => {
             id, updated_at, updated_by: user?.email, parts_issued, parts_issued_date, accessories_and_condition: itemCondition, parts_requested, parts_requested_date, parts_ordered, parts_order_id, parts_ordered_date, unit_status, ticket_number: hhpTask?.ticket_number
         }
 
-        const changes = findChanges(hhpTask, updatePayload)
+        const updates = findChanges(hhpTask, updatePayload)
+        const changes = { ...updates, updated_by: user?.email, ticket_number: hhpTask?.ticket_number }
+
         try {
             setSubmitPartsUpdateLoading(true)
 
@@ -901,7 +930,9 @@ const ViewHHPTaskScreen = () => {
             id, service_order_no: serviceOrder, unit_status, updated_at, engineer, warranty, rs_warranty, collected, additional_info: additionalInfo, stores: issue_type, collected_date, device_location: deviceLocation, job_repair_no: repairNo, ticket_number: hhpTask?.ticket_number, updated_by: user?.email
         }
 
-        const changes = findChanges(hhpTask, updatePayload)
+        const updates = findChanges(hhpTask, updatePayload)
+        const changes = { ...updates, updated_by: user?.email, ticket_number: hhpTask?.ticket_number }
+
         if (hhpTask?.repairshopr_job_id) await updateRepairTicket(hhpTask?.repairshopr_job_id, ticket_type_id_update);
         if (Object.keys(changes).length > 0) {
             await updateTask(id, changes)
@@ -926,9 +957,16 @@ const ViewHHPTaskScreen = () => {
             formData.append("created_at", created_at);
 
             // Append all files in one request
+
             hhpFiles.forEach((fileObj) => {
-                formData.append("files", fileObj.file);
+                const ext = fileObj.file.name.split(".").pop();
+                const renamedFile = new File([fileObj.file], `${fileObj.nameWithoutExt}.${ext}`, {
+                    type: fileObj.file.type,
+                });
+                formData.append("files", renamedFile); // ✅ this is critical
             });
+
+
 
             // Send a **single request** for all files
             const { data } = await axios.post(
@@ -1338,7 +1376,7 @@ const ViewHHPTaskScreen = () => {
                                                         </div>
                                                         {/* files being uploaded */}
                                                         <div className="mt-4">
-                                                            {hhpFiles?.map((fileObj: any, index: any) => (
+                                                            {/* {hhpFiles?.map((fileObj: any, index: any) => (
                                                                 <div key={index} className="mb-2 border p-2">
                                                                     <p className="font-medium text-sm">{fileObj.file.name}</p>
                                                                     <div className="w-full bg-gray-200 rounded h-2">
@@ -1349,7 +1387,47 @@ const ViewHHPTaskScreen = () => {
                                                                     </div>
                                                                     <p className="text-xs text-gray-500">{fileObj.progress}%</p>
                                                                 </div>
+                                                            ))} */}
+                                                            {hhpFiles.map((fileObj, index) => (
+                                                                <div key={index} className="mb-2 border p-2 relative rounded">
+                                                                    {/* ❌ Remove button */}
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => {
+                                                                            const updatedFiles = hhpFiles.filter((_, i) => i !== index);
+                                                                            setHHPFiles(updatedFiles);
+                                                                        }}
+                                                                        className="absolute top-1 right-1 bg-red-500 text-white text-xs px-2 py-0.5 rounded hover:bg-red-600"
+                                                                    >
+                                                                        Remove
+                                                                    </button>
+
+                                                                    {/* Rename input */}
+                                                                    <input
+                                                                        type="text"
+                                                                        value={fileObj.nameWithoutExt}
+                                                                        onChange={(e) => {
+                                                                            const updated = [...hhpFiles];
+                                                                            updated[index].nameWithoutExt = e.target.value;
+                                                                            setHHPFiles(updated);
+                                                                        }}
+                                                                        className="mb-1 p-1 border rounded w-full"
+                                                                    />
+                                                                    <p className="text-xs text-gray-500">.{fileObj.extension?.replace(".", "")}</p>
+
+                                                                    {/* Progress bar */}
+                                                                    <div className="w-full bg-gray-200 rounded h-2 mt-1">
+                                                                        <div
+                                                                            className="bg-blue-500 h-2 rounded"
+                                                                            style={{ width: `${fileObj.progress}%` }}
+                                                                        />
+                                                                    </div>
+                                                                    <p className="text-xs text-gray-500">{fileObj.progress}%</p>
+                                                                </div>
                                                             ))}
+
+
+
                                                         </div>
                                                         {
                                                             attachmentsList && attachmentsList?.map((x) => (

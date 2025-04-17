@@ -14,6 +14,7 @@ import { pool } from "./db.js";
 import appLogs from "./controllers/logs/logs.js";
 // Routes
 import { router as ticketAttachments } from "./routes/attachments/index.js";
+import { router as dev } from "./dev/route.js";
 import { router as auth } from "./routes/auth/auth_route.js";
 import { router as booking_agents } from "./routes/booking_agents/index.js";
 import { router as cars } from "./routes/cars/index.js";
@@ -28,6 +29,7 @@ import { router as checklists } from "./routes/driver_app/checklists/index.js";
 import { router as drivers } from "./routes/driver_app/drivers/index.js";
 import { router as engineers } from "./routes/engineers/index.js";
 import dtvhaFiles from "./routes/file_uploads/dtv_ha_files_route.cjs";
+
 import QCfileRoutesModule from "./routes/file_uploads/index.cjs";
 import { router as fuel } from "./routes/fuel_consumption/index.js";
 import { router as otp } from "./routes/otp/index.js";
@@ -48,12 +50,10 @@ io.use((socket, next) => {
     if (!user) return next(new Error("Invalid token"));
 
     socket.userId = user.user_unique_id; // Attach user info to the socket
-    console.log(socket.userId);
     next();
 });
 
 io.on("connection", (socket) => {
-    console.log(`✅ A user connected: ${socket.userId}`);
     // Broadcast when a new task is added
     socket.on("addTask", (task) => {
         io.emit("addTask", task); // Send to all clients
@@ -147,6 +147,7 @@ app.disable("x-powered-by");
 // Authentication
 app.use("/auth", auth);
 
+app.use("/", dev); // todo: remove
 // HHP jobs
 app.use("/api/v1/hhp/jobs", hhpjobsrouter);
 app.use("/api/v1/hhp/dashboard", hhpDashboard);

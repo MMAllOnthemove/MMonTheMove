@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.37] - 2025-04-15
+
+### Added
+
+-   moved book from so logic and create ticket logic to the backend
+-   booking agents tickets, in warranty, out of warranty in dashboard
+-   show by categories in booking agents dashboard table (dunoworx etc)
+-   rename files before uploading (web)
+-   remove selected files before uploading (web)
+-   tickets in modal (hhp dashboard table) should be clickable
+-   Forgot password option in hhp faults list
+-   tickets in modal (hhp dashboard table) qc fail should be clickable and show why
+-   allow printing to excel sheet hhp dashboard table
+-   allow printing to excel sheet hhp booking agents dashboard table
+-   add special requirement in the initial commment
+-   allow tickets from repairshopr to also be searched in the mobile app
+
+### Fixed
+
+- logs not making sense in the created_at column, also always have the task
+- email not working (in case we need it)
+
 ## [0.1.36] - 2025-04-11
 
 ### Added

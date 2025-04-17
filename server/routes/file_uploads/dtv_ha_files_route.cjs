@@ -2,57 +2,55 @@ const express = require("express");
 const multer = require("multer");
 
 const {
-    uploadDTVHAFiles,
-} = require("../../controllers/department/dtv_ha/technicians/add_files.cjs");
+    addFilesFromMobileApp,
+} = require("../../add_files_from_mobile_app.cjs");
 
 const rateLimit = require("express-rate-limit");
-// File filter to allow images, videos, and PDFs
-const fileFilter = (req, file, cb) => {
-    const allowedMimeTypes = [
-        "image/jpeg",
-        "image/png",
-        "image/gif",
-        "image/webp",
-        "video/mp4",
-        "video/avi",
-        "video/mov",
-        "application/pdf", // Add PDF MIME type
-    ];
 
-    if (allowedMimeTypes.includes(file.mimetype)) {
-        cb(null, true); // Accept the file
-    } else {
-        cb(
-            new Error(
-                "Invalid file type. Only images, videos, and PDFs are allowed."
-            ),
-            false
-        ); // Reject the file
-    }
-};
-
+// Rate limiting middleware
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    max: 100, // Limit each IP to 100 requests per window
+    standardHeaders: true,
+    legacyHeaders: false,
 });
 
+// Allowed file types
+const ALLOWED_MIME_TYPES = [
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+    "video/mp4",
+    "video/avi",
+    "video/mov",
+    "application/pdf",
+];
+
+
+// Multer file filter
+const fileFilter = (req, file, cb) => {
+    ALLOWED_MIME_TYPES.includes(file.mimetype)
+        ? cb(null, true)
+        : cb(
+              new Error(
+                  "Invalid file type. Only images, videos, and PDFs are allowed."
+              ),
+              false
+          );
+};
+
 const upload = multer({
-    dest: "./uploads/",
+    storage: multer.memoryStorage(),
     fileFilter,
-    storage: multer.diskStorage({
-        destination: "./uploads/",
-        filename: (req, file, cb) => cb(null, file.originalname),
-    }),
 });
 const router = express.Router();
 
 router.post(
-    "/ticket_attachments",
+    "/mobile",
     upload.array("files", 15),
     limiter,
-    uploadDTVHAFiles
+    addFilesFromMobileApp
 );
 
 // router.post("/", upload.single("file"), limiter, uploadFile);

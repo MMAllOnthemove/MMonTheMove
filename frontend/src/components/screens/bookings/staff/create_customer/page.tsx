@@ -30,7 +30,7 @@ type PhoneDetail = {
 };
 
 const CreateCustomerStaffScreen = () => {
-    const { user, isLoggedIn, loading } = useUserLoggedIn()
+    const { isLoggedIn, loading } = useUserLoggedIn()
     const { socket, isConnected } = useSocket()
     const router = useRouter()
     const [firstName, setFirstName] = useState("")
@@ -97,7 +97,7 @@ const CreateCustomerStaffScreen = () => {
         await addCustomerLocally(spreadPayload)
         // send the customer name in the url params
         // this will then be stored in the customer name, in the next screen
-        const fullname = `${capitalizeText(firstName)} ${capitalizeText(lastName)}`
+        // const fullname = `${capitalizeText(firstName)} ${capitalizeText(lastName)}`
         router.push(`/bookings/staff/customers_today`)
 
     }
